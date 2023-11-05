@@ -1,0 +1,3 @@
+class Dialogs {
+  Dialogs._();
+}
