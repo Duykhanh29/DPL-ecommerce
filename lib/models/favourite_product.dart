@@ -1,9 +1,13 @@
+import 'package:uuid/uuid.dart';
+
 class FavouriteProduct {
   String? id;
   String? userID;
   String? productID;
   DateTime? createdAt;
-  FavouriteProduct({this.createdAt, this.id, this.productID, this.userID});
+  FavouriteProduct({this.createdAt, this.id, this.productID, this.userID}) {
+    id ??= Uuid().v4();
+  }
   factory FavouriteProduct.fromJson(Map<String, dynamic> json) {
     return FavouriteProduct(
       userID: json['userID'],

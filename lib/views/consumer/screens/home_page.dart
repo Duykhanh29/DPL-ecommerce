@@ -1,0 +1,449 @@
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dpl_ecommerce/const/app_decoration.dart';
+import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/customs/custom_search_view.dart';
+import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
+import 'package:dpl_ecommerce/views/consumer/ui_elements/product_item_widget1.dart';
+import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
+import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item_widget.dart';
+import 'package:dpl_ecommerce/views/consumer/ui_elements/promotion_banner_item_widget.dart';
+import 'package:dpl_ecommerce/views/consumer/ui_elements/category_item_widget.dart';
+import 'package:dpl_ecommerce/views/consumer/ui_elements/two_slider_item_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:badges/badges.dart' as badges;
+import 'package:flutter/cupertino.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:section_view/section_view.dart';
+
+class HomePage extends StatelessWidget {
+  HomePage({super.key});
+  TextEditingController searchController = TextEditingController();
+  int sliderIndex = 1;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: Text("Home"),
+        actions: [
+          Center(
+            child: badges.Badge(
+              badgeContent: Text(
+                "3",
+                style: TextStyle(fontSize: 12),
+              ),
+              child: InkWell(
+                child: Icon(Icons.notifications_outlined, size: 24),
+                onTap: () {},
+              ),
+            ),
+          ),
+          const SizedBox(width: 15),
+          Center(
+            child: badges.Badge(
+              badgeContent: Text(
+                "3",
+                style: TextStyle(fontSize: 12),
+              ),
+              child: InkWell(
+                child: Icon(CupertinoIcons.cart, size: 24),
+                onTap: () {},
+              ),
+            ),
+          ),
+          const SizedBox(width: 15),
+          Center(
+            child: badges.Badge(
+              badgeContent: Text(
+                "3",
+                style: TextStyle(fontSize: 12),
+              ),
+              child: InkWell(
+                child: Icon(Icons.chat_bubble_outline, size: 24),
+                onTap: () {},
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 12,
+          )
+        ],
+      ),
+      body: Padding(
+          padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
+          child: Container(
+            width: double.maxFinite,
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 5.v, left: 10.v),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10.h),
+                            child: CustomSearchView(
+                              controller: searchController,
+                              hintText: "msg_search_anything",
+                            ),
+                          ),
+                          SizedBox(height: 18.v),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10.h),
+                            child: _buildDealOfTheDay(
+                              context,
+                              dealOfTheDayText: "lbl_categories",
+                              viewAllText: "lbl_view_all",
+                            ),
+                          ),
+                          // SizedBox(height: 15.v),
+                          _buildCategoryList(context),
+                          SizedBox(height: 20.v),
+                          _buildPromotionBanner(context),
+                          SizedBox(height: 8.v),
+                          SizedBox(
+                            height: 6.v,
+                            child: AnimatedSmoothIndicator(
+                              activeIndex: sliderIndex,
+                              count: 1,
+                              axisDirection: Axis.horizontal,
+                              effect: ScrollingDotsEffect(
+                                spacing: 8,
+                                activeDotColor:
+                                    theme.colorScheme.primaryContainer,
+                                dotColor: appTheme.gray200,
+                                dotHeight: 6.v,
+                                dotWidth: 6.h,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10.v),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10.h, vertical: 6),
+                            child: _buildDealOfTheDay(
+                              context,
+                              dealOfTheDayText: "lbl_deal_of_the_day",
+                              viewAllText: "lbl_view_all",
+                            ),
+                          ),
+                          _buildDealOfTheDayRow(context),
+                          SizedBox(height: 26.v),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10.h),
+                            child: _buildDealOfTheDay(
+                              context,
+                              dealOfTheDayText: "msg_hot_selling_footwear",
+                              viewAllText: "lbl_view_all",
+                            ),
+                          ),
+                          SizedBox(height: 16.v),
+                          _buildProductSmallList(context),
+                          SizedBox(height: 25.v),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10.h),
+                            child: _buildDealOfTheDay(
+                              context,
+                              dealOfTheDayText: "msg_recommended_for",
+                              viewAllText: "lbl_view_all",
+                            ),
+                          ),
+                          SizedBox(height: 16.v),
+                          _buildProductSmallList1(context),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )),
+    );
+  }
+
+  /// Section Widget
+  Widget _buildPromotionBanner(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(right: 16.h),
+      child: CarouselSlider.builder(
+        options: CarouselOptions(
+          height: 206.v,
+          initialPage: 0,
+          autoPlay: true,
+          viewportFraction: 1.0,
+          enableInfiniteScroll: false,
+          scrollDirection: Axis.horizontal,
+          onPageChanged: (
+            index,
+            reason,
+          ) {
+            sliderIndex = index;
+          },
+        ),
+        itemCount: 6,
+        itemBuilder: (context, index, realIndex) {
+          return PromotionbannerItemWidget();
+        },
+      ),
+    );
+  }
+
+  /// Section Widget
+  Widget _buildCategoryList(BuildContext context) {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.12,
+      child: ListView.separated(
+        padding: EdgeInsets.only(left: 10.h),
+        scrollDirection: Axis.horizontal,
+        separatorBuilder: (context, index) {
+          return SizedBox(
+            width: 18.h,
+          );
+        },
+        itemCount: 5,
+        itemBuilder: (context, index) {
+          return CategoryItemWidget();
+        },
+      ),
+    );
+  }
+
+  /// Section Widget
+  Widget _buildTwoSlider(BuildContext context) {
+    return CarouselSlider.builder(
+      options: CarouselOptions(
+        height: 140.v,
+        initialPage: 0,
+        autoPlay: true,
+        viewportFraction: 1.0,
+        enableInfiniteScroll: false,
+        scrollDirection: Axis.horizontal,
+        onPageChanged: (
+          index,
+          reason,
+        ) {
+          sliderIndex = index;
+        },
+      ),
+      itemCount: 5,
+      itemBuilder: (context, index, realIndex) {
+        return TwosliderItemWidget();
+      },
+    );
+  }
+
+  /// Section Widget
+  Widget _buildDealOfTheDayColumn(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(16.h),
+      decoration: AppDecoration.gradientGrayToGray,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(height: 2.v),
+          _buildDealOfTheDay(
+            context,
+            dealOfTheDayText: "lbl_deal_of_the_day",
+            viewAllText: "lbl_view_all",
+          ),
+          SizedBox(height: 8.v),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: 8.h,
+                vertical: 3.v,
+              ),
+              decoration: AppDecoration.fillRed.copyWith(
+                borderRadius: BorderRadiusStyle.roundedBorder2,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "lbl_11",
+                    style: CustomTextStyles.titleSmallOnPrimaryContainer,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: 9.h,
+                      top: 3.v,
+                      bottom: 3.v,
+                    ),
+                    child: Text(
+                      "lbl_hrs",
+                      style: theme.textTheme.labelSmall,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 12.h),
+                    child: Text(
+                      "lbl_15",
+                      style: CustomTextStyles.titleSmallOnPrimaryContainer,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: 7.h,
+                      top: 3.v,
+                      bottom: 3.v,
+                    ),
+                    child: Text(
+                      "lbl_min",
+                      style: theme.textTheme.labelSmall,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 12.h),
+                    child: Text(
+                      "lbl_04",
+                      style: CustomTextStyles.titleSmallOnPrimaryContainer,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: 5.h,
+                      top: 3.v,
+                      bottom: 3.v,
+                    ),
+                    child: Text(
+                      "lbl_sec",
+                      style: theme.textTheme.labelSmall,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 16.v),
+          Container(
+            padding: EdgeInsets.all(16.h),
+            decoration: AppDecoration.fillOnPrimaryContainer.copyWith(
+              borderRadius: BorderRadiusStyle.roundedBorder2,
+            ),
+            child: GridView.builder(
+              shrinkWrap: true,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                mainAxisExtent: 191.v,
+                crossAxisCount: 2,
+                mainAxisSpacing: 16.h,
+                crossAxisSpacing: 16.h,
+              ),
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: 4,
+              itemBuilder: (context, index) {
+                return ProductItemWidget();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDealOfTheDayRow(BuildContext context) {
+    return SizedBox(
+      height: 220.v,
+      child: ListView.separated(
+        padding: EdgeInsets.only(left: 16.h),
+        scrollDirection: Axis.horizontal,
+        separatorBuilder: (
+          context,
+          index,
+        ) {
+          return SizedBox(
+            width: 16.h,
+          );
+        },
+        itemCount: 3,
+        itemBuilder: (context, index) {
+          return ProductItemWidget();
+        },
+      ),
+    );
+  }
+
+  /// Section Widget
+  Widget _buildProductSmallList(BuildContext context) {
+    return SizedBox(
+      height: 230.v,
+      child: ListView.separated(
+        padding: EdgeInsets.only(left: 16.h),
+        scrollDirection: Axis.horizontal,
+        separatorBuilder: (
+          context,
+          index,
+        ) {
+          return SizedBox(
+            width: 16.h,
+          );
+        },
+        itemCount: 3,
+        itemBuilder: (context, index) {
+          return ProductsmalllistItemWidget();
+        },
+      ),
+    );
+  }
+
+  /// Section Widget
+  Widget _buildProductSmallList1(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(right: 10.h),
+      child: GridView.builder(
+        shrinkWrap: true,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          mainAxisExtent: 283.v,
+          // childAspectRatio: 3 / 2,
+        ),
+        itemBuilder: (context, index) {
+          return Productsmalllist1ItemWidget();
+        },
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: 22,
+      ),
+    );
+  }
+
+  /// Common widget
+  Widget _buildDealOfTheDay(
+    BuildContext context, {
+    required String dealOfTheDayText,
+    required String viewAllText,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 1.v),
+          child: Text(
+            dealOfTheDayText,
+            style: theme.textTheme.titleSmall!.copyWith(
+              color: theme.colorScheme.onPrimary,
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(bottom: 3.v),
+          child: TextButton(
+            onPressed: () {
+              // go to see all
+            },
+            child: Text(
+              viewAllText,
+              style: CustomTextStyles.bodySmallGray600.copyWith(
+                color: appTheme.gray600,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

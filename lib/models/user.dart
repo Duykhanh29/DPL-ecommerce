@@ -1,6 +1,7 @@
 import 'package:dpl_ecommerce/models/admin_infor.dart';
 import 'package:dpl_ecommerce/models/consumer_infor.dart';
 import 'package:dpl_ecommerce/models/seller_infor.dart';
+import 'package:uuid/uuid.dart';
 
 enum Role { admin, consumer, seller, mixedUser }
 
@@ -21,7 +22,9 @@ class UserModel {
       this.lastName,
       this.phone,
       this.role,
-      this.userInfor});
+      this.userInfor}) {
+    id ??= Uuid().v4();
+  }
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
         avatar: json['avatar'],

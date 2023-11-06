@@ -22,7 +22,7 @@ class Product {
   String? categoryID;
   List<String>? types;
   List<String>? colors;
-  List<Review>? reviewIDs;
+  List<String>? reviewIDs;
   Product(
       {this.availableQuantity,
       this.categoryID,
@@ -65,7 +65,7 @@ class Product {
       ratingCount: json['ratingCount'],
       shopID: json['shopID'],
       reviewIDs: (json['reviewIDs'] as List<dynamic>)
-          .map((e) => Review.fromJson(e))
+          .map((e) => e.toString())
           .toList(),
       shopLogo: json['shopLogo'],
       shopName: json['shopName'],
@@ -91,7 +91,7 @@ class Product {
         'rating': rating,
         'ratingCount': ratingCount,
         'shopID': shopID,
-        'reviewIDs': reviewIDs!.map((e) => e.toJson()).toList(),
+        'reviewIDs': reviewIDs!.map((e) => e.toString()).toList(),
         'shopLogo': shopLogo,
         'shopName': shopName,
         'updatedAt': updatedAt,
