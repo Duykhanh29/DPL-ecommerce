@@ -4,6 +4,7 @@ import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_search_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/search_page.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_item_widget1.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item_widget.dart';
@@ -80,14 +81,40 @@ class HomePage extends StatelessWidget {
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding: EdgeInsets.only(bottom: 5.v, left: 10.v),
+                      padding: EdgeInsets.only(bottom: 5.v, left: 0.v),
                       child: Column(
                         children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 10.h),
-                            child: CustomSearchView(
-                              controller: searchController,
-                              hintText: "msg_search_anything",
+                          SizedBox(height: 18.v),
+                          GestureDetector(
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ThreeScreen(),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 15),
+                              child: Container(
+                                width: 330,
+                                height: 45,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Colors.black,
+                                      width: 0.5,
+                                      style: BorderStyle.solid),
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.white,
+                                ),
+                                
+                                child: Row(
+                                  children: [
+                                   
+                                    Text("  "),
+                                    Icon(Icons.search),
+                                    Text("  msg_search_anything",style: TextStyle(color: Colors.grey),),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                           SizedBox(height: 18.v),
