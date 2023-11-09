@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dpl_ecommerce/const/app_decoration.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/customs/custom_badge_cart.dart';
 import 'package:dpl_ecommerce/customs/custom_search_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
@@ -30,30 +31,21 @@ class HomePage extends StatelessWidget {
         title: Text("Home"),
         actions: [
           Center(
-            child: badges.Badge(
-              badgeContent: Text(
-                "3",
-                style: TextStyle(fontSize: 12),
-              ),
-              child: InkWell(
-                child: Icon(Icons.notifications_outlined, size: 24),
-                onTap: () {},
+            child: InkWell(
+              child: badges.Badge(
+                badgeContent: Text(
+                  "3",
+                  style: TextStyle(fontSize: 12),
+                ),
+                child: InkWell(
+                  child: Icon(Icons.notifications_outlined, size: 24),
+                  onTap: () {},
+                ),
               ),
             ),
           ),
           const SizedBox(width: 15),
-          Center(
-            child: badges.Badge(
-              badgeContent: Text(
-                "3",
-                style: TextStyle(fontSize: 12),
-              ),
-              child: InkWell(
-                child: Icon(CupertinoIcons.cart, size: 24),
-                onTap: () {},
-              ),
-            ),
-          ),
+          CustomBadgeCart(number: 3),
           const SizedBox(width: 15),
           Center(
             child: badges.Badge(

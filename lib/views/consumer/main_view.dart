@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/views/consumer/screens/cart_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/category_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/home_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/order_page.dart';
@@ -16,7 +17,7 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> {
   List<Widget> pages = [
     HomePage(),
-    CategoryPage(),
+    CartPage(),
     OrderPage(),
     ProfilePage(),
   ];
