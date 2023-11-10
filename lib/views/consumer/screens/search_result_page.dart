@@ -54,6 +54,7 @@ class _SearchFilterInterfaceState extends State<SearchFilterInterface> {
             //SizedBox(width: 8.0),
             Expanded(
               child: TextField(
+                style: TextStyle(color: Colors.white),
                 onChanged: (value) {
                   setState(() {
                     _searchText = value;
@@ -123,6 +124,7 @@ class _SearchFilterInterfaceState extends State<SearchFilterInterface> {
                     ],
                   ),
                 ),
+                
               ))
             ],
           ),
