@@ -6,11 +6,14 @@ import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/customs/custom_badge_cart.dart';
 import 'package:dpl_ecommerce/customs/custom_button_style.dart';
 import 'package:dpl_ecommerce/customs/custom_elevate_button.dart';
+import 'package:dpl_ecommerce/customs/custom_icon_button.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_outline_button.dart';
+import 'package:dpl_ecommerce/customs/custom_photo_view.dart';
 import 'package:dpl_ecommerce/customs/custom_rating_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_text_form_field.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/helpers/show_modal_bottom_sheet.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/review.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
@@ -20,6 +23,7 @@ import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/cart_page.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_details_widgets/chip_view_item_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_details_widgets/slider_item_widget.dart';
@@ -31,6 +35,7 @@ import 'package:dpl_ecommerce/views/consumer/ui_elements/video_item_widget.dart'
 import 'package:dpl_ecommerce/views/consumer/ui_elements/voucher_item_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:badges/badges.dart' as badges;
@@ -62,7 +67,7 @@ class ProductDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     mediaQueryData = MediaQuery.of(context);
-
+    // final cartProvider = Provider.of<CartViewModel>(context, listen: false);
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -758,12 +763,169 @@ class ProductDetailsPage extends StatelessWidget {
 
   /// Section Widget
   Widget _buildAddToCart(BuildContext context) {
+    // final cartProvider = Provider.of<CartViewModel>(context);
+    final size = MediaQuery.of(context).size;
     return CustomOutlinedButton(
       height: 48.v,
       width: 110.h,
       text: "Add to cart",
       onPressed: () {
         // Navigator.of(context).push(MaterialPageRoute(builder: (context) => CartPage(),));
+        BottomSheetHelper.showBottomSheet(
+            context: context,
+            child: Padding(
+              padding: EdgeInsets.all(5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    height: size.height * 0.1,
+                    width: size.width * 0.8,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        CustomImageView(
+                          imagePath: product!.images![0],
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) {
+                                return Scaffold(
+                                  appBar:
+                                      AppBar(leading: CustomArrayBackWidget()),
+                                  body: CustomPhotoView(
+                                    urlImage: product!.images![0],
+                                  ),
+                                );
+                              },
+                            ));
+                          },
+                        ),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              product!.name!,
+                              style: theme.textTheme.displayMedium,
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Text(
+                              product!.availableQuantity.toString(),
+                              style: theme.textTheme.labelLarge,
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 5, left: 25),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text("Sizes"),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5, bottom: 5),
+                    child: _buildProductSize(context),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 5, left: 25),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text("Types"),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5, bottom: 5),
+                    child: _buildProductType(context),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 5, left: 25),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text("Colors"),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5, bottom: 5),
+                    child: _buildProductColor(context),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text(
+                          "Number",
+                          style: theme.textTheme.headlineLarge,
+                        ),
+                        Spacer(),
+                        CustomIconButton(
+                          width: 28,
+                          height: 28,
+                          child: Container(
+                              decoration:
+                                  BoxDecoration(border: Border.all(width: 0.1)),
+                              child: Icon(
+                                Icons.remove,
+                                size: 20,
+                              )),
+                          onTap: () {
+                            // minus
+                            print("decrease number");
+                          },
+                        ),
+                        Container(
+                          width: 42,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 6,
+                          ),
+                          decoration: AppDecoration.outlineBlueGray,
+                          child: Text(
+                            "5",
+                            style: CustomTextStyles.bodyMediumGray600,
+                          ),
+                        ),
+                        CustomIconButton(
+                          width: 28,
+                          height: 28,
+                          child: Container(
+                              decoration:
+                                  BoxDecoration(border: Border.all(width: 0.1)),
+                              child: Icon(
+                                Icons.add,
+                                size: 20,
+                              )),
+                          onTap: () {
+                            // increase
+                            print("increase number");
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Spacer(),
+                  Container(
+                    width: size.width * 0.9,
+                    child: ElevatedButton(
+                        onPressed: () {}, child: const Text("Add to cart")),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  )
+                ],
+              ),
+            ),
+            height: size.height * 0.6,
+            width: double.infinity);
+        // cartProvider.addToCart(product);
       },
       buttonStyle: CustomButtonStyles.outlinePrimaryContainerTL8,
       buttonTextStyle: CustomTextStyles.titleMediumPrimaryContainer,

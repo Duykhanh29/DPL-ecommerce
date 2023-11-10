@@ -5,7 +5,9 @@ import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/models/product_in_cart_model.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
+import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class ProductCartItem extends StatelessWidget {
@@ -16,6 +18,7 @@ class ProductCartItem extends StatelessWidget {
   ProductInCartModel? productInCartModel;
   @override
   Widget build(BuildContext context) {
+    final cartProvider = Provider.of<CartViewModel>(context);
     return GestureDetector(
       onTap: () {
         //
@@ -75,6 +78,7 @@ class ProductCartItem extends StatelessWidget {
                       onTap: () {
                         //delete item from cart
                         print("delete");
+                        cartProvider.deleteFromCart(productInCartModel!);
                       },
                     ),
                   ],
