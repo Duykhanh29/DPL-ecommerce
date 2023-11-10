@@ -17,6 +17,7 @@ import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item
 import 'package:dpl_ecommerce/views/consumer/ui_elements/promotion_banner_item_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/category_item_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/two_slider_item_widget.dart';
+import 'package:dpl_ecommerce/views/seller/seller_profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/cupertino.dart';
@@ -89,7 +90,7 @@ class HomePage extends StatelessWidget {
                             onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ThreeScreen(),
+                                builder: (context) => SearchScreen(),
                               ),
                             ),
                             child: Padding(

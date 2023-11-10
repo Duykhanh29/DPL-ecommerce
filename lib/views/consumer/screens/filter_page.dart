@@ -15,6 +15,7 @@ class _FilterInterfaceState extends State<FilterInterface> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
           backgroundColor: Colors.blue,
           title: Text(
