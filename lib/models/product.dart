@@ -1,4 +1,3 @@
-import 'package:dpl_ecommerce/models/review.dart';
 import 'package:uuid/uuid.dart';
 
 class Product {

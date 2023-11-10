@@ -6,15 +6,15 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class SliderItemWidget extends StatelessWidget {
-  const SliderItemWidget({Key? key})
+  SliderItemWidget({Key? key, required this.urlImage})
       : super(
           key: key,
         );
-
+  String? urlImage;
   @override
   Widget build(BuildContext context) {
     return CustomImageView(
-      imagePath: ImageData.imgFrame5,
+      imagePath: urlImage,
       height: 342,
       width: 360,
       onTap: () {
@@ -30,8 +30,7 @@ class SliderItemWidget extends StatelessWidget {
                 },
                 height: MediaQuery.of(context).size.height * 0.9,
                 width: MediaQuery.of(context).size.width * 0.9,
-                urlImage:
-                    "https://99designs-blog.imgix.net/blog/wp-content/uploads/2016/03/web-images.jpg?auto=format&q=60&w=1600&h=824&fit=crop&crop=faces",
+                urlImage: urlImage,
               ),
             );
           },

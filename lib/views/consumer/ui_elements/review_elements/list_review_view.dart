@@ -44,7 +44,7 @@ class _ListReviewViewState extends State<ListReviewView> {
                 viewAllReviewsText: "See more",
               )
             : ReviewViewWidget(
-                title: reviews[index].productID,
+                review: reviews[index],
               );
       },
       itemCount: (present <= originalReviews.length)

@@ -3,6 +3,7 @@ import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_search_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/search_result_page.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,34 @@ class ThreeScreen extends StatelessWidget {
   ThreeScreen({Key? key}) : super(key: key);
   TextEditingController searchController = TextEditingController();
   int sliderIndex = 1;
-
+  Product? product = Product(
+    availableQuantity: 100,
+    categoryID: "cacd",
+    colors: ["Red", "Yellow"],
+    createdAt: DateTime(2023, 11, 4),
+    description: "This is a clothe",
+    id: "ProductID01",
+    images: [
+      "https://t3.ftcdn.net/jpg/06/49/51/82/360_F_649518247_J27irz9TezhqqHS6EpF0AQY7bFdVAIn8.jpg",
+      "https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&q=80&w=1000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8M3x8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1575936123452-b67c3203c357?auto=format&fit=crop&q=80&w=1000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D",
+      "https://images.pexels.com/photos/11061877/pexels-photo-11061877.jpeg?cs=srgb&dl=pexels-bailey-dill-11061877.jpg&fm=jpg"
+    ],
+    name: "Cloth",
+    price: 12345,
+    purchasingCount: 123,
+    rating: 4.3,
+    ratingCount: 100,
+    reviewIDs: [
+      "Fdsafs",
+      "fdasfd",
+      "fdasdf",
+    ],
+    shopID: "fdfas",
+    shopLogo: "fdafdfd",
+    shopName: "fdfds",
+    updatedAt: DateTime.now(),
+  );
   @override
   Widget build(BuildContext context) {
     mediaQueryData = MediaQuery.of(context);
@@ -91,7 +119,7 @@ class ThreeScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 16.v),
-                      _buildProductSmallList1(context),
+                      _buildProductSmallList1(context, product!),
                     ],
                   ),
                 ),
@@ -168,7 +196,7 @@ Widget _buildDealOfTheDay(
   );
 }
 
-Widget _buildProductSmallList1(BuildContext context) {
+Widget _buildProductSmallList1(BuildContext context, Product product) {
   return Padding(
     padding: EdgeInsets.only(right: 10.h),
     child: GridView.builder(
@@ -181,7 +209,9 @@ Widget _buildProductSmallList1(BuildContext context) {
         // childAspectRatio: 3 / 2,
       ),
       itemBuilder: (context, index) {
-        return Productsmalllist1ItemWidget();
+        return Productsmalllist1ItemWidget(
+          product: product,
+        );
       },
       physics: NeverScrollableScrollPhysics(),
       itemCount: 10,

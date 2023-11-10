@@ -11,7 +11,12 @@ import 'package:dpl_ecommerce/customs/custom_outline_button.dart';
 import 'package:dpl_ecommerce/customs/custom_rating_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_text_form_field.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/models/product.dart';
+import 'package:dpl_ecommerce/models/review.dart';
+import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/flash_sale_repo.dart';
+import 'package:dpl_ecommerce/repositories/product_repo.dart';
+import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -32,17 +37,28 @@ import 'package:badges/badges.dart' as badges;
 
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ProductDetailsPage extends StatelessWidget {
-  ProductDetailsPage({Key? key})
+  ProductDetailsPage({Key? key, required this.product})
       : super(
           key: key,
         );
-
+  Product? product;
   int sliderIndex = 1;
 
   TextEditingController editTextController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  List<Voucher> listVoucher = VoucherRepo().list;
+  List<Product>? listProduct = ProductRepo().list;
+  Review review = Review(
+      id: "Review01",
+      productID: "product01",
+      rating: 4.5,
+      resourseType: ResourseType.image,
+      text: "You are great",
+      time: DateTime.now(),
+      userAvatar:
+          "https://dfstudio-d420.kxcdn.com/wordpress/wp-content/uploads/2019/06/digital_camera_photo-1080x675.jpg",
+      userID: "user01");
   @override
   Widget build(BuildContext context) {
     mediaQueryData = MediaQuery.of(context);
@@ -72,9 +88,12 @@ class ProductDetailsPage extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 5.v),
             child: Column(
               children: [
-                _buildSlider(context, [
-                  "https://drive.google.com/file/d/1RZ7zIBdX37F3axngfo4xLwU-GlLjKnhJ/view?usp=drive_link"
-                ]),
+                _buildSlider(
+                    context,
+                    [
+                      "https://drive.google.com/file/d/1RZ7zIBdX37F3axngfo4xLwU-GlLjKnhJ/view?usp=drive_link"
+                    ],
+                    product!.images!),
                 SizedBox(height: 8.v),
                 _buildAnimatedIndicator(sliderIndex: sliderIndex),
                 SizedBox(height: 17.v),
@@ -166,7 +185,7 @@ class ProductDetailsPage extends StatelessWidget {
                 SizedBox(height: 24.v),
                 _buildShopInfor(context),
                 SizedBox(height: 24.v),
-                _buildShopVoucher(context),
+                _buildShopVoucher(context, listVoucher),
                 SizedBox(height: 24.v),
                 // _buildColumn(context),
                 // SizedBox(height: 16.v),
@@ -183,7 +202,7 @@ class ProductDetailsPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 16.v),
-                _buildShopProducts(context),
+                _buildShopProducts(context, listProduct!),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.h),
                   child: _buildSizeText(
@@ -193,7 +212,7 @@ class ProductDetailsPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 16.v),
-                _buildRelatedProducts(context),
+                _buildRelatedProducts(context, listProduct!),
                 const SizedBox(
                   height: 10,
                 )
@@ -210,38 +229,46 @@ class ProductDetailsPage extends StatelessWidget {
   //   return
   // }
   /// Section Widget
-  Widget _buildSlider(BuildContext context, List<String>? videos) {
-    return CarouselSlider.builder(
-      options: CarouselOptions(
-        autoPlayAnimationDuration: const Duration(seconds: 1),
-        autoPlayCurve: Curves.linear,
-        enlargeCenterPage: true,
-        enlargeStrategy: CenterPageEnlargeStrategy.height,
-        initialPage: 0,
-        pageSnapping: true,
-        height: 342.v,
-        autoPlay: (videos == null) ? true : false,
-        // autoPlay: true,
-        viewportFraction: 1.0,
-        enableInfiniteScroll: true,
-        autoPlayInterval: const Duration(seconds: 4),
-        scrollDirection: Axis.horizontal,
-        onPageChanged: (
-          index,
-          reason,
-        ) {
-          sliderIndex = index;
+  Widget _buildSlider(
+      BuildContext context, List<String>? videos, List<String>? listImage) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black12, width: 2),
+      ),
+      child: CarouselSlider.builder(
+        options: CarouselOptions(
+          autoPlayAnimationDuration: const Duration(seconds: 1),
+          autoPlayCurve: Curves.linear,
+          enlargeCenterPage: true,
+          enlargeStrategy: CenterPageEnlargeStrategy.height,
+          initialPage: 0,
+          pageSnapping: true,
+          height: 342.v,
+          autoPlay: (videos == null) ? true : false,
+          // autoPlay: true,
+          viewportFraction: 1.0,
+          enableInfiniteScroll: true,
+          autoPlayInterval: const Duration(seconds: 4),
+          scrollDirection: Axis.horizontal,
+          onPageChanged: (
+            index,
+            reason,
+          ) {
+            sliderIndex = index;
+          },
+        ),
+        itemCount: listImage!.length + videos!.length,
+        itemBuilder: (context, index, realIndex) {
+          if (videos != null && index < videos.length) {
+            return VideoItemWidget(
+              videoUrl: videos[index],
+            );
+          }
+          return SliderItemWidget(
+            urlImage: listImage[index - videos.length],
+          );
         },
       ),
-      itemCount: 12,
-      itemBuilder: (context, index, realIndex) {
-        if (videos != null && index < videos.length) {
-          return VideoItemWidget(
-            videoUrl: videos[index],
-          );
-        }
-        return SliderItemWidget();
-      },
     );
   }
 
@@ -558,7 +585,7 @@ class ProductDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildShopVoucher(BuildContext context) {
+  Widget _buildShopVoucher(BuildContext context, List<Voucher> list) {
     return Container(
       // margin: EdgeInsets.symmetric(horizontal: 16.h),
       padding: EdgeInsets.symmetric(vertical: 5),
@@ -566,11 +593,11 @@ class ProductDetailsPage extends StatelessWidget {
       width: double.infinity,
       child: ListView.builder(
         itemBuilder: (context, index) {
-          return VoucherItem();
+          return VoucherItem(voucher: list[index]);
         },
         physics: BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
-        itemCount: 5,
+        itemCount: list.length,
       ),
     );
   }
@@ -660,7 +687,7 @@ class ProductDetailsPage extends StatelessWidget {
             decoration: AppDecoration.fillOnPrimaryContainer,
             child: Divider(),
           ),
-          ReviewViewWidget(),
+          ReviewViewWidget(review: review),
           _buildViewAllReviews(
             context,
             viewAllReviewsText: "View all 76 reviews",
@@ -670,7 +697,7 @@ class ProductDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildShopProducts(BuildContext context) {
+  Widget _buildShopProducts(BuildContext context, List<Product> list) {
     return SizedBox(
       height: 260,
       child: ListView.separated(
@@ -684,16 +711,18 @@ class ProductDetailsPage extends StatelessWidget {
             width: 12.h,
           );
         },
-        itemCount: 3,
+        itemCount: list.length,
         itemBuilder: (context, index) {
-          return Productsmalllist1ItemWidget();
+          return Productsmalllist1ItemWidget(
+            product: list[index],
+          );
         },
       ),
     );
   }
 
   /// Section Widget
-  Widget _buildRelatedProducts(BuildContext context) {
+  Widget _buildRelatedProducts(BuildContext context, List<Product> list) {
     return SizedBox(
       height: 260,
       child: ListView.separated(
@@ -707,9 +736,11 @@ class ProductDetailsPage extends StatelessWidget {
             width: 12.h,
           );
         },
-        itemCount: 3,
+        itemCount: list.length,
         itemBuilder: (context, index) {
-          return Productsmalllist1ItemWidget();
+          return Productsmalllist1ItemWidget(
+            product: list[index],
+          );
         },
       ),
     );

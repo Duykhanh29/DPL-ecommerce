@@ -1,13 +1,14 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_elevate_button.dart';
+import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ticket_widget/ticket_widget.dart';
 import 'package:sks_ticket_view/sks_ticket_view.dart';
 
 class VoucherItem extends StatelessWidget {
-  const VoucherItem({super.key});
-
+  VoucherItem({super.key, required this.voucher});
+  Voucher? voucher;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,7 +35,7 @@ class VoucherItem extends StatelessWidget {
           drawTriangle: false,
           drawDivider: false,
           trianglePos: 0.65,
-          child: TicketData(),
+          child: TicketData(voucher: voucher),
           drawShadow: false,
         )
         // TicketWidget(
@@ -49,9 +50,8 @@ class VoucherItem extends StatelessWidget {
 }
 
 class TicketData extends StatelessWidget {
-  const TicketData({
-    super.key,
-  });
+  TicketData({super.key, required this.voucher});
+  Voucher? voucher;
 
   @override
   Widget build(BuildContext context) {
@@ -65,11 +65,11 @@ class TicketData extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Decrease 15%",
+                "${voucher!.discountPercent!} %",
                 style: theme.textTheme.bodyMedium,
               ),
               Text(
-                "Exp date: 2345",
+                voucher!.expDate.toString(),
                 style: theme.textTheme.bodySmall,
               )
             ],

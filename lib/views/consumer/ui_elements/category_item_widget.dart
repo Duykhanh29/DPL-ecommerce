@@ -1,17 +1,18 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_icon_button.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
+import 'package:dpl_ecommerce/models/category.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class CategoryItemWidget extends StatelessWidget {
-  const CategoryItemWidget({Key? key})
+  CategoryItemWidget({Key? key, required this.category})
       : super(
           key: key,
         );
-
+  Category? category;
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -31,12 +32,12 @@ class CategoryItemWidget extends StatelessWidget {
               padding: EdgeInsets.all(9.h),
               decoration: IconButtonStyleHelper.fillGray,
               child: CustomImageView(
-                imagePath: ImageData.imgFrame,
+                imagePath: category!.logo!,
               ),
             ),
             SizedBox(height: 5.v),
             Text(
-              "name category",
+              category!.name!,
               style: theme.textTheme.bodySmall,
             ),
           ],

@@ -4,18 +4,19 @@ import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_icon_button.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
-import 'package:dpl_ecommerce/views/consumer/ui_elements/product_details_widgets/product_detail_page.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/product_detail_page.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class Productsmalllist1ItemWidget extends StatelessWidget {
-  const Productsmalllist1ItemWidget({Key? key})
+  Productsmalllist1ItemWidget({Key? key, required this.product})
       : super(
           key: key,
         );
-
+  Product? product;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -23,7 +24,7 @@ class Productsmalllist1ItemWidget extends StatelessWidget {
         // go to detail
         print("Product");
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ProductDetailsPage(),
+          builder: (context) => ProductDetailsPage(product: product),
         ));
       },
       child: Container(
@@ -35,13 +36,13 @@ class Productsmalllist1ItemWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildVisualProduct(),
+              _buildVisualProduct(urlImage: product!.images![0]),
               SizedBox(height: 6.v),
               Container(
                 padding: EdgeInsets.only(left: 10),
                 width: 119.h,
                 child: Text(
-                  "Name product",
+                  product!.name!,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodyLarge!.copyWith(
@@ -74,21 +75,21 @@ class Productsmalllist1ItemWidget extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.only(left: 4.h),
                           child: Text(
-                            "4.5",
+                            product!.rating!.toString(),
                             style: theme.textTheme.bodySmall,
                           ),
                         ),
                         Padding(
                           padding: EdgeInsets.only(left: 4.h),
                           child: Text(
-                            "(450)",
+                            product!.ratingCount!.toString(),
                             style: CustomTextStyles.bodySmallGray600,
                           ),
                         ),
                       ],
                     ),
                     Text(
-                      "12345",
+                      product!.availableQuantity!.toString(),
                       style: CustomTextStyles.bodySmallGray600,
                     )
                   ],
@@ -98,7 +99,7 @@ class Productsmalllist1ItemWidget extends StatelessWidget {
               Container(
                 padding: EdgeInsets.only(left: 10),
                 child: Text(
-                  "3200000VND",
+                  "${product!.price!} VND",
                   style: theme.textTheme.displayLarge,
                 ),
               )
@@ -111,10 +112,8 @@ class Productsmalllist1ItemWidget extends StatelessWidget {
 }
 
 class _buildVisualProduct extends StatelessWidget {
-  const _buildVisualProduct({
-    super.key,
-  });
-
+  _buildVisualProduct({super.key, required this.urlImage});
+  String? urlImage;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -134,7 +133,7 @@ class _buildVisualProduct extends StatelessWidget {
         children: [
           Container(
             child: CachedNetworkImage(
-              imageUrl: "https://c.stocksy.com/a/apm700/z9/1856006.jpg",
+              imageUrl: urlImage!,
               imageBuilder: (context, imageProvider) {
                 return Container(
                   decoration: BoxDecoration(
