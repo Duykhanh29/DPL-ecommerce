@@ -99,8 +99,8 @@ class _VideoItemWidgetState extends State<VideoItemWidget> {
         : Container(
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.indigo, width: 1)),
-            width: MediaQuery.of(context).size.width * 0.6,
-            height: 160,
+            width: MediaQuery.of(context).size.width * 0.85,
+            height: MediaQuery.of(context).size.height * 0.18,
             child: const Center(child: CircularProgressIndicator()),
           );
   }

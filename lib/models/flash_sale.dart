@@ -6,12 +6,14 @@ class FlashSale {
   DateTime? expDate;
   int? discountPercent;
   String? coverImage;
+  String? name;
   FlashSale(
       {this.id,
       this.discountPercent,
       this.expDate,
       this.releasedDate,
-      this.coverImage}) {
+      this.coverImage,
+      this.name}) {
     id ??= Uuid().v4();
   }
   factory FlashSale.fromJson(Map<String, dynamic> json) {
@@ -20,13 +22,15 @@ class FlashSale {
         id: json['id'],
         expDate: json['expDate'],
         discountPercent: json['discountPercent'],
-        coverImage: json['coverImage']);
+        coverImage: json['coverImage'],
+        name: json['name']);
   }
   Map<String, dynamic> toJson() => {
         'discountPercent': discountPercent,
         'id': id,
         'releasedDate': releasedDate,
         'expDate': expDate,
-        'coverImage': coverImage
+        'coverImage': coverImage,
+        'name': name
       };
 }

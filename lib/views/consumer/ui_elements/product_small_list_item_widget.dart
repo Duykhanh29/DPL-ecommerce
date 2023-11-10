@@ -3,25 +3,26 @@ import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_icon_button.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
-import 'package:dpl_ecommerce/views/consumer/ui_elements/product_details_widgets/product_detail_page.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/product_detail_page.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class ProductsmalllistItemWidget extends StatelessWidget {
-  const ProductsmalllistItemWidget({Key? key})
+  ProductsmalllistItemWidget({Key? key, required this.product})
       : super(
           key: key,
         );
-
+  Product? product;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         print("Product");
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ProductDetailsPage(),
+          builder: (context) => ProductDetailsPage(product: product),
         ));
       },
       child: SizedBox(
@@ -38,8 +39,8 @@ class ProductsmalllistItemWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadiusStyle.roundedBorder2,
                   image: DecorationImage(
-                    image: AssetImage(
-                      ImageData.imgFrame7,
+                    image: NetworkImage(
+                      product!.images![0],
                     ),
                     fit: BoxFit.cover,
                   ),
@@ -85,7 +86,7 @@ class ProductsmalllistItemWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 8),
                 width: 147.h,
                 child: Text(
-                  "Name product",
+                  product!.name!,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.displayLarge!.copyWith(
@@ -133,7 +134,7 @@ class ProductsmalllistItemWidget extends StatelessWidget {
               Container(
                   padding: const EdgeInsets.only(left: 10),
                   child: Text(
-                    "12345VND",
+                    "${product!.price} VND",
                     style: theme.textTheme.displayLarge,
                   )),
             ],

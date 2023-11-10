@@ -4,6 +4,11 @@ import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_badge_cart.dart';
 import 'package:dpl_ecommerce/customs/custom_search_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/models/category.dart';
+import 'package:dpl_ecommerce/models/product.dart';
+import 'package:dpl_ecommerce/repositories/category_repo.dart';
+import 'package:dpl_ecommerce/repositories/flash_sale_repo.dart';
+import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/search_page.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_item_widget1.dart';
@@ -17,12 +22,15 @@ import 'package:badges/badges.dart' as badges;
 import 'package:flutter/cupertino.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:section_view/section_view.dart';
+import 'package:dpl_ecommerce/models/flash_sale.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
   TextEditingController searchController = TextEditingController();
   int sliderIndex = 1;
-
+  List<FlashSale>? listFlashSale = FlashSaleRepo().list;
+  List<Product>? listProduct = ProductRepo().list;
+  List<Category>? listCategory = CategoryRepo().list;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,13 +105,14 @@ class HomePage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(8),
                                   color: Colors.white,
                                 ),
-                                
                                 child: Row(
                                   children: [
-                                   
                                     Text("  "),
                                     Icon(Icons.search),
-                                    Text("  msg_search_anything",style: TextStyle(color: Colors.grey),),
+                                    Text(
+                                      "  msg_search_anything",
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -119,9 +128,9 @@ class HomePage extends StatelessWidget {
                             ),
                           ),
                           // SizedBox(height: 15.v),
-                          _buildCategoryList(context),
+                          _buildCategoryList(context, listCategory!),
                           SizedBox(height: 20.v),
-                          _buildPromotionBanner(context),
+                          _buildPromotionBanner(context, listFlashSale!),
                           SizedBox(height: 8.v),
                           SizedBox(
                             height: 6.v,
@@ -149,7 +158,7 @@ class HomePage extends StatelessWidget {
                               viewAllText: "lbl_view_all",
                             ),
                           ),
-                          _buildDealOfTheDayRow(context),
+                          _buildDealOfTheDayRow(context, listProduct!),
                           SizedBox(height: 26.v),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 10.h),
@@ -160,7 +169,7 @@ class HomePage extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 16.v),
-                          _buildProductSmallList(context),
+                          _buildProductSmallList(context, listProduct!),
                           SizedBox(height: 25.v),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 10.h),
@@ -171,7 +180,7 @@ class HomePage extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 16.v),
-                          _buildProductSmallList1(context),
+                          _buildProductSmallList1(context, listProduct!),
                         ],
                       ),
                     ),
@@ -184,7 +193,7 @@ class HomePage extends StatelessWidget {
   }
 
   /// Section Widget
-  Widget _buildPromotionBanner(BuildContext context) {
+  Widget _buildPromotionBanner(BuildContext context, List<FlashSale> list) {
     return Padding(
       padding: EdgeInsets.only(right: 16.h),
       child: CarouselSlider.builder(
@@ -202,16 +211,18 @@ class HomePage extends StatelessWidget {
             sliderIndex = index;
           },
         ),
-        itemCount: 6,
+        itemCount: list.length,
         itemBuilder: (context, index, realIndex) {
-          return PromotionbannerItemWidget();
+          return PromotionbannerItemWidget(
+            flashSale: list[index],
+          );
         },
       ),
     );
   }
 
   /// Section Widget
-  Widget _buildCategoryList(BuildContext context) {
+  Widget _buildCategoryList(BuildContext context, List<Category> list) {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.12,
       child: ListView.separated(
@@ -222,40 +233,42 @@ class HomePage extends StatelessWidget {
             width: 18.h,
           );
         },
-        itemCount: 5,
+        itemCount: list.length,
         itemBuilder: (context, index) {
-          return CategoryItemWidget();
+          return CategoryItemWidget(
+            category: list[index],
+          );
         },
       ),
     );
   }
 
   /// Section Widget
-  Widget _buildTwoSlider(BuildContext context) {
-    return CarouselSlider.builder(
-      options: CarouselOptions(
-        height: 140.v,
-        initialPage: 0,
-        autoPlay: true,
-        viewportFraction: 1.0,
-        enableInfiniteScroll: false,
-        scrollDirection: Axis.horizontal,
-        onPageChanged: (
-          index,
-          reason,
-        ) {
-          sliderIndex = index;
-        },
-      ),
-      itemCount: 5,
-      itemBuilder: (context, index, realIndex) {
-        return TwosliderItemWidget();
-      },
-    );
-  }
+  // Widget _buildTwoSlider(BuildContext context) {
+  //   return CarouselSlider.builder(
+  //     options: CarouselOptions(
+  //       height: 140.v,
+  //       initialPage: 0,
+  //       autoPlay: true,
+  //       viewportFraction: 1.0,
+  //       enableInfiniteScroll: false,
+  //       scrollDirection: Axis.horizontal,
+  //       onPageChanged: (
+  //         index,
+  //         reason,
+  //       ) {
+  //         sliderIndex = index;
+  //       },
+  //     ),
+  //     itemCount: 5,
+  //     itemBuilder: (context, index, realIndex) {
+  //       return TwosliderItemWidget();
+  //     },
+  //   );
+  // }
 
   /// Section Widget
-  Widget _buildDealOfTheDayColumn(BuildContext context) {
+  Widget _buildDealOfTheDayColumn(BuildContext context, List<Product> list) {
     return Container(
       padding: EdgeInsets.all(16.h),
       decoration: AppDecoration.gradientGrayToGray,
@@ -352,9 +365,11 @@ class HomePage extends StatelessWidget {
                 crossAxisSpacing: 16.h,
               ),
               physics: NeverScrollableScrollPhysics(),
-              itemCount: 4,
+              itemCount: list.length,
               itemBuilder: (context, index) {
-                return ProductItemWidget();
+                return ProductItemWidget(
+                  product: list[index],
+                );
               },
             ),
           ),
@@ -363,7 +378,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildDealOfTheDayRow(BuildContext context) {
+  Widget _buildDealOfTheDayRow(BuildContext context, List<Product> list) {
     return SizedBox(
       height: 220.v,
       child: ListView.separated(
@@ -377,16 +392,18 @@ class HomePage extends StatelessWidget {
             width: 16.h,
           );
         },
-        itemCount: 3,
+        itemCount: list.length,
         itemBuilder: (context, index) {
-          return ProductItemWidget();
+          return ProductItemWidget(
+            product: list[index],
+          );
         },
       ),
     );
   }
 
   /// Section Widget
-  Widget _buildProductSmallList(BuildContext context) {
+  Widget _buildProductSmallList(BuildContext context, List<Product> list) {
     return SizedBox(
       height: 230.v,
       child: ListView.separated(
@@ -400,16 +417,18 @@ class HomePage extends StatelessWidget {
             width: 16.h,
           );
         },
-        itemCount: 3,
+        itemCount: list.length,
         itemBuilder: (context, index) {
-          return ProductsmalllistItemWidget();
+          return ProductsmalllistItemWidget(
+            product: list[index],
+          );
         },
       ),
     );
   }
 
   /// Section Widget
-  Widget _buildProductSmallList1(BuildContext context) {
+  Widget _buildProductSmallList1(BuildContext context, List<Product> list) {
     return Padding(
       padding: EdgeInsets.only(right: 10.h),
       child: GridView.builder(
@@ -422,10 +441,12 @@ class HomePage extends StatelessWidget {
           // childAspectRatio: 3 / 2,
         ),
         itemBuilder: (context, index) {
-          return Productsmalllist1ItemWidget();
+          return Productsmalllist1ItemWidget(
+            product: list[index],
+          );
         },
         physics: NeverScrollableScrollPhysics(),
-        itemCount: 22,
+        itemCount: list.length,
       ),
     );
   }

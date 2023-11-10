@@ -11,6 +11,7 @@ class Review {
   String? text;
   DateTime? time;
   ResourseType? resourseType;
+  String? urlMedia;
   Review(
       {this.id,
       this.productID,
@@ -19,11 +20,13 @@ class Review {
       this.text,
       this.time,
       this.userAvatar,
-      this.userID}) {
+      this.userID,
+      this.urlMedia}) {
     id ??= Uuid().v4();
   }
   factory Review.fromJson(Map<String, dynamic> json) {
     return Review(
+        urlMedia: json['urlMedia'],
         productID: json['productID'],
         rating: json['rating'],
         resourseType: ResourseType.values.firstWhere((element) =>
@@ -42,6 +45,7 @@ class Review {
         'text': text,
         'userAvatar': userAvatar,
         'userID': userID,
-        'time': time
+        'time': time,
+        'urlMedia': urlMedia
       };
 }
