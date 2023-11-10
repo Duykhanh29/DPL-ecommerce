@@ -8,8 +8,8 @@ import 'package:dpl_ecommerce/views/consumer/screens/search_result_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
 
-class ThreeScreen extends StatelessWidget {
-  ThreeScreen({Key? key}) : super(key: key);
+class SearchScreen extends StatelessWidget {
+  SearchScreen({Key? key}) : super(key: key);
   TextEditingController searchController = TextEditingController();
   int sliderIndex = 1;
 
