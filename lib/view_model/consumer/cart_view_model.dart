@@ -6,6 +6,7 @@ class CartViewModel extends ChangeNotifier {
   final Cart cart = Cart(
     productInCarts: [
       ProductInCartModel(
+          createdAt: DateTime.now().subtract(const Duration(days: 3)),
           cost: 240000,
           quantity: 2,
           color: "Red",
@@ -19,19 +20,7 @@ class CartViewModel extends ChangeNotifier {
           type: "Wooden",
           userID: "userID01"),
       ProductInCartModel(
-          cost: 240000,
-          quantity: 2,
-          color: "Red",
-          currencyID: "currencyID01",
-          id: "productInCartModelID01",
-          productID: "productID01",
-          productImage:
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTq29z2MgTbf2LERHqbHkT1KGAv1WwxXyYSnw&usqp=CAU",
-          productName: "Sadfsf",
-          size: "L",
-          type: "Wooden",
-          userID: "userID01"),
-      ProductInCartModel(
+          createdAt: DateTime.now().subtract(const Duration(days: 2)),
           cost: 180000,
           quantity: 1,
           color: "Blue",
@@ -45,6 +34,7 @@ class CartViewModel extends ChangeNotifier {
           type: "Flower",
           userID: "userID02"),
       ProductInCartModel(
+          createdAt: DateTime.now().subtract(const Duration(days: 3, hours: 2)),
           cost: 120000,
           quantity: 3,
           color: "Green",
@@ -58,6 +48,8 @@ class CartViewModel extends ChangeNotifier {
           type: "Spiky",
           userID: "userID03"),
       ProductInCartModel(
+          createdAt:
+              DateTime.now().subtract(const Duration(days: 3, hours: 12)),
           cost: 350000,
           quantity: 1,
           color: "Yellow",
@@ -71,6 +63,7 @@ class CartViewModel extends ChangeNotifier {
           type: "Blooming",
           userID: "userID04"),
       ProductInCartModel(
+          createdAt: DateTime.now().subtract(const Duration(days: 1)),
           cost: 50000,
           quantity: 5,
           color: "Purple",
@@ -84,6 +77,7 @@ class CartViewModel extends ChangeNotifier {
           type: "Aromatic",
           userID: "userID05"),
       ProductInCartModel(
+          createdAt: DateTime.now().subtract(const Duration(days: 1)),
           cost: 280000,
           quantity: 2,
           color: "Orange",
@@ -97,6 +91,7 @@ class CartViewModel extends ChangeNotifier {
           type: "Juicy",
           userID: "userID06"),
       ProductInCartModel(
+          createdAt: DateTime.now(),
           cost: 75000,
           quantity: 1,
           color: "White",
@@ -110,6 +105,8 @@ class CartViewModel extends ChangeNotifier {
           type: "Elegant",
           userID: "userID07"),
       ProductInCartModel(
+          createdAt:
+              DateTime.now().subtract(const Duration(days: 1, minutes: 30)),
           cost: 200000,
           quantity: 4,
           color: "Brown",
@@ -123,6 +120,8 @@ class CartViewModel extends ChangeNotifier {
           type: "Miniature",
           userID: "userID08"),
       ProductInCartModel(
+          createdAt:
+              DateTime.now().subtract(const Duration(days: 3, minutes: 40)),
           cost: 300000,
           quantity: 3,
           color: "Pink",
@@ -136,6 +135,7 @@ class CartViewModel extends ChangeNotifier {
           type: "Delicate",
           userID: "userID09"),
       ProductInCartModel(
+          createdAt: DateTime.now().subtract(const Duration(days: 3)),
           cost: 180000,
           quantity: 2,
           color: "Gray",
@@ -149,6 +149,8 @@ class CartViewModel extends ChangeNotifier {
           type: "Drought-resistant",
           userID: "userID10"),
       ProductInCartModel(
+          createdAt:
+              DateTime.now().subtract(const Duration(days: 2, minutes: 50)),
           cost: 120000,
           quantity: 1,
           color: "Black",
@@ -192,6 +194,10 @@ class CartViewModel extends ChangeNotifier {
     cart.productInCarts!.removeWhere((element) => element.id == product.id);
     calculateCostInCart();
     calculateCosts();
+    if (list.isNotEmpty) {
+      list.removeWhere((element) => product.id == element.id);
+      calculateCosts();
+    }
     notifyListeners();
   }
 
@@ -250,6 +256,9 @@ class CartViewModel extends ChangeNotifier {
 
   void checkProduct(ProductInCartModel productInCartModel) {
     list.add(productInCartModel);
+    if (list.length == cart.productInCarts!.length) {
+      isCheckedALl = true;
+    }
     calculateCosts();
     notifyListeners();
   }
@@ -266,13 +275,14 @@ class CartViewModel extends ChangeNotifier {
   void uncheckedProduct(ProductInCartModel productInCartModel) {
     list.removeWhere((element) => element.id == productInCartModel.id);
     calculateCosts();
+    isCheckedALl = false;
     notifyListeners();
   }
 
   void toggleCheckAll() {
     isCheckedALl = !isCheckedALl;
     if (isCheckedALl) {
-      list = cart.productInCarts!;
+      list = List.from(cart.productInCarts!);
     } else {
       list = [];
     }
@@ -280,4 +290,11 @@ class CartViewModel extends ChangeNotifier {
     calculateCosts();
     notifyListeners();
   }
+}
+
+class SelectedProductInCart {
+  bool isSelected;
+  ProductInCartModel productInCartModel;
+  SelectedProductInCart(
+      {required this.productInCartModel, this.isSelected = false});
 }

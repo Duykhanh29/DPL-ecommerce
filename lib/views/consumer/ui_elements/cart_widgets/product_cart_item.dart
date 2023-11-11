@@ -113,15 +113,17 @@ class ProductCartItem extends StatelessWidget {
                         },
                       ),
                       Container(
-                        width: 42,
+                        width: 58,
                         padding: EdgeInsets.symmetric(
                           horizontal: 18,
                           vertical: 6,
                         ),
                         decoration: AppDecoration.outlineBlueGray,
-                        child: Text(
-                          "${productInCartModel!.quantity}",
-                          style: CustomTextStyles.bodyMediumGray600,
+                        child: Center(
+                          child: Text(
+                            "${productInCartModel!.quantity}",
+                            style: CustomTextStyles.bodyMediumGray600,
+                          ),
                         ),
                       ),
                       CustomIconButton(

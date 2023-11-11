@@ -17,158 +17,17 @@ class _FilterInterfaceState extends State<FilterInterface> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          backgroundColor: Colors.blue,
-          title: Text(
-            "Filter",
-            textAlign: TextAlign.center,
-          ),
-          centerTitle: true,),
-         
+        backgroundColor: Colors.blue,
+        title: Text(
+          "Filter",
+          textAlign: TextAlign.center,
+        ),
+        centerTitle: true,
+      ),
       body: Column(
         children: [
-          ListTile(
-            title: Text('Price range'),
-            subtitle: Row(
-              children: [
-                Text('\$$_minPrice'),
-                Expanded(
-                  child: RangeSlider(
-                    min: 1,
-                    max: 10,
-                    divisions: 9,
-                    values: RangeValues(_minPrice, _maxPrice),
-                    onChanged: (RangeValues values) {
-                      setState(() {
-                        _minPrice = values.start;
-                        _maxPrice = values.end;
-                      });
-                    },
-                  ),
-                ),
-                Text('\$$_maxPrice'),
-              ],
-            ),
-          ),
-          SizedBox(height: 16),
-          Row(children: [
-            SizedBox(width: 15,),
-            Text("Condition",style: TextStyle(),
-          textAlign: TextAlign.left,),
-          ],),
-          
-          Row(
-            children: [
-              SizedBox(width: 10,),
-              _buildConditionButton('New','Condition'),
-              SizedBox(width: 5,),
-              _buildConditionButton('Used','Condition'),
-              SizedBox(width: 5,),
-              _buildConditionButton('Not Specified','Condition'),
-            ],
-          ),
-          //SizedBox(height: 8),
-          Row(
-            children: [
-              SizedBox(width: 10,),
-              _buildConditionButton('Node','Condition'),
-              SizedBox(width: 130,),
-            ],
-          ),
-          SizedBox(height: 8),
-          Row(children: [
-            SizedBox(width: 15,),
-            Text("Condition",style: TextStyle(),
-          textAlign: TextAlign.left,),
-          ],),
-          Row(
-            children: [
-              SizedBox(width: 10,),
-              _buildConditionButton('New', 'Const'),
-              SizedBox(width: 5,),
-              _buildConditionButton('Us', 'Const'),
-              SizedBox(width: 5,),
-              _buildConditionButton('No Spect', 'Const'),
-              
-              
-            ],
-          ),
-           Row(
-            children: [
-              SizedBox(width: 10,),
-              _buildConditionButton('Node','Const'),
-              SizedBox(width: 5,),
-              _buildConditionButton('No','Const'),
-              
-            ],
-          ),
-          SizedBox(height: 8),
-          Row(children: [
-            SizedBox(width: 15,),
-            Text("Condition",style: TextStyle(),
-          textAlign: TextAlign.left,),
-          ],),
-          
-          Row(
-            children: [
-              SizedBox(width: 10,),
-              _buildConditionButton('Nw', 'Conn'),
-              SizedBox(width: 5,),
-              _buildConditionButton('Sen', 'Conn'),
-              SizedBox(width: 5,),
-              _buildConditionButton('Not Sped', 'Conn'),
-              SizedBox(width: 5,),
-              _buildConditionButton('Ne', 'Conn'),
-            ],
-          ),
-          Row(children: [
-            SizedBox(width: 15,),
-            Text("Condition",style: TextStyle(),
-          textAlign: TextAlign.left,),
-          ],),
-          Row(
-            children: [
-              SizedBox(width: 10,),
-              _buildConditionButton('New', 'Const'),
-              SizedBox(width: 5,),
-              _buildConditionButton('Us', 'Const'),
-              SizedBox(width: 5,),
-              _buildConditionButton('No Spect', 'Const'),
-              
-              
-            ],
-          ),
-           Row(
-            children: [
-              SizedBox(width: 10,),
-              _buildConditionButton('Node','Const'),
-              SizedBox(width: 5,),
-              _buildConditionButton('No','Const'),
-              
-            ],
-          ),
-           Row(
-            children: [
-              SizedBox(width: 10,),
-              _buildConditionButton('Node','Const'),
-              SizedBox(width: 5,),
-              _buildConditionButton('No','Const'),
-              
-            ],
-          ),
-          Row(
-            children: [
-              SizedBox(width: 10,),
-              _buildConditionButton('New', 'Const'),
-              SizedBox(width: 5,),
-              _buildConditionButton('Us', 'Const'),
-              SizedBox(width: 5,),
-              _buildConditionButton('No Spect', 'Const'),
-              
-              
-            ],
-          ),
-          
-          Spacer(),
+          // Spacer(),
+          _buildConditionBars(),
           Container(
             width: double.infinity,
             margin: EdgeInsets.all(16.0),
@@ -176,10 +35,230 @@ class _FilterInterfaceState extends State<FilterInterface> {
               onPressed: () {
                 // Xử lý khi nút Apply được nhấn
               },
-              child: Text('Apply'),
+              child: const Text('Apply'),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildConditionBars() {
+    return Expanded(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ListTile(
+              title: Text('Price range'),
+              subtitle: Row(
+                children: [
+                  Text('\$$_minPrice'),
+                  Expanded(
+                    child: RangeSlider(
+                      min: 1,
+                      max: 10,
+                      divisions: 9,
+                      values: RangeValues(_minPrice, _maxPrice),
+                      onChanged: (RangeValues values) {
+                        setState(() {
+                          _minPrice = values.start;
+                          _maxPrice = values.end;
+                        });
+                      },
+                    ),
+                  ),
+                  Text('\$$_maxPrice'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Row(
+              children: [
+                SizedBox(
+                  width: 15,
+                ),
+                Text(
+                  "Condition",
+                  style: TextStyle(),
+                  textAlign: TextAlign.left,
+                ),
+              ],
+            ),
+
+            Row(
+              children: [
+                const SizedBox(
+                  width: 10,
+                ),
+                _buildConditionButton('New', 'Condition'),
+                const SizedBox(
+                  width: 5,
+                ),
+                _buildConditionButton('Used', 'Condition'),
+                const SizedBox(
+                  width: 5,
+                ),
+                _buildConditionButton('Not Specified', 'Condition'),
+              ],
+            ),
+            //SizedBox(height: 8),
+            Row(
+              children: [
+                const SizedBox(
+                  width: 10,
+                ),
+                _buildConditionButton('Node', 'Condition'),
+                const SizedBox(
+                  width: 130,
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const Row(
+              children: [
+                SizedBox(
+                  width: 15,
+                ),
+                Text(
+                  "Condition",
+                  style: TextStyle(),
+                  textAlign: TextAlign.left,
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                const SizedBox(
+                  width: 10,
+                ),
+                _buildConditionButton('New', 'Const'),
+                const SizedBox(
+                  width: 5,
+                ),
+                _buildConditionButton('Us', 'Const'),
+                const SizedBox(
+                  width: 5,
+                ),
+                _buildConditionButton('No Spect', 'Const'),
+              ],
+            ),
+            Row(
+              children: [
+                const SizedBox(
+                  width: 10,
+                ),
+                _buildConditionButton('Node', 'Const'),
+                const SizedBox(
+                  width: 5,
+                ),
+                _buildConditionButton('No', 'Const'),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const Row(
+              children: [
+                SizedBox(
+                  width: 15,
+                ),
+                Text(
+                  "Condition",
+                  style: TextStyle(),
+                  textAlign: TextAlign.left,
+                ),
+              ],
+            ),
+
+            Row(
+              children: [
+                const SizedBox(
+                  width: 10,
+                ),
+                _buildConditionButton('Nw', 'Conn'),
+                const SizedBox(
+                  width: 5,
+                ),
+                _buildConditionButton('Sen', 'Conn'),
+                const SizedBox(
+                  width: 5,
+                ),
+                _buildConditionButton('Not Sped', 'Conn'),
+                const SizedBox(
+                  width: 5,
+                ),
+                _buildConditionButton('Ne', 'Conn'),
+              ],
+            ),
+            const Row(
+              children: [
+                SizedBox(
+                  width: 15,
+                ),
+                Text(
+                  "Condition",
+                  style: TextStyle(),
+                  textAlign: TextAlign.left,
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                const SizedBox(
+                  width: 10,
+                ),
+                _buildConditionButton('New', 'Const'),
+                const SizedBox(
+                  width: 5,
+                ),
+                _buildConditionButton('Us', 'Const'),
+                const SizedBox(
+                  width: 5,
+                ),
+                _buildConditionButton('No Spect', 'Const'),
+              ],
+            ),
+            Row(
+              children: [
+                const SizedBox(
+                  width: 10,
+                ),
+                _buildConditionButton('Node', 'Const'),
+                const SizedBox(
+                  width: 5,
+                ),
+                _buildConditionButton('No', 'Const'),
+              ],
+            ),
+            Row(
+              children: [
+                const SizedBox(
+                  width: 10,
+                ),
+                _buildConditionButton('Node', 'Const'),
+                const SizedBox(
+                  width: 5,
+                ),
+                _buildConditionButton('No', 'Const'),
+              ],
+            ),
+            Row(
+              children: [
+                const SizedBox(
+                  width: 10,
+                ),
+                _buildConditionButton('New', 'Const'),
+                const SizedBox(
+                  width: 5,
+                ),
+                _buildConditionButton('Us', 'Const'),
+                const SizedBox(
+                  width: 5,
+                ),
+                _buildConditionButton('No Spect', 'Const'),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -223,4 +302,3 @@ class _FilterInterfaceState extends State<FilterInterface> {
     );
   }
 }
-

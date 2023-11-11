@@ -8,6 +8,7 @@ import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/models/cart.dart';
 import 'package:dpl_ecommerce/models/product_in_cart_model.dart';
 import 'package:dpl_ecommerce/repositories/product_in_cart_repo.dart';
+import 'package:dpl_ecommerce/utils/common/common_methods.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/cart_widgets/product_cart_item.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/product_detail_page.dart';
@@ -214,15 +215,15 @@ class _CartPageState extends State<CartPage> {
     final provider = Provider.of<CartViewModel>(context, listen: true);
     final cart = provider.cart;
     final size = MediaQuery.of(context).size;
-    final selectedProduct = provider.list;
+    // final selectedProduct = provider.list;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: const Icon(Icons.arrow_back)),
+        // leading: IconButton(
+        //     onPressed: () {
+        //       Navigator.of(context).pop();
+        //     },
+        //     icon: const Icon(Icons.arrow_back)),
         title: Text("Your cart"),
       ),
       body: Container(
@@ -333,19 +334,14 @@ class _CartPageState extends State<CartPage> {
   }
 }
 
-class ProductInCartDetails extends StatefulWidget {
+class ProductInCartDetails extends StatelessWidget {
   ProductInCartDetails({super.key, required this.list});
   List<ProductInCartModel> list;
-  @override
-  State<ProductInCartDetails> createState() => _ProductInCartDetailsState();
-}
-
-class _ProductInCartDetailsState extends State<ProductInCartDetails> {
-  bool isCheckedAll = false;
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartViewModel>(context);
     final size = MediaQuery.of(context).size;
+    List<ProductInCartModel> newList = CommondMethods.sortByTime(list);
     return Container(
         // color: Colors.amber,
         width: size.width,
@@ -359,15 +355,23 @@ class _ProductInCartDetailsState extends State<ProductInCartDetails> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Checkbox(
-                    value: isCheckedAll,
-                    onChanged: (value) {
-                      setState(() {
-                        isCheckedAll = value!;
-                        cartProvider.toggleCheckAll();
-                      });
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Consumer<CartViewModel>(
+                    builder: (context, value, child) {
+                      return Checkbox(
+                        value: value.isCheckedALl,
+                        onChanged: (value) {
+                          cartProvider.toggleCheckAll();
+                        },
+                      );
                     },
-                  )
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text("Select all")
                 ],
               ),
             ),
@@ -391,11 +395,11 @@ class _ProductInCartDetailsState extends State<ProductInCartDetails> {
                     ),
                   );
                 },
-                itemCount: widget.list.length,
+                itemCount: newList.length,
                 itemBuilder: (context, index) {
                   return ProductInCartItem(
                     index: index,
-                    productInCartModel: widget.list[index],
+                    productInCartModel: newList[index],
                     isCheckedAll: false,
                   );
                 },
@@ -431,22 +435,26 @@ class _ProductInCartItemState extends State<ProductInCartItem> {
       children: [
         SizedBox(
           width: MediaQuery.of(context).size.width * 0.06,
-          child: Checkbox(
-            value: widget.isCheckedAll!
-                ? true
-                : cartProvider.list.contains(widget.productInCartModel),
-            onChanged: (value) {
-              if (widget.isCheckedAll!) {
-                cartProvider.uncheckedProduct(widget.productInCartModel!);
-              } else {
-                setState(() {
-                  if (value!) {
-                    cartProvider.checkProduct(widget.productInCartModel!);
-                  } else {
+          child: Consumer<CartViewModel>(
+            builder: (context, provider, child) {
+              return Checkbox(
+                value: provider.list.contains(widget.productInCartModel),
+                onChanged: (value) {
+                  if (provider.isCheckedALl) {
                     cartProvider.uncheckedProduct(widget.productInCartModel!);
+                  } else {
+                    setState(() {
+                      if (value!) {
+                        cartProvider.checkProduct(widget.productInCartModel!);
+                      } else {
+                        cartProvider
+                            .uncheckedProduct(widget.productInCartModel!);
+                      }
+                      // widget.isChecked = !widget.isChecked;
+                    });
                   }
-                });
-              }
+                },
+              );
             },
           ),
         ),

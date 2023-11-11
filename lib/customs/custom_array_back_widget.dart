@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CustomArrayBackWidget extends StatelessWidget {
-  const CustomArrayBackWidget({super.key});
-
+  CustomArrayBackWidget({super.key, this.function});
+  Function? function;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -11,6 +11,9 @@ class CustomArrayBackWidget extends StatelessWidget {
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(100)),
       child: InkWell(
         onTap: () {
+          if (function != null) {
+            function!();
+          }
           Navigator.of(context).pop();
         },
         child: Icon(Icons.arrow_back_ios),
