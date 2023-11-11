@@ -2,7 +2,7 @@ import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/ordering_product.dart';
 import 'package:uuid/uuid.dart';
 
-enum DeliverStatus { processing, confirmed, delivering, delivered }
+enum DeliverStatus { processing, confirmed, delivering, delivered, isCanceled }
 
 class Order {
   String? id;

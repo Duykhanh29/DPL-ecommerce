@@ -9,6 +9,7 @@ class Shop {
   AddressInfor? addressInfor;
   String? contactPhone;
   int shopView;
+  String? shopDescription;
   Shop(
       {this.addressInfor,
       this.contactPhone,
@@ -16,7 +17,8 @@ class Shop {
       this.logo,
       this.name,
       this.rating,
-      this.shopView = 0}) {
+      this.shopView = 0,
+      this.shopDescription}) {
     id ??= Uuid().v4();
   }
   factory Shop.fromJson(Map<String, dynamic> json) {
@@ -27,7 +29,8 @@ class Shop {
         id: json['id'],
         name: json['name'],
         rating: json['rating'],
-        shopView: json['shopView']);
+        shopView: json['shopView'],
+        shopDescription: json['shopDescription']);
   }
   Map<String, dynamic> toJson() => {
         'addressInfor': addressInfor!.toJson(),
@@ -36,6 +39,7 @@ class Shop {
         'id': id,
         'name': name,
         'rating': rating,
-        'shopView': shopView
+        'shopView': shopView,
+        'shopDescription': shopDescription
       };
 }

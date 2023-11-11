@@ -15,6 +15,8 @@ class ShopRepo {
             state: "Thanh Xuan"),
         contactPhone: "0987654321",
         id: "shop01",
+        shopDescription:
+            "Cultivate your love for gardening with Green Thumb Nursery. We offer a variety of plants, gardening tools, and expert advice to help you create a vibrant and thriving garden.",
         logo:
             "https://cdn.shopify.com/shopifycloud/hatchful_web_two/bundles/4a14e7b2de7f6eaf5a6c98cb8c00b8de.png",
         rating: 4.4,
@@ -31,6 +33,8 @@ class ShopRepo {
             state: "Thanh Xuan"),
         contactPhone: "0987654321",
         id: "shop01",
+        shopDescription:
+            "Immerse yourself in the world of literature at Bookworm Haven. Explore our extensive collection of books, from bestsellers to hidden gems, and feed your love for reading",
         logo:
             "https://cdn.shopify.com/shopifycloud/hatchful_web_two/bundles/4a14e7b2de7f6eaf5a6c98cb8c00b8de.png",
         rating: 4.4,
@@ -47,6 +51,8 @@ class ShopRepo {
             state: "District 1"),
         contactPhone: "0901234567",
         id: "shop02",
+        shopDescription:
+            "Transform your living space with Home Harmony Decor. Our curated collection of hom",
         logo:
             "https://kienlongbank.com/Data/Sites/1/media/logo-klb/logo-kienlongbank-favicon.png",
         rating: 3.9,
@@ -78,6 +84,8 @@ class ShopRepo {
             state: "Phu Vang"),
         contactPhone: "0938888888",
         id: "shop04",
+        shopDescription:
+            "Transform your living space with Home Harmony Decor. Our curated collection of hom",
         logo:
             "https://upload.wikimedia.org/wikipedia/commons/3/35/Red_Velvet_Logo.jpg",
         rating: 4.8,
@@ -94,6 +102,8 @@ class ShopRepo {
             state: "Nha Trang City"),
         contactPhone: "0912345678",
         id: "shop05",
+        shopDescription:
+            "Transform your living space with Home Harmony Decor. Our curated collection of hom",
         logo: "https://www.yiiframework.com/image/design/logo/yii3_sign.png",
         rating: 4.6,
         shopView: 110),
@@ -125,6 +135,8 @@ class ShopRepo {
             state: "Bach Dang"),
         contactPhone: "0987654320",
         id: "shop07",
+        shopDescription:
+            "Elevate your workout experience with Fitness Fusion Gear. Find top-quality activewear, fitness equipment, and accessories to help you achieve your health and wellness goals.",
         logo:
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1I4WzAPniRr3wY54B-bvRgFcQTdqcHA--SK5bvMRKooZpt-mEbszq34h5Z5LevnvY7K4&usqp=CAU",
         rating: 4.5,
@@ -144,9 +156,13 @@ class ShopRepo {
         logo:
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1I4WzAPniRr3wY54B-bvRgFcQTdqcHA--SK5bvMRKooZpt-mEbszq34h5Z5LevnvY7K4&usqp=CAU",
         rating: 3.7,
+        shopDescription:
+            "Explore the cutting-edge world of technology at Gadget Galaxy. We offer a wide range of gadgets, from smartphones to smart home devices, ensuring you stay connected in style.",
         shopView: 80),
     Shop(
         name: "Sports World",
+        shopDescription:
+            "Discover the latest trends and styles at Fashion Haven Boutique. From casual wear to elegant evening dresses, we have everything to keep you in vogue",
         addressInfor: AddressInfor(
             city: "Phan Thiet",
             country: "Viet Nam",
@@ -173,6 +189,8 @@ class ShopRepo {
             state: "Le Chan"),
         contactPhone: "0909654321",
         id: "shop10",
+        shopDescription:
+            "Cultivate your love for gardening with Green Thumb Nursery. We offer a variety of plants, gardening tools, and expert advice to help you create a vibrant and thriving garden.",
         logo:
             "https://t3.ftcdn.net/jpg/01/22/72/98/360_F_122729880_a4rHgPGiwVktwwsovKfL2iqrd2vM042R.jpg",
         rating: 4.9,
@@ -189,6 +207,8 @@ class ShopRepo {
             state: "Ba Dinh"),
         contactPhone: "0987654322",
         id: "shop11",
+        shopDescription:
+            "Cultivate your love for gardening with Green Thumb Nursery. We offer a variety of plants, gardening tools, and expert advice to help you create a vibrant and thriving garden.",
         logo:
             "https://kienlongbank.com/Data/Sites/1/media/logo-klb/logo-kienlongbank-favicon.png",
         rating: 4.7,
@@ -205,6 +225,8 @@ class ShopRepo {
             state: "District 2"),
         contactPhone: "0901234568",
         id: "shop12",
+        shopDescription:
+            "Cultivate your love for gardening with Green Thumb Nursery. We offer a variety of plants, gardening tools, and expert advice to help you create a vibrant and thriving garden.",
         logo:
             "https://kienlongbank.com/Data/Sites/1/media/logo-klb/logo-kienlongbank-favicon.png",
         rating: 4.3,

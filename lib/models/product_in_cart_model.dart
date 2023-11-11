@@ -14,8 +14,10 @@ class ProductInCartModel {
   String? type;
   String? color;
   String? voucherID;
+  DateTime? createdAt;
   ProductInCartModel(
       {this.color,
+      this.createdAt,
       required this.cost,
       this.currencyID,
       this.id,
@@ -31,6 +33,7 @@ class ProductInCartModel {
   }
   factory ProductInCartModel.fromJson(Map<String, dynamic> json) {
     return ProductInCartModel(
+      createdAt: json['createdAt'],
       cost: json['cost'],
       quantity: json['quantity'],
       color: json['color'],
@@ -46,6 +49,7 @@ class ProductInCartModel {
     );
   }
   Map<String, dynamic> toJson() => {
+        'createdAt': createdAt,
         'cost': cost,
         'quantity': quantity,
         'color': color,

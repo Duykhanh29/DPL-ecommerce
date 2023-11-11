@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/views/consumer/screens/cart_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
@@ -11,11 +12,21 @@ class CustomBadgeCart extends StatelessWidget {
       child: badges.Badge(
         badgeContent: Text(
           number.toString(),
-          style: TextStyle(fontSize: 12),
+          style: TextStyle(fontSize: 12, color: Colors.white),
         ),
         child: InkWell(
-          child: Icon(CupertinoIcons.cart, size: 24),
-          onTap: () {},
+          child: Icon(
+            CupertinoIcons.cart,
+            size: 24,
+            color: Colors.redAccent,
+          ),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) {
+                return CartPage();
+              },
+            ));
+          },
         ),
       ),
     );

@@ -10,6 +10,7 @@ import 'package:dpl_ecommerce/repositories/category_repo.dart';
 import 'package:dpl_ecommerce/repositories/flash_sale_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
+import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/search_page.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_item_widget1.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
@@ -17,10 +18,10 @@ import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item
 import 'package:dpl_ecommerce/views/consumer/ui_elements/promotion_banner_item_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/category_item_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/two_slider_item_widget.dart';
-import 'package:dpl_ecommerce/views/seller/seller_profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:section_view/section_view.dart';
 import 'package:dpl_ecommerce/models/flash_sale.dart';
@@ -34,36 +35,42 @@ class HomePage extends StatelessWidget {
   List<Category>? listCategory = CategoryRepo().list;
   @override
   Widget build(BuildContext context) {
+    final cartProvider = Provider.of<CartViewModel>(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text("Home"),
         actions: [
-          Center(
-            child: InkWell(
-              child: badges.Badge(
-                badgeContent: Text(
-                  "3",
-                  style: TextStyle(fontSize: 12),
-                ),
-                child: InkWell(
-                  child: Icon(Icons.notifications_outlined, size: 24),
-                  onTap: () {},
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 15),
-          CustomBadgeCart(number: 3),
+          Consumer<CartViewModel>(builder: (context, value, child) {
+            return CustomBadgeCart(number: value.cart.productInCarts!.length);
+          }),
           const SizedBox(width: 15),
           Center(
             child: badges.Badge(
               badgeContent: Text(
                 "3",
-                style: TextStyle(fontSize: 12),
+                style: TextStyle(fontSize: 12, color: Colors.white),
               ),
               child: InkWell(
-                child: Icon(Icons.chat_bubble_outline, size: 24),
+                child: Icon(Icons.notifications_outlined,
+                    color: Colors.redAccent, size: 24),
+                onTap: () {},
+              ),
+            ),
+          ),
+          const SizedBox(width: 15),
+          Center(
+            child: badges.Badge(
+              badgeContent: Text(
+                "3",
+                style: TextStyle(fontSize: 12, color: Colors.white),
+              ),
+              child: InkWell(
+                child: Icon(
+                  Icons.chat_bubble_outline,
+                  size: 24,
+                  color: Colors.redAccent,
+                ),
                 onTap: () {},
               ),
             ),
