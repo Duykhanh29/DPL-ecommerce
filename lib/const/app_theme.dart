@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 String _appTheme = "primary";
 
@@ -99,61 +100,61 @@ class TextThemes {
   static TextTheme textTheme(ColorScheme colorScheme) => TextTheme(
         bodyLarge: TextStyle(
           color: appTheme.blueGray300,
-          fontSize: 16.fSize,
+          fontSize: 16.sp,
           fontFamily: 'Inter',
           fontWeight: FontWeight.w400,
         ),
         bodyMedium: TextStyle(
           color: colorScheme.onPrimary,
-          fontSize: 14.fSize,
+          fontSize: 14.sp,
           fontFamily: 'Inter',
           fontWeight: FontWeight.w400,
         ),
         bodySmall: TextStyle(
           color: colorScheme.onPrimary,
-          fontSize: 12.fSize,
+          fontSize: 12.sp,
           fontFamily: 'Inter',
           fontWeight: FontWeight.w400,
         ),
         headlineSmall: TextStyle(
           color: appTheme.black900,
-          fontSize: 24.fSize,
+          fontSize: 24.sp,
           fontFamily: 'Inter',
           fontWeight: FontWeight.w500,
         ),
         labelLarge: TextStyle(
           color: colorScheme.onPrimary,
-          fontSize: 12.fSize,
+          fontSize: 12.sp,
           fontFamily: 'Inter',
           fontWeight: FontWeight.w500,
         ),
         labelMedium: TextStyle(
           color: appTheme.blueGray300,
-          fontSize: 10.fSize,
+          fontSize: 10.sp,
           fontFamily: 'Inter',
           fontWeight: FontWeight.w500,
         ),
         labelSmall: TextStyle(
           color: colorScheme.onPrimaryContainer.withOpacity(1),
-          fontSize: 8.fSize,
+          fontSize: 8.sp,
           fontFamily: 'Inter',
           fontWeight: FontWeight.w600,
         ),
         titleLarge: TextStyle(
           color: colorScheme.onPrimary,
-          fontSize: 20.fSize,
+          fontSize: 20.sp,
           fontFamily: 'Inter',
           fontWeight: FontWeight.w500,
         ),
         titleMedium: TextStyle(
           color: colorScheme.onPrimaryContainer.withOpacity(1),
-          fontSize: 16.fSize,
+          fontSize: 16.sp,
           fontFamily: 'Inter',
           fontWeight: FontWeight.w500,
         ),
         titleSmall: TextStyle(
           color: colorScheme.onPrimary,
-          fontSize: 14.fSize,
+          fontSize: 14.sp,
           fontFamily: 'Inter',
           fontWeight: FontWeight.w600,
         ),

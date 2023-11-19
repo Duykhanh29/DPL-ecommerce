@@ -10,6 +10,7 @@ class CustomPhotoView extends StatelessWidget {
   String? urlImage;
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return GestureDetector(
       onLongPress: () {
         if (function != null) {
@@ -17,6 +18,8 @@ class CustomPhotoView extends StatelessWidget {
         }
       },
       child: Container(
+        height: height ?? size.height * 0.8,
+        width: width ?? double.infinity,
         child: PhotoView(
           minScale: PhotoViewComputedScale.covered * 0.8,
           maxScale: PhotoViewComputedScale.covered *

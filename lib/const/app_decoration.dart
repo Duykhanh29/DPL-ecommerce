@@ -1,5 +1,6 @@
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import './app_theme.dart';
 
 class AppDecoration {

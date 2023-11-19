@@ -8,6 +8,7 @@ import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/product_detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // ignore: must_be_immutable
 class ProductsmalllistItemWidget extends StatelessWidget {
@@ -28,7 +29,7 @@ class ProductsmalllistItemWidget extends StatelessWidget {
       child: SizedBox(
         width: 170.h,
         child: Padding(
-          padding: EdgeInsets.only(bottom: 1.v),
+          padding: EdgeInsets.only(bottom: 1.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -51,10 +52,10 @@ class ProductsmalllistItemWidget extends StatelessWidget {
                   children: [
                     Container(
                       width: 56.h,
-                      margin: EdgeInsets.only(bottom: 77.v),
+                      margin: EdgeInsets.only(bottom: 77.h),
                       padding: EdgeInsets.symmetric(
                         horizontal: 4.h,
-                        vertical: 2.v,
+                        vertical: 2.h,
                       ),
                       decoration: AppDecoration.fillOrange.copyWith(
                         borderRadius: BorderRadiusStyle.roundedBorder2,
@@ -67,11 +68,11 @@ class ProductsmalllistItemWidget extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(
                         left: 60.h,
-                        bottom: 72.v,
+                        bottom: 72.h,
                       ),
                       child: CustomIconButton(
-                        height: 24.adaptSize,
-                        width: 24.adaptSize,
+                        height: 24.h,
+                        width: 24.h,
                         padding: EdgeInsets.all(4.h),
                         child: CustomImageView(
                           imagePath: ImageData.imgFavourite,
@@ -81,7 +82,7 @@ class ProductsmalllistItemWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 8.v),
+              SizedBox(height: 8.h),
               Container(
                 padding: const EdgeInsets.only(left: 8),
                 width: 147.h,
@@ -94,22 +95,22 @@ class ProductsmalllistItemWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 10.v),
+              SizedBox(height: 10.h),
               Container(
                 padding: const EdgeInsets.only(left: 8, right: 8),
                 child: Row(
                   children: [
                     Container(
-                      height: 16.adaptSize,
-                      width: 16.adaptSize,
+                      height: 16.h,
+                      width: 16.h,
                       padding: EdgeInsets.all(2.h),
                       decoration: AppDecoration.fillAmber.copyWith(
                         borderRadius: BorderRadiusStyle.roundedBorder2,
                       ),
                       child: CustomImageView(
                         imagePath: ImageData.imgIconBoldStar,
-                        height: 12.adaptSize,
-                        width: 12.adaptSize,
+                        height: 12.h,
+                        width: 12.h,
                         alignment: Alignment.center,
                       ),
                     ),
@@ -130,7 +131,7 @@ class ProductsmalllistItemWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 9.v),
+              SizedBox(height: 9.h),
               Container(
                   padding: const EdgeInsets.only(left: 10),
                   child: Text(

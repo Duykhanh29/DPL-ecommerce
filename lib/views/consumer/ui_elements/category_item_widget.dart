@@ -5,6 +5,7 @@ import 'package:dpl_ecommerce/models/category.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // ignore: must_be_immutable
 class CategoryItemWidget extends StatelessWidget {
@@ -25,17 +26,17 @@ class CategoryItemWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 2.v),
+            SizedBox(height: 2.h),
             CustomIconButton(
-              height: 50.adaptSize,
-              width: 50.adaptSize,
+              height: 50.h,
+              width: 50.h,
               padding: EdgeInsets.all(9.h),
               decoration: IconButtonStyleHelper.fillGray,
               child: CustomImageView(
                 imagePath: category!.logo!,
               ),
             ),
-            SizedBox(height: 5.v),
+            SizedBox(height: 5.h),
             Text(
               category!.name!,
               style: theme.textTheme.bodySmall,

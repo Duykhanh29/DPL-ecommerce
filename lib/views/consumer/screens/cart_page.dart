@@ -13,6 +13,7 @@ import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/cart_widgets/product_cart_item.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/product_detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 // ignore_for_file: must_be_immutable
@@ -241,18 +242,17 @@ class _CartPageState extends State<CartPage> {
             // SizedBox(height: 16),
 
             Spacer(),
-            CustomElevatedButton(
-              height: size.height * 0.05,
-              onPressed: () {
-                // go to order page
-              },
-              text: "check_out",
-              // buttonStyle: ButtonStyle(
-              //     textStyle: MaterialStateProperty.all<TextStyle>(
-              //         TextStyle(fontSize: 22))),
-              margin: EdgeInsets.symmetric(horizontal: 16),
+            Container(
+              height: size.height * 0.06,
+              width: size.width * 0.9,
+              child: ElevatedButton(
+                  style: ButtonStyle(
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)))),
+                  onPressed: () {},
+                  child: const Text("Check out")),
             ),
-            SizedBox(height: 3),
+            SizedBox(height: 7.h),
           ],
         ),
       ),
@@ -265,7 +265,7 @@ class _CartPageState extends State<CartPage> {
 
     final selectedProduct = provider.list;
     return Container(
-      height: MediaQuery.of(context).size.height * 0.12,
+      height: MediaQuery.of(context).size.height * 0.14,
       margin: EdgeInsets.symmetric(horizontal: 15),
       padding: EdgeInsets.all(5),
       decoration: AppDecoration.outlineBlueGray.copyWith(
@@ -345,7 +345,7 @@ class ProductInCartDetails extends StatelessWidget {
     return Container(
         // color: Colors.amber,
         width: size.width,
-        height: size.height * 0.6,
+        height: size.height * 0.62,
         padding: EdgeInsets.symmetric(horizontal: 8),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,

@@ -1,6 +1,7 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// A collection of pre-defined text styles for customizing text appearance,
 /// categorized by different font families and weights.
@@ -15,7 +16,7 @@ class CustomTextStyles {
         color: theme.colorScheme.primaryContainer,
       );
   static get bodySmall10 => theme.textTheme.bodySmall!.copyWith(
-        fontSize: 10.fSize,
+        fontSize: 10.sp,
       );
   static get bodySmallBluegray300 => theme.textTheme.bodySmall!.copyWith(
         color: appTheme.blueGray300,

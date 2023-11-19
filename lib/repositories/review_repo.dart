@@ -3,7 +3,7 @@ import 'package:dpl_ecommerce/models/review.dart';
 class ReviewRepo {
   final List<Review> listReview = [
     Review(
-        id: "Review01",
+        id: "reviewID01",
         productID: "product01",
         rating: 4.5,
         resourseType: ResourseType.image,
@@ -13,7 +13,7 @@ class ReviewRepo {
             "https://dfstudio-d420.kxcdn.com/wordpress/wp-content/uploads/2019/06/digital_camera_photo-1080x675.jpg",
         userID: "user01"),
     Review(
-        id: "Review02",
+        id: "reviewID02",
         productID: "product01",
         rating: 4.2,
         resourseType: ResourseType.image,
@@ -23,7 +23,7 @@ class ReviewRepo {
             "https://www.eurojuris.fr/medias/org-224/shared/droit-a-l-image.png",
         userID: "user02"),
     Review(
-        id: "Review03",
+        id: "reviewID03",
         productID: "product02",
         rating: 4.0,
         resourseType: ResourseType.video,
@@ -33,7 +33,7 @@ class ReviewRepo {
             "https://www.eurojuris.fr/medias/org-224/shared/droit-a-l-image.png",
         userID: "user03"),
     Review(
-        id: "Review04",
+        id: "reviewID04",
         productID: "product01",
         rating: 4.7,
         resourseType: ResourseType.image,
@@ -43,7 +43,7 @@ class ReviewRepo {
             "https://www.eurojuris.fr/medias/org-224/shared/droit-a-l-image.png",
         userID: "user04"),
     Review(
-        id: "Review05",
+        id: "reviewID05",
         productID: "product02",
         rating: 3.8,
         resourseType: ResourseType.video,
@@ -53,7 +53,7 @@ class ReviewRepo {
             "https://huggingface.co/tasks/assets/image-classification/image-classification-input.jpeg",
         userID: "user05"),
     Review(
-        id: "Review06",
+        id: "reviewID06",
         productID: "product03",
         rating: 4.5,
         resourseType: ResourseType.image,
@@ -63,7 +63,7 @@ class ReviewRepo {
             "https://img.freepik.com/premium-photo/boy-is-using-laptop-with-word-s-screen_972034-586.jpg",
         userID: "user06"),
     Review(
-        id: "Review07",
+        id: "reviewID07",
         productID: "product02",
         rating: 4.1,
         resourseType: ResourseType.image,
@@ -73,7 +73,7 @@ class ReviewRepo {
             "https://huggingface.co/tasks/assets/image-classification/image-classification-input.jpeg",
         userID: "user07"),
     Review(
-        id: "Review08",
+        id: "reviewID08",
         productID: "product03",
         rating: 3.7,
         resourseType: ResourseType.video,
@@ -83,7 +83,7 @@ class ReviewRepo {
             "https://huggingface.co/tasks/assets/image-classification/image-classification-input.jpeg",
         userID: "user08"),
     Review(
-        id: "Review09",
+        id: "reviewID09",
         productID: "product04",
         rating: 4.8,
         resourseType: ResourseType.image,
@@ -93,7 +93,7 @@ class ReviewRepo {
             "https://img.freepik.com/premium-photo/boy-is-using-laptop-with-word-s-screen_972034-586.jpg",
         userID: "user09"),
     Review(
-        id: "Review10",
+        id: "reviewID10",
         productID: "product04",
         rating: 4.9,
         resourseType: ResourseType.image,
@@ -103,7 +103,7 @@ class ReviewRepo {
             "https://img.freepik.com/premium-photo/cartoon-character-kid-staring-space-book_772785-2908.jpg",
         userID: "user10"),
     Review(
-        id: "Review11",
+        id: "reviewID11",
         productID: "product05",
         rating: 4.3,
         resourseType: ResourseType.video,
@@ -113,7 +113,7 @@ class ReviewRepo {
             "https://img.freepik.com/premium-photo/cartoon-character-kid-staring-space-book_772785-2908.jpg",
         userID: "user11"),
     Review(
-        id: "Review12",
+        id: "reviewID12",
         productID: "product06",
         rating: 3.5,
         resourseType: ResourseType.image,
@@ -123,7 +123,7 @@ class ReviewRepo {
             "https://img.freepik.com/premium-photo/cartoon-character-kid-staring-space-book_772785-2908.jpg",
         userID: "user12"),
     Review(
-        id: "Review13",
+        id: "reviewID13",
         productID: "product06",
         rating: 4.0,
         resourseType: ResourseType.video,
@@ -133,7 +133,7 @@ class ReviewRepo {
             "https://huggingface.co/tasks/assets/image-classification/image-classification-input.jpeg",
         userID: "user13"),
     Review(
-        id: "Review14",
+        id: "reviewID14",
         productID: "product07",
         rating: 4.7,
         resourseType: ResourseType.image,
@@ -143,7 +143,7 @@ class ReviewRepo {
             "https://huggingface.co/tasks/assets/image-classification/image-classification-input.jpeg",
         userID: "user14"),
     Review(
-        id: "Review15",
+        id: "reviewID15",
         productID: "product08",
         rating: 4.6,
         resourseType: ResourseType.video,

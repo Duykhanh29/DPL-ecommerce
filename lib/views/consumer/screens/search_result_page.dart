@@ -2,11 +2,11 @@ import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
-import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/category_search.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/filter_page.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SearchFilterInterface extends StatefulWidget {
   @override
@@ -107,10 +107,10 @@ class _SearchFilterInterfaceState extends State<SearchFilterInterface> {
               Expanded(
                   child: SingleChildScrollView(
                 child: Padding(
-                  padding: EdgeInsets.only(bottom: 5.v, left: 10.v),
+                  padding: EdgeInsets.only(bottom: 5.h, left: 10.w),
                   child: Column(
                     children: [
-                      //SizedBox(height: 5.v),
+                      //SizedBox(height: 5.h),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10.h),
                         child: _buildDealOfTheDay(
@@ -119,12 +119,11 @@ class _SearchFilterInterfaceState extends State<SearchFilterInterface> {
                           viewAllText: "lbl_view_all",
                         ),
                       ),
-                      //SizedBox(height: 16.v),
+                      //SizedBox(height: 16.h),
                       _buildProductSmallList1(context, product),
                     ],
                   ),
                 ),
-                
               ))
             ],
           ),
@@ -143,7 +142,7 @@ Widget _buildDealOfTheDay(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       Padding(
-        padding: EdgeInsets.only(top: 1.v),
+        padding: EdgeInsets.only(top: 1.h),
         child: Text(
           dealOfTheDayText,
           style: theme.textTheme.titleSmall!.copyWith(
@@ -152,7 +151,7 @@ Widget _buildDealOfTheDay(
         ),
       ),
       Padding(
-        padding: EdgeInsets.only(bottom: 3.v),
+        padding: EdgeInsets.only(bottom: 3.h),
         child: TextButton(
           onPressed: () {
             // go to see all
@@ -178,7 +177,7 @@ Widget _buildProductSmallList1(BuildContext context, Product? product) {
         crossAxisCount: 2,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
-        mainAxisExtent: 283.v,
+        mainAxisExtent: 283.h,
         // childAspectRatio: 3 / 2,
       ),
       itemBuilder: (context, index) {

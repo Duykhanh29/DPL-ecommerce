@@ -9,8 +9,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ListReviewView extends StatefulWidget {
-  const ListReviewView({super.key});
-
+  ListReviewView({super.key, required this.list});
+  List<Review> list;
   @override
   State<ListReviewView> createState() => _ListReviewViewState();
 }
@@ -21,35 +21,39 @@ class _ListReviewViewState extends State<ListReviewView> {
   int present = 0;
   List<Review> originalReviews = ReviewRepo().listReview;
   List<Review> reviews = [];
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    if (mounted) {
-      setState(() {
-        reviews.addAll(originalReviews.getRange(present, present + perPage));
-        present = present + perPage;
-      });
-    }
-  }
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   if (mounted) {
+  //     setState(() {
+  //       reviews.addAll(originalReviews.getRange(present, present + perPage));
+  //       present = present + perPage;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       physics: BouncingScrollPhysics(),
       itemBuilder: (context, index) {
-        return (index == reviews.length)
-            ? _buildViewAllReviews(
-                context,
-                viewAllReviewsText: "See more",
-              )
-            : ReviewViewWidget(
-                review: reviews[index],
-              );
+        return
+            // (index == reviews.length)
+            //     ? _buildViewAllReviews(
+            //         context,
+            //         viewAllReviewsText: "See more",
+            //       )
+            //     :
+            ReviewViewWidget(
+          review: widget.list[index],
+        );
       },
-      itemCount: (present <= originalReviews.length)
-          ? reviews.length + 1
-          : reviews.length,
+      itemCount:
+          // (present <= originalReviews.length)
+          // ? reviews.length + 1
+          // :
+          widget.list.length,
     );
   }
 
