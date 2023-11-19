@@ -6,6 +6,7 @@ import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/product_detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // ignore: must_be_immutable
 class ProductItemWidget extends StatelessWidget {
@@ -22,37 +23,44 @@ class ProductItemWidget extends StatelessWidget {
           builder: (context) => ProductDetailsPage(product: product),
         ));
       },
-      child: Column(
-        children: [
-          CustomImageView(
-            imagePath: ImageData.imgFrame140x140,
-            height: 150.adaptSize,
-            width: 150.adaptSize,
-            radius: BorderRadius.circular(
-              4.h,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 1.w, vertical: 1.h),
+        decoration:
+            BoxDecoration(border: Border.all(color: Colors.black, width: 0.1)),
+        height: 170.h,
+        width: 145.w,
+        child: Column(
+          children: [
+            CustomImageView(
+              imagePath: ImageData.imgBagOnprimary,
+              height: 140.h,
+              width: 140.w,
+              radius: BorderRadius.circular(
+                4.h,
+              ),
             ),
-          ),
-          SizedBox(height: 9.v),
-          Text(
-            product!.name!,
-            style: CustomTextStyles.bodyMediumPrimaryContainer,
-          ),
-          SizedBox(height: 8.v),
-          Container(
-            width: 80.h,
-            padding: EdgeInsets.symmetric(
-              horizontal: 4.h,
-              vertical: 2.v,
+            SizedBox(height: 9.h),
+            Text(
+              product!.name!,
+              style: CustomTextStyles.bodyMediumPrimaryContainer,
             ),
-            decoration: AppDecoration.fillRed.copyWith(
-              borderRadius: BorderRadiusStyle.roundedBorder2,
+            SizedBox(height: 8.h),
+            Container(
+              width: 80.h,
+              padding: EdgeInsets.symmetric(
+                horizontal: 4.h,
+                vertical: 2.h,
+              ),
+              decoration: AppDecoration.fillRed.copyWith(
+                borderRadius: BorderRadiusStyle.roundedBorder2,
+              ),
+              child: Text(
+                "lbl_upto_40_off",
+                style: CustomTextStyles.labelLargeOnPrimaryContainer,
+              ),
             ),
-            child: Text(
-              "lbl_upto_40_off",
-              style: CustomTextStyles.labelLargeOnPrimaryContainer,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

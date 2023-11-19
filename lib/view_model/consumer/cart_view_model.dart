@@ -1,5 +1,8 @@
 import 'package:dpl_ecommerce/models/cart.dart';
 import 'package:dpl_ecommerce/models/product_in_cart_model.dart';
+import 'package:dpl_ecommerce/models/voucher.dart';
+import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
+import 'package:dpl_ecommerce/utils/common/common_methods.dart';
 import 'package:flutter/material.dart';
 
 class CartViewModel extends ChangeNotifier {
@@ -117,12 +120,14 @@ class CartViewModel extends ChangeNotifier {
               "https://media.istockphoto.com/id/1352890602/photo/close-up-of-a-businessman-sitting-at-his-desk-and-using-a-navigation-app-on-his-cell-phone.jpg?s=612x612&w=0&k=20&c=yHWBg9Rv8UwKq78iRN34YRJRjI4XCDr-1saebzRf0pM=",
           productName: "Bonsai",
           size: "M",
+          voucherID: "voucher01",
           type: "Miniature",
           userID: "userID08"),
       ProductInCartModel(
           createdAt:
               DateTime.now().subtract(const Duration(days: 3, minutes: 40)),
           cost: 300000,
+          voucherID: "voucher01",
           quantity: 3,
           color: "Pink",
           currencyID: "currencyID09",
@@ -173,6 +178,8 @@ class CartViewModel extends ChangeNotifier {
   int savingCost = 0;
   bool isCheckedALl = false;
 
+//  temt variables
+  List<Voucher> listVoucher = VoucherRepo().list;
   void calculateCostInCart() {
     int totalCost = 0;
     int savingCost = 0;
@@ -202,13 +209,16 @@ class CartViewModel extends ChangeNotifier {
   }
 
   void updateNumber(int newQuantity, String productInCartID) {
-    for (var product in cart.productInCarts!) {
-      if (productInCartID == product.id) {
-        product.quantity = newQuantity;
+    if (newQuantity > 0) {
+      for (var product in cart.productInCarts!) {
+        if (productInCartID == product.id) {
+          product.quantity = newQuantity;
+        }
       }
+      calculateCostInCart();
+      calculateCosts();
+      notifyListeners();
     }
-    calculateCostInCart();
-    notifyListeners();
   }
 
   void updateSize(String newSize, String productInCartID) {
@@ -267,7 +277,22 @@ class CartViewModel extends ChangeNotifier {
     totalCost = 0;
     savingCost = 0;
     for (var element in list) {
-      totalCost += element.cost;
+      int cost = element.cost;
+      if (element.voucherID != null) {
+        Voucher? voucher =
+            CommondMethods.getVoucherFromID(listVoucher, element.voucherID!);
+        if (voucher != null) {
+          if (voucher.discountAmount != null) {
+            cost -= voucher.discountAmount!;
+          } else {
+            double percent = voucher.discountPercent! / 100;
+            int savingCost = (cost * percent).toInt();
+            cost -= savingCost;
+          }
+        }
+      }
+      cost = cost * element.quantity;
+      totalCost += cost;
       savingCost += 5000;
     }
   }

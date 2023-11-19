@@ -1,6 +1,6 @@
 class AddressInfor {
   String? country;
-  String? state;
+  String? district;
   String? city;
   double? latitude;
   double? longitude;
@@ -13,11 +13,11 @@ class AddressInfor {
       this.latitude,
       this.longitude,
       this.name,
-      this.state});
+      this.district});
   factory AddressInfor.fromJson(Map<String, dynamic> json) {
     return AddressInfor(
         country: json['country'],
-        state: json['state'],
+        district: json['district'],
         city: json['city'],
         latitude: json['latitude'],
         longitude: json['longitude'],
@@ -26,7 +26,7 @@ class AddressInfor {
   }
   Map<String, dynamic> toJson() => {
         'country': country,
-        'state': state,
+        'district': district,
         'city': city,
         'latitude': latitude,
         'longitude': longitude,

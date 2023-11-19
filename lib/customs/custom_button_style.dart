@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// A class that offers pre-defined button styles for customizing button appearance.
 class CustomButtonStyles {

@@ -123,7 +123,7 @@ class OrderViewModel extends ChangeNotifier {
           longitude: 120.12,
           isDefaultAddress: true,
           name: "Home",
-          state: "Hoang Mai"));
+          district: "Hoang Mai"));
   void orderProduct(OrderingProduct product) {
     order.orderingProductsID!.add(product);
     notifyListeners();

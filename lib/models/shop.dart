@@ -10,6 +10,8 @@ class Shop {
   String? contactPhone;
   int shopView;
   String? shopDescription;
+  int totalProduct;
+  int ratingCount;
   Shop(
       {this.addressInfor,
       this.contactPhone,
@@ -18,7 +20,9 @@ class Shop {
       this.name,
       this.rating,
       this.shopView = 0,
-      this.shopDescription}) {
+      this.shopDescription,
+      this.ratingCount = 0,
+      this.totalProduct = 0}) {
     id ??= Uuid().v4();
   }
   factory Shop.fromJson(Map<String, dynamic> json) {
@@ -30,7 +34,9 @@ class Shop {
         name: json['name'],
         rating: json['rating'],
         shopView: json['shopView'],
-        shopDescription: json['shopDescription']);
+        shopDescription: json['shopDescription'],
+        ratingCount: json['ratingCount'],
+        totalProduct: json['totalProduct']);
   }
   Map<String, dynamic> toJson() => {
         'addressInfor': addressInfor!.toJson(),
@@ -40,6 +46,8 @@ class Shop {
         'name': name,
         'rating': rating,
         'shopView': shopView,
-        'shopDescription': shopDescription
+        'shopDescription': shopDescription,
+        'totalProduct': totalProduct,
+        'ratingCount': ratingCount
       };
 }

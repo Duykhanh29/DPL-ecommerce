@@ -11,6 +11,8 @@ import 'package:dpl_ecommerce/repositories/flash_sale_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
+import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/chat_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/search_page.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_item_widget1.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
@@ -21,6 +23,7 @@ import 'package:dpl_ecommerce/views/consumer/ui_elements/two_slider_item_widget.
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:section_view/section_view.dart';
@@ -36,6 +39,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartViewModel>(context);
+    final chatProvider = Provider.of<ChatViewModel>(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -60,19 +64,27 @@ class HomePage extends StatelessWidget {
           ),
           const SizedBox(width: 15),
           Center(
-            child: badges.Badge(
-              badgeContent: Text(
-                "3",
-                style: TextStyle(fontSize: 12, color: Colors.white),
-              ),
-              child: InkWell(
-                child: Icon(
-                  Icons.chat_bubble_outline,
-                  size: 24,
-                  color: Colors.redAccent,
-                ),
-                onTap: () {},
-              ),
+            child: Consumer<ChatViewModel>(
+              builder: (context, value, child) {
+                return badges.Badge(
+                  badgeContent: Text(
+                    value.list.length.toString(),
+                    style: TextStyle(fontSize: 12, color: Colors.white),
+                  ),
+                  child: InkWell(
+                    child: Icon(
+                      Icons.chat_bubble_outline,
+                      size: 24,
+                      color: Colors.redAccent,
+                    ),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ChatPage(),
+                      ));
+                    },
+                  ),
+                );
+              },
             ),
           ),
           const SizedBox(
@@ -89,10 +101,10 @@ class HomePage extends StatelessWidget {
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding: EdgeInsets.only(bottom: 5.v, left: 0.v),
+                      padding: EdgeInsets.only(bottom: 5.h, left: 0.h),
                       child: Column(
                         children: [
-                          SizedBox(height: 18.v),
+                          SizedBox(height: 18.h),
                           GestureDetector(
                             onTap: () => Navigator.push(
                               context,
@@ -118,7 +130,7 @@ class HomePage extends StatelessWidget {
                                     Text("  "),
                                     Icon(Icons.search),
                                     Text(
-                                      "  msg_search_anything",
+                                      "search anything",
                                       style: TextStyle(color: Colors.grey),
                                     ),
                                   ],
@@ -126,22 +138,22 @@ class HomePage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SizedBox(height: 18.v),
+                          SizedBox(height: 18.h),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 10.h),
                             child: _buildDealOfTheDay(
                               context,
-                              dealOfTheDayText: "lbl_categories",
-                              viewAllText: "lbl_view_all",
+                              dealOfTheDayText: "categories",
+                              viewAllText: "view all",
                             ),
                           ),
-                          // SizedBox(height: 15.v),
+                          // SizedBox(height: 15.h),
                           _buildCategoryList(context, listCategory!),
-                          SizedBox(height: 20.v),
+                          SizedBox(height: 20.h),
                           _buildPromotionBanner(context, listFlashSale!),
-                          SizedBox(height: 8.v),
+                          SizedBox(height: 8.h),
                           SizedBox(
-                            height: 6.v,
+                            height: 6.h,
                             child: AnimatedSmoothIndicator(
                               activeIndex: sliderIndex,
                               count: 1,
@@ -151,23 +163,23 @@ class HomePage extends StatelessWidget {
                                 activeDotColor:
                                     theme.colorScheme.primaryContainer,
                                 dotColor: appTheme.gray200,
-                                dotHeight: 6.v,
+                                dotHeight: 6.h,
                                 dotWidth: 6.h,
                               ),
                             ),
                           ),
-                          SizedBox(height: 10.v),
+                          SizedBox(height: 10.h),
                           Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 10.h, vertical: 6),
                             child: _buildDealOfTheDay(
                               context,
-                              dealOfTheDayText: "lbl_deal_of_the_day",
-                              viewAllText: "lbl_view_all",
+                              dealOfTheDayText: "deal of the day",
+                              viewAllText: "view all",
                             ),
                           ),
                           _buildDealOfTheDayRow(context, listProduct!),
-                          SizedBox(height: 26.v),
+                          SizedBox(height: 26.h),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 10.h),
                             child: _buildDealOfTheDay(
@@ -176,9 +188,9 @@ class HomePage extends StatelessWidget {
                               viewAllText: "lbl_view_all",
                             ),
                           ),
-                          SizedBox(height: 16.v),
+                          SizedBox(height: 16.h),
                           _buildProductSmallList(context, listProduct!),
-                          SizedBox(height: 25.v),
+                          SizedBox(height: 25.h),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 10.h),
                             child: _buildDealOfTheDay(
@@ -187,7 +199,7 @@ class HomePage extends StatelessWidget {
                               viewAllText: "lbl_view_all",
                             ),
                           ),
-                          SizedBox(height: 16.v),
+                          SizedBox(height: 16.h),
                           _buildProductSmallList1(context, listProduct!),
                         ],
                       ),
@@ -206,7 +218,7 @@ class HomePage extends StatelessWidget {
       padding: EdgeInsets.only(right: 16.h),
       child: CarouselSlider.builder(
         options: CarouselOptions(
-          height: 206.v,
+          height: 206.h,
           initialPage: 0,
           autoPlay: true,
           viewportFraction: 1.0,
@@ -255,7 +267,7 @@ class HomePage extends StatelessWidget {
   // Widget _buildTwoSlider(BuildContext context) {
   //   return CarouselSlider.builder(
   //     options: CarouselOptions(
-  //       height: 140.v,
+  //       height: 140.h,
   //       initialPage: 0,
   //       autoPlay: true,
   //       viewportFraction: 1.0,
@@ -283,19 +295,19 @@ class HomePage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: 2.v),
+          SizedBox(height: 2.h),
           _buildDealOfTheDay(
             context,
             dealOfTheDayText: "lbl_deal_of_the_day",
             viewAllText: "lbl_view_all",
           ),
-          SizedBox(height: 8.v),
+          SizedBox(height: 8.h),
           Align(
             alignment: Alignment.centerLeft,
             child: Container(
               padding: EdgeInsets.symmetric(
                 horizontal: 8.h,
-                vertical: 3.v,
+                vertical: 3.h,
               ),
               decoration: AppDecoration.fillRed.copyWith(
                 borderRadius: BorderRadiusStyle.roundedBorder2,
@@ -310,8 +322,8 @@ class HomePage extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(
                       left: 9.h,
-                      top: 3.v,
-                      bottom: 3.v,
+                      top: 3.h,
+                      bottom: 3.h,
                     ),
                     child: Text(
                       "lbl_hrs",
@@ -328,8 +340,8 @@ class HomePage extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(
                       left: 7.h,
-                      top: 3.v,
-                      bottom: 3.v,
+                      top: 3.h,
+                      bottom: 3.h,
                     ),
                     child: Text(
                       "lbl_min",
@@ -346,8 +358,8 @@ class HomePage extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(
                       left: 5.h,
-                      top: 3.v,
-                      bottom: 3.v,
+                      top: 3.h,
+                      bottom: 3.h,
                     ),
                     child: Text(
                       "lbl_sec",
@@ -358,7 +370,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 16.v),
+          SizedBox(height: 16.h),
           Container(
             padding: EdgeInsets.all(16.h),
             decoration: AppDecoration.fillOnPrimaryContainer.copyWith(
@@ -367,7 +379,7 @@ class HomePage extends StatelessWidget {
             child: GridView.builder(
               shrinkWrap: true,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                mainAxisExtent: 191.v,
+                mainAxisExtent: 191.h,
                 crossAxisCount: 2,
                 mainAxisSpacing: 16.h,
                 crossAxisSpacing: 16.h,
@@ -388,7 +400,7 @@ class HomePage extends StatelessWidget {
 
   Widget _buildDealOfTheDayRow(BuildContext context, List<Product> list) {
     return SizedBox(
-      height: 220.v,
+      height: 220.h,
       child: ListView.separated(
         padding: EdgeInsets.only(left: 16.h),
         scrollDirection: Axis.horizontal,
@@ -413,7 +425,7 @@ class HomePage extends StatelessWidget {
   /// Section Widget
   Widget _buildProductSmallList(BuildContext context, List<Product> list) {
     return SizedBox(
-      height: 230.v,
+      height: 230.h,
       child: ListView.separated(
         padding: EdgeInsets.only(left: 16.h),
         scrollDirection: Axis.horizontal,
@@ -445,7 +457,7 @@ class HomePage extends StatelessWidget {
           crossAxisCount: 2,
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
-          mainAxisExtent: 283.v,
+          mainAxisExtent: 283.h,
           // childAspectRatio: 3 / 2,
         ),
         itemBuilder: (context, index) {
@@ -469,7 +481,7 @@ class HomePage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Padding(
-          padding: EdgeInsets.only(top: 1.v),
+          padding: EdgeInsets.only(top: 1.h),
           child: Text(
             dealOfTheDayText,
             style: theme.textTheme.titleSmall!.copyWith(
@@ -478,7 +490,7 @@ class HomePage extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(bottom: 3.v),
+          padding: EdgeInsets.only(bottom: 3.h),
           child: TextButton(
             onPressed: () {
               // go to see all

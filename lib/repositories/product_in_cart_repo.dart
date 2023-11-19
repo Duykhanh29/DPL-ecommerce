@@ -16,19 +16,6 @@ class ProductInCartRepo {
         type: "Wooden",
         userID: "userID01"),
     ProductInCartModel(
-        cost: 240000,
-        quantity: 2,
-        color: "Red",
-        currencyID: "currencyID01",
-        id: "productInCartModelID01",
-        productID: "productID01",
-        productImage:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTq29z2MgTbf2LERHqbHkT1KGAv1WwxXyYSnw&usqp=CAU",
-        productName: "Sadfsf",
-        size: "L",
-        type: "Wooden",
-        userID: "userID01"),
-    ProductInCartModel(
         cost: 180000,
         quantity: 1,
         color: "Blue",
@@ -146,8 +133,9 @@ class ProductInCartRepo {
         type: "Drought-resistant",
         userID: "userID10"),
     ProductInCartModel(
-        cost: 120000,
-        quantity: 1,
+        cost: 500000,
+        voucherID: "voucher01",
+        quantity: 6,
         color: "Black",
         currencyID: "currencyID11",
         id: "productInCartModelID11",

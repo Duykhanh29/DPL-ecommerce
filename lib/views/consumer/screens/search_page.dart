@@ -4,10 +4,11 @@ import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_search_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/models/product.dart';
-import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
+import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/search_result_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SearchScreen extends StatelessWidget {
   SearchScreen({Key? key}) : super(key: key);
@@ -43,7 +44,6 @@ class SearchScreen extends StatelessWidget {
   );
   @override
   Widget build(BuildContext context) {
-    mediaQueryData = MediaQuery.of(context);
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -53,7 +53,6 @@ class SearchScreen extends StatelessWidget {
             "Search",
             textAlign: TextAlign.center,
           ),
-          centerTitle: true,
 
           //leading: Icon(Icons.menu),
         ),
@@ -62,63 +61,43 @@ class SearchScreen extends StatelessWidget {
           child: SizedBox(
               width: double.maxFinite,
               child: ListView(children: [
-                SizedBox(height: 25.v),
+                SizedBox(height: 25.h),
                 Padding(
                   padding: EdgeInsets.only(left: 24.h, right: 25.h),
                   child: CustomSearchView(
-                      controller: searchController,
-                      hintText: "Search Product Name"),
+                    controller: searchController,
+                    hintText: "Search Product Name",
+                    prefix: Padding(
+                        padding: EdgeInsets.all(7.h),
+                        child: Icon(
+                          Icons.search,
+                          size: 25.h,
+                        )),
+                  ),
                 ),
-                SizedBox(height: 20.v),
+                SizedBox(height: 20.h),
                 Align(
                     alignment: Alignment.centerLeft,
                     child: Padding(
                         padding: EdgeInsets.only(left: 24.h),
                         child: Text("Recent searches",
                             style: theme.textTheme.titleSmall))),
-                SizedBox(height: 20.v),
-                GestureDetector(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SearchFilterInterface(),
-                    ),
-                  ),
-                  child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24.h),
-                      child: _buildLastSearchItem(
-                        context,
-                        userLabel: "TMA2 Wireless",
-                      )),
-                ),
-                SizedBox(height: 25.v),
+                SizedBox(height: 20.h),
+                _buildHistorySearch(context),
+                SizedBox(height: 25.h),
                 Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24.h),
-                    child: _buildLastSearchItem(
-                      context,
-                      userLabel: "TMA2 Wireless",
-                    )),
-                SizedBox(height: 25.v),
-                Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24.h),
-                    child: _buildLastSearchItem(
-                      context,
-                      userLabel: "TMA2 Wireless",
-                    )),
-                SizedBox(height: 25.v),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 5.v, left: 10.v),
+                  padding: EdgeInsets.only(bottom: 5.h, left: 10.h),
                   child: Column(
                     children: [
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10.h),
                         child: _buildDealOfTheDay(
                           context,
-                          dealOfTheDayText: "msg_recommended_for",
-                          viewAllText: "lbl_view_all",
+                          dealOfTheDayText: "recommend",
+                          viewAllText: "view all",
                         ),
                       ),
-                      SizedBox(height: 16.v),
+                      SizedBox(height: 16.h),
                       _buildProductSmallList1(context, product!),
                     ],
                   ),
@@ -134,31 +113,17 @@ Widget _buildLastSearchItem(
   BuildContext context, {
   required String userLabel,
 }) {
-  return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+  return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
     CustomImageView(
-        imagePath: ImageConstant.imgIconClock,
-        height: 20.adaptSize,
-        width: 20.adaptSize),
+        imagePath: ImageData.imgIconClock, height: 20.h, width: 20.w),
     Padding(
         padding: EdgeInsets.only(left: 10.h),
         child: Text(userLabel,
             style: theme.textTheme.bodyMedium!.copyWith(
                 color: theme.colorScheme.primaryContainer.withOpacity(1)))),
     Spacer(),
-    CustomImageView(
-        imagePath: ImageConstant.imgClose,
-        height: 20.adaptSize,
-        width: 20.adaptSize)
+    CustomImageView(imagePath: ImageData.imgClose, height: 20.h, width: 20.h)
   ]);
-}
-
-class ImageConstant {
-  // Image folder path
-  static String imagePath = 'assets/images';
-
-  static String imgIconClock = '$imagePath/img_icon_clock1.jpg';
-
-  static String imgClose = '$imagePath/img_close.svg';
 }
 
 Widget _buildDealOfTheDay(
@@ -170,7 +135,7 @@ Widget _buildDealOfTheDay(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       Padding(
-        padding: EdgeInsets.only(top: 1.v),
+        padding: EdgeInsets.only(top: 1.h),
         child: Text(
           dealOfTheDayText,
           style: theme.textTheme.titleSmall!.copyWith(
@@ -179,7 +144,7 @@ Widget _buildDealOfTheDay(
         ),
       ),
       Padding(
-        padding: EdgeInsets.only(bottom: 3.v),
+        padding: EdgeInsets.only(bottom: 3.h),
         child: TextButton(
           onPressed: () {
             // go to see all
@@ -205,7 +170,7 @@ Widget _buildProductSmallList1(BuildContext context, Product product) {
         crossAxisCount: 2,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
-        mainAxisExtent: 283.v,
+        mainAxisExtent: 283.h,
         // childAspectRatio: 3 / 2,
       ),
       itemBuilder: (context, index) {
@@ -216,6 +181,43 @@ Widget _buildProductSmallList1(BuildContext context, Product product) {
       physics: NeverScrollableScrollPhysics(),
       itemCount: 10,
     ),
+  );
+}
+
+Widget _buildHistorySearch(BuildContext context) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: [
+      GestureDetector(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SearchFilterInterface(),
+          ),
+        ),
+        child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.h),
+            child: _buildLastSearchItem(
+              context,
+              userLabel: "TMA2 Wireless",
+            )),
+      ),
+      SizedBox(height: 25.h),
+      Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.h),
+          child: _buildLastSearchItem(
+            context,
+            userLabel: "TMA2 Wireless",
+          )),
+      SizedBox(height: 25.h),
+      Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.h),
+          child: _buildLastSearchItem(
+            context,
+            userLabel: "TMA2 Wireless",
+          )),
+    ],
   );
 }
 

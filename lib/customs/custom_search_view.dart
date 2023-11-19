@@ -4,6 +4,7 @@ import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomSearchView extends StatelessWidget {
   CustomSearchView(
@@ -87,16 +88,16 @@ class CustomSearchView extends StatelessWidget {
         hintStyle: hintStyle ?? theme.textTheme.bodyLarge,
         prefixIcon: prefix ??
             Container(
-              margin: EdgeInsets.fromLTRB(16.h, 12.v, 12.h, 12.v),
+              margin: EdgeInsets.fromLTRB(16.h, 12.w, 12.h, 12.w),
               child: CustomImageView(
                 imagePath: ImageData.imgSearch,
-                height: 24.adaptSize,
-                width: 24.adaptSize,
+                height: 24.h,
+                width: 24.h,
               ),
             ),
         prefixIconConstraints: prefixConstraints ??
             BoxConstraints(
-              maxHeight: 48.v,
+              maxHeight: 48.h,
             ),
         suffixIcon: suffix ??
             Padding(
@@ -113,14 +114,14 @@ class CustomSearchView extends StatelessWidget {
             ),
         suffixIconConstraints: suffixConstraints ??
             BoxConstraints(
-              maxHeight: 48.v,
+              maxHeight: 48.h,
             ),
         isDense: true,
         contentPadding: contentPadding ??
             EdgeInsets.only(
-              top: 14.v,
+              top: 14.h,
               right: 14.h,
-              bottom: 14.v,
+              bottom: 14.h,
             ),
         fillColor:
             fillColor ?? theme.colorScheme.onPrimaryContainer.withOpacity(1),
