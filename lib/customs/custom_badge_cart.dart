@@ -17,8 +17,8 @@ class CustomBadgeCart extends StatelessWidget {
         child: InkWell(
           child: Icon(
             CupertinoIcons.cart,
-            size: 24,
-            color: Colors.redAccent,
+            size: 30,
+            color: Colors.white,
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(

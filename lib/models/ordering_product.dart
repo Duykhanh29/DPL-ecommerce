@@ -7,13 +7,24 @@ class OrderingProduct {
   String? voucherID;
   int? price;
   int? realPrice;
+  int? quantity;
+  String? size;
+  String? color;
+  String? type;
+  DateTime? date;
   OrderingProduct(
       {this.id,
       this.price,
       this.productID,
       this.realPrice,
       this.userID,
-      this.voucherID}) {
+      this.voucherID,
+      this.quantity,
+      this.size,
+      this.color,
+      this.type,
+      this.date,
+      }) {
     id ??= Uuid().v4();
   }
   factory OrderingProduct.fromJson(Map<String, dynamic> json) {
@@ -24,6 +35,11 @@ class OrderingProduct {
       realPrice: json['realPrice'],
       voucherID: json['voucherID'],
       userID: json['userID'],
+      quantity: json['quantity'],
+      size: json['size'],
+      color: json['color'],
+      type: json['type'],
+      date: json['date']
     );
   }
   Map<String, dynamic> toJson() => {
@@ -33,5 +49,10 @@ class OrderingProduct {
         'realPrice': realPrice,
         'voucherID': voucherID,
         'userID': userID,
+        'quatity': quantity,
+        'size': size,
+        'color':color,
+        'type' : type,
+        'date' :date,
       };
 }

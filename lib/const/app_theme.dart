@@ -175,6 +175,7 @@ class ColorSchemes {
     // On colors(text colors)
     onPrimary: Color(0XFF1F2937),
     onPrimaryContainer: Color(0XA3FFFFFF),
+    
   );
 }
 
@@ -204,7 +205,15 @@ class PrimaryColors {
   Color get gray20001 => Color(0XFFEBEDEE);
   Color get gray50 => Color(0XFFFDFBFB);
   Color get gray600 => Color(0XFF6B7280);
+  Color get black90033 => Color(0X330E0E0E);
+  Color get gray800 => Color(0XFF474340);
+  Color get blue50 => Color(0XFFEAEFFF);
 
+  // BlueGray
+  
+
+  // Pink
+  Color get pink300 => Color(0XFFFB7181);
   // LightBlue
   Color get lightBlue50 => Color(0XFFECFEFF);
 

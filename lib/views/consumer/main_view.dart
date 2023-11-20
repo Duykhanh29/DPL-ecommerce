@@ -21,7 +21,7 @@ class _MainViewState extends State<MainView> {
     HomePage(),
     // CategoryPage();
     CartPage(),
-    OrderPage(),
+    OrdersPage(),
     UserProfilePage(),
   ];
   int indexPage = 0;

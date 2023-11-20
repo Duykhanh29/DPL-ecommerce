@@ -1,4 +1,6 @@
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextFormField extends StatelessWidget {
@@ -98,4 +100,16 @@ class CustomTextFormField extends StatelessWidget {
         contentPadding: contentPadding,
         border: InputBorder.none,
       );
+      
 }
+/// Extension on [CustomTextFormField] to facilitate inclusion of all types of border style etc
+extension TextFormFieldStyleHelper on CustomTextFormField {
+  static OutlineInputBorder get outlineBlue => OutlineInputBorder(
+        borderRadius: BorderRadius.circular(5.h),
+        borderSide: BorderSide(
+          color: appTheme.blueGray100,
+          width: 1,
+        ),
+      );
+}
+
