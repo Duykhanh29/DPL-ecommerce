@@ -2,6 +2,7 @@ import 'package:dpl_ecommerce/const/app_decoration.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/order_widgets/order_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MyOrdersListPage extends StatefulWidget {
   const MyOrdersListPage({Key? key})
@@ -20,11 +21,10 @@ class MyOrdersOnePageState extends State<MyOrdersListPage>
 
   List<Widget> tab1Containers = [
     //MyOrdersOnePage(),
-    
   ];
 
   List<Widget> tab2Containers = [];
-   int currentTabIndex = 0;
+  int currentTabIndex = 0;
 
   void switchTab() {
     // Chuyển container từ Tab 1 sang Tab 2
@@ -34,10 +34,9 @@ class MyOrdersOnePageState extends State<MyOrdersListPage>
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
-    mediaQueryData = MediaQuery.of(context);
-
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -45,7 +44,7 @@ class MyOrdersOnePageState extends State<MyOrdersListPage>
           //decoration: AppDecoration.fillOnPrimary,
           child: Column(
             children: [
-              SizedBox(height: 32.v),
+              SizedBox(height: 32.h),
               _buildMyOrdersOne(context),
             ],
           ),
@@ -67,7 +66,7 @@ class MyOrdersOnePageState extends State<MyOrdersListPage>
             index,
           ) {
             return SizedBox(
-              height: 5.v,
+              height: 5.h,
             );
           },
           itemCount: 3,

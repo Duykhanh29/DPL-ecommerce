@@ -6,16 +6,14 @@ import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/rate_screen.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/track_order.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 //import 'dart:html';
 
 class OrderDetailScreen extends StatelessWidget {
   const OrderDetailScreen({Key? key}) : super(key: key);
-  
-  
- 
+
   @override
   Widget build(BuildContext context) {
-    mediaQueryData = MediaQuery.of(context);
     return SafeArea(
         child: Scaffold(
             //backgroundColor: appTheme.gray5001,
@@ -31,13 +29,13 @@ class OrderDetailScreen extends StatelessWidget {
             ),
             body: Container(
                 width: double.maxFinite,
-                //padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 26.v),
+                //padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 26.h),
                 child: SingleChildScrollView(
                   child: Column(children: [
                     Container(
 
                         //margin: EdgeInsets.symmetric(horizontal: 4.h),
-                        //padding: EdgeInsets.symmetric(horizontal: 24.h, vertical: 20.v),
+                        //padding: EdgeInsets.symmetric(horizontal: 24.h, vertical: 20.h),
                         decoration: BoxDecoration(color: Colors.blue[400]),
                         child: Row(
 
@@ -49,7 +47,7 @@ class OrderDetailScreen extends StatelessWidget {
                               ),
                               Padding(
                                   padding: EdgeInsets.only(
-                                      left: 10.h, top: 3.v, bottom: 2.v),
+                                      left: 10.h, top: 3.h, bottom: 2.h),
                                   child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -64,7 +62,7 @@ class OrderDetailScreen extends StatelessWidget {
                                               fontSize: 20),
                                           //style: CustomTextStyles.titleMediumNunitoOnPrimary
                                         ),
-                                        SizedBox(height: 10.v),
+                                        SizedBox(height: 10.h),
                                         const Text(
                                           "Rate product to get 5 points for collect.",
                                           style: TextStyle(
@@ -76,16 +74,16 @@ class OrderDetailScreen extends StatelessWidget {
                                           maxLines: 7,
                                           //style: theme.textTheme.labelMedium
                                         ),
-                                        SizedBox(height: 10.v),
+                                        SizedBox(height: 10.h),
                                       ])),
                               SizedBox(
                                 width: 50,
                               ),
                               CustomImageView(
                                 imagePath: ImageConstant.imgFlag,
-                                height: 51.v,
+                                height: 51.h,
                                 width: 51.h,
-                                //margin: EdgeInsets.only(top: 6.v)
+                                //margin: EdgeInsets.only(top: 6.h)
                               )
                             ])),
                     const SizedBox(
@@ -383,13 +381,10 @@ class OrderDetailScreen extends StatelessWidget {
                                       "Total ",
                                       style: TextStyle(fontSize: 18),
                                     ),
-                                    
                                   ],
                                 ),
-                                 
                               ],
                             ),
-                           
                             Row(
                               //crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
@@ -600,7 +595,6 @@ class OrderDetailScreen extends StatelessWidget {
                 ))));
   }
 }
-
 
 class ImageConstant {
   // Image folder path

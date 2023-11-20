@@ -9,21 +9,22 @@ import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/order_widgets/order_item.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/order_widgets/order_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart' as badges;
 
-class OrdersPage extends StatefulWidget {
-  const OrdersPage({Key? key})
+class OrderPage extends StatefulWidget {
+  const OrderPage({Key? key})
       : super(
           key: key,
         );
 
   @override
-  MyOrdersThreeTabContainerScreenState createState() =>
-      MyOrdersThreeTabContainerScreenState();
+  MyOrderThreeTabContainerScreenState createState() =>
+      MyOrderThreeTabContainerScreenState();
 }
 
-class MyOrdersThreeTabContainerScreenState extends State<OrdersPage>
+class MyOrderThreeTabContainerScreenState extends State<OrderPage>
     with TickerProviderStateMixin {
   late TabController tabviewController;
 
@@ -38,11 +39,9 @@ class MyOrdersThreeTabContainerScreenState extends State<OrdersPage>
     price: 200,
     quantity: 9,
   );
-  
+
   @override
   Widget build(BuildContext context) {
-    mediaQueryData = MediaQuery.of(context);
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       //backgroundColor: Colors.blue,
@@ -84,14 +83,14 @@ class MyOrdersThreeTabContainerScreenState extends State<OrdersPage>
         width: double.maxFinite,
         child: Column(
           children: [
-            SizedBox(height: 17.v),
+            SizedBox(height: 17.h),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
                     _buildTabview(context),
                     SizedBox(
-                      height: 589.v,
+                      height: 589.h,
                       child: TabBarView(
                         controller: tabviewController,
                         children: [
@@ -113,10 +112,9 @@ class MyOrdersThreeTabContainerScreenState extends State<OrdersPage>
     );
   }
 
- 
   Widget _buildTabview(BuildContext context) {
     return SizedBox(
-      height: 28.v,
+      height: 28.h,
       width: 309.h,
       child: TabBar(
         controller: tabviewController,
@@ -180,9 +178,9 @@ class MyOrdersThreeTabContainerScreenState extends State<OrdersPage>
       ),
       child: CustomImageView(
         //imagePath: ImageConstant.imgFrame33104,
-        height: 23.v,
+        height: 23.h,
         width: 269.h,
-        margin: EdgeInsets.fromLTRB(53.h, 24.v, 51.h, 32.v),
+        margin: EdgeInsets.fromLTRB(53.h, 24.h, 51.h, 32.h),
       ),
     );
   }
