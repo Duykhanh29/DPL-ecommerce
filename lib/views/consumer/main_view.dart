@@ -19,6 +19,8 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> {
   List<Widget> pages = [
     HomePage(),
+    // CategoryPage();
+    CartPage(),
     CategoryPage(),
     OrderPage(),
     UserProfilePage(),

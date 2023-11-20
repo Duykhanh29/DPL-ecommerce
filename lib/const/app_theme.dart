@@ -221,3 +221,4 @@ class PrimaryColors {
 
 PrimaryColors get appTheme => AppTheme().themeColor();
 ThemeData get theme => AppTheme().themeData();
+

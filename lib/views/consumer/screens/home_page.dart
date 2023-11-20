@@ -11,6 +11,9 @@ import 'package:dpl_ecommerce/repositories/flash_sale_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/address_edit.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/address_screen.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/checkout_page.dart';
 import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/chat_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/search_page.dart';
@@ -57,7 +60,7 @@ class HomePage extends StatelessWidget {
               ),
               child: InkWell(
                 child: Icon(Icons.notifications_outlined,
-                    color: Colors.redAccent, size: 24),
+                    color: Colors.white, size: 30),
                 onTap: () {},
               ),
             ),
@@ -109,7 +112,7 @@ class HomePage extends StatelessWidget {
                             onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => SearchScreen(),
+                                builder: (context) => AddressScreen(),
                               ),
                             ),
                             child: Padding(

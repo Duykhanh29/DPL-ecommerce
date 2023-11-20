@@ -291,8 +291,8 @@ class _CartPageState extends State<CartPage> {
             ),
           ),
           // SizedBox(height: 10),
-          Divider(),
-          SizedBox(height: 6),
+          const Divider(),
+          const SizedBox(height: 6),
           Consumer<CartViewModel>(
             builder: (context, value, child) => _buildShipping(
               context,
