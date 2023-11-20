@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "573290240283",
+    "project_id": "dpl-ecommerce",
+    "storage_bucket": "dpl-ecommerce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573290240283:android:35b416af7738c59904dbbe",
+        "android_client_info": {
+          "package_name": "com.example.dpl_ecommerce"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJb7yN-cd_LYzZP30Z4ImOJbuGBSPpX6w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
