@@ -14,8 +14,8 @@ class Product {
   DateTime? updatedAt;
   DateTime? createdAt;
   List<String>? sizes;
-  int? purchasingCount;
-  int? ratingCount;
+  int purchasingCount;
+  int ratingCount;
   int? price;
   int? availableQuantity;
   String? categoryID;
@@ -32,9 +32,9 @@ class Product {
       this.images,
       this.name,
       this.price,
-      this.purchasingCount,
+      this.purchasingCount = 0,
       this.rating,
-      this.ratingCount,
+      this.ratingCount = 0,
       this.reviewIDs,
       this.shopID,
       this.shopLogo,

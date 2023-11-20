@@ -54,6 +54,7 @@ dependencies:
   section_view: ^2.0.6
   # adaptive and responsive size for different mobiles
   flutter_screenutil: ^5.9.0
+  
   flutter_rating_bar: ^4.0.1
   
  
@@ -65,6 +66,26 @@ dependencies:
 
   # loading amination
   shimmer: ^3.0.0
+
+  # chat
+  flutter_chat_bubble: ^2.0.2
+  grouped_list: ^5.1.2
+
+  # copy
+  clipboard: ^0.1.3
+
+  # opeen link
+  url_launcher: ^6.2.1
+  http: ^1.1.0
+  # preview link
+  flutter_chat_types: ^3.6.2
+  flutter_link_previewer: ^3.2.2
+
+  # file
+  file_picker: ^6.1.1
+  path_provider: ^2.1.1
+  camera: ^0.10.5+5
+  
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

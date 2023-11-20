@@ -1,6 +1,7 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// A collection of pre-defined text styles for customizing text appearance,
 /// categorized by different font families and weights.
@@ -15,7 +16,7 @@ class CustomTextStyles {
         color: theme.colorScheme.primaryContainer,
       );
   static get bodySmall10 => theme.textTheme.bodySmall!.copyWith(
-        fontSize: 10.fSize,
+        fontSize: 10.sp,
       );
   static get bodySmallBluegray300 => theme.textTheme.bodySmall!.copyWith(
         color: appTheme.blueGray300,
@@ -78,73 +79,7 @@ class CustomTextStyles {
       theme.textTheme.titleSmall!.copyWith(
         color: theme.colorScheme.onPrimaryContainer.withOpacity(1),
       );
-      static get titleMediumOnPrimaryContainer =>
-      theme.textTheme.titleMedium!.copyWith(
-        color: theme.colorScheme.onPrimaryContainer,
-      );
-      static get bodyMediumOnError => theme.textTheme.bodyMedium!.copyWith(
-        color: Colors.black,
-        fontSize: 20,
-      );
-       static get bodyMediumBlack900 => theme.textTheme.bodyMedium!.copyWith(
-        color: appTheme.black900,
-      );
-  static get bodyMediumDeeporange800 => theme.textTheme.bodyMedium!.copyWith(
-        color: appTheme.deepOrange800,
-      );
- 
-  static get bodyMediumGray90002 => theme.textTheme.bodyMedium!.copyWith(
-        color: appTheme.gray100,
-      );
- static get bodySmallProductSansLightGray800 =>
-      theme.textTheme.bodySmall!.productSansLight.copyWith(
-        color: appTheme.gray800.withOpacity(0.38),
-        fontSize: 10.fSize,
-        fontWeight: FontWeight.w300,
-      );
- 
-
- 
-  static get bodySmallGray800 => theme.textTheme.bodySmall!.copyWith(
-        color: appTheme.gray800.withOpacity(0.3),
-      );
-  static get bodySmallGray80011 => theme.textTheme.bodySmall!.copyWith(
-        color: appTheme.gray800,
-        fontSize: 11.fSize,
-      );
-  static get bodySmallGray800_1 => theme.textTheme.bodySmall!.copyWith(
-        color: appTheme.gray800,
-      );
-  static get bodySmallGray800_2 => theme.textTheme.bodySmall!.copyWith(
-        color: appTheme.gray800,
-      );
- 
-  static get bodySmall_1 => theme.textTheme.bodySmall!;
-  static get bodySmall_2 => theme.textTheme.bodySmall!;
-  // Label text style
- 
-  // Title text style
-  static get titleMedium16 => theme.textTheme.titleMedium!.copyWith(
-        fontSize: 16.fSize,
-      );
-  static get titleMediumBlack900 => theme.textTheme.titleMedium!.copyWith(
-        color: appTheme.black900,
-        fontSize: 16.fSize,
-      );
-  
-  
- 
- 
- 
-  static get titleSmallDeeporange800 => theme.textTheme.titleSmall!.copyWith(
-        color: appTheme.deepOrange800,
-      );
-  static get titleSmallOnPrimary => theme.textTheme.titleSmall!.copyWith(
-        color: theme.colorScheme.onPrimary,
-      );
-
 }
-
 
 extension on TextStyle {
   TextStyle get inter {
@@ -152,10 +87,5 @@ extension on TextStyle {
       fontFamily: 'Inter',
     );
   }
-  TextStyle get productSansLight {
-    return copyWith(
-      fontFamily: 'Product Sans Light',
-    );
-  }
-
 }
+

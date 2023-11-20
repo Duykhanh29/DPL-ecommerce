@@ -15,33 +15,45 @@ import 'package:dpl_ecommerce/customs/custom_rating_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_text_form_field.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/helpers/show_modal_bottom_sheet.dart';
+import 'package:dpl_ecommerce/models/chat.dart';
+import 'package:dpl_ecommerce/models/message.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/product_in_cart_model.dart';
 import 'package:dpl_ecommerce/models/review.dart';
+import 'package:dpl_ecommerce/models/shop.dart';
+import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
+import 'package:dpl_ecommerce/repositories/auth_repo.dart';
 import 'package:dpl_ecommerce/repositories/flash_sale_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
+import 'package:dpl_ecommerce/repositories/review_repo.dart';
+import 'package:dpl_ecommerce/repositories/shop_repo.dart';
+import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
+import 'package:dpl_ecommerce/utils/common/common_methods.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
+import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/product_detail_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/cart_page.dart';
-import 'package:dpl_ecommerce/views/consumer/screens/test.dart';
-import 'package:dpl_ecommerce/views/consumer/ui_elements/list_voucher_widget.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/chat_page.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/chatting_page.dart';
+import 'package:dpl_ecommerce/views/consumer/ui_elements/voucher_widgets/list_voucher_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_details_widgets/chip_view_item_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_details_widgets/radio_button.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_details_widgets/slider_item_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/review_elements/list_review_view.dart';
-import 'package:dpl_ecommerce/views/consumer/ui_elements/review_elements/review_view_page.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/review_view_page.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/review_elements/review_view_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/video_item_widget.dart';
-import 'package:dpl_ecommerce/views/consumer/ui_elements/voucher_item_widget.dart';
-import 'package:dpl_ecommerce/views/seller/screens/seller_profile_page.dart';
+import 'package:dpl_ecommerce/views/consumer/ui_elements/voucher_widgets/voucher_item_widget.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/seller_profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -61,6 +73,9 @@ class ProductDetailsPage extends StatelessWidget {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   List<Voucher> listVoucher = VoucherRepo().list;
   List<Product>? listProduct = ProductRepo().list;
+  UserModel userModel = AuthRepo().user;
+  List<Shop> listShop = ShopRepo().listShop;
+  List<Review> listReview = ReviewRepo().listReview;
   Review review = Review(
       id: "Review01",
       productID: "product01",
@@ -73,9 +88,9 @@ class ProductDetailsPage extends StatelessWidget {
       userID: "user01");
   @override
   Widget build(BuildContext context) {
-    mediaQueryData = MediaQuery.of(context);
     // final cartProvider = Provider.of<CartViewModel>(context, listen: false);
     final productDetailProvider = Provider.of<ProductDetailViewModel>(context);
+    Shop? shop = CommondMethods.getShopByID(product!.shopID!, listShop);
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -102,7 +117,7 @@ class ProductDetailsPage extends StatelessWidget {
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.only(bottom: 5.v),
+            padding: EdgeInsets.only(bottom: 5.h),
             child: Column(
               children: [
                 _buildSlider(
@@ -111,9 +126,9 @@ class ProductDetailsPage extends StatelessWidget {
                       "https://drive.google.com/file/d/1RZ7zIBdX37F3axngfo4xLwU-GlLjKnhJ/view?usp=drive_link"
                     ],
                     product!.images!),
-                SizedBox(height: 8.v),
+                SizedBox(height: 8.h),
                 _buildAnimatedIndicator(sliderIndex: sliderIndex),
-                SizedBox(height: 17.v),
+                SizedBox(height: 17.h),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
@@ -124,7 +139,7 @@ class ProductDetailsPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 9.v),
+                SizedBox(height: 9.h),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Row(children: [
@@ -141,7 +156,7 @@ class ProductDetailsPage extends StatelessWidget {
                         child: Text("Available products: ")),
                   ]),
                 ),
-                SizedBox(height: 8.v),
+                SizedBox(height: 8.h),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
@@ -152,8 +167,8 @@ class ProductDetailsPage extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.only(
                             left: 8.h,
-                            top: 2.v,
-                            bottom: 2.v,
+                            top: 2.h,
+                            bottom: 2.h,
                           ),
                           child: Text(
                             "87 reviews",
@@ -164,9 +179,9 @@ class ProductDetailsPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 10.v),
+                SizedBox(height: 10.h),
                 _buildProductPrices(),
-                SizedBox(height: 18.v),
+                SizedBox(height: 18.h),
 
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.h),
@@ -176,9 +191,9 @@ class ProductDetailsPage extends StatelessWidget {
                     sizeChartLabel: "lbl_size_chart",
                   ),
                 ),
-                SizedBox(height: 6.v),
+                SizedBox(height: 6.h),
                 _buildProductSize(context),
-                SizedBox(height: 10.v),
+                SizedBox(height: 10.h),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.h),
                   child: _buildSizeText(
@@ -187,7 +202,7 @@ class ProductDetailsPage extends StatelessWidget {
                     sizeChartLabel: "lbl_size_chart",
                   ),
                 ),
-                SizedBox(height: 6.v),
+                SizedBox(height: 6.h),
                 _buildProductType(context),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.h),
@@ -197,19 +212,22 @@ class ProductDetailsPage extends StatelessWidget {
                     sizeChartLabel: "lbl_size_chart",
                   ),
                 ),
-                SizedBox(height: 10.v),
+                SizedBox(height: 10.h),
                 _buildProductColor(context),
-                SizedBox(height: 24.v),
-                _buildShopInfor(context),
-                SizedBox(height: 24.v),
+                SizedBox(height: 24.h),
+                _buildShopInfor(context, shop),
+                SizedBox(height: 24.h),
                 ListVoucherWidget(list: listVoucher),
-                SizedBox(height: 24.v),
+                SizedBox(height: 24.h),
                 // _buildColumn(context),
-                // SizedBox(height: 16.v),
-                _buildProductDescription(context),
-                SizedBox(height: 16.v),
-                _buildRatingsAndReviews(context),
-                SizedBox(height: 27.v),
+                // SizedBox(height: 16.h),
+                if (product!.description != null) ...{
+                  _buildProductDescription(context),
+                },
+
+                SizedBox(height: 16.h),
+                _buildRatingsAndReviews(context, product!),
+                SizedBox(height: 27.h),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.h),
                   child: _buildSizeText(
@@ -218,7 +236,7 @@ class ProductDetailsPage extends StatelessWidget {
                     sizeChartLabel: "view all",
                   ),
                 ),
-                SizedBox(height: 16.v),
+                SizedBox(height: 16.h),
                 _buildShopProducts(context, listProduct!),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.h),
@@ -228,7 +246,7 @@ class ProductDetailsPage extends StatelessWidget {
                     sizeChartLabel: "view all",
                   ),
                 ),
-                SizedBox(height: 16.v),
+                SizedBox(height: 16.h),
                 _buildRelatedProducts(context, listProduct!),
                 const SizedBox(
                   height: 10,
@@ -260,7 +278,7 @@ class ProductDetailsPage extends StatelessWidget {
           enlargeStrategy: CenterPageEnlargeStrategy.height,
           initialPage: 0,
           pageSnapping: true,
-          height: 342.v,
+          height: 342.h,
           autoPlay: (videos == null) ? true : false,
           // autoPlay: true,
           viewportFraction: 1.0,
@@ -292,15 +310,15 @@ class ProductDetailsPage extends StatelessWidget {
   /// Section Widget
   Widget _buildButton(BuildContext context) {
     return CustomElevatedButton(
-      height: 20.v,
+      height: 20.h,
       width: 26.h,
       text: "lbl_4_12",
       leftIcon: Container(
         margin: EdgeInsets.only(right: 4.h),
         child: CustomImageView(
           imagePath: ImageData.imgIconBoldStar,
-          height: 12.adaptSize,
-          width: 12.adaptSize,
+          height: 12.h,
+          width: 12.h,
         ),
       ),
       // buttonStyle: CustomButtonStyles.fillAmber,
@@ -315,7 +333,7 @@ class ProductDetailsPage extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.only(left: 16.h),
         child: Wrap(
-          runSpacing: 8.v,
+          runSpacing: 8.h,
           spacing: 8.h,
           children: List<Widget>.generate(5, (index) => ChipviewItemWidget()),
         ),
@@ -354,18 +372,6 @@ class ProductDetailsPage extends StatelessWidget {
   }
 
   /// Section Widget
-  Widget _buildEditText(BuildContext context) {
-    return Expanded(
-      child: CustomTextFormField(
-        controller: editTextController,
-        hintText: "lbl_enter_pin_code",
-        textInputAction: TextInputAction.done,
-        textInputType: TextInputType.number,
-      ),
-    );
-  }
-
-  /// Section Widget
   Widget _buildColumn(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.h),
@@ -378,12 +384,12 @@ class ProductDetailsPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: 3.v),
+          SizedBox(height: 3.h),
           Text(
             "msg_delivery_options",
             style: theme.textTheme.bodyMedium,
           ),
-          SizedBox(height: 11.v),
+          SizedBox(height: 11.h),
           Container(
             padding: EdgeInsets.all(16.h),
             decoration: AppDecoration.outlineBlueGray.copyWith(
@@ -391,7 +397,7 @@ class ProductDetailsPage extends StatelessWidget {
             ),
             child: Row(
               children: [
-                _buildEditText(context),
+                // _buildEditText(context),
                 Padding(
                   padding: EdgeInsets.only(left: 12.h),
                   child: Text(
@@ -411,7 +417,7 @@ class ProductDetailsPage extends StatelessWidget {
   Widget _buildProductDescription(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.h),
-      padding: EdgeInsets.symmetric(vertical: 16.v),
+      padding: EdgeInsets.symmetric(vertical: 16.h),
       decoration: AppDecoration.outlineBluegray7000f1.copyWith(
         borderRadius: BorderRadiusStyle.roundedBorder8,
       ),
@@ -420,7 +426,7 @@ class ProductDetailsPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: 2.v),
+          SizedBox(height: 2.h),
           Padding(
             padding: EdgeInsets.only(left: 16.h),
             child: Text(
@@ -428,7 +434,7 @@ class ProductDetailsPage extends StatelessWidget {
               style: theme.textTheme.bodyMedium,
             ),
           ),
-          SizedBox(height: 21.v),
+          SizedBox(height: 21.h),
           Padding(
             padding: EdgeInsets.only(left: 22.h),
             child: Column(
@@ -436,41 +442,28 @@ class ProductDetailsPage extends StatelessWidget {
                 SizedBox(
                   width: 53.h,
                   child: Text(
-                    "detail 1",
-                    maxLines: 4,
-                    overflow: TextOverflow.ellipsis,
-                    style: CustomTextStyles.bodySmallGray600_1.copyWith(
-                      height: 2.00,
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 87.h,
-                  margin: EdgeInsets.only(left: 8.h),
-                  child: Text(
-                    "detail 2",
-                    maxLines: 4,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall!.copyWith(
-                      height: 2.00,
-                    ),
+                    product!.description!,
+                    overflow: TextOverflow.clip,
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.w300),
                   ),
                 ),
               ],
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(vertical: 17.v),
+            padding: EdgeInsets.symmetric(vertical: 17.h),
             decoration: AppDecoration.fillOnPrimaryContainer,
             child: Divider(),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.h),
-            child: _buildViewAllReviews(
-              context,
-              viewAllReviewsText: "See mmore",
-            ),
-          ),
+          // Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: 16.h),
+          //   child: _buildViewAllReviews(
+          //     context,
+          //     viewAllReviewsText: "See mmore",
+          //   ),
+          // ),
         ],
       ),
     );
@@ -481,14 +474,14 @@ class ProductDetailsPage extends StatelessWidget {
     return CustomOutlinedButton(
       width: 80.h,
       text: "Rate",
-      margin: EdgeInsets.only(bottom: 2.v),
+      margin: EdgeInsets.only(bottom: 2.h),
     );
   }
 
-  Widget _buildShopInfor(BuildContext context) {
+  Widget _buildShopInfor(BuildContext context, Shop? shop) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.h),
-      padding: EdgeInsets.symmetric(vertical: 16.v),
+      padding: EdgeInsets.symmetric(vertical: 16.h),
       decoration: AppDecoration.outlineBluegray7000f1.copyWith(
         borderRadius: BorderRadiusStyle.roundedBorder8,
       ),
@@ -497,46 +490,50 @@ class ProductDetailsPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: 3.v),
+          SizedBox(height: 3.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const SizedBox(
                 width: 10,
               ),
-              CachedNetworkImage(
-                imageUrl:
-                    "https://www.akamai.com/site/im-demo/media-viewer/01.jpg?imwidth=5000",
-                imageBuilder: (context, imageProvider) {
-                  return Container(
-                    height: 60.h,
-                    width: 60.h,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: imageProvider, fit: BoxFit.cover),
-                    ),
-                  );
-                },
-                placeholder: (context, url) => const Center(
-                    child: SizedBox(
-                        width: 30,
-                        height: 30,
-                        child: CircularProgressIndicator())),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-              ),
+              shop!.logo != null
+                  ? CachedNetworkImage(
+                      imageUrl: shop.logo!,
+                      imageBuilder: (context, imageProvider) {
+                        return Container(
+                          height: 60.h,
+                          width: 60.h,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: imageProvider, fit: BoxFit.cover),
+                          ),
+                        );
+                      },
+                      placeholder: (context, url) => const Center(
+                          child: SizedBox(
+                              width: 30,
+                              height: 30,
+                              child: CircularProgressIndicator())),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    )
+                  : Image.asset(ImageData.placeHolderImg),
               Padding(
                 padding: EdgeInsets.only(left: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Shop name",
+                      shop.name != null ? shop.name! : "",
                       style: CustomTextStyles.titleSmallMedium,
                     ),
-                    SizedBox(height: 2.v),
+                    SizedBox(height: 2.h),
                     Text(
-                      "Address",
+                      shop.addressInfor!.city != null
+                          ? shop.addressInfor!.city!
+                          : "",
                       style: CustomTextStyles.bodySmallGray600,
                     ),
                   ],
@@ -545,9 +542,7 @@ class ProductDetailsPage extends StatelessWidget {
               // Padding(
               //   padding: EdgeInsets.only(right: 1.h),
               //   child:
-              const SizedBox(
-                width: 100,
-              ),
+              Spacer(),
               // OutlinedButton(
               //     onPressed: () {
               //       // go to shop profile
@@ -555,19 +550,21 @@ class ProductDetailsPage extends StatelessWidget {
               //     child: Text("See shop"))
               CustomOutlinedButton(
                 text: "See shop",
-                width: 90,
+                width: 90.w,
                 height: 40.h,
                 onPressed: () {
                   // go to shop profile
+
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ShopProfile(),
+                    builder: (context) => ShopProfile(shop: shop),
                   ));
                 },
               ),
+              SizedBox(width: 20.w),
             ],
           ),
 
-          SizedBox(height: 5.v),
+          SizedBox(height: 5.h),
           // Padding(
           //   padding: EdgeInsets.symmetric(horizontal: 16.h),
           //   child:
@@ -579,21 +576,21 @@ class ProductDetailsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    "55 sản phẩm",
+                    "${shop.totalProduct} products",
                     style: CustomTextStyles.titleSmallMedium,
                   ),
                   SizedBox(
                     width: 12,
                   ),
                   Text(
-                    "4.5 rating",
+                    "${shop.rating} rating",
                     style: CustomTextStyles.titleSmallMedium,
                   ),
                   SizedBox(
                     width: 12,
                   ),
                   Text(
-                    "345 ratingCount",
+                    "${shop.ratingCount} rating count",
                     style: CustomTextStyles.titleSmallMedium,
                   ),
                 ],
@@ -606,10 +603,14 @@ class ProductDetailsPage extends StatelessWidget {
   }
 
   /// Section Widget
-  Widget _buildRatingsAndReviews(BuildContext context) {
+  Widget _buildRatingsAndReviews(BuildContext context, Product product) {
+    List<Review>? list = [];
+    if (product.reviewIDs != null) {
+      list = CommondMethods.getListReview(product.reviewIDs!, listReview);
+    }
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.h),
-      padding: EdgeInsets.symmetric(vertical: 16.v),
+      padding: EdgeInsets.symmetric(vertical: 16.h),
       decoration: AppDecoration.outlineBluegray7000f1.copyWith(
         borderRadius: BorderRadiusStyle.roundedBorder8,
       ),
@@ -618,7 +619,7 @@ class ProductDetailsPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: 3.v),
+          SizedBox(height: 3.h),
           Padding(
             padding: EdgeInsets.only(left: 16.h),
             child: Text(
@@ -627,11 +628,11 @@ class ProductDetailsPage extends StatelessWidget {
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(vertical: 17.v),
+            padding: EdgeInsets.symmetric(vertical: 17.h),
             decoration: AppDecoration.fillOnPrimaryContainer,
             child: Divider(),
           ),
-          SizedBox(height: 3.v),
+          SizedBox(height: 3.h),
           Align(
             alignment: Alignment.center,
             child: Padding(
@@ -640,16 +641,18 @@ class ProductDetailsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 2.v),
+                    padding: EdgeInsets.symmetric(vertical: 2.h),
                     child: RichText(
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: "4.8",
+                            text: product.rating != null
+                                ? product.rating.toString()
+                                : "",
                             style: CustomTextStyles.headlineSmallOnPrimary,
                           ),
                           TextSpan(
-                            text: "5",
+                            text: product.rating != null ? "/5" : "",
                             style: CustomTextStyles.headlineSmallGray600,
                           ),
                         ],
@@ -666,9 +669,9 @@ class ProductDetailsPage extends StatelessWidget {
                           "overall rating",
                           style: CustomTextStyles.titleSmallMedium,
                         ),
-                        SizedBox(height: 2.v),
+                        SizedBox(height: 2.h),
                         Text(
-                          "574 ratings",
+                          "${product.ratingCount} ratings",
                           style: CustomTextStyles.bodySmallGray600,
                         ),
                       ],
@@ -681,20 +684,23 @@ class ProductDetailsPage extends StatelessWidget {
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(vertical: 17.v),
+            padding: EdgeInsets.symmetric(vertical: 17.h),
             decoration: AppDecoration.fillOnPrimaryContainer,
             child: Divider(),
           ),
           Container(
-            padding: EdgeInsets.symmetric(vertical: 17.v),
+            padding: EdgeInsets.symmetric(vertical: 17.h),
             decoration: AppDecoration.fillOnPrimaryContainer,
             child: Divider(),
           ),
-          ReviewViewWidget(review: review),
-          _buildViewAllReviews(
-            context,
-            viewAllReviewsText: "View all 76 reviews",
-          )
+          if (product.reviewIDs != null) ...{
+            ReviewViewWidget(review: list!.last),
+            if (product.reviewIDs!.length > 1) ...{
+              _buildViewAllReviews(context,
+                  viewAllReviewsText: "view all ${product.reviewIDs!.length}",
+                  list: list!)
+            },
+          }
         ],
       ),
     );
@@ -750,8 +756,46 @@ class ProductDetailsPage extends StatelessWidget {
   }
 
   Widget _buildChatWithProduct(BuildContext context) {
+    final chatProvider = Provider.of<ChatViewModel>(context);
+    List<Chat> listChat = chatProvider.list;
+    List<UserModel>? lisUser = UserRepo().listUser;
+    UserModel? seller =
+        CommondMethods.getUserModelByShopID(product!.shopID!, lisUser);
     return CustomOutlinedButton(
-      height: 48.v,
+      onPressed: () {
+        Chat? chat;
+        Message msg = Message(
+            chatType: ChatType.text,
+            isShop: false,
+            productID: product!.id,
+            receiverID: seller!.id,
+            senderID: userModel.id,
+            time: DateTime.now());
+        if (!CommondMethods.hasConversation(
+            userModel.id!, seller!.id!, listChat)) {
+          chat = Chat(
+            listMsg: [],
+            sellerID: seller.id,
+            shopID: product!.shopID,
+            shopLogo: product!.shopLogo,
+            shopName: product!.shopName,
+            userAvatar: userModel.avatar,
+            userID: userModel.id,
+            userName: userModel.firstName,
+          );
+          chatProvider.addNewChat(chat);
+        } else {
+          chat = CommondMethods.getChatByuserAndSeller(
+              seller.id!, userModel.id!, listChat);
+        }
+        chatProvider.sendMsgToAChatBox(msg, chat!.id!);
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) {
+            return ChattingPage(chat: chat);
+          },
+        ));
+      },
+      height: 48.h,
       width: 110.h,
       text: "Chat",
       buttonStyle: CustomButtonStyles.outlinePrimaryContainerTL8,
@@ -765,8 +809,8 @@ class ProductDetailsPage extends StatelessWidget {
     final productDetailProvider = Provider.of<ProductDetailViewModel>(context);
     final size = MediaQuery.of(context).size;
     return CustomOutlinedButton(
-      height: 48.v,
-      width: 110.h,
+      height: 48.h,
+      width: 110.w,
       text: "Add to cart",
       onPressed: () {
         // Navigator.of(context).push(MaterialPageRoute(builder: (context) => CartPage(),));
@@ -965,15 +1009,9 @@ class ProductDetailsPage extends StatelessWidget {
   /// Section Widget
   Widget _buildBuyNow(BuildContext context) {
     return CustomElevatedButton(
-      height: 48.v,
+      height: 48.h,
       width: 110.h,
-      onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) {
-            return Profilepage();
-          },
-        ));
-      },
+      onPressed: () {},
       text: "Buy now",
       // margin: EdgeInsets.only(left: 16.h),
       buttonStyle: CustomButtonStyles.fillPrimaryContainer,
@@ -987,7 +1025,7 @@ class ProductDetailsPage extends StatelessWidget {
       margin: EdgeInsets.only(
         left: 5.h,
         right: 5.h,
-        bottom: 10.v,
+        bottom: 10.h,
       ),
       decoration: AppDecoration.outlineBluegray7000f,
       child: Row(
@@ -1029,20 +1067,18 @@ class ProductDetailsPage extends StatelessWidget {
   }
 
   /// Common widget
-  Widget _buildViewAllReviews(
-    BuildContext context, {
-    required String viewAllReviewsText,
-  }) {
+  Widget _buildViewAllReviews(BuildContext context,
+      {required String viewAllReviewsText, required List<Review> list}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 4.v),
+          padding: EdgeInsets.symmetric(vertical: 4.h),
           child: TextButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ReviewPage(),
+                builder: (context) => ReviewPage(list: list),
               ));
             },
             child: Text(
@@ -1074,7 +1110,7 @@ class _buildAnimatedIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 6.v,
+      height: 6.h,
       child: AnimatedSmoothIndicator(
         activeIndex: sliderIndex,
         count: 1,
@@ -1083,7 +1119,7 @@ class _buildAnimatedIndicator extends StatelessWidget {
           spacing: 8,
           activeDotColor: theme.colorScheme.primaryContainer,
           dotColor: appTheme.gray200,
-          dotHeight: 6.v,
+          dotHeight: 6.h,
           dotWidth: 6.h,
         ),
       ),
@@ -1111,7 +1147,7 @@ class _buildProductPrices extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(
                 left: 4.h,
-                top: 3.v,
+                top: 3.h,
               ),
               child: Text(
                 "400000VND",
@@ -1123,7 +1159,7 @@ class _buildProductPrices extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(
                 left: 4.h,
-                top: 3.v,
+                top: 3.h,
               ),
               child: Text(
                 "15% off",

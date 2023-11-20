@@ -2,6 +2,7 @@ import 'package:dpl_ecommerce/const/base_button.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomElevatedButton extends BaseButton {
   CustomElevatedButton({
@@ -47,7 +48,7 @@ class CustomElevatedButton extends BaseButton {
   }
 
   Widget get buildElevatedButtonWidget => Container(
-        height: this.height ?? 22.v,
+        height: this.height ?? 22.h,
         width: this.width ?? double.maxFinite,
         margin: margin,
         decoration: decoration,

@@ -1,5 +1,6 @@
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import './app_theme.dart';
 
 class AppDecoration {
@@ -18,13 +19,6 @@ class AppDecoration {
       );
   static BoxDecoration get fillRed => BoxDecoration(
         color: appTheme.red500,
-      );
-      static BoxDecoration get outlinePrimary => BoxDecoration(
-        color: theme.colorScheme.onPrimaryContainer,
-        border: Border.all(
-          color: theme.colorScheme.primary.withOpacity(1),
-          width: 1.h,
-        ),
       );
 
   // Gradient decorations
@@ -90,88 +84,6 @@ class AppDecoration {
           ),
         ],
       );
-       static BoxDecoration get fillGray => BoxDecoration(
-        color: appTheme.gray100,
-      );
-  static BoxDecoration get fillGray700 => BoxDecoration(
-        color: appTheme.gray100,
-      );
-  static BoxDecoration get fillOnPrimary => BoxDecoration(
-        color: theme.colorScheme.onPrimary,
-      );
-
-  // Outline decorations
-  static BoxDecoration get outlineBlack => BoxDecoration(
-        color: theme.colorScheme.onPrimary,
-        boxShadow: [
-          BoxShadow(
-            color: appTheme.black90033,
-            spreadRadius: 2.h,
-            blurRadius: 2.h,
-            offset: Offset(
-              0,
-              4,
-            ),
-          ),
-        ],
-      );
-  static BoxDecoration get outlineBlack90033 => BoxDecoration(
-        color: theme.colorScheme.onPrimary,
-        boxShadow: [
-          BoxShadow(
-            color: appTheme.black90033,
-            spreadRadius: 2.h,
-            blurRadius: 2.h,
-            offset: Offset(
-              0,
-              5,
-            ),
-          ),
-        ],
-      );
-  
-  static BoxDecoration get outlineGray => BoxDecoration(
-        color: theme.colorScheme.onPrimary,
-        border: Border.all(
-          color: appTheme.gray50,
-          width: 1.h,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: appTheme.black90033,
-            spreadRadius: 2.h,
-            blurRadius: 2.h,
-            offset: Offset(
-              0,
-              8,
-            ),
-          ),
-        ],
-      );
-  static BoxDecoration get outlineGray100 => BoxDecoration(
-        color: theme.colorScheme.onPrimary,
-        border: Border.all(
-          color: appTheme.gray100,
-          width: 1.h,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: appTheme.black90033,
-            spreadRadius: 2.h,
-            blurRadius: 2.h,
-            offset: Offset(
-              0,
-              2,
-            ),
-          ),
-        ],
-      );
-  static BoxDecoration get outlineGray800 => BoxDecoration(
-        border: Border.all(
-          color: appTheme.gray800,
-          width: 1.h,
-        ),
-      );
 }
 
 class BorderRadiusStyle {
@@ -186,18 +98,6 @@ class BorderRadiusStyle {
       );
   static BorderRadius get roundedBorder8 => BorderRadius.circular(
         8.h,
-      );
-      static BorderRadius get roundedBorder10 => BorderRadius.circular(
-        10.h,
-      );
-  static BorderRadius get roundedBorder15 => BorderRadius.circular(
-        15.h,
-      );
-  static BorderRadius get roundedBorder6 => BorderRadius.circular(
-        6.h,
-      );
-      static BorderRadius get roundedBorder5 => BorderRadius.circular(
-        5.h,
       );
 }
 
