@@ -1,5 +1,6 @@
 import 'package:dpl_ecommerce/models/message.dart';
 import 'package:intl/intl.dart';
+import 'package:email_validator/email_validator.dart';
 
 class Validators {
   Validators._();
@@ -51,6 +52,15 @@ class Validators {
       return "Enter valid number";
     } else {
       return null;
+    }
+  }
+
+  static String? isValidEmail(String? email) {
+    final bool isValid = EmailValidator.validate(email!);
+    if (isValid) {
+      return null;
+    } else {
+      return "Input valid email";
     }
   }
 

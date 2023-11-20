@@ -52,4 +52,7 @@ class ImageData {
   static String vietnamFlag = '$imagePath/vietnam_flag.png';
   static String ukFlag = '$imagePath/UK_flag.png';
   static String imgIconClock = '$imagePath/img_icon_clock1.jpg';
+
+  // logo
+  static String googleLogo = '$imagePath/google_logo.png';
 }
