@@ -41,7 +41,7 @@ class MyordersoneItemWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(10.h),
           boxShadow: [
             BoxShadow(
-              color: appTheme.black900,
+              color: Colors.black26,
               spreadRadius: 2.h,
               blurRadius: 2.h,
               offset: Offset(

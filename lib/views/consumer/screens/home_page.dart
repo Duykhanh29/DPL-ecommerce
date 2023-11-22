@@ -2,34 +2,33 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dpl_ecommerce/const/app_decoration.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_badge_cart.dart';
-import 'package:dpl_ecommerce/customs/custom_search_view.dart';
+
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/models/category.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/repositories/category_repo.dart';
 import 'package:dpl_ecommerce/repositories/flash_sale_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
-import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
+
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
-import 'package:dpl_ecommerce/views/consumer/screens/address_edit.dart';
-import 'package:dpl_ecommerce/views/consumer/screens/address_screen.dart';
-import 'package:dpl_ecommerce/views/consumer/screens/checkout_page.dart';
+
 import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/chat_page.dart';
+
 import 'package:dpl_ecommerce/views/consumer/screens/search_page.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_item_widget1.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/promotion_banner_item_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/category_item_widget.dart';
-import 'package:dpl_ecommerce/views/consumer/ui_elements/two_slider_item_widget.dart';
+
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:section_view/section_view.dart';
+
 import 'package:dpl_ecommerce/models/flash_sale.dart';
 
 class HomePage extends StatelessWidget {
@@ -78,7 +77,7 @@ class HomePage extends StatelessWidget {
                     child: Icon(
                       Icons.chat_bubble_outline,
                       size: 24,
-                      color: Colors.redAccent,
+                      color: Colors.white,
                     ),
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
@@ -112,7 +111,7 @@ class HomePage extends StatelessWidget {
                             onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => AddressScreen(),
+                                builder: (context) => SearchScreen(),
                               ),
                             ),
                             child: Padding(

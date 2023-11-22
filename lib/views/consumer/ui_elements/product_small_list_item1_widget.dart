@@ -158,7 +158,8 @@ class _buildVisualProduct extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // Container(
@@ -176,6 +177,7 @@ class _buildVisualProduct extends StatelessWidget {
                   //     style: CustomTextStyles.labelMediumOnPrimaryContainer,
                   //   ),
                   // ),
+                  SizedBox(width: 80,),
                   Padding(
                     padding: EdgeInsets.only(
                       left: 60.h,
@@ -186,7 +188,7 @@ class _buildVisualProduct extends StatelessWidget {
                       width: 24.h,
                       padding: EdgeInsets.all(4.h),
                       child: CustomImageView(
-                        imagePath: ImageData.imgFrame48x48,
+                        imagePath: ImageData.imgFavourite,
                       ),
                     ),
                   ),

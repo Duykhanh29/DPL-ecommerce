@@ -19,9 +19,7 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> {
   List<Widget> pages = [
     HomePage(),
-    // CategoryPage();
     CartPage(),
-    CategoryPage(),
     OrderPage(),
     UserProfilePage(),
   ];
@@ -69,7 +67,7 @@ class _MainViewState extends State<MainView> {
         currentIndex: indexPage,
         iconSize: 25,
         selectedFontSize: 8,
-        selectedItemColor: Colors.orangeAccent.shade200,
+        selectedItemColor: Colors.blue.shade400,
       ),
       body: IndexedStack(
         index: indexPage,
