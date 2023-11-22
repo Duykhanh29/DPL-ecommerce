@@ -4,6 +4,7 @@ import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 // import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/address_screen.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/change_language_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/favorite_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/profile_setting_page.dart';
@@ -58,6 +59,9 @@ class UserProfilePage extends StatelessWidget {
                               ListTile(
                                 onTap: () {
                                   // go to address page
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => AddressScreen(),
+                                  ));
                                 },
                                 leading: Icon(Icons.location_on),
                                 title: Padding(
@@ -76,6 +80,10 @@ class UserProfilePage extends StatelessWidget {
                                   child: InkWell(
                                     onTap: () {
                                       // go to address page
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                        builder: (context) => AddressScreen(),
+                                      ));
                                     },
                                     child: Center(
                                       child: Icon(Icons.navigate_next),
