@@ -18,6 +18,41 @@ class CustomTextStyles {
   static get bodySmall10 => theme.textTheme.bodySmall!.copyWith(
         fontSize: 10.sp,
       );
+       static get titleSmallErrorContainer => theme.textTheme.titleSmall!.copyWith(
+        color: theme.colorScheme.errorContainer,
+        fontWeight: FontWeight.w600,
+      );
+      static get titleMediumBlack900 => theme.textTheme.titleMedium!.copyWith(
+        color: appTheme.black900,
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      );
+      static get bodyMediumBlack90014 => theme.textTheme.bodyMedium!.copyWith(
+        color: appTheme.black900,
+        fontSize: 14,
+      );
+      static get bodySmallPrimary => theme.textTheme.bodySmall!.copyWith(
+        color: theme.colorScheme.primary,
+      );
+  static get labelLargeInterBlack900Medium =>
+      theme.textTheme.labelLarge!.inter.copyWith(
+        color: appTheme.black900,
+        fontWeight: FontWeight.w500,
+      );
+static get titleLargeInterSemiBold =>
+      theme.textTheme.titleLarge!.inter.copyWith(
+        fontWeight: FontWeight.w600,
+      );
+static get labelLargeInterGray800 =>
+      theme.textTheme.labelLarge!.inter.copyWith(
+        color: appTheme.gray600,
+        fontWeight: FontWeight.w500,
+      );
+      static get labelLargeInterGray90004 =>
+      theme.textTheme.labelLarge!.inter.copyWith(
+        color: appTheme.black900,
+        fontWeight: FontWeight.w500,
+      );
   static get bodySmallBluegray300 => theme.textTheme.bodySmall!.copyWith(
         color: appTheme.blueGray300,
       );

@@ -21,6 +21,9 @@ import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/promotion_banner_item_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/category_item_widget.dart';
+import 'package:dpl_ecommerce/views/seller/screens/product_seller.dart';
+import 'package:dpl_ecommerce/views/seller/screens/register.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;

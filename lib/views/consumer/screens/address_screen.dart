@@ -1,13 +1,12 @@
-import 'package:dpl_ecommerce/const/app_decoration.dart';
+
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_elevate_button.dart';
-import 'package:dpl_ecommerce/customs/custom_icon_button.dart';
-import 'package:dpl_ecommerce/customs/custom_image_view.dart';
+
 import 'package:dpl_ecommerce/customs/custom_outline_button.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
-import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
+
 import 'package:dpl_ecommerce/views/consumer/screens/address_edit.dart';
-import 'package:dpl_ecommerce/views/consumer/screens/checkout_page.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -56,12 +55,20 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
                     vertical: 21.h,
                   ),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(9),
-                    border: Border.all(
-                      color: Colors.grey,
-                      width: 1,
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(9),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          spreadRadius: 2.h,
+                          blurRadius: 2.h,
+                          offset: Offset(
+                            0,
+                            4,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,

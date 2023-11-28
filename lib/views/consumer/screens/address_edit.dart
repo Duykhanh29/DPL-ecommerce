@@ -17,12 +17,11 @@ class AddressForm extends StatefulWidget {
 
 class _AddressFormState extends State<AddressForm> {
   final _formKey = GlobalKey<FormState>();
-//ghghgh
   String? country;
-  String? state;
   String? city;
-  double? latitude;
-  double? longitude;
+  String? number;
+  String? ward;
+  String? district;
   bool isDefaultAddress = false;
   String? name;
 
@@ -41,98 +40,175 @@ class _AddressFormState extends State<AddressForm> {
 
           //leading: Icon(Icons.menu),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Country'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a country';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    country = value;
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'State'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a state';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    state = value;
-                  },
-                ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  
+                  Text("Country"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  DropdownSearch(
+                    items: ["Brazil", "France", "Tunisia", "Canada"],
+                    dropdownDecoratorProps: DropDownDecoratorProps(),
+                    onChanged: print,
+                    selectedItem: "Tunisia",
+                    validator: (String? item) {
+                      if (item == null)
+                        return "Required field";
+                      else if (item == "Brazil")
+                        return "Invalid item";
+                      else
+                        return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text("City"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  DropdownSearch(
+                    items: ["Brazil", "France", "Tunisia", "Canada"],
+                    dropdownDecoratorProps: DropDownDecoratorProps(),
+                    onChanged: print,
+                    selectedItem: "Tunisia",
+                    validator: (String? item) {
+                      if (item == null)
+                        return "Required field";
+                      else if (item == "Brazil")
+                        return "Invalid item";
+                      else
+                        return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text("District"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  DropdownSearch(
+                    items: ["Brazil", "France", "Tunisia", "Canada"],
+                    dropdownDecoratorProps: DropDownDecoratorProps(),
+                    onChanged: print,
+                    selectedItem: "Tunisia",
+                    validator: (String? item) {
+                      if (item == null)
+                        return "Required field";
+                      else if (item == "Brazil")
+                        return "Invalid item";
+                      else
+                        return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
 
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'City'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a city';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    city = value;
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Latitude'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a latitude';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    latitude = double.tryParse(value!);
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Longitude'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a longitude';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    longitude = double.tryParse(value!);
-                  },
-                ),
+                  Text("Ward"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                   DropdownSearch(
+                    items: ["Brazil", "France", "Tunisia", "Canada"],
+                    dropdownDecoratorProps: DropDownDecoratorProps(),
+                    onChanged: print,
+                    selectedItem: "Tunisia",
+                    validator: (String? item) {
+                      if (item == null)
+                        return "Required field";
+                      else if (item == "Brazil")
+                        return "Invalid item";
+                      else
+                        return null;
+                    },
+                  ),
+                  
+                  const SizedBox(
+                    height: 10,
+                  ),
 
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Name'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a name';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    name = value;
-                  },
-                ),
-                CheckboxListTile(
-                  title: Text('Default Address'),
-                  value: isDefaultAddress,
-                  onChanged: (value) {
-                    setState(() {
-                      isDefaultAddress = value!;
-                    });
-                  },
-                ),
-                // Các trường khác tương tự
-                SizedBox(height: 16),
-              ],
+                  Text("Apartment number"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 10.0),
+                      filled: true,
+                      hoverColor: appTheme.gray300,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter an apartment number';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      country = value;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+
+                  Text("Name"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 10.0),
+                      filled: true,
+                      hoverColor: appTheme.gray300,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a name';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      country = value;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+
+                  
+                  CheckboxListTile(
+                    title: Text('Default Address'),
+                    value: isDefaultAddress,
+                    onChanged: (value) {
+                      setState(() {
+                        isDefaultAddress = value!;
+                      });
+                    },
+                  ),
+                  // Các trường khác tương tự
+                  SizedBox(height: 16),
+                ],
+              ),
             ),
           ),
         ),
