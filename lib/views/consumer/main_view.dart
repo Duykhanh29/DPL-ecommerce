@@ -5,7 +5,9 @@ import 'package:dpl_ecommerce/views/consumer/screens/home_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/order_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/user_profile_page.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_section/consumer_drawer.dart';
-import 'package:dpl_ecommerce/views/seller/screens/product_seller.dart';
+
+import 'package:dpl_ecommerce/views/seller/screens/product/product_app.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,9 +22,9 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> {
   List<Widget> pages = [
     HomePage(),
-    CartPage(),
     //CartPage(),
-    ProductSellerScreen(),
+    //CartPage(),
+    ProductsApp(products: [],),
     OrderPage(),
     UserProfilePage(),
   ];
