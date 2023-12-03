@@ -9,6 +9,7 @@ import 'package:dpl_ecommerce/views/consumer/ui_section/consumer_drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/add_address.dart';
 
 class MainView extends StatefulWidget {
   const MainView({super.key});
@@ -20,8 +21,8 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> {
   List<Widget> pages = [
     HomePage(),
-    // CategoryPage(),
-    LoginScreen(),
+    CategoryPage(),
+    // AddAddress(),
     OrderPage(),
     UserProfilePage(),
   ];

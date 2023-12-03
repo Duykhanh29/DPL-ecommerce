@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/models/chat.dart';
 import 'package:dpl_ecommerce/models/message.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class ChatViewModel extends ChangeNotifier {
           senderID: "userID100",
           isShop: false,
           receiverID: "userID02",
-          time: DateTime.now(),
+          time: Timestamp.fromDate(DateTime.now()),
         ),
         Message(
             chatType: ChatType.text,
@@ -35,7 +36,7 @@ class ChatViewModel extends ChangeNotifier {
             id: "messageID02",
             productID: "productID01",
             senderID: "userID02",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: true,
             receiverID: "userID100"),
         Message(
@@ -45,7 +46,7 @@ class ChatViewModel extends ChangeNotifier {
             productID: null,
             senderID: "userID100",
             isShop: false,
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             receiverID: "userID02"),
         Message(
           chatType: ChatType.text,
@@ -55,14 +56,14 @@ class ChatViewModel extends ChangeNotifier {
           senderID: "userID100",
           isShop: false,
           receiverID: "userID02",
-          time: DateTime.now(),
+          time: Timestamp.fromDate(DateTime.now()),
         ),
         Message(
             chatType: ChatType.link,
             content: "https://www.youtube.com/",
             id: "messageID05",
             productID: "productID01",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: true,
             senderID: "userID02",
             receiverID: "userID100"),
@@ -73,7 +74,7 @@ class ChatViewModel extends ChangeNotifier {
             id: "messageID06",
             productID: null,
             senderID: "userID100",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: false,
             receiverID: "userID02"),
         Message(
@@ -83,7 +84,7 @@ class ChatViewModel extends ChangeNotifier {
             id: "messageID07",
             productID: null,
             senderID: "userID100",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: false,
             receiverID: "userID02"),
         Message(
@@ -94,7 +95,7 @@ class ChatViewModel extends ChangeNotifier {
             productID: null,
             senderID: "userID100",
             isShop: false,
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             receiverID: "userID02"),
         Message(
           chatType: ChatType.text,
@@ -104,7 +105,7 @@ class ChatViewModel extends ChangeNotifier {
           senderID: "userID01",
           isShop: false,
           receiverID: "userID04",
-          time: DateTime.now(),
+          time: Timestamp.fromDate(DateTime.now()),
         ),
         Message(
             chatType: ChatType.text,
@@ -112,7 +113,7 @@ class ChatViewModel extends ChangeNotifier {
             id: "messageID02",
             productID: "productID01",
             senderID: "userID02",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: true,
             receiverID: "userID100"),
         Message(
@@ -122,7 +123,7 @@ class ChatViewModel extends ChangeNotifier {
             productID: null,
             senderID: "userID100",
             isShop: false,
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             receiverID: "userID02"),
         Message(
           chatType: ChatType.text,
@@ -132,14 +133,14 @@ class ChatViewModel extends ChangeNotifier {
           senderID: "userID100",
           isShop: false,
           receiverID: "userID02",
-          time: DateTime.now(),
+          time: Timestamp.fromDate(DateTime.now()),
         ),
         Message(
             chatType: ChatType.link,
             content: "https://www.youtube.com/",
             id: "messageID05",
             productID: "productID01",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: true,
             senderID: "userID02",
             receiverID: "userID100"),
@@ -150,7 +151,7 @@ class ChatViewModel extends ChangeNotifier {
             id: "messageID06",
             productID: null,
             senderID: "userID100",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: false,
             receiverID: "userID02"),
         Message(
@@ -160,7 +161,7 @@ class ChatViewModel extends ChangeNotifier {
             id: "messageID07",
             productID: null,
             senderID: "userID100",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: false,
             receiverID: "userID02"),
         Message(
@@ -171,7 +172,7 @@ class ChatViewModel extends ChangeNotifier {
             productID: null,
             senderID: "userID100",
             isShop: false,
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             receiverID: "userID02"),
       ],
     ),
@@ -198,7 +199,7 @@ class ChatViewModel extends ChangeNotifier {
           senderID: "userID100",
           isShop: false,
           receiverID: "userID03",
-          time: DateTime.now(),
+          time: Timestamp.fromDate(DateTime.now()),
         ),
         Message(
           chatType: ChatType.text,
@@ -208,7 +209,7 @@ class ChatViewModel extends ChangeNotifier {
           senderID: "userID03",
           isShop: true,
           receiverID: "userID100",
-          time: DateTime.now(),
+          time: Timestamp.fromDate(DateTime.now()),
         ),
         Message(
             chatType: ChatType.text,
@@ -216,7 +217,7 @@ class ChatViewModel extends ChangeNotifier {
             id: "messageID03",
             productID: null,
             senderID: "userID03",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: true,
             receiverID: "userID100"),
         Message(
@@ -225,7 +226,7 @@ class ChatViewModel extends ChangeNotifier {
             id: "messageID04",
             productID: null,
             senderID: "userID100",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: false,
             receiverID: "userID03"),
         Message(
@@ -235,7 +236,7 @@ class ChatViewModel extends ChangeNotifier {
             productID: null,
             senderID: "userID03",
             receiverID: "userID100",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: true),
         Message(
             chatType: ChatType.video,
@@ -245,7 +246,7 @@ class ChatViewModel extends ChangeNotifier {
             productID: null,
             senderID: "userID03",
             receiverID: "userID100",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: true),
         Message(
             chatType: ChatType.video,
@@ -255,7 +256,7 @@ class ChatViewModel extends ChangeNotifier {
             productID: null,
             senderID: "userID100",
             isShop: false,
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             receiverID: "userID03"),
         Message(
           chatType: ChatType.image,
@@ -266,7 +267,7 @@ class ChatViewModel extends ChangeNotifier {
           senderID: "userID100",
           isShop: false,
           receiverID: "userID03",
-          time: DateTime.now(),
+          time: Timestamp.fromDate(DateTime.now()),
         ),
       ],
     )

@@ -31,12 +31,12 @@ class ProductItemWidget extends StatelessWidget {
         width: 145.w,
         child: Column(
           children: [
-            CustomImageView(
-              imagePath: ImageData.imgBagOnprimary,
-              height: 140.h,
-              width: 140.w,
-              radius: BorderRadius.circular(
-                4.h,
+            Container(
+              padding: EdgeInsets.all(2.h),
+              child: Image.network(
+                product!.images![0],
+                width: 125.w,
+                height: 140.h,
               ),
             ),
             SizedBox(height: 9.h),

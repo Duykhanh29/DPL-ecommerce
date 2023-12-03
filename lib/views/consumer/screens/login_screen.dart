@@ -6,9 +6,11 @@ import 'package:dpl_ecommerce/customs/custom_text_form_field.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/helpers/validators.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
+import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key})
@@ -222,17 +224,20 @@ class LoginScreen extends StatelessWidget {
 
   /// Section Widget
   Widget _buildLoginWithGoogle(BuildContext context) {
+    final authProvider = Provider.of<AuthViewModel>(context);
     return Container(
       height: 50.h,
       width: ScreenUtil().screenWidth * 0.9,
       child: OutlinedButton.icon(
-        onPressed: () {},
+        onPressed: () async {
+          await authProvider.signInWIthGoogle();
+        },
         icon: Image.asset(
           ImageData.googleLogo,
           height: 10.h,
           width: 10.h,
         ),
-        label: Text("Login with Google"),
+        label: const Text("Login with Google"),
         style: ButtonStyle(
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.r)))),

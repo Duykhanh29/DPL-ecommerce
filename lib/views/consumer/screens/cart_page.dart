@@ -7,9 +7,14 @@ import 'package:dpl_ecommerce/customs/custom_text_form_field.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/models/cart.dart';
 import 'package:dpl_ecommerce/models/product_in_cart_model.dart';
+import 'package:dpl_ecommerce/models/user.dart';
+import 'package:dpl_ecommerce/models/voucher.dart';
+import 'package:dpl_ecommerce/repositories/cart_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_in_cart_repo.dart';
+import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/common/common_methods.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
+import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/cart_widgets/product_cart_item.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/product_detail_page.dart';
 import 'package:flutter/material.dart';
@@ -28,203 +33,49 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  TextEditingController cuponCodeController = TextEditingController();
+  CartRepo cartrepo = CartRepo();
+  VoucherRepo voucherRepo = VoucherRepo();
+  List<Voucher>? listVoucher;
+  bool isLoading = true;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchData();
+  }
 
-  List<ProductInCartModel> selecttedProducts = [];
-
-  int totalPrice = 0;
-
-  int savingPrice = 0;
-
-  int realPrice = 0;
-
-  void calculatePrices() {
-    for (var product in selecttedProducts) {
-      setState(() {
-        totalPrice += product.cost;
-        // need to fetch voucherID to get discount
-        savingPrice += 5000;
-      });
-    }
+  Future<void> fetchData() async {
+    listVoucher = await voucherRepo.getListVoucher();
     setState(() {
-      realPrice = totalPrice - savingPrice;
+      isLoading = false;
     });
   }
 
-  // final Cart cart = Cart(productInCarts: [
-  //   ProductInCartModel(
-  //       cost: 240000,
-  //       quantity: 2,
-  //       color: "Red",
-  //       currencyID: "currencyID01",
-  //       id: "productInCartModelID01",
-  //       productID: "productID01",
-  //       productImage:
-  //           "https://static.addtoany.com/images/dracaena-cinnabari.jpg",
-  //       productName: "Sadfsf",
-  //       size: "L",
-  //       type: "Wooden",
-  //       userID: "userID01"),
-  //   ProductInCartModel(
-  //       cost: 240000,
-  //       quantity: 2,
-  //       color: "Red",
-  //       currencyID: "currencyID01",
-  //       id: "productInCartModelID01",
-  //       productID: "productID01",
-  //       productImage:
-  //           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTq29z2MgTbf2LERHqbHkT1KGAv1WwxXyYSnw&usqp=CAU",
-  //       productName: "Sadfsf",
-  //       size: "L",
-  //       type: "Wooden",
-  //       userID: "userID01"),
-  //   ProductInCartModel(
-  //       cost: 180000,
-  //       quantity: 1,
-  //       color: "Blue",
-  //       currencyID: "currencyID02",
-  //       id: "productInCartModelID02",
-  //       productID: "productID02",
-  //       productImage:
-  //           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3UTIruXjQnL8lIc25soS3jNKnW-zLMpoP6A&usqp=CAU",
-  //       productName: "Rose",
-  //       size: "M",
-  //       type: "Flower",
-  //       userID: "userID02"),
-  //   ProductInCartModel(
-  //       cost: 120000,
-  //       quantity: 3,
-  //       color: "Green",
-  //       currencyID: "currencyID03",
-  //       id: "productInCartModelID03",
-  //       productID: "productID03",
-  //       productImage:
-  //           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2T2ayBMxgRLsBOS5MOQ5VFcLET7pndXGPIA&usqp=CAU",
-  //       productName: "Cactus",
-  //       size: "S",
-  //       type: "Spiky",
-  //       userID: "userID03"),
-  //   ProductInCartModel(
-  //       cost: 350000,
-  //       quantity: 1,
-  //       color: "Yellow",
-  //       currencyID: "currencyID04",
-  //       id: "productInCartModelID04",
-  //       productID: "productID04",
-  //       productImage:
-  //           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrKHPsvNDJHY9tWpkHrfkfo8Dkf0LvZU3Hdg&usqp=CAUg",
-  //       productName: "Sunflower",
-  //       size: "XL",
-  //       type: "Blooming",
-  //       userID: "userID04"),
-  //   ProductInCartModel(
-  //       cost: 50000,
-  //       quantity: 5,
-  //       color: "Purple",
-  //       currencyID: "currencyID05",
-  //       id: "productInCartModelID05",
-  //       productID: "productID05",
-  //       productImage:
-  //           "https://media.macphun.com/img/uploads/customer/how-to/570/15550740495cb08c019f4a94.42766927.jpg?q=85&w=1340",
-  //       productName: "Lavender",
-  //       size: "M",
-  //       type: "Aromatic",
-  //       userID: "userID05"),
-  //   ProductInCartModel(
-  //       cost: 280000,
-  //       quantity: 2,
-  //       color: "Orange",
-  //       currencyID: "currencyID06",
-  //       id: "productInCartModelID06",
-  //       productID: "productID06",
-  //       productImage:
-  //           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_ums6Rp3LJDJZ4ClL81ZAa1x7Jos8YVCdKg&usqp=CAU",
-  //       productName: "Orange",
-  //       size: "L",
-  //       type: "Juicy",
-  //       userID: "userID06"),
-  //   ProductInCartModel(
-  //       cost: 75000,
-  //       quantity: 1,
-  //       color: "White",
-  //       currencyID: "currencyID07",
-  //       id: "productInCartModelID07",
-  //       productID: "productID07",
-  //       productImage:
-  //           "https://i.insider.com/60638bd66183e1001981966a?width=1136&format=jpeg",
-  //       productName: "Lily",
-  //       size: "S",
-  //       type: "Elegant",
-  //       userID: "userID07"),
-  //   ProductInCartModel(
-  //       cost: 200000,
-  //       quantity: 4,
-  //       color: "Brown",
-  //       currencyID: "currencyID08",
-  //       id: "productInCartModelID08",
-  //       productID: "productID08",
-  //       productImage:
-  //           "https://media.istockphoto.com/id/1352890602/photo/close-up-of-a-businessman-sitting-at-his-desk-and-using-a-navigation-app-on-his-cell-phone.jpg?s=612x612&w=0&k=20&c=yHWBg9Rv8UwKq78iRN34YRJRjI4XCDr-1saebzRf0pM=",
-  //       productName: "Bonsai",
-  //       size: "M",
-  //       type: "Miniature",
-  //       userID: "userID08"),
-  //   ProductInCartModel(
-  //       cost: 300000,
-  //       quantity: 3,
-  //       color: "Pink",
-  //       currencyID: "currencyID09",
-  //       id: "productInCartModelID09",
-  //       productID: "productID09",
-  //       productImage:
-  //           "https://media.istockphoto.com/id/1058305310/photo/connected-to-all-that-she-needs.jpg?s=612x612&w=0&k=20&c=F0JYRwD0TImf5lqVZkMDqckH0Cx_l9WxxEBfVaHSppg=",
-  //       productName: "Cherry Blossom",
-  //       size: "L",
-  //       type: "Delicate",
-  //       userID: "userID09"),
-  //   ProductInCartModel(
-  //       cost: 180000,
-  //       quantity: 2,
-  //       color: "Gray",
-  //       currencyID: "currencyID10",
-  //       id: "productInCartModelID10",
-  //       productID: "productID10",
-  //       productImage:
-  //           "https://www.freecodecamp.org/news/content/images/2022/04/derick-mckinney-oARTWhz1ACc-unsplash.jpg",
-  //       productName: "Succulent",
-  //       size: "S",
-  //       type: "Drought-resistant",
-  //       userID: "userID10"),
-  //   ProductInCartModel(
-  //       cost: 120000,
-  //       quantity: 1,
-  //       color: "Black",
-  //       currencyID: "currencyID11",
-  //       id: "productInCartModelID11",
-  //       productID: "productID11",
-  //       productImage:
-  //           "https://images.pexels.com/photos/4603884/pexels-photo-4603884.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-  //       productName: "Tulip",
-  //       size: "XL",
-  //       type: "Vibrant",
-  //       userID: "userID11"),
-  // ], savingCost: 25000, totalCost: 250000, userID: "userID01");
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    listVoucher!.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
     // mediaQueryData = MediaQuery.of(context);
     final provider = Provider.of<CartViewModel>(context, listen: true);
     final cart = provider.cart;
+    final userProvider = Provider.of<UserViewModel>(context);
+    final user = userProvider.currentUser;
     final size = MediaQuery.of(context).size;
+    if (!isLoading) {
+      provider.setListVoucher(listVoucher!);
+    }
     // final selectedProduct = provider.list;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        // leading: IconButton(
-        //     onPressed: () {
-        //       Navigator.of(context).pop();
-        //     },
-        //     icon: const Icon(Icons.arrow_back)),
+        leading: CustomArrayBackWidget(function: () {
+          provider.reset();
+        }),
         title: Text("Your cart"),
       ),
       body: Container(
@@ -232,27 +83,30 @@ class _CartPageState extends State<CartPage> {
         width: double.maxFinite,
         // decoration: AppDecoration.fillOnPrimaryContainer,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            SizedBox(height: 16),
-            ProductInCartDetails(list: cart.productInCarts!),
+            // SizedBox(height: 16.h),
+            CartBody(size: size, cartrepo: cartrepo, user: user),
             // SizedBox(height: 32),
             // _buildCuponForm(context), // replace by other CuponWidget
-            SizedBox(height: 10),
-            _buildTotalPrice1(context, cart),
+            SizedBox(height: 10.h),
+            _buildTotalPrice1(context),
             // SizedBox(height: 16),
 
-            Spacer(),
+            // Spacer(),
+            SizedBox(height: 10.h),
             Container(
+              padding: EdgeInsets.all(3.h),
               height: size.height * 0.06,
               width: size.width * 0.9,
               child: ElevatedButton(
                   style: ButtonStyle(
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)))),
+                          borderRadius: BorderRadius.circular(15.r)))),
                   onPressed: () {},
                   child: const Text("Check out")),
             ),
-            SizedBox(height: 7.h),
+            SizedBox(height: 10.h),
           ],
         ),
       ),
@@ -260,14 +114,30 @@ class _CartPageState extends State<CartPage> {
   }
 
   /// Section Widget
-  Widget _buildTotalPrice1(BuildContext context, Cart cart) {
+  Widget _buildTotalPrice1(BuildContext context) {
     final provider = Provider.of<CartViewModel>(context, listen: false);
-
+    final userProvider = Provider.of<UserViewModel>(context);
+    final user = userProvider.currentUser;
     final selectedProduct = provider.list;
-    return Container(
+    return
+        // FutureBuilder(
+        //   builder: (context, snapshot) {
+        //     if (snapshot.connectionState == ConnectionState.waiting) {
+        //       return Container(
+        //           height: MediaQuery.of(context).size.height * 0.14,
+        //           margin: EdgeInsets.symmetric(horizontal: 15.w),
+        //           padding: EdgeInsets.all(5.h),
+        //           decoration: AppDecoration.outlineBlueGray.copyWith(
+        //             borderRadius: BorderRadius.circular(10),
+        //           ));
+        //     } else {
+        //       if (snapshot.data != null) {
+        // final cart = snapshot.data;
+        // return
+        Container(
       height: MediaQuery.of(context).size.height * 0.14,
-      margin: EdgeInsets.symmetric(horizontal: 15),
-      padding: EdgeInsets.all(5),
+      margin: EdgeInsets.symmetric(horizontal: 15.w),
+      padding: EdgeInsets.all(5.h),
       decoration: AppDecoration.outlineBlueGray.copyWith(
         borderRadius: BorderRadius.circular(10),
       ),
@@ -282,7 +152,7 @@ class _CartPageState extends State<CartPage> {
               priceLabel: "${provider.totalCost} VND",
             ),
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Consumer<CartViewModel>(
             builder: (context, value, child) => _buildShipping(
               context,
@@ -291,8 +161,8 @@ class _CartPageState extends State<CartPage> {
             ),
           ),
           // SizedBox(height: 10),
-          Divider(),
-          SizedBox(height: 6),
+          const Divider(),
+          const SizedBox(height: 6),
           Consumer<CartViewModel>(
             builder: (context, value, child) => _buildShipping(
               context,
@@ -303,6 +173,46 @@ class _CartPageState extends State<CartPage> {
         ],
       ),
     );
+    //     } else {
+    //       return Container(
+    //         height: MediaQuery.of(context).size.height * 0.14,
+    //         margin: EdgeInsets.symmetric(horizontal: 15.w),
+    //         padding: EdgeInsets.all(5.h),
+    //         decoration: AppDecoration.outlineBlueGray.copyWith(
+    //           borderRadius: BorderRadius.circular(10),
+    //         ),
+    //         child: Column(
+    //           mainAxisSize: MainAxisSize.min,
+    //           mainAxisAlignment: MainAxisAlignment.center,
+    //           children: [
+    //             _buildShipping(
+    //               context,
+    //               shippingLabel: "Items 0",
+    //               priceLabel: "0 VND",
+    //             ),
+
+    //             SizedBox(height: 8.h),
+    //             _buildShipping(
+    //               context,
+    //               shippingLabel: "Save",
+    //               priceLabel: "0",
+    //             ),
+    //             // SizedBox(height: 10),
+    //             const Divider(),
+    //             const SizedBox(height: 6),
+    //             _buildShipping(
+    //               context,
+    //               shippingLabel: "real price",
+    //               priceLabel: "0",
+    //             ),
+    //           ],
+    //         ),
+    //       );
+    //     }
+    //   }
+    // },
+    // future: cartrepo.getCart(user!.id!),
+    // );
   }
 
   /// Common widget
@@ -315,7 +225,7 @@ class _CartPageState extends State<CartPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Padding(
-          padding: EdgeInsets.only(top: 1),
+          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
           child: Text(
             shippingLabel,
             style: theme.textTheme.bodySmall!.copyWith(
@@ -323,13 +233,66 @@ class _CartPageState extends State<CartPage> {
             ),
           ),
         ),
-        Text(
-          priceLabel,
-          style: CustomTextStyles.bodyMediumGray600.copyWith(
-            color: theme.colorScheme.onPrimary.withOpacity(1),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+          child: Text(
+            priceLabel,
+            style: CustomTextStyles.bodyMediumGray600.copyWith(
+              color: theme.colorScheme.onPrimary.withOpacity(1),
+            ),
           ),
         ),
       ],
+    );
+  }
+}
+
+class CartBody extends StatelessWidget {
+  const CartBody({
+    super.key,
+    required this.size,
+    required this.cartrepo,
+    required this.user,
+  });
+
+  final Size size;
+  final CartRepo cartrepo;
+  final UserModel? user;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: FutureBuilder(
+        builder: (context, snapshot) {
+          // if (snapshot.connectionState == ConnectionState.waiting) {
+          //   return Center(
+          //     child: CircularProgressIndicator(),
+          //   );
+          // } else {
+          if (snapshot.data != null) {
+            final cart = snapshot.data;
+            if (cart!.productInCarts != null) {
+              return ProductInCartDetails(list: cart!.productInCarts!);
+            } else {
+              return Container(
+                height: size.height * 0.5,
+                child: Center(
+                  child: Text("No product"),
+                ),
+              );
+            }
+          } else {
+            return Container(
+              height: size.height * 0.5,
+              child: Center(
+                child: Text("No product"),
+              ),
+            );
+          }
+        },
+        // },
+        future: cartrepo.getCart(user!.id!),
+      ),
     );
   }
 }
@@ -437,8 +400,12 @@ class _ProductInCartItemState extends State<ProductInCartItem> {
           width: MediaQuery.of(context).size.width * 0.06,
           child: Consumer<CartViewModel>(
             builder: (context, provider, child) {
+              print(
+                  "Value here:${provider.list.contains(widget.productInCartModel)}");
+              bool containsId = provider.list
+                  .any((item) => item.id == widget.productInCartModel?.id);
               return Checkbox(
-                value: provider.list.contains(widget.productInCartModel),
+                value: containsId,
                 onChanged: (value) {
                   if (provider.isCheckedALl) {
                     cartProvider.uncheckedProduct(widget.productInCartModel!);
@@ -458,8 +425,8 @@ class _ProductInCartItemState extends State<ProductInCartItem> {
             },
           ),
         ),
-        const SizedBox(
-          width: 10,
+        SizedBox(
+          width: 10.w,
         ),
         ProductCartItem(productInCartModel: widget.productInCartModel),
       ],

@@ -12,7 +12,7 @@ class Cart {
       this.userID});
   factory Cart.fromJson(Map<String, dynamic> json) {
     return Cart(
-        productInCarts: (json['productInCarts'] as List<dynamic>) != null
+        productInCarts: (json['productInCarts']) != null
             ? (json['productInCarts'] as List<dynamic>)
                 .map((e) => ProductInCartModel.fromJson(e))
                 .toList()

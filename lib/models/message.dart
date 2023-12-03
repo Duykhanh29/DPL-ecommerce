@@ -1,4 +1,5 @@
 import 'package:uuid/uuid.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum ChatType { image, link, video, text }
 
@@ -7,7 +8,7 @@ class Message {
   bool? isShop;
   String? senderID;
   String? receiverID;
-  DateTime? time;
+  Timestamp? time;
   String? content;
   ChatType? chatType;
   String? productID;
@@ -30,7 +31,7 @@ class Message {
       id: json['id'],
       senderID: (json['senderID']),
       productID: json['productID'],
-      time: json['time'],
+      time: (json['time'] as Timestamp?),
       isShop: json['isShop'],
       receiverID: json['receiverID'],
     );

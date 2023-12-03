@@ -73,7 +73,7 @@ class PromotionbannerItemWidget extends StatelessWidget {
                               fontSize: 22,
                               fontWeight: FontWeight.w500),
                           enableDescriptions: false,
-                          endTime: flashSale!.releasedDate!,
+                          endTime: flashSale!.releasedDate!.toDate(),
                           format: CountDownTimerFormat.daysHoursMinutesSeconds,
                           onEnd: () {
                             // disappear this flashsale
@@ -93,7 +93,7 @@ class PromotionbannerItemWidget extends StatelessWidget {
                               fontSize: 22,
                               fontWeight: FontWeight.w500),
                           enableDescriptions: false,
-                          endTime: flashSale!.expDate!,
+                          endTime: flashSale!.expDate!.toDate(),
                           format: CountDownTimerFormat.daysHoursMinutesSeconds,
                           onEnd: () {
                             // disappear this flashsale

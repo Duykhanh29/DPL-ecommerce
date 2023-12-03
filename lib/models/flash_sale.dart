@@ -1,9 +1,10 @@
 import 'package:uuid/uuid.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FlashSale {
   String? id;
-  DateTime? releasedDate;
-  DateTime? expDate;
+  Timestamp? releasedDate;
+  Timestamp? expDate;
   int? discountPercent;
   String? coverImage;
   String? name;

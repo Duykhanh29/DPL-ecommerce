@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class FilterInterface extends StatefulWidget {
+class FilterPage extends StatefulWidget {
   @override
-  _FilterInterfaceState createState() => _FilterInterfaceState();
+  _FilterPageState createState() => _FilterPageState();
 }
 
-class _FilterInterfaceState extends State<FilterInterface> {
+class _FilterPageState extends State<FilterPage> {
   double _minPrice = 1;
   double _maxPrice = 10;
   List<String> _selectedCondition = [];

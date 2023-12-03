@@ -19,7 +19,9 @@ class _VideoItemWidgetState extends State<VideoItemWidget> {
     // TODO: implement initState
     super.initState();
     videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(
-        "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4"))
+
+        // "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4"
+        widget.videoUrl!))
       ..addListener(() {
         setState(() {
           position = videoPlayerController.value.position;

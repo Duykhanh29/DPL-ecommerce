@@ -91,7 +91,7 @@ class Validators {
   }
 
   static int differenceHours(Message message) {
-    return DateTime.now().difference(message.time!).inHours;
+    return DateTime.now().difference(message.time!.toDate()).inHours;
   }
 
   static bool isSameWeek(DateTime time1, DateTime time2) {

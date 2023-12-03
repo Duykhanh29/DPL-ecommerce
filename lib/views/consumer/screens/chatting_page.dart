@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/models/chat.dart';
 import 'package:dpl_ecommerce/models/message.dart';
@@ -111,7 +112,7 @@ class _InputterState extends State<Inputter> {
         content: text,
         isShop: false,
         senderID: userModel.id,
-        time: DateTime.now(),
+        time: Timestamp.fromDate(DateTime.now()),
         receiverID: widget.chat!.sellerID);
     chatProvider.sendMsgToAChatBox(message, widget.chat!.id!);
   }

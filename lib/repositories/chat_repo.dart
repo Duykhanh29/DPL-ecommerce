@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/models/chat.dart';
 import 'package:dpl_ecommerce/models/message.dart';
 
@@ -22,7 +23,7 @@ class ChatRepo {
           senderID: "userID01",
           isShop: false,
           receiverID: "userID04",
-          time: DateTime.now(),
+          time: Timestamp.fromDate(DateTime.now()),
         ),
         Message(
             chatType: ChatType.text,
@@ -30,7 +31,7 @@ class ChatRepo {
             id: "messageID02",
             productID: "ProductID01",
             senderID: "userID02",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: true,
             receiverID: "userID100"),
         Message(
@@ -40,7 +41,7 @@ class ChatRepo {
             productID: null,
             senderID: "userID100",
             isShop: false,
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             receiverID: "userID02"),
         Message(
           chatType: ChatType.text,
@@ -50,14 +51,14 @@ class ChatRepo {
           senderID: "userID100",
           isShop: false,
           receiverID: "userID02",
-          time: DateTime.now(),
+          time: Timestamp.fromDate(DateTime.now()),
         ),
         Message(
             chatType: ChatType.link,
             content: "https://www.youtube.com/",
             id: "messageID05",
             productID: "ProductID01",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: true,
             senderID: "userID02",
             receiverID: "userID100"),
@@ -68,7 +69,7 @@ class ChatRepo {
             id: "messageID06",
             productID: null,
             senderID: "userID100",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: false,
             receiverID: "userID02"),
         Message(
@@ -78,7 +79,7 @@ class ChatRepo {
             id: "messageID07",
             productID: null,
             senderID: "userID100",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: false,
             receiverID: "userID02"),
         Message(
@@ -89,7 +90,7 @@ class ChatRepo {
             productID: null,
             senderID: "userID100",
             isShop: false,
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             receiverID: "userID02"),
         Message(
           chatType: ChatType.text,
@@ -99,7 +100,7 @@ class ChatRepo {
           senderID: "userID01",
           isShop: false,
           receiverID: "userID04",
-          time: DateTime.now(),
+          time: Timestamp.fromDate(DateTime.now()),
         ),
         Message(
             chatType: ChatType.text,
@@ -107,7 +108,7 @@ class ChatRepo {
             id: "messageID02",
             productID: "ProductID01",
             senderID: "userID02",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: true,
             receiverID: "userID100"),
         Message(
@@ -117,7 +118,7 @@ class ChatRepo {
             productID: null,
             senderID: "userID100",
             isShop: false,
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             receiverID: "userID02"),
         Message(
           chatType: ChatType.text,
@@ -127,14 +128,14 @@ class ChatRepo {
           senderID: "userID100",
           isShop: false,
           receiverID: "userID02",
-          time: DateTime.now(),
+          time: Timestamp.fromDate(DateTime.now()),
         ),
         Message(
             chatType: ChatType.link,
             content: "https://www.youtube.com/",
             id: "messageID05",
             productID: "ProductID01",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: true,
             senderID: "userID02",
             receiverID: "userID100"),
@@ -145,7 +146,7 @@ class ChatRepo {
             id: "messageID06",
             productID: null,
             senderID: "userID100",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: false,
             receiverID: "userID02"),
         Message(
@@ -155,7 +156,7 @@ class ChatRepo {
             id: "messageID07",
             productID: null,
             senderID: "userID100",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: false,
             receiverID: "userID02"),
         Message(
@@ -166,7 +167,7 @@ class ChatRepo {
             productID: null,
             senderID: "userID100",
             isShop: false,
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             receiverID: "userID02"),
       ],
     ),
@@ -189,7 +190,7 @@ class ChatRepo {
           senderID: "userID100",
           isShop: false,
           receiverID: "userID03",
-          time: DateTime.now(),
+          time: Timestamp.fromDate(DateTime.now()),
         ),
         Message(
           chatType: ChatType.text,
@@ -199,7 +200,7 @@ class ChatRepo {
           senderID: "userID03",
           isShop: true,
           receiverID: "userID100",
-          time: DateTime.now(),
+          time: Timestamp.fromDate(DateTime.now()),
         ),
         Message(
             chatType: ChatType.text,
@@ -207,7 +208,7 @@ class ChatRepo {
             id: "messageID03",
             productID: null,
             senderID: "userID03",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: true,
             receiverID: "userID100"),
         Message(
@@ -216,7 +217,7 @@ class ChatRepo {
             id: "messageID04",
             productID: null,
             senderID: "userID100",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: false,
             receiverID: "userID03"),
         Message(
@@ -226,7 +227,7 @@ class ChatRepo {
             productID: null,
             senderID: "userID03",
             receiverID: "userID100",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: true),
         Message(
             chatType: ChatType.video,
@@ -236,7 +237,7 @@ class ChatRepo {
             productID: null,
             senderID: "userID03",
             receiverID: "userID100",
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             isShop: true),
         Message(
             chatType: ChatType.video,
@@ -246,7 +247,7 @@ class ChatRepo {
             productID: null,
             senderID: "userID100",
             isShop: false,
-            time: DateTime.now(),
+            time: Timestamp.fromDate(DateTime.now()),
             receiverID: "userID03"),
         Message(
           chatType: ChatType.image,
@@ -257,7 +258,7 @@ class ChatRepo {
           senderID: "userID100",
           isShop: false,
           receiverID: "userID03",
-          time: DateTime.now(),
+          time: Timestamp.fromDate(DateTime.now()),
         ),
       ],
     )

@@ -37,7 +37,9 @@ class UserModel {
           (element) => element.toString().split(".").last == json['role'],
           orElse: () => Role.admin,
         ),
-        userInfor: UserInfor.fromJson(json['userInfor']));
+        userInfor: json['userInfor'] == null
+            ? null
+            : UserInfor.fromJson(json['userInfor']));
   }
   Map<String, dynamic> toJson() => {
         'avatar': avatar,
@@ -47,7 +49,7 @@ class UserModel {
         'lastName': lastName,
         'phone': phone,
         'role': role!.toString().split(".").last,
-        'userInfor': userInfor!.toJson()
+        'userInfor': userInfor != null ? userInfor!.toJson() : null
       };
 }
 
@@ -58,13 +60,19 @@ class UserInfor {
   UserInfor({this.adminInfor, this.consumerInfor, this.sellerInfor});
   factory UserInfor.fromJson(Map<String, dynamic> json) {
     return UserInfor(
-        adminInfor: AdminInfor.fromJson(json['adminInfor']),
-        consumerInfor: ConsumerInfor.fromJson(json['consumerInfor']),
-        sellerInfor: SellerInfor.fromJson(json['sellerInfor']));
+        adminInfor: json['adminInfor'] == null
+            ? null
+            : AdminInfor.fromJson(json['adminInfor']),
+        consumerInfor: json['consumerInfor'] == null
+            ? null
+            : ConsumerInfor.fromJson(json['consumerInfor']),
+        sellerInfor: json['sellerInfor'] == null
+            ? null
+            : SellerInfor.fromJson(json['sellerInfor']));
   }
   Map<String, dynamic> toJson() => {
-        'sellerInfor': sellerInfor!.toJson(),
-        'consumerInfor': consumerInfor!.toJson(),
-        'adminInfor': adminInfor!.toJson()
+        'sellerInfor': sellerInfor != null ? sellerInfor!.toJson() : null,
+        'consumerInfor': consumerInfor != null ? consumerInfor!.toJson() : null,
+        'adminInfor': adminInfor != null ? adminInfor!.toJson() : null
       };
 }

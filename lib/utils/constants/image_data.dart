@@ -1,5 +1,4 @@
 class ImageData {
-  static String emptyilst = "assets/images/empty.png";
   // static String googleLogo = "assets/images/google-logo.png";
   // Image folder path
   static String imagePath = 'assets/images';
