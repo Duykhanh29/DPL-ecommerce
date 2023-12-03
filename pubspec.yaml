@@ -31,6 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
   #
+  flutter_localizations:
+    sdk: flutter
   image_picker: ^0.8.0
   dropdown_search: ^5.0.6
   # start importing firebase packages
@@ -56,6 +58,7 @@ dependencies:
   flutter_screenutil: ^5.9.0
   
   flutter_rating_bar: ^4.0.1
+  flutter_typeahead: ^4.0.0
   
  
   # video
@@ -91,6 +94,9 @@ dependencies:
   # validator
   email_validator: ^2.1.17
 
+  # show notification
+  fluttertoast: ^8.2.4
+
   # firebase
   firebase_core: ^2.22.0
   firebase_auth: ^4.14.0
@@ -121,7 +127,7 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
+  generate: true
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

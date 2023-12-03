@@ -1,34 +1,189 @@
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/customs/custom_text_form_field.dart';
+import 'package:dpl_ecommerce/data_sources/third_party_source/address_repository.dart';
+import 'package:dpl_ecommerce/helpers/toast_helper.dart';
+import 'package:dpl_ecommerce/models/city.dart';
+import 'package:dpl_ecommerce/models/district.dart';
+import 'package:dpl_ecommerce/models/ward.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/chat_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class AddAddress extends StatelessWidget {
+class AddAddress extends StatefulWidget {
   AddAddress({super.key});
 
+  @override
+  State<AddAddress> createState() => _AddAddressState();
+}
+
+class _AddAddressState extends State<AddAddress> {
   // final _formKey = GlobalKey<FormState>();
-  TextEditingController? countryController = TextEditingController();
+  TextEditingController _countryController = TextEditingController();
 
-  TextEditingController? cityController = TextEditingController();
+  TextEditingController _cityController = TextEditingController();
 
-  TextEditingController? disctrictController = TextEditingController();
+  TextEditingController _districtController = TextEditingController();
 
-  TextEditingController? longitudeController = TextEditingController();
+  TextEditingController _wardController = TextEditingController();
 
-  TextEditingController? latitudeController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
 
-  TextEditingController? nameController = TextEditingController();
+  City? _selected_city;
+
+  District? _selected_district;
+
+  Ward? _selected_ward;
+
+  FocusNode cityFocusNode = FocusNode();
+
+  FocusNode districtFocusNode = FocusNode();
+
+  FocusNode wardFocusNode = FocusNode();
+
+  FocusNode nameFocusNode = FocusNode();
+
+  FocusNode countryFocusNode = FocusNode();
+  onSelectCityDuringAdd(city) {
+    if (_selected_city != null && city.id == _selected_city!.id) {
+      setState(() {
+        _cityController.text = city.name;
+      });
+      print("${_selected_city!.id}");
+      print("object");
+      print("${_selected_city!.name}");
+
+      return;
+    }
+    setState(() {
+      _selected_city = city;
+
+      _cityController.text = city.name;
+      _selected_district = null;
+      _selected_ward = null;
+      _districtController.text = "";
+      _wardController.text = "";
+    });
+  }
+
+  onSelectDistrictDuringAdd(district) {
+    if (_selected_city != null &&
+        _selected_district != null &&
+        district.id == _selected_district!.id) {
+      setState(() {
+        _districtController.text = district.name;
+      });
+      print("${_selected_city!.id}");
+      print("object");
+      print("${_selected_city!.name}");
+
+      return;
+    }
+    _selected_district = district;
+    setState(() {
+      _districtController.text = district.name;
+      _selected_ward = null;
+      _wardController.text = "";
+    });
+  }
+
+  onSelectWardDuringAdd(ward) {
+    if (_selected_city != null &&
+        _selected_district != null &&
+        _selected_ward != null &&
+        ward.id == _selected_ward!.id) {
+      setState(() {
+        _wardController.text = ward.name;
+      });
+      print("${_selected_ward!.id}");
+      print("object");
+      print("${_selected_ward!.name}");
+
+      return;
+    }
+    _selected_ward = ward;
+    setState(() {
+      _wardController.text = ward.name;
+    });
+  }
+
+  onPressReg() async {
+    String name = _nameController.text.trim();
+    String country = _countryController.text.trim();
+    // String address = addressController.text.trim();
+    String? city = _selected_city!.name!;
+    String? district = _selected_city!.name!;
+    String? ward = _selected_ward!.name;
+    loading();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _nameController.addListener(_onNameChanged);
+    _countryController.addListener(_onCountryChange);
+    _cityController.addListener(_onCityChange);
+    _districtController.addListener(_onDistrictChange);
+    _wardController.addListener(_onWardChange);
+  }
+
+  void _onNameChanged() {
+    setState(() {});
+  }
+
+  void _onCountryChange() {
+    setState(() {});
+  }
+
+  void _onConfirmPassChange() {
+    setState(() {});
+  }
+
+  void _onShopNameChange() {
+    setState(() {});
+  }
+
+  void _onPhoneChange() {
+    setState(() {});
+  }
+
+  void _onEmailChange() {
+    setState(() {});
+  }
+
+  void _onCityChange() {
+    setState(() {});
+  }
+
+  void _onDistrictChange() {
+    setState(() {});
+  }
+
+  void _onWardChange() {
+    setState(() {});
+  }
+
+  void onPressRegFail() {
+    ToastHelper.showDialog("Add full infor",
+        gravity: ToastGravity.BOTTOM, duration: Toast.LENGTH_LONG);
+    return;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: CustomArrayBackWidget(),
         title: Text("Add new Address 1"),
       ),
       body: Padding(
-          padding: EdgeInsets.all(3.h),
+          padding: EdgeInsets.all(10.h),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -39,74 +194,386 @@ class AddAddress extends StatelessWidget {
               //   controller: countryController,
               //   hintText: "Nani",
               // ),
-              TextField(
-                onTap: () {
-                  print("ON tap country");
-                  // Navigator.of(context).push(
-                  //     MaterialPageRoute(builder: (context) => ChatPage()));
-                },
-                onChanged: (value) {
-                  print("On change: $value");
-                },
-                focusNode: FocusNode(),
-                controller: countryController,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r)),
-                    hintText: "Country"),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
+                child: TextField(
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(255),
+                  ],
+                  focusNode: countryFocusNode,
+                  onTap: () {
+                    setState(() {
+                      countryFocusNode.requestFocus();
+                    });
+                  },
+                  onEditingComplete: () {
+                    print("Untap");
+                    setState(() {
+                      countryFocusNode.unfocus();
+                    });
+                  },
+                  onChanged: (value) {
+                    print("On change: $value");
+                  },
+                  controller: _countryController,
+                  decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 5.h, horizontal: 7.w),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r)),
+                      hintText: _countryController.text.isEmpty &&
+                              !countryFocusNode.hasFocus
+                          ? "Mr. Jhon"
+                          : null),
+                ),
               ),
               SizedBox(
                 height: 20.h,
               ),
-              TextField(
-                  // controller: cityController,
-                  // decoration: InputDecoration(
-                  //     border: OutlineInputBorder(
-                  //         borderRadius: BorderRadius.circular(10.r)),
-                  //     hintText: "City"),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(3),
+                      color: MyTheme.textfield_grey),
+                  child: TypeAheadField<City>(
+                    hideKeyboard: true,
+                    onSuggestionsBoxToggle: (p0) {
+                      print("P0 is: $p0");
+                    },
+                    suggestionsCallback: (name) async {
+                      print("Check again");
+                      if (cityFocusNode.hasFocus &&
+                          _cityController.text.isNotEmpty) {
+                        var cityResponse = await AddressRepository()
+                            .getCityList(); // blank response
+                        return cityResponse;
+                      }
+                      if (_selected_city == null) {
+                        var cityResponse = await AddressRepository()
+                            .getCityList(); // blank response
+                        return cityResponse;
+                      }
+                      var cityResponse = await AddressRepository()
+                          .getCityByCode(_selected_city!.id!);
+                      return [cityResponse!];
+                    },
+                    loadingBuilder: (context) {
+                      return SizedBox(
+                        height: 50,
+                        child: Center(
+                            child: Text(
+                                // AppLocalizations.of(context)!
+                                //     .
+                                "loading_cities_ucf",
+                                style: TextStyle(color: MyTheme.medium_grey))),
+                      );
+                    },
+                    itemBuilder: (context, dynamic city) {
+                      //print(suggestion.toString());
+                      return ListTile(
+                        dense: true,
+                        title: Text(
+                          city.name,
+                          style: const TextStyle(color: MyTheme.font_grey),
+                        ),
+                      );
+                    },
+                    noItemsFoundBuilder: (context) {
+                      return SizedBox(
+                        height: 50,
+                        child: Center(
+                            child: Text(
+                                // AppLocalizations.of(context)!.
+                                " no_city_available",
+                                style: TextStyle(color: MyTheme.medium_grey))),
+                      );
+                    },
+                    onSuggestionSelected: (City city) {
+                      print("Check again");
+                      onSelectCityDuringAdd(
+                        city,
+                      );
+                    },
+                    textFieldConfiguration: TextFieldConfiguration(
+                      focusNode: cityFocusNode,
+
+                      onTap: () {
+                        setState(() {
+                          cityFocusNode.requestFocus();
+                        });
+                      },
+                      onEditingComplete: () {
+                        setState(() {
+                          cityFocusNode.unfocus();
+                        });
+                      },
+                      //autofocus: true,
+                      controller: _cityController,
+                      style: const TextStyle(fontSize: 12),
+                      onSubmitted: (txt) {
+                        // keep blank
+                      },
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 5.h, horizontal: 7.w),
+                          hintText: "city",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          suffixIcon: const Icon(Icons.arrow_drop_down)),
+                    ),
                   ),
+                ),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: MyTheme.textfield_grey),
+                  child: TypeAheadField<District?>(
+                    hideKeyboard: true,
+                    suggestionsCallback: (name) async {
+                      if (_selected_city == null) {
+                        return [];
+                      }
+                      if (districtFocusNode.hasFocus &&
+                          _districtController.text.isNotEmpty) {
+                        var districtResponse = await AddressRepository()
+                            .getDistrictListByCityCode(
+                                _selected_city!.id!); // blank response
+                        return districtResponse;
+                      }
+                      if (_selected_district == null) {
+                        var districtResponse = await AddressRepository()
+                            .getDistrictListByCityCode(
+                                _selected_city!.id!); // blank response
+                        return districtResponse;
+                      }
+                      var districtResponse = await AddressRepository()
+                          .getDistrictByCode(_selected_district!.id!);
+                      return [districtResponse];
+                    },
+                    loadingBuilder: (context) {
+                      return SizedBox(
+                        height: 50,
+                        child: Center(
+                            child: Text(
+                                // AppLocalizations.of(context)!
+                                //     .
+                                "loading_districts_ucf",
+                                style: TextStyle(color: MyTheme.medium_grey))),
+                      );
+                    },
+                    itemBuilder: (context, dynamic city) {
+                      //print(suggestion.toString());
+                      return ListTile(
+                        dense: true,
+                        title: Text(
+                          city.name,
+                          style: TextStyle(color: MyTheme.font_grey),
+                        ),
+                      );
+                    },
+                    noItemsFoundBuilder: (context) {
+                      return SizedBox(
+                        height: 50,
+                        child: Center(
+                            child: Text(
+                                // AppLocalizations.of(context)!
+                                //     .
+                                "no_district_available",
+                                style: TextStyle(color: MyTheme.medium_grey))),
+                      );
+                    },
+                    onSuggestionSelected: (District? district) {
+                      onSelectDistrictDuringAdd(
+                        district,
+                      );
+                    },
+                    textFieldConfiguration: TextFieldConfiguration(
+                      focusNode: districtFocusNode,
+                      onTap: () {
+                        setState(() {
+                          districtFocusNode.requestFocus();
+                        });
+                      },
+                      onEditingComplete: () {
+                        setState(() {
+                          districtFocusNode.unfocus();
+                        });
+                      },
+                      //autofocus: true,
+                      controller: _districtController,
+                      style: const TextStyle(fontSize: 12),
+                      onSubmitted: (txt) {
+                        // keep blank
+                      },
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 5.h, horizontal: 7.w),
+                          hintText:
+                              // LangText(context: context).getLocal()!.
+                              "district",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          suffixIcon: const Icon(Icons.arrow_drop_down)),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  height: 40,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: MyTheme.textfield_grey),
+                  child: Center(
+                    child: TypeAheadField<Ward?>(
+                      hideKeyboard: true,
+                      suggestionsCallback: (name) async {
+                        if (_selected_district == null) {
+                          return [];
+                        }
+                        if (wardFocusNode.hasFocus &&
+                            _wardController.text.isNotEmpty) {
+                          var wardResponse = await AddressRepository()
+                              .getWardListByDistrictCode(
+                                  _selected_district!.id!); // blank response
+                          return wardResponse;
+                        }
+                        if (_selected_ward == null) {
+                          var wardResponse = await AddressRepository()
+                              .getWardListByDistrictCode(
+                                  _selected_district!.id!); // blank response
+                          return wardResponse;
+                        }
+                        var wardResponse = await AddressRepository()
+                            .getWardByCode(_selected_ward!.id!);
+                        return [wardResponse!];
+                      },
+                      loadingBuilder: (context) {
+                        return Container(
+                          height: 50,
+                          child: Center(
+                              child: Text(
+                                  // AppLocalizations.of(context)!
+                                  //     .
+                                  "loading_wards_ucf",
+                                  style:
+                                      TextStyle(color: MyTheme.medium_grey))),
+                        );
+                      },
+                      itemBuilder: (context, dynamic city) {
+                        //print(suggestion.toString());
+                        return ListTile(
+                          dense: true,
+                          title: Text(
+                            city.name,
+                            style: const TextStyle(color: MyTheme.font_grey),
+                          ),
+                        );
+                      },
+                      noItemsFoundBuilder: (context) {
+                        return Container(
+                          alignment: Alignment.centerLeft,
+                          height: 50,
+                          child: Center(
+                              child: Text(
+                                  // AppLocalizations.of(context)!
+                                  //     .
+                                  "no_ward_available",
+                                  style:
+                                      TextStyle(color: MyTheme.medium_grey))),
+                        );
+                      },
+                      onSuggestionSelected: (Ward? ward) {
+                        onSelectWardDuringAdd(
+                          ward,
+                        );
+                      },
+                      textFieldConfiguration: TextFieldConfiguration(
+                        focusNode: wardFocusNode,
+                        onTap: () {
+                          setState(() {
+                            wardFocusNode.requestFocus();
+                          });
+                        },
+                        onEditingComplete: () {
+                          setState(() {
+                            wardFocusNode.unfocus();
+                          });
+                        },
+
+                        //autofocus: true,
+                        controller: _wardController,
+                        style: const TextStyle(fontSize: 12),
+                        onSubmitted: (txt) {
+                          // keep blank
+                        },
+                        decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 5.h, horizontal: 7.w),
+                            hintText:
+                                // LangText(context: context).getLocal()!.
+                                "ward",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            suffixIcon: const Icon(Icons.arrow_drop_down)),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
               SizedBox(
                 height: 20.h,
               ),
-              TextField(
-                controller: disctrictController,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r)),
-                    hintText: "District"),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                child: TextField(
+                  focusNode: nameFocusNode,
+                  onTap: () {
+                    setState(() {
+                      nameFocusNode.requestFocus();
+                    });
+                  },
+                  onEditingComplete: () {
+                    print("Untap");
+                    setState(() {
+                      nameFocusNode.unfocus();
+                    });
+                  },
+                  controller: _nameController,
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(
+                        255), // Giới hạn độ dài tối đa
+                  ],
+                  decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 5.h, horizontal: 7.w),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r)),
+                      hintText: _nameController.text.isEmpty &&
+                              !nameFocusNode.hasFocus
+                          ? "My home"
+                          : null),
+                ),
               ),
-              SizedBox(
-                height: 20.h,
-              ),
-              TextField(
-                keyboardType: TextInputType.number,
-                controller: longitudeController,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r)),
-                    hintText: "Longitude"),
-              ),
-              SizedBox(
-                height: 20.h,
-              ),
-              TextField(
-                keyboardType: TextInputType.number,
-                controller: latitudeController,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r)),
-                    hintText: "Latitude"),
-              ),
-              SizedBox(
-                height: 20.h,
-              ),
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r)),
-                    hintText: "Name"),
-              ),
+
               SizedBox(
                 height: 20.h,
               ),
@@ -114,8 +581,12 @@ class AddAddress extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(10.h),
                 child: ElevatedButton(
-                  onPressed: () {},
-                  child: Text("Add"),
+                  onPressed: () async {
+                    await onPressReg();
+                  },
+                  child: Text(
+                      // LangText(context: context).getLocal()!.
+                      " add_all_capital"),
                   style: ButtonStyle(
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.r)))),
@@ -124,5 +595,24 @@ class AddAddress extends StatelessWidget {
             ],
           )),
     );
+  }
+
+  loading() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              content: Row(
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(
+                width: 10,
+              ),
+              Text(
+                  // AppLocalizations.of(context)!.
+                  " please_wait_ucf"),
+            ],
+          ));
+        });
   }
 }

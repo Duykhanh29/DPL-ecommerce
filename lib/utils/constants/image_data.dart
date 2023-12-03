@@ -2,6 +2,8 @@ class ImageData {
   // static String googleLogo = "assets/images/google-logo.png";
   // Image folder path
   static String imagePath = 'assets/images';
+  static String appLogo = '$imagePath/hasu_logo.jpg';
+  static String logo = '$imagePath/hasu.jpg';
 
   // Search Result images
   static String imgArrowLeft = '$imagePath/img_arrow_left.svg';

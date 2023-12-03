@@ -13,9 +13,11 @@ import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/repositories/category_repo.dart';
 import 'package:dpl_ecommerce/repositories/flash_sale_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
+import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
+import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/chat_page.dart';
 
 import 'package:dpl_ecommerce/views/consumer/screens/search_page.dart';
@@ -24,9 +26,7 @@ import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/promotion_banner_item_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/category_item_widget.dart';
-
-
-
+import 'package:dpl_ecommerce/views/seller/screens/product/product_app.dart';
 
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
@@ -96,7 +96,13 @@ class HomePage extends StatelessWidget {
               child: InkWell(
                 child: Icon(Icons.notifications_outlined,
                     color: Colors.white, size: 30),
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) {
+                      return ProductsApp(products: []);
+                    },
+                  ));
+                },
               ),
             ),
           ),

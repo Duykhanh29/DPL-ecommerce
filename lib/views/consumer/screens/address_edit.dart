@@ -39,176 +39,175 @@ class _AddressFormState extends State<AddressForm> {
           "Address",
           textAlign: TextAlign.center,
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  
-                  Text("Country"),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  DropdownSearch(
-                    items: ["Brazil", "France", "Tunisia", "Canada"],
-                    dropdownDecoratorProps: DropDownDecoratorProps(),
-                    onChanged: print,
-                    selectedItem: "Tunisia",
-                    validator: (String? item) {
-                      if (item == null)
-                        return "Required field";
-                      else if (item == "Brazil")
-                        return "Invalid item";
-                      else
-                        return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text("City"),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  DropdownSearch(
-                    items: ["Brazil", "France", "Tunisia", "Canada"],
-                    dropdownDecoratorProps: DropDownDecoratorProps(),
-                    onChanged: print,
-                    selectedItem: "Tunisia",
-                    validator: (String? item) {
-                      if (item == null)
-                        return "Required field";
-                      else if (item == "Brazil")
-                        return "Invalid item";
-                      else
-                        return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  //kkk
-                  Text("District"),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  DropdownSearch(
-                    items: ["Brazil", "France", "Tunisia", "Canada"],
-                    dropdownDecoratorProps: DropDownDecoratorProps(),
-                    onChanged: print,
-                    selectedItem: "Tunisia",
-                    validator: (String? item) {
-                      if (item == null)
-                        return "Required field";
-                      else if (item == "Brazil")
-                        return "Invalid item";
-                      else
-                        return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 10,
+                ),
 
-                  Text("Ward"),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                   DropdownSearch(
-                    items: ["Brazil", "France", "Tunisia", "Canada"],
-                    dropdownDecoratorProps: DropDownDecoratorProps(),
-                    onChanged: print,
-                    selectedItem: "Tunisia",
-                    validator: (String? item) {
-                      if (item == null)
-                        return "Required field";
-                      else if (item == "Brazil")
-                        return "Invalid item";
-                      else
-                        return null;
-                    },
-                  ),
-                  
-                  const SizedBox(
-                    height: 10,
-                  ),
-
-                  Text("Apartment number"),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 10.0),
-                      filled: true,
-                      hoverColor: appTheme.gray300,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter an apartment number';
-                      }
+                Text("Country"),
+                const SizedBox(
+                  height: 10,
+                ),
+                DropdownSearch(
+                  items: ["Brazil", "France", "Tunisia", "Canada"],
+                  dropdownDecoratorProps: DropDownDecoratorProps(),
+                  onChanged: print,
+                  selectedItem: "Tunisia",
+                  validator: (String? item) {
+                    if (item == null)
+                      return "Required field";
+                    else if (item == "Brazil")
+                      return "Invalid item";
+                    else
                       return null;
-                    },
-                    onSaved: (value) {
-                      country = value;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-
-                  Text("Name"),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 10.0),
-                      filled: true,
-                      hoverColor: appTheme.gray300,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a name';
-                      }
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text("City"),
+                const SizedBox(
+                  height: 10,
+                ),
+                DropdownSearch(
+                  items: ["Brazil", "France", "Tunisia", "Canada"],
+                  dropdownDecoratorProps: DropDownDecoratorProps(),
+                  onChanged: print,
+                  selectedItem: "Tunisia",
+                  validator: (String? item) {
+                    if (item == null)
+                      return "Required field";
+                    else if (item == "Brazil")
+                      return "Invalid item";
+                    else
                       return null;
-                    },
-                    onSaved: (value) {
-                      country = value;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                //kkk
+                Text("District"),
+                const SizedBox(
+                  height: 10,
+                ),
+                DropdownSearch(
+                  items: ["Brazil", "France", "Tunisia", "Canada"],
+                  dropdownDecoratorProps: DropDownDecoratorProps(),
+                  onChanged: print,
+                  selectedItem: "Tunisia",
+                  validator: (String? item) {
+                    if (item == null)
+                      return "Required field";
+                    else if (item == "Brazil")
+                      return "Invalid item";
+                    else
+                      return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
 
-                  
-                  CheckboxListTile(
-                    title: Text('Default Address'),
-                    value: isDefaultAddress,
-                    onChanged: (value) {
-                      setState(() {
-                        isDefaultAddress = value!;
-                      });
-                    },
+                Text("Ward"),
+                const SizedBox(
+                  height: 10,
+                ),
+                DropdownSearch(
+                  items: ["Brazil", "France", "Tunisia", "Canada"],
+                  dropdownDecoratorProps: DropDownDecoratorProps(),
+                  onChanged: print,
+                  selectedItem: "Tunisia",
+                  validator: (String? item) {
+                    if (item == null)
+                      return "Required field";
+                    else if (item == "Brazil")
+                      return "Invalid item";
+                    else
+                      return null;
+                  },
+                ),
+
+                const SizedBox(
+                  height: 10,
+                ),
+
+                Text("Apartment number"),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                    filled: true,
+                    hoverColor: appTheme.gray300,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none),
                   ),
-                  // Các trường khác tương tự
-                  SizedBox(height: 16),
-                ],
-              ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter an apartment number';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    country = value;
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+
+                Text("Name"),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                    filled: true,
+                    hoverColor: appTheme.gray300,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a name';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    country = value;
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+
+                CheckboxListTile(
+                  title: Text('Default Address'),
+                  value: isDefaultAddress,
+                  onChanged: (value) {
+                    setState(() {
+                      isDefaultAddress = value!;
+                    });
+                  },
+                ),
+                // Các trường khác tương tự
+                SizedBox(height: 16),
+              ],
             ),
           ),
         ),
@@ -228,14 +227,14 @@ class _AddressFormState extends State<AddressForm> {
               // print("Long: $longitude");
               // print("Name: $name");
               print("default: $isDefaultAddress");
-              await userProvider.addNewAddress(AddressInfor(
-                  city: cityController.text,
-                  country: countryController.text,
-                  district: districtController.text,
-                  isDefaultAddress: isDefaultAddress,
-                  latitude: double.parse(latitudeController.text),
-                  longitude: double.parse(longitudeController.text),
-                  name: nameController.text));
+              // await userProvider.addNewAddress(AddressInfor(
+              //     city: cityController.text,
+              //     country: countryController.text,
+              //     district: districtController.text,
+              //     isDefaultAddress: isDefaultAddress,
+              //     latitude: double.parse(latitudeController.text),
+              //     longitude: double.parse(longitudeController.text),
+              //     name: nameController.text));
               // Thực hiện thêm địa chỉ vào cơ sở dữ liệu hoặc xử lý tương ứng
               print('Address added successfully');
             }

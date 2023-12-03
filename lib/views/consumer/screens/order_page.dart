@@ -51,31 +51,7 @@ class MyOrderThreeTabContainerScreenState extends State<OrderPage>
           "My Orders",
           textAlign: TextAlign.center,
         ),
-        centerTitle: true,
-        actions: [
-          // Consumer<CartViewModel>(builder: (context, value, child) {
-          //   return CustomBadgeCart(number: value.cart.productInCarts!.length);
-          // }),
-          const SizedBox(width: 10),
-          Center(
-            child: badges.Badge(
-              badgeContent: Text(
-                "3",
-                style: TextStyle(fontSize: 12, color: Colors.white),
-              ),
-              child: InkWell(
-                child: Icon(Icons.notifications_outlined,
-                    color: Colors.white, size: 30),
-                onTap: () {},
-              ),
-            ),
-          ),
-          const SizedBox(width: 15),
-
-          const SizedBox(
-            width: 12,
-          )
-        ],
+        // centerTitle: true,
 
         //leading: Icon(Icons.menu),
       ),

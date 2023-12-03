@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-class LanguagePage extends StatelessWidget {
-  LanguagePage({super.key});
+class LanguagePageSellerSide extends StatelessWidget {
+  LanguagePageSellerSide({super.key});
   // List<Language> list = LanguageRepo().list;
   @override
   Widget build(BuildContext context) {
