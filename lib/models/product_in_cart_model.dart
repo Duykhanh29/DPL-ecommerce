@@ -1,4 +1,5 @@
 import 'package:uuid/uuid.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductInCartModel {
   String? id;
@@ -14,7 +15,7 @@ class ProductInCartModel {
   String? type;
   String? color;
   String? voucherID;
-  DateTime? createdAt;
+  Timestamp? createdAt;
   ProductInCartModel(
       {this.color,
       this.createdAt,
@@ -33,7 +34,7 @@ class ProductInCartModel {
   }
   factory ProductInCartModel.fromJson(Map<String, dynamic> json) {
     return ProductInCartModel(
-      createdAt: json['createdAt'],
+      createdAt: (json['createdAt'] as Timestamp?),
       cost: json['cost'],
       quantity: json['quantity'],
       color: json['color'],

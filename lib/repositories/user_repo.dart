@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/data_sources/firestore_data_source/user_firestore_data.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/admin_infor.dart';
 import 'package:dpl_ecommerce/models/consumer_infor.dart';
@@ -5,6 +6,11 @@ import 'package:dpl_ecommerce/models/seller_infor.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 
 class UserRepo {
+  UserFirestoreDatabase _userFirestoreDatabase = UserFirestoreDatabase();
+  Future<List<UserModel>?> getListUser() async {
+    return await _userFirestoreDatabase.getListUser();
+  }
+
   final List<UserModel> listUser = [
     UserModel(
       avatar:

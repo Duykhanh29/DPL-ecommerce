@@ -1,7 +1,19 @@
+import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
+import 'package:dpl_ecommerce/data_sources/firestore_data_source/user_firestore_data.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
+import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/shop.dart';
 
 class ShopRepo {
+  FirestoreDatabase _shopFirestoreDB = FirestoreDatabase();
+  Future<List<Shop>?> getListShop() async {
+    return await _shopFirestoreDB.getListShop();
+  }
+
+  Future<List<Product>?> getListProductByShopID(String shopID) async {
+    return await _shopFirestoreDB.getProductListByShop(shopID);
+  }
+
   final List<Shop> listShop = [
     Shop(
       ratingCount: 123,

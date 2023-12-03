@@ -1,4 +1,5 @@
 import 'package:uuid/uuid.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Product {
   String? id;
@@ -11,8 +12,8 @@ class Product {
   String? voucherID;
   String? description;
   double? rating;
-  DateTime? updatedAt;
-  DateTime? createdAt;
+  Timestamp? updatedAt;
+  Timestamp? createdAt;
   List<String>? sizes;
   int purchasingCount;
   int ratingCount;
@@ -50,30 +51,39 @@ class Product {
     return Product(
       availableQuantity: json['availableQuantity'],
       categoryID: json['categoryID'],
-      colors:
-          (json['colors'] as List<dynamic>).map((e) => e.toString()).toList(),
+      colors: json['colors'] != null
+          ? (json['colors'] as List<dynamic>).map((e) => e.toString()).toList()
+          : null,
       id: json['id'],
-      createdAt: json['createdAt'],
+      createdAt: (json['createdAt'] as Timestamp?),
       description: json['description'],
-      images:
-          (json['images'] as List<dynamic>).map((e) => e.toString()).toList(),
+      images: json['images'] != null
+          ? (json['images'] as List<dynamic>).map((e) => e.toString()).toList()
+          : null,
       name: json['name'],
       price: json['price'],
       purchasingCount: json['purchasingCount'],
       rating: json['rating'],
       ratingCount: json['ratingCount'],
       shopID: json['shopID'],
-      reviewIDs: (json['reviewIDs'] as List<dynamic>)
-          .map((e) => e.toString())
-          .toList(),
+      reviewIDs: json['reviewIDs'] != null
+          ? (json['reviewIDs'] as List<dynamic>)
+              .map((e) => e.toString())
+              .toList()
+          : null,
       shopLogo: json['shopLogo'],
       shopName: json['shopName'],
-      updatedAt: json['updatedAt'],
+      updatedAt: (json['updatedAt'] as Timestamp?),
       voucherID: json['voucherID'],
-      videos:
-          (json['videos'] as List<dynamic>).map((e) => e.toString()).toList(),
-      sizes: (json['sizes'] as List<dynamic>).map((e) => e.toString()).toList(),
-      types: (json['types'] as List<dynamic>).map((e) => e.toString()).toList(),
+      videos: json['videos'] != null
+          ? (json['videos'] as List<dynamic>).map((e) => e.toString()).toList()
+          : null,
+      sizes: json['sizes'] != null
+          ? (json['sizes'] as List<dynamic>).map((e) => e.toString()).toList()
+          : null,
+      types: json['types'] != null
+          ? (json['types'] as List<dynamic>).map((e) => e.toString()).toList()
+          : null,
     );
   }
   Map<String, dynamic> toJson() => {

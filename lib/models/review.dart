@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
 enum ResourseType { image, video }
@@ -9,7 +10,7 @@ class Review {
   double? rating;
   String? userAvatar;
   String? text;
-  DateTime? time;
+  Timestamp? time;
   ResourseType? resourseType;
   String? urlMedia;
   Review(
@@ -35,7 +36,7 @@ class Review {
         text: json['text'],
         userAvatar: json['userAvatar'],
         userID: json['userID'],
-        time: json['time']);
+        time: (json['time'] as Timestamp?));
   }
   Map<String, dynamic> toJson() => {
         'productID': productID,

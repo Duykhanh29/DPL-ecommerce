@@ -76,7 +76,8 @@ class TicketData extends StatelessWidget {
                   style: theme.textTheme.titleLarge,
                 ),
                 Text(
-                  DateHelper.convertDateToDateString(voucher!.releasedDate!),
+                  DateHelper.convertDateToDateString(
+                      voucher!.releasedDate!.toDate()),
                   style: theme.textTheme.bodySmall,
                 )
               ],
@@ -98,7 +99,8 @@ class TicketData extends StatelessWidget {
                   const SizedBox(
                     height: 15,
                   ),
-                  Text(DateHelper.convertDateToDateString(voucher!.expDate!))
+                  Text(DateHelper.convertDateToDateString(
+                      voucher!.expDate!.toDate()))
                 ],
               ),
             ),

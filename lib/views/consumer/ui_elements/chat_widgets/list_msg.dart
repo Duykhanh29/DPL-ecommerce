@@ -15,8 +15,11 @@ class ListMsg extends StatelessWidget {
       order: GroupedListOrder.DESC,
       elements: list!,
       groupBy: (message) {
-        return DateTime(message.time!.year, message.time!.month,
-            message.time!.day, message.time!.hour);
+        return DateTime(
+            message.time!.toDate().year,
+            message.time!.toDate().month,
+            message.time!.toDate().day,
+            message.time!.toDate().hour);
       },
       physics: const BouncingScrollPhysics(),
       reverse: true,
@@ -32,7 +35,8 @@ class ListMsg extends StatelessWidget {
             color: Colors.blueGrey,
             child: Padding(
                 padding: const EdgeInsets.all(5),
-                child: Text(CommondMethods.showHeaderTime(message.time!))),
+                child: Text(
+                    CommondMethods.showHeaderTime(message.time!.toDate()))),
           ),
         ),
       ),

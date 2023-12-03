@@ -24,6 +24,7 @@ class _CustomradioButtonState extends State<CustomradioButton> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final productDetailProvider = Provider.of<ProductDetailViewModel>(context);
     return Container(
       padding: const EdgeInsets.only(right: 20),
       height: size.height * 0.06,

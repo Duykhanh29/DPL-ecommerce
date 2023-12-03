@@ -15,7 +15,11 @@ class SellerInfor {
   factory SellerInfor.fromJson(Map<String, dynamic> json) {
     return SellerInfor(
         isVerified: json['isVerified'],
-        shopIDs: json['shopIDs'],
+        shopIDs: json['shopIDs'] != null
+            ? (json['shopIDs'] as List<dynamic>)
+                .map((e) => e.toString())
+                .toList()
+            : null,
         licenseNo: json['licenseNo'],
         contactAddress: AddressInfor.fromJson(
           json['contactAddress'],
@@ -24,7 +28,7 @@ class SellerInfor {
   }
   Map<String, dynamic> toJson() => {
         "isVerified": isVerified,
-        "shopIDs": shopIDs,
+        "shopIDs": shopIDs!.map((e) => e.toString()).toList(),
         "licenseNo": licenseNo,
         'contactAddress': contactAddress!.toJson(),
         'taxPaper': taxPaper

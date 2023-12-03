@@ -1,14 +1,16 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/customs/custom_elevate_button.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_form_field.dart';
+import 'package:dpl_ecommerce/models/address_infor.dart';
 
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
+import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:dropdown_search/dropdown_search.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class AddressForm extends StatefulWidget {
   @override
@@ -17,37 +19,37 @@ class AddressForm extends StatefulWidget {
 
 class _AddressFormState extends State<AddressForm> {
   final _formKey = GlobalKey<FormState>();
-//ghghgh
-  String? country;
-  String? state;
-  String? city;
-  double? latitude;
-  double? longitude;
+  final nameController = TextEditingController();
+  final cityController = TextEditingController();
+  final countryController = TextEditingController();
+  final districtController = TextEditingController();
+  final longitudeController = TextEditingController();
+  final latitudeController = TextEditingController();
   bool isDefaultAddress = false;
-  String? name;
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          backgroundColor: Colors.blue,
-          title: Text(
-            "Address",
-            textAlign: TextAlign.center,
-          ),
-          centerTitle: true,
-
-          //leading: Icon(Icons.menu),
+    final userProvider = Provider.of<UserViewModel>(context);
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: Text(
+          "Address",
+          textAlign: TextAlign.center,
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                TextFormField(
+        leading:
+            CustomArrayBackWidget(function: () => userProvider.resetAddress()),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Consumer<UserViewModel>(
+                builder: (context, value, child) => TextFormField(
+                  controller: value.countryController,
                   decoration: InputDecoration(labelText: 'Country'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -55,24 +57,29 @@ class _AddressFormState extends State<AddressForm> {
                     }
                     return null;
                   },
-                  onSaved: (value) {
-                    country = value;
-                  },
+                  // onSaved: (value) {
+                  //   country = value;
+                  // },
                 ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'State'),
+              ),
+              Consumer<UserViewModel>(
+                builder: (context, value, child) => TextFormField(
+                  decoration: InputDecoration(labelText: 'District'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a state';
+                      return 'Please enter a district';
                     }
                     return null;
                   },
-                  onSaved: (value) {
-                    state = value;
-                  },
+                  // onSaved: (value) {
+                  //   state = value;
+                  // },
+                  controller: value.districtController,
                 ),
+              ),
 
-                TextFormField(
+              Consumer<UserViewModel>(
+                builder: (context, value, child) => TextFormField(
                   decoration: InputDecoration(labelText: 'City'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -80,11 +87,16 @@ class _AddressFormState extends State<AddressForm> {
                     }
                     return null;
                   },
-                  onSaved: (value) {
-                    city = value;
-                  },
+                  // onSaved: (value) {
+                  //   city = value;
+                  // },
+                  controller: value.cityController,
                 ),
-                TextFormField(
+              ),
+              Consumer<UserViewModel>(
+                builder: (context, value, child) => TextFormField(
+                  keyboardType: TextInputType.number,
+
                   decoration: InputDecoration(labelText: 'Latitude'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -92,24 +104,32 @@ class _AddressFormState extends State<AddressForm> {
                     }
                     return null;
                   },
-                  onSaved: (value) {
-                    latitude = double.tryParse(value!);
-                  },
+                  // onSaved: (value) {
+                  //   latitude = double.tryParse(value!);
+                  // },
+                  controller: value.latitudeController,
                 ),
-                TextFormField(
+              ),
+              Consumer<UserViewModel>(
+                builder: (context, value, child) => TextFormField(
+                  keyboardType: TextInputType.number,
+
                   decoration: InputDecoration(labelText: 'Longitude'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a longitude';
+                      return 'Please enter a Longitude';
                     }
                     return null;
                   },
-                  onSaved: (value) {
-                    longitude = double.tryParse(value!);
-                  },
+                  // onSaved: (value) {
+                  //   latitude = double.tryParse(value!);
+                  // },
+                  controller: value.longitudeController,
                 ),
+              ),
 
-                TextFormField(
+              Consumer<UserViewModel>(
+                builder: (context, value, child) => TextFormField(
                   decoration: InputDecoration(labelText: 'Name'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -117,42 +137,54 @@ class _AddressFormState extends State<AddressForm> {
                     }
                     return null;
                   },
-                  onSaved: (value) {
-                    name = value;
-                  },
+                  controller: value.nameController,
                 ),
-                CheckboxListTile(
-                  title: Text('Default Address'),
-                  value: isDefaultAddress,
-                  onChanged: (value) {
-                    setState(() {
-                      isDefaultAddress = value!;
-                    });
-                  },
-                ),
-                // Các trường khác tương tự
-                SizedBox(height: 16),
-              ],
-            ),
+              ),
+              CheckboxListTile(
+                title: Text('Default Address'),
+                value: isDefaultAddress,
+                onChanged: (value) {
+                  setState(() {
+                    isDefaultAddress = value!;
+                  });
+                },
+              ),
+              // Các trường khác tương tự
+              SizedBox(height: 16),
+            ],
           ),
         ),
-        bottomNavigationBar: Container(
-          height: 40,
-          width: 370,
-          margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 25.h),
-          child: ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState?.validate() ?? false) {
-                _formKey.currentState?.save();
-
-                // Thực hiện thêm địa chỉ vào cơ sở dữ liệu hoặc xử lý tương ứng
-                print('Address added successfully');
-              }
-            },
-            child: Text(
-              'Add Address',
-              style: TextStyle(fontSize: 18),
-            ),
+      ),
+      bottomNavigationBar: Container(
+        height: 40,
+        width: 370,
+        margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 25.h),
+        child: ElevatedButton(
+          onPressed: () async {
+            if (_formKey.currentState?.validate() ?? false) {
+              _formKey.currentState?.save();
+              // print("City: $city");
+              // print("Country: $country");
+              // print("District: $state");
+              // print("Lat: $latitude");
+              // print("Long: $longitude");
+              // print("Name: $name");
+              print("default: $isDefaultAddress");
+              await userProvider.addNewAddress(AddressInfor(
+                  city: cityController.text,
+                  country: countryController.text,
+                  district: districtController.text,
+                  isDefaultAddress: isDefaultAddress,
+                  latitude: double.parse(latitudeController.text),
+                  longitude: double.parse(longitudeController.text),
+                  name: nameController.text));
+              // Thực hiện thêm địa chỉ vào cơ sở dữ liệu hoặc xử lý tương ứng
+              print('Address added successfully');
+            }
+          },
+          child: Text(
+            'Add Address',
+            style: TextStyle(fontSize: 18),
           ),
         ),
       ),

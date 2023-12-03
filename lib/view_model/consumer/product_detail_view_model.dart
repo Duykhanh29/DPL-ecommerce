@@ -6,6 +6,12 @@ class ProductDetailViewModel extends ChangeNotifier {
   String? color;
   String? type;
   String? size;
+  List<String>? voucherIDs;
+  void addNewVoucher(String voucherID) {
+    voucherIDs!.add(voucherID);
+    notifyListeners();
+  }
+
   void reset() {
     choseNumber = 1;
     color = null;
@@ -39,5 +45,11 @@ class ProductDetailViewModel extends ChangeNotifier {
   void changeType(String newType) {
     type = newType;
     notifyListeners();
+  }
+
+  void initialize({String? firstType, String? firstSize, String? firstColor}) {
+    type = firstType;
+    color = firstColor;
+    size = firstSize;
   }
 }

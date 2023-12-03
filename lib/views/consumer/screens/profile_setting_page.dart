@@ -44,7 +44,7 @@ class ProfileSettingScreen extends StatelessWidget {
                                   leading: CustomArrayBackWidget(),
                                 ),
                                 body: CustomPhotoView(
-                                    urlImage: value.userModel.avatar),
+                                    urlImage: value.userModel!.avatar),
                               );
                             },
                           ));
@@ -52,7 +52,7 @@ class ProfileSettingScreen extends StatelessWidget {
                         child: CircleAvatar(
                           radius: 60,
                           backgroundImage:
-                              NetworkImage(value.userModel.avatar!),
+                              NetworkImage(value.userModel!.avatar!),
                         ),
                       );
                     }),
@@ -87,22 +87,16 @@ class BuildForm extends StatefulWidget {
 
 class _BuildFormState extends State<BuildForm> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController firstNameEditTextController = TextEditingController();
 
-  TextEditingController lastNameEditTextController = TextEditingController();
-
-  TextEditingController emailEditTextController = TextEditingController();
-
-  TextEditingController phoneEditTextController = TextEditingController();
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    firstNameEditTextController.text = widget.provider.firstName!;
-    lastNameEditTextController.text = widget.provider.lastName!;
-    phoneEditTextController.text = widget.provider.phone!;
-    emailEditTextController.text = widget.provider.email!;
-  }
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   firstNameEditTextController.text = widget.provider.firstName!;
+  //   lastNameEditTextController.text = widget.provider.lastName!;
+  //   phoneEditTextController.text = widget.provider.phone!;
+  //   emailEditTextController.text = widget.provider.email!;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +119,7 @@ class _BuildFormState extends State<BuildForm> {
                 builder: (context, value, child) {
                   return TextFormField(
                     onChanged: (value) {
-                      userProvider.changeTempFirstName(value);
+                      // userProvider.changeTempFirstName(value);
                     },
                     validator: (value) {
                       if (value == null || value == "") {
@@ -133,7 +127,7 @@ class _BuildFormState extends State<BuildForm> {
                       }
                       return null;
                     },
-                    controller: firstNameEditTextController,
+                    controller: value.firstNameEditTextController,
                     decoration: InputDecoration(
                       hintText: "first name",
                       border: OutlineInputBorder(
@@ -149,7 +143,7 @@ class _BuildFormState extends State<BuildForm> {
                 builder: (context, value, child) {
                   return TextFormField(
                     onChanged: (value) {
-                      userProvider.changeTempLastName(value);
+                      // userProvider.changeTempLastName(value);
                     },
                     validator: (value) {
                       if (value == null || value == "") {
@@ -157,7 +151,7 @@ class _BuildFormState extends State<BuildForm> {
                       }
                       return null;
                     },
-                    controller: lastNameEditTextController,
+                    controller: value.lastNameEditTextController,
                     decoration: InputDecoration(
                       hintText: "last name",
                       border: OutlineInputBorder(
@@ -173,7 +167,7 @@ class _BuildFormState extends State<BuildForm> {
                 builder: (context, value, child) {
                   return TextFormField(
                     onChanged: (value) {
-                      userProvider.changeTempPhone(value);
+                      // userProvider.changeTempPhone(value);
                     },
                     validator: (value) {
                       if (value == null || value == "") {
@@ -181,7 +175,7 @@ class _BuildFormState extends State<BuildForm> {
                       }
                       return null;
                     },
-                    controller: phoneEditTextController,
+                    controller: value.phoneEditTextController,
                     decoration: InputDecoration(
                       hintText: "phone",
                       border: OutlineInputBorder(
@@ -197,7 +191,7 @@ class _BuildFormState extends State<BuildForm> {
                 builder: (context, value, child) {
                   return TextFormField(
                     onChanged: (value) {
-                      userProvider.changeTempEmail(value);
+                      // userProvider.changeTempEmail(value);
                     },
                     validator: (value) {
                       if (value == null || value == "") {
@@ -205,7 +199,7 @@ class _BuildFormState extends State<BuildForm> {
                       }
                       return null;
                     },
-                    controller: emailEditTextController,
+                    controller: value.emailEditTextController,
                     decoration: InputDecoration(
                       hintText: "email",
                       border: OutlineInputBorder(
@@ -244,15 +238,18 @@ class _BuildFormState extends State<BuildForm> {
         onPressed: () {
           var isValid = _formKey.currentState!.validate();
           if (isValid) {
-            print("New email: ${emailEditTextController!.text}");
-            print("New firstName: ${firstNameEditTextController!.text}");
-            print("New lastName: ${lastNameEditTextController!.text}");
-            print("New phone: ${phoneEditTextController!.text}");
+            print("New email: ${userProvider.emailEditTextController!.text}");
+            print(
+                "New firstName: ${userProvider.firstNameEditTextController!.text}");
+            print(
+                "New lastName: ${userProvider.lastNameEditTextController!.text}");
+            print("New phone: ${userProvider.phoneEditTextController!.text}");
             userProvider.updateInfor(
-                email: emailEditTextController!.text,
-                firstName: firstNameEditTextController!.text,
-                lastName: lastNameEditTextController!.text,
-                phone: phoneEditTextController!.text);
+                email: userProvider.emailEditTextController!.text,
+                firstName: userProvider.firstNameEditTextController!.text,
+                lastName: userProvider.lastNameEditTextController!.text,
+                phone: userProvider.phoneEditTextController!.text);
+            Navigator.of(context).pop();
           } else {
             print("object");
           }

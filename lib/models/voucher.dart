@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
 class Voucher {
@@ -6,8 +7,8 @@ class Voucher {
   String? shopID;
   int? discountPercent;
   int? discountAmount;
-  DateTime? releasedDate;
-  DateTime? expDate;
+  Timestamp? releasedDate;
+  Timestamp? expDate;
   Voucher(
       {this.discountAmount,
       this.discountPercent,
@@ -22,10 +23,10 @@ class Voucher {
     return Voucher(
       discountAmount: json['discountAmount'],
       discountPercent: json['discountPercent'],
-      expDate: json['expDate'],
+      expDate: (json['expDate'] as Timestamp?),
       id: json['id'],
       productID: json['productID'],
-      releasedDate: json['releasedDate'],
+      releasedDate: (json['releasedDate'] as Timestamp?),
       shopID: json['shopID'],
     );
   }

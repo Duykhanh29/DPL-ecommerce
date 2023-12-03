@@ -76,7 +76,7 @@ dependencies:
 
   # opeen link
   url_launcher: ^6.2.1
-  http: ^1.1.0
+  http: ^0.13.3
   # preview link
   flutter_chat_types: ^3.6.2
   flutter_link_previewer: ^3.2.2
@@ -85,6 +85,11 @@ dependencies:
   file_picker: ^6.1.1
   path_provider: ^2.1.1
   camera: ^0.10.5+5
+  image_gallery_saver: ^2.0.3
+  gallery_saver: ^2.3.2
+  
+  # validator
+  email_validator: ^2.1.17
 
   # firebase
   firebase_core: ^2.22.0

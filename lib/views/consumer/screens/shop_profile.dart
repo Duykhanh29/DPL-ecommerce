@@ -15,11 +15,13 @@ import 'package:dpl_ecommerce/repositories/category_repo.dart';
 import 'package:dpl_ecommerce/repositories/chat_repo.dart';
 import 'package:dpl_ecommerce/repositories/flash_sale_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
+import 'package:dpl_ecommerce/repositories/shop_repo.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/common/common_methods.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
+import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/chatting_page.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/voucher_widgets/list_voucher_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_item_widget1.dart';
@@ -41,18 +43,27 @@ class _ShopProfileState extends State<ShopProfile>
   int isSelected = 0;
   late TabController _tabController;
   int selectedIndex = -1;
-  List<FlashSale>? listFlashSale = FlashSaleRepo().list;
-  List<Product>? listProduct = ProductRepo().list;
-  List<Category>? listCategory = CategoryRepo().list;
-  List<Voucher> listVoucher = VoucherRepo().list;
-  UserModel userModel = AuthRepo().user;
+  // List<FlashSale>? listFlashSale;
+  List<Product>? listProduct;
+  List<Category>? listCategory;
+  List<Voucher>? listVoucher;
+  bool isLoading = true;
+  // repos
+  VoucherRepo voucherRepo = VoucherRepo();
+  CategoryRepo categoryRepo = CategoryRepo();
+  ProductRepo productRepo = ProductRepo();
+  ShopRepo shopRepo = ShopRepo();
+  UserRepo userRepo = UserRepo();
+
+  // UserModel userModel = AuthRepo().user;
   // List<Chat> listChat = ChatRepo().list;
-  List<UserModel>? lisUser = UserRepo().listUser;
+
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this, initialIndex: 0);
     _tabController.addListener(_handleTabSelection);
     super.initState();
+    fetchData();
   }
 
   _handleTabSelection() {
@@ -61,36 +72,38 @@ class _ShopProfileState extends State<ShopProfile>
     }
   }
 
-  // Shop shop = Shop(
-  //     name: "DK",
-  //     addressInfor: AddressInfor(
-  //         city: "ha noi",
-  //         country: "Viet nam",
-  //         isDefaultAddress: false,
-  //         latitude: 123.12,
-  //         longitude: 123,
-  //         name: "My address",
-  //         district: "Thanh Xuan"),
-  //     contactPhone: "0987654321",
-  //     id: "shopID01",
-  //     shopDescription:
-  //         "Cultivate your love for gardening with Green Thumb Nursery. We offer a variety of plants, gardening tools, and expert advice to help you create a vibrant and thriving garden.",
-  //     logo:
-  //         "https://cdn.shopify.com/shopifycloud/hatchful_web_two/bundles/4a14e7b2de7f6eaf5a6c98cb8c00b8de.png",
-  //     rating: 4.4,
-  //     shopView: 120);
+  Future<void> fetchData() async {
+    listProduct = await shopRepo.getListProductByShopID(widget.shop!.id!);
+    listVoucher = await voucherRepo.getListVoucherByShop(widget.shop!.id!);
+    listCategory = await categoryRepo.getListCategory();
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
+    if (listVoucher != null) {
+      listVoucher!.clear();
+    }
+    if (listProduct != null) {
+      listProduct!.clear();
+    }
+    if (listCategory != null) {
+      listCategory!.clear();
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final chatProvider = Provider.of<ChatViewModel>(context);
+    final userProvider = Provider.of<UserViewModel>(context);
+    final currentUser = userProvider.currentUser;
     return Scaffold(
       appBar:
-          AppBar(leading: CustomArrayBackWidget(), title: Text("Shop detail")),
+          AppBar(leading: CustomArrayBackWidget(), title: Text("Shop profile")),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -106,7 +119,9 @@ class _ShopProfileState extends State<ShopProfile>
                           onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ProfileSeller(),
+                              builder: (context) => ProfileSeller(
+                                shop: widget.shop!,
+                              ),
                             ),
                           ),
                           child: CircleAvatar(
@@ -121,7 +136,8 @@ class _ShopProfileState extends State<ShopProfile>
                           onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ProfileSeller(),
+                              builder: (context) =>
+                                  ProfileSeller(shop: widget.shop!),
                             ),
                           ),
                           child: Column(
@@ -169,14 +185,17 @@ class _ShopProfileState extends State<ShopProfile>
                                     borderRadius: BorderRadius.circular(5),
                                   ),
                                 ),
-                                onPressed: () {
+                                onPressed: () async {
+                                  List<UserModel>? lisUser =
+                                      await userRepo.getListUser();
+                                  Future.delayed(const Duration(seconds: 5));
                                   UserModel? seller =
                                       CommondMethods.getUserModelByShopID(
                                           widget.shop!.id!, lisUser!);
                                   Chat? chat;
                                   // TODO: Add button press logic
                                   if (!CommondMethods.hasConversation(
-                                      userModel.id!,
+                                      currentUser!.id!,
                                       seller!.id!,
                                       chatProvider.list)) {
                                     chat = Chat(
@@ -185,16 +204,16 @@ class _ShopProfileState extends State<ShopProfile>
                                       shopID: widget.shop!.id,
                                       shopLogo: widget.shop!.logo,
                                       shopName: widget.shop!.name,
-                                      userAvatar: userModel.avatar,
-                                      userID: userModel.id,
-                                      userName: userModel.firstName,
+                                      userAvatar: currentUser.avatar,
+                                      userID: currentUser.id,
+                                      userName: currentUser.firstName,
                                     );
                                     chatProvider.addNewChat(chat);
                                   } else {
                                     chat =
                                         CommondMethods.getChatByuserAndSeller(
                                             seller.id!,
-                                            userModel.id!,
+                                            currentUser.id!,
                                             chatProvider.list);
                                   }
 
@@ -264,74 +283,107 @@ class _ShopProfileState extends State<ShopProfile>
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                ListVoucherWidget(list: listVoucher),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 10.h, vertical: 6),
-                                  child: _buildDealOfTheDay(
-                                    context,
-                                    dealOfTheDayText: "Recommend",
-                                    viewAllText: "View all",
+                                if (listVoucher != null && !isLoading) ...{
+                                  ListVoucherWidget(list: listVoucher!),
+                                },
+
+                                if (listProduct != null && !isLoading) ...{
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10.h, vertical: 6),
+                                    child: _buildDealOfTheDay(
+                                      context,
+                                      dealOfTheDayText: "Featured products",
+                                      viewAllText: listProduct!.length > 2
+                                          ? "View all"
+                                          : "",
+                                    ),
                                   ),
-                                ),
-                                _buildDealOfTheDayRow(context, listProduct!),
+                                  _buildDealOfTheDayRow(context, listProduct!),
+                                },
+
                                 SizedBox(height: 26.h),
                                 Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          widget.shop!.name!,
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          widget.shop!.shopDescription!,
-                                          overflow: TextOverflow.clip,
-                                          textAlign: TextAlign.left,
-                                          style: const TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w300),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          widget.shop!.contactPhone!,
-                                          textAlign: TextAlign.left,
-                                          style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                      ],
-                                    )),
-                                Padding(
-                                  padding:
-                                      EdgeInsets.only(bottom: 5.h, left: 10.w),
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 10.h,
-                                        ),
-                                        //padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                        child: _buildDealOfTheDay(
-                                          context,
-                                          dealOfTheDayText: "",
-                                          viewAllText: "",
-                                        ),
+                                    alignment: Alignment.bottomCenter,
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.9,
+                                      padding: EdgeInsets.all(5.h),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10.r),
+                                          color: Color.fromARGB(
+                                              255, 212, 253, 255)),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.only(left: 10.w),
+                                            child: Text(
+                                              widget.shop!.name!,
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.only(left: 10.w),
+                                            child: Text(
+                                              widget.shop!.shopDescription!,
+                                              overflow: TextOverflow.clip,
+                                              textAlign: TextAlign.left,
+                                              style: const TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w300),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.only(left: 10.w),
+                                            child: Text(
+                                              widget.shop!.contactPhone!,
+                                              textAlign: TextAlign.left,
+                                              style: const TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w400),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      _buildProductSmallList1(
-                                          context, listProduct!),
-                                    ],
+                                    )),
+                                if (listProduct != null && !isLoading) ...{
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        bottom: 5.h, left: 10.w),
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 10.h,
+                                          ),
+                                          //padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                          child: _buildDealOfTheDay(
+                                            context,
+                                            dealOfTheDayText: "Recommend",
+                                            viewAllText: "",
+                                          ),
+                                        ),
+                                        _buildProductSmallList1(
+                                            context, listProduct!),
+                                      ],
+                                    ),
                                   ),
-                                ),
+                                },
+
                                 //SizedBox(height: 16.v),
                               ],
                             ),
@@ -356,39 +408,58 @@ class _ShopProfileState extends State<ShopProfile>
                                     viewAllText: "",
                                   ),
                                 ),
-                                _buildProductSmallList1(context, listProduct!),
+                                if (listProduct != null && !isLoading) ...{
+                                  _buildProductSmallList1(
+                                      context, listProduct!),
+                                } else ...{
+                                  Container()
+                                }
                               ],
                             ),
                           ),
                         ),
                         Container(
                           //color: Colors.red,
-                          child: Column(
-                            children: listCategory!.map((category) {
-                              return ListTile(
-                                leading: CachedNetworkImage(
-                                  imageUrl: category.logo!,
-                                  imageBuilder: (context, imageProvider) {
-                                    return Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.08,
-                                      width: MediaQuery.of(context).size.width *
-                                          0.1,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: imageProvider),
-                                      ),
-                                    );
-                                  },
-                                  placeholder: (context, url) => Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
+                          child: !isLoading
+                              ? listCategory != null
+                                  ? Column(
+                                      children: listCategory!.map((category) {
+                                        return ListTile(
+                                          leading: CachedNetworkImage(
+                                            imageUrl: category.logo!,
+                                            imageBuilder:
+                                                (context, imageProvider) {
+                                              return Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.08,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.1,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: imageProvider),
+                                                ),
+                                              );
+                                            },
+                                            placeholder: (context, url) =>
+                                                Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                          ),
+                                          title: Text(category.name!),
+                                        );
+                                      }).toList(),
+                                    )
+                                  : Center(
+                                      child: Text("No category"),
+                                    )
+                              : Center(
+                                  child: CircularProgressIndicator(),
                                 ),
-                                title: Text(category.name!),
-                              );
-                            }).toList(),
-                          ),
                         ),
                       ][_tabController.index],
                     ),

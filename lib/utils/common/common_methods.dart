@@ -1,4 +1,5 @@
 import 'package:dpl_ecommerce/helpers/validators.dart';
+import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/chat.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/product_in_cart_model.dart';
@@ -6,6 +7,7 @@ import 'package:dpl_ecommerce/models/review.dart';
 import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
+import 'package:dpl_ecommerce/models/voucher_for_user.dart';
 import 'package:intl/intl.dart';
 
 class CommondMethods {
@@ -107,5 +109,24 @@ class CommondMethods {
       }
     }
     return result;
+  }
+
+  static AddressInfor? getAddressInforByID(String id, List<AddressInfor> list) {
+    for (var element in list) {
+      if (id == element.id) {
+        return element;
+      }
+    }
+  }
+
+  static List<Voucher>? getListVoucherForUser(
+      VoucherForUser voucher, List<Voucher> list) {
+    List<Voucher> result = [];
+    for (var element in voucher.vouchers!) {
+      if (CommondMethods.getVoucherFromID(list, element) != null) {
+        Voucher voucher = CommondMethods.getVoucherFromID(list, element)!;
+        result.add(voucher);
+      }
+    }
   }
 }
