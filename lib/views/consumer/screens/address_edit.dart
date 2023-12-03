@@ -1,14 +1,18 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/customs/custom_elevate_button.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_form_field.dart';
+import 'package:dpl_ecommerce/models/address_infor.dart';
 
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
+import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class AddressForm extends StatefulWidget {
   @override
@@ -23,22 +27,17 @@ class _AddressFormState extends State<AddressForm> {
   String? ward;
   String? district;
   bool isDefaultAddress = false;
-  String? name;
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          backgroundColor: Colors.blue,
-          title: Text(
-            "Address",
-            textAlign: TextAlign.center,
-          ),
-          centerTitle: true,
-
-          //leading: Icon(Icons.menu),
+    final userProvider = Provider.of<UserViewModel>(context);
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: Text(
+          "Address",
+          textAlign: TextAlign.center,
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -213,23 +212,37 @@ class _AddressFormState extends State<AddressForm> {
             ),
           ),
         ),
-        bottomNavigationBar: Container(
-          height: 40,
-          width: 370,
-          margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 25.h),
-          child: ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState?.validate() ?? false) {
-                _formKey.currentState?.save();
-
-                // Thực hiện thêm địa chỉ vào cơ sở dữ liệu hoặc xử lý tương ứng
-                print('Address added successfully');
-              }
-            },
-            child: Text(
-              'Add Address',
-              style: TextStyle(fontSize: 18),
-            ),
+      ),
+      bottomNavigationBar: Container(
+        height: 40,
+        width: 370,
+        margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 25.h),
+        child: ElevatedButton(
+          onPressed: () async {
+            if (_formKey.currentState?.validate() ?? false) {
+              _formKey.currentState?.save();
+              // print("City: $city");
+              // print("Country: $country");
+              // print("District: $state");
+              // print("Lat: $latitude");
+              // print("Long: $longitude");
+              // print("Name: $name");
+              print("default: $isDefaultAddress");
+              await userProvider.addNewAddress(AddressInfor(
+                  city: cityController.text,
+                  country: countryController.text,
+                  district: districtController.text,
+                  isDefaultAddress: isDefaultAddress,
+                  latitude: double.parse(latitudeController.text),
+                  longitude: double.parse(longitudeController.text),
+                  name: nameController.text));
+              // Thực hiện thêm địa chỉ vào cơ sở dữ liệu hoặc xử lý tương ứng
+              print('Address added successfully');
+            }
+          },
+          child: Text(
+            'Add Address',
+            style: TextStyle(fontSize: 18),
           ),
         ),
       ),

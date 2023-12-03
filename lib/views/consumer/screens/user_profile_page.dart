@@ -2,6 +2,7 @@ import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
+import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
 // import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/address_screen.dart';
@@ -24,6 +25,7 @@ class UserProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthViewModel>(context);
     final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
@@ -31,7 +33,7 @@ class UserProfilePage extends StatelessWidget {
           width: double.maxFinite,
           child: Column(
             children: [
-              SizedBox(height: 61),
+              SizedBox(height: 61.h),
               Expanded(
                 child: SingleChildScrollView(
                   child: Padding(
@@ -274,8 +276,9 @@ class UserProfilePage extends StatelessWidget {
                                 height: 5,
                               ),
                               ListTile(
-                                  onTap: () {
+                                  onTap: () async {
                                     // go to Languages page
+                                    await authProvider.signOut();
                                   },
                                   leading: Icon(
                                     Icons.logout_rounded,
@@ -333,20 +336,21 @@ class UserProfilePage extends StatelessWidget {
           borderRadius: BorderRadius.circular(12.h),
           border: Border.all(color: Colors.black, width: 0.2)),
       padding: EdgeInsets.only(
-        left: 15,
-        right: 15,
+        left: 10.w,
+        right: 10.w,
       ),
       margin: EdgeInsets.only(
-        left: 23,
-        right: 23,
+        left: 15.w,
+        right: 15.w,
       ),
-      child: Center(
+      child: Align(
+        alignment: Alignment.centerLeft,
         child: ListTile(
           onTap: () {
             // go to profile setting
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) {
-                userProvider.initilize();
+                userProvider.initialize();
                 return ProfileSettingScreen();
               },
             ));
@@ -355,14 +359,14 @@ class UserProfilePage extends StatelessWidget {
             builder: (context, value, child) {
               return CircleAvatar(
                 radius: 40,
-                backgroundImage: NetworkImage(value.userModel.avatar!),
+                backgroundImage: NetworkImage(value.userModel!.avatar!),
               );
             },
           ),
           title: Consumer<UserViewModel>(
             builder: (context, value, child) {
               return Text(
-                value.userModel.firstName!,
+                value.userModel!.firstName!,
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
               );
             },
@@ -370,7 +374,7 @@ class UserProfilePage extends StatelessWidget {
           subtitle: Consumer<UserViewModel>(
             builder: (context, value, child) {
               return Text(
-                value.userModel.email!,
+                value.userModel!.email!,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.w200),
               );

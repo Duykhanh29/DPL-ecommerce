@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
 class FavouriteProduct {
   String? id;
   String? userID;
   String? productID;
-  DateTime? createdAt;
+  Timestamp? createdAt;
   FavouriteProduct({this.createdAt, this.id, this.productID, this.userID}) {
     id ??= Uuid().v4();
   }

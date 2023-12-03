@@ -4,9 +4,10 @@ enum Raking { bronze, silver, gold }
 
 class ConsumerInfor {
   Raking? raking;
-  int? rewardPoints;
+  int rewardPoints;
   List<AddressInfor>? addressInfors;
-  ConsumerInfor({this.addressInfors, this.raking, this.rewardPoints});
+  ConsumerInfor(
+      {this.addressInfors, this.raking = Raking.bronze, this.rewardPoints = 0});
   factory ConsumerInfor.fromJson(Map<String, dynamic> json) {
     return ConsumerInfor(
         raking: Raking.values.firstWhere(

@@ -6,6 +6,7 @@ import 'package:dpl_ecommerce/models/flash_sale.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/repositories/flash_sale_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
+import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/flash_sale_product.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,6 +34,7 @@ class _FlashDealListState extends State<FlashDealList> {
     return dateToTimeStamp;
   }
 
+  VoucherRepo voucherRepo = VoucherRepo();
   @override
   Widget build(BuildContext context) {
     print("object");
@@ -41,7 +43,11 @@ class _FlashDealListState extends State<FlashDealList> {
         leading: CustomArrayBackWidget(),
         title: Text("Flash sale"),
       ),
-      body: buildFlashDealList(context, widget.flashSale!, listProduct!),
+      body: FutureBuilder(
+        builder: (context, snapshot) =>
+            buildFlashDealList(context, widget.flashSale!, listProduct!),
+        future: voucherRepo.getListVoucher(),
+      ),
     );
   }
 
@@ -97,7 +103,7 @@ class _FlashDealListState extends State<FlashDealList> {
                       fontSize: 22,
                       fontWeight: FontWeight.w500),
                   enableDescriptions: false,
-                  endTime: flashSale!.expDate!,
+                  endTime: flashSale!.expDate!.toDate(),
                   format: CountDownTimerFormat.daysHoursMinutesSeconds,
                   onEnd: () {
                     // disappear this flashsale

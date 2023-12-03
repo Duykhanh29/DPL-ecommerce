@@ -85,7 +85,8 @@ class ChatItem extends StatelessWidget {
         ),
         trailing: Consumer<ChatViewModel>(
           builder: (context, value, child) {
-            return Text(DateHelper.chatTime(chat!.listMsg!.last.time!));
+            return Text(
+                DateHelper.chatTime(chat!.listMsg!.last.time!.toDate()));
           },
         ),
       ),

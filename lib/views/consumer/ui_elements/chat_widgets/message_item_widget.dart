@@ -110,7 +110,7 @@ class TextMsg extends StatelessWidget {
               child: Column(children: [
             Text(message!.content ?? ""),
             Text(
-              DateHelper.chatTime(message!.time!),
+              DateHelper.chatTime(message!.time!.toDate()),
               style: TextStyle(fontSize: 10),
             )
           ]))),
@@ -165,7 +165,7 @@ class ImageWidget extends StatelessWidget {
               ),
               // ),
             ),
-            Text(DateHelper.chatTime(message!.time!))
+            Text(DateHelper.chatTime(message!.time!.toDate()))
           ],
         ),
       ),
@@ -296,7 +296,7 @@ class _VideoMsgState extends State<VideoMsg> {
                     height: MediaQuery.of(context).size.height * 0.2,
                     child: const Center(child: CircularProgressIndicator()),
                   ),
-            Text(DateHelper.chatTime(widget.message!.time!))
+            Text(DateHelper.chatTime(widget.message!.time!.toDate()))
           ],
         ));
   }

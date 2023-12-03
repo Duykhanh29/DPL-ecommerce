@@ -4,6 +4,10 @@ import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_badge_cart.dart';
 
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
+import 'package:dpl_ecommerce/data_sources/firestore_data_source/product_firestore_data.dart';
+import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
+import 'package:dpl_ecommerce/models/cart.dart';
 import 'package:dpl_ecommerce/models/category.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/repositories/category_repo.dart';
@@ -11,7 +15,6 @@ import 'package:dpl_ecommerce/repositories/flash_sale_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
-
 import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/chat_page.dart';
 
@@ -38,21 +41,51 @@ class HomePage extends StatelessWidget {
   HomePage({super.key});
   TextEditingController searchController = TextEditingController();
   int sliderIndex = 1;
-  List<FlashSale>? listFlashSale = FlashSaleRepo().list;
-  List<Product>? listProduct = ProductRepo().list;
-  List<Category>? listCategory = CategoryRepo().list;
+
+  ProductRepo productRepo = ProductRepo();
+  FlashSaleRepo flashSaleRepo = FlashSaleRepo();
+  CategoryRepo categoryRepo = CategoryRepo();
+  FirestoreDatabase firestoreDatabase = FirestoreDatabase();
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartViewModel>(context);
     final chatProvider = Provider.of<ChatViewModel>(context);
+    final useProvider = Provider.of<UserViewModel>(context);
+    final user = useProvider.currentUser;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text("Home"),
         actions: [
-          Consumer<CartViewModel>(builder: (context, value, child) {
-            return CustomBadgeCart(number: value.cart.productInCarts!.length);
-          }),
+          StreamBuilder<Cart?>(
+              stream: firestoreDatabase.getCartByUser(user!.id!),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  print("waiting");
+                  return Icon(
+                    CupertinoIcons.cart,
+                    size: 30.h,
+                    color: Colors.white,
+                  );
+                } else {
+                  if (snapshot.data != null) {
+                    final cart = snapshot.data;
+                    cartProvider.setCart(cart!);
+                    return Consumer<CartViewModel>(
+                        builder: (context, value, child) {
+                      return CustomBadgeCart(
+                          number: value.cart!.productInCarts!.length);
+                    });
+                  } else {
+                    print("Data is null");
+
+                    cartProvider
+                        .setCart(Cart(userID: user.id, productInCarts: []));
+                    return CustomBadgeCart(number: 0);
+                  }
+                }
+              }),
           const SizedBox(width: 15),
           Center(
             child: badges.Badge(
@@ -153,9 +186,9 @@ class HomePage extends StatelessWidget {
                             ),
                           ),
                           // SizedBox(height: 15.h),
-                          _buildCategoryList(context, listCategory!),
+                          _buildCategoryList(context),
                           SizedBox(height: 20.h),
-                          _buildPromotionBanner(context, listFlashSale!),
+                          _buildPromotionBanner(context),
                           SizedBox(height: 8.h),
                           SizedBox(
                             height: 6.h,
@@ -183,7 +216,7 @@ class HomePage extends StatelessWidget {
                               viewAllText: "view all",
                             ),
                           ),
-                          _buildDealOfTheDayRow(context, listProduct!),
+                          _buildDealOfTheDayRow(context),
                           SizedBox(height: 26.h),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 10.h),
@@ -194,7 +227,7 @@ class HomePage extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 16.h),
-                          _buildProductSmallList(context, listProduct!),
+                          _buildProductSmallList(context),
                           SizedBox(height: 25.h),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 10.h),
@@ -205,7 +238,7 @@ class HomePage extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 16.h),
-                          _buildProductSmallList1(context, listProduct!),
+                          _buildProductSmallList1(context),
                         ],
                       ),
                     ),
@@ -218,51 +251,87 @@ class HomePage extends StatelessWidget {
   }
 
   /// Section Widget
-  Widget _buildPromotionBanner(BuildContext context, List<FlashSale> list) {
-    return Padding(
-      padding: EdgeInsets.only(right: 16.h),
-      child: CarouselSlider.builder(
-        options: CarouselOptions(
-          height: 206.h,
-          initialPage: 0,
-          autoPlay: true,
-          viewportFraction: 1.0,
-          enableInfiniteScroll: false,
-          scrollDirection: Axis.horizontal,
-          onPageChanged: (
-            index,
-            reason,
-          ) {
-            sliderIndex = index;
-          },
-        ),
-        itemCount: list.length,
-        itemBuilder: (context, index, realIndex) {
-          return PromotionbannerItemWidget(
-            flashSale: list[index],
-          );
-        },
-      ),
-    );
+  Widget _buildPromotionBanner(BuildContext context) {
+    return FutureBuilder(
+        future: flashSaleRepo.getActiveFlashSale(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            if (snapshot.data != null) {
+              final list = snapshot.data;
+              return Padding(
+                padding: EdgeInsets.only(right: 16.h),
+                child: CarouselSlider.builder(
+                  options: CarouselOptions(
+                    height: 206.h,
+                    initialPage: 0,
+                    autoPlay: true,
+                    viewportFraction: 1.0,
+                    enableInfiniteScroll: false,
+                    scrollDirection: Axis.horizontal,
+                    onPageChanged: (
+                      index,
+                      reason,
+                    ) {
+                      sliderIndex = index;
+                    },
+                  ),
+                  itemCount: list!.length,
+                  itemBuilder: (context, index, realIndex) {
+                    return PromotionbannerItemWidget(
+                      flashSale: list[index],
+                    );
+                  },
+                ),
+              );
+            } else {
+              return Container(
+                child: Text("NO data"),
+              );
+            }
+          }
+        });
   }
 
   /// Section Widget
-  Widget _buildCategoryList(BuildContext context, List<Category> list) {
-    return SizedBox(
+  Widget _buildCategoryList(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(2.h),
       height: MediaQuery.of(context).size.height * 0.12,
-      child: ListView.separated(
-        padding: EdgeInsets.only(left: 10.h),
-        scrollDirection: Axis.horizontal,
-        separatorBuilder: (context, index) {
-          return SizedBox(
-            width: 18.h,
-          );
-        },
-        itemCount: list.length,
-        itemBuilder: (context, index) {
-          return CategoryItemWidget(
-            category: list[index],
-          );
+      child: FutureBuilder(
+        future: categoryRepo.getListCategory(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            if (snapshot.data != null) {
+              final list = snapshot.data;
+              return ListView.separated(
+                padding: EdgeInsets.only(left: 10.h),
+                scrollDirection: Axis.horizontal,
+                separatorBuilder: (context, index) {
+                  return SizedBox(
+                    width: 18.h,
+                  );
+                },
+                itemCount: list!.length,
+                itemBuilder: (context, index) {
+                  return CategoryItemWidget(
+                    category: list[index],
+                  );
+                },
+              );
+            } else {
+              return Center(
+                child: Text("No data here"),
+              );
+            }
+          }
         },
       ),
     );
@@ -403,75 +472,129 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildDealOfTheDayRow(BuildContext context, List<Product> list) {
+  Widget _buildDealOfTheDayRow(BuildContext context) {
     return SizedBox(
       height: 220.h,
-      child: ListView.separated(
-        padding: EdgeInsets.only(left: 16.h),
-        scrollDirection: Axis.horizontal,
-        separatorBuilder: (
-          context,
-          index,
-        ) {
-          return SizedBox(
-            width: 16.h,
-          );
-        },
-        itemCount: list.length,
-        itemBuilder: (context, index) {
-          return ProductItemWidget(
-            product: list[index],
-          );
+      child: StreamBuilder(
+        stream: firestoreDatabase.getListActiveProduct(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            if (snapshot.data != null) {
+              final list = snapshot.data;
+              return ListView.separated(
+                padding: EdgeInsets.only(left: 16.h),
+                scrollDirection: Axis.horizontal,
+                separatorBuilder: (
+                  context,
+                  index,
+                ) {
+                  return SizedBox(
+                    width: 16.h,
+                  );
+                },
+                itemCount: list!.length,
+                itemBuilder: (context, index) {
+                  return ProductItemWidget(
+                    product: list[index],
+                  );
+                },
+              );
+            } else {
+              return Center(
+                child: Image.asset(ImageData.imageNotFound),
+              );
+            }
+          }
         },
       ),
     );
   }
 
   /// Section Widget
-  Widget _buildProductSmallList(BuildContext context, List<Product> list) {
+  Widget _buildProductSmallList(BuildContext context) {
     return SizedBox(
       height: 230.h,
-      child: ListView.separated(
-        padding: EdgeInsets.only(left: 16.h),
-        scrollDirection: Axis.horizontal,
-        separatorBuilder: (
-          context,
-          index,
-        ) {
-          return SizedBox(
-            width: 16.h,
-          );
-        },
-        itemCount: list.length,
-        itemBuilder: (context, index) {
-          return ProductsmalllistItemWidget(
-            product: list[index],
-          );
+      child: StreamBuilder(
+        stream: firestoreDatabase.getListActiveProduct(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            if (snapshot.data != null) {
+              final list = snapshot.data;
+              return ListView.separated(
+                padding: EdgeInsets.only(left: 16.h),
+                scrollDirection: Axis.horizontal,
+                separatorBuilder: (
+                  context,
+                  index,
+                ) {
+                  return SizedBox(
+                    width: 16.h,
+                  );
+                },
+                itemCount: list!.length,
+                itemBuilder: (context, index) {
+                  return ProductsmalllistItemWidget(
+                    product: list[index],
+                  );
+                },
+              );
+            } else {
+              return Center(
+                child: Image.asset(ImageData.imageNotFound),
+              );
+            }
+          }
         },
       ),
     );
   }
 
   /// Section Widget
-  Widget _buildProductSmallList1(BuildContext context, List<Product> list) {
+  Widget _buildProductSmallList1(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(right: 10.h),
-      child: GridView.builder(
-        shrinkWrap: true,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          mainAxisExtent: 283.h,
-          // childAspectRatio: 3 / 2,
-        ),
-        itemBuilder: (context, index) {
-          return Productsmalllist1ItemWidget(
-            product: list[index],
-          );
+      child: StreamBuilder(
+        stream: firestoreDatabase.getListActiveProduct(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            if (snapshot.data != null) {
+              final list = snapshot.data;
+              return GridView.builder(
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  mainAxisExtent: 283.h,
+                  // childAspectRatio: 3 / 2,
+                ),
+                itemBuilder: (context, index) {
+                  return Productsmalllist1ItemWidget(
+                    product: list[index],
+                  );
+                },
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: list!.length,
+              );
+            } else {
+              return Center(
+                child: Image.asset(ImageData.imageNotFound),
+              );
+            }
+          }
         },
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: list.length,
       ),
     );
   }

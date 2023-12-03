@@ -26,7 +26,7 @@ class CategoryItemWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 2.h),
+            // SizedBox(height: 2.h),
             CustomIconButton(
               height: 50.h,
               width: 50.h,
@@ -40,6 +40,7 @@ class CategoryItemWidget extends StatelessWidget {
             Text(
               category!.name!,
               style: theme.textTheme.bodySmall,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),

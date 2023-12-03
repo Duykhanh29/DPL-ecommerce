@@ -1,5 +1,6 @@
 import 'package:dpl_ecommerce/models/message.dart';
 import 'package:intl/intl.dart';
+import 'package:email_validator/email_validator.dart';
 
 class Validators {
   Validators._();
@@ -54,6 +55,15 @@ class Validators {
     }
   }
 
+  static String? isValidEmail(String? email) {
+    final bool isValid = EmailValidator.validate(email!);
+    if (isValid) {
+      return null;
+    } else {
+      return "Input valid email";
+    }
+  }
+
   static bool compareDate(DateTime dateTime) {
     if (dateTime.day == DateTime.now().day &&
         dateTime.month == DateTime.now().month &&
@@ -81,7 +91,7 @@ class Validators {
   }
 
   static int differenceHours(Message message) {
-    return DateTime.now().difference(message.time!).inHours;
+    return DateTime.now().difference(message.time!.toDate()).inHours;
   }
 
   static bool isSameWeek(DateTime time1, DateTime time2) {

@@ -1,6 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
 import 'package:dpl_ecommerce/models/review.dart';
 
 class ReviewRepo {
+  FirestoreDatabase _reviewFirestoreDB = FirestoreDatabase();
+  // Future<List<Review>> getListReviewByProduct(String productID)async{
+
+  // }
   final List<Review> listReview = [
     Review(
         id: "reviewID01",
@@ -8,7 +14,7 @@ class ReviewRepo {
         rating: 4.5,
         resourseType: ResourseType.image,
         text: "You are great",
-        time: DateTime.now(),
+        time: Timestamp.fromDate(DateTime.now()),
         userAvatar:
             "https://dfstudio-d420.kxcdn.com/wordpress/wp-content/uploads/2019/06/digital_camera_photo-1080x675.jpg",
         userID: "user01"),
@@ -18,7 +24,7 @@ class ReviewRepo {
         rating: 4.2,
         resourseType: ResourseType.image,
         text: "Awesome product",
-        time: DateTime.now(),
+        time: Timestamp.fromDate(DateTime.now()),
         userAvatar:
             "https://www.eurojuris.fr/medias/org-224/shared/droit-a-l-image.png",
         userID: "user02"),
@@ -28,7 +34,7 @@ class ReviewRepo {
         rating: 4.0,
         resourseType: ResourseType.video,
         text: "Great review",
-        time: DateTime.now(),
+        time: Timestamp.fromDate(DateTime.now()),
         userAvatar:
             "https://www.eurojuris.fr/medias/org-224/shared/droit-a-l-image.png",
         userID: "user03"),
@@ -38,7 +44,7 @@ class ReviewRepo {
         rating: 4.7,
         resourseType: ResourseType.image,
         text: "Amazing",
-        time: DateTime.now(),
+        time: Timestamp.fromDate(DateTime.now()),
         userAvatar:
             "https://www.eurojuris.fr/medias/org-224/shared/droit-a-l-image.png",
         userID: "user04"),
@@ -48,7 +54,7 @@ class ReviewRepo {
         rating: 3.8,
         resourseType: ResourseType.video,
         text: "Not bad at all",
-        time: DateTime.now(),
+        time: Timestamp.fromDate(DateTime.now()),
         userAvatar:
             "https://huggingface.co/tasks/assets/image-classification/image-classification-input.jpeg",
         userID: "user05"),
@@ -58,7 +64,7 @@ class ReviewRepo {
         rating: 4.5,
         resourseType: ResourseType.image,
         text: "Superb",
-        time: DateTime.now(),
+        time: Timestamp.fromDate(DateTime.now()),
         userAvatar:
             "https://img.freepik.com/premium-photo/boy-is-using-laptop-with-word-s-screen_972034-586.jpg",
         userID: "user06"),
@@ -68,7 +74,7 @@ class ReviewRepo {
         rating: 4.1,
         resourseType: ResourseType.image,
         text: "Impressive",
-        time: DateTime.now(),
+        time: Timestamp.fromDate(DateTime.now()),
         userAvatar:
             "https://huggingface.co/tasks/assets/image-classification/image-classification-input.jpeg",
         userID: "user07"),
@@ -78,7 +84,7 @@ class ReviewRepo {
         rating: 3.7,
         resourseType: ResourseType.video,
         text: "Average",
-        time: DateTime.now(),
+        time: Timestamp.fromDate(DateTime.now()),
         userAvatar:
             "https://huggingface.co/tasks/assets/image-classification/image-classification-input.jpeg",
         userID: "user08"),
@@ -88,7 +94,7 @@ class ReviewRepo {
         rating: 4.8,
         resourseType: ResourseType.image,
         text: "Excellent",
-        time: DateTime.now(),
+        time: Timestamp.fromDate(DateTime.now()),
         userAvatar:
             "https://img.freepik.com/premium-photo/boy-is-using-laptop-with-word-s-screen_972034-586.jpg",
         userID: "user09"),
@@ -98,7 +104,7 @@ class ReviewRepo {
         rating: 4.9,
         resourseType: ResourseType.image,
         text: "Highly recommended",
-        time: DateTime.now(),
+        time: Timestamp.fromDate(DateTime.now()),
         userAvatar:
             "https://img.freepik.com/premium-photo/cartoon-character-kid-staring-space-book_772785-2908.jpg",
         userID: "user10"),
@@ -108,7 +114,7 @@ class ReviewRepo {
         rating: 4.3,
         resourseType: ResourseType.video,
         text: "Decent quality",
-        time: DateTime.now(),
+        time: Timestamp.fromDate(DateTime.now()),
         userAvatar:
             "https://img.freepik.com/premium-photo/cartoon-character-kid-staring-space-book_772785-2908.jpg",
         userID: "user11"),
@@ -118,7 +124,7 @@ class ReviewRepo {
         rating: 3.5,
         resourseType: ResourseType.image,
         text: "Needs improvement",
-        time: DateTime.now(),
+        time: Timestamp.fromDate(DateTime.now()),
         userAvatar:
             "https://img.freepik.com/premium-photo/cartoon-character-kid-staring-space-book_772785-2908.jpg",
         userID: "user12"),
@@ -128,7 +134,7 @@ class ReviewRepo {
         rating: 4.0,
         resourseType: ResourseType.video,
         text: "Satisfactory",
-        time: DateTime.now(),
+        time: Timestamp.fromDate(DateTime.now()),
         userAvatar:
             "https://huggingface.co/tasks/assets/image-classification/image-classification-input.jpeg",
         userID: "user13"),
@@ -138,7 +144,7 @@ class ReviewRepo {
         rating: 4.7,
         resourseType: ResourseType.image,
         text: "Fantastic",
-        time: DateTime.now(),
+        time: Timestamp.fromDate(DateTime.now()),
         userAvatar:
             "https://huggingface.co/tasks/assets/image-classification/image-classification-input.jpeg",
         userID: "user14"),
@@ -148,7 +154,7 @@ class ReviewRepo {
         rating: 4.6,
         resourseType: ResourseType.video,
         text: "Well done",
-        time: DateTime.now(),
+        time: Timestamp.fromDate(DateTime.now()),
         userAvatar:
             "https://img.freepik.com/premium-photo/cartoon-character-kid-staring-space-book_772785-2908.jpg",
         userID: "user15")

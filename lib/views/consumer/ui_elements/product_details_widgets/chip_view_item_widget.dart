@@ -4,10 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // ignore: must_be_immutable
 class ChipviewItemWidget extends StatelessWidget {
-  const ChipviewItemWidget({Key? key})
+  ChipviewItemWidget({Key? key, required this.title})
       : super(
           key: key,
         );
+  String title;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class ChipviewItemWidget extends StatelessWidget {
       showCheckmark: false,
       labelPadding: EdgeInsets.zero,
       label: Text(
-        "S",
+        title,
         style: TextStyle(
           color: theme.colorScheme.onPrimary,
           fontSize: 12,
