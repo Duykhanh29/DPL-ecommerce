@@ -217,6 +217,7 @@ class PrimaryColors {
 
   // Yellow
   Color get yellow50 => Color(0XFFFFF7ED);
+  Color get gray300 => Color(0XFFDADADA);
 }
 
 PrimaryColors get appTheme => AppTheme().themeColor();

@@ -6,6 +6,9 @@ import 'package:dpl_ecommerce/views/consumer/screens/login_screen.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/order_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/user_profile_page.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_section/consumer_drawer.dart';
+
+import 'package:dpl_ecommerce/views/seller/screens/product/product_app.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +25,6 @@ class _MainViewState extends State<MainView> {
   List<Widget> pages = [
     HomePage(),
     CategoryPage(),
-    // AddAddress(),
     OrderPage(),
     UserProfilePage(),
   ];
@@ -70,7 +72,7 @@ class _MainViewState extends State<MainView> {
         currentIndex: indexPage,
         iconSize: 25,
         selectedFontSize: 8,
-        selectedItemColor: Colors.orangeAccent.shade200,
+        selectedItemColor: Colors.blue.shade400,
       ),
       body: IndexedStack(
         index: indexPage,

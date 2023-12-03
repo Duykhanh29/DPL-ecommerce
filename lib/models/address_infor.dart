@@ -9,6 +9,9 @@ class AddressInfor {
   double? longitude;
   bool isDefaultAddress;
   String? name;
+  String? number;
+  String? ward;
+  String? id;
   AddressInfor(
       {this.city,
       this.country,
@@ -16,10 +19,11 @@ class AddressInfor {
       this.latitude,
       this.longitude,
       this.name,
+      this.number,
+      this.ward,
       this.district,
-      this.id}) {
-    id ??= Uuid().v4();
-  }
+      this.id,
+      });
   factory AddressInfor.fromJson(Map<String, dynamic> json) {
     return AddressInfor(
         id: json['id'],
@@ -29,7 +33,13 @@ class AddressInfor {
         latitude: (json['latitude'] as double),
         longitude: (json['longitude'] as double),
         isDefaultAddress: json['isDefaultAddress'],
-        name: json['name']);
+        name: json['name'],
+        number: json['number'],
+        ward: json['ward'],
+        id: json['id'],
+    
+        );
+        
   }
   Map<String, dynamic> toJson() => {
         'country': country,
@@ -39,6 +49,8 @@ class AddressInfor {
         'longitude': longitude,
         'isDefaultAddress': isDefaultAddress,
         'name': name,
-        'id': id
+        'number': number,
+        'ward': ward,
+        'id': id,
       };
 }

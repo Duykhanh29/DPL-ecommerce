@@ -9,6 +9,8 @@ import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:dropdown_search/dropdown_search.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
@@ -19,12 +21,11 @@ class AddressForm extends StatefulWidget {
 
 class _AddressFormState extends State<AddressForm> {
   final _formKey = GlobalKey<FormState>();
-  final nameController = TextEditingController();
-  final cityController = TextEditingController();
-  final countryController = TextEditingController();
-  final districtController = TextEditingController();
-  final longitudeController = TextEditingController();
-  final latitudeController = TextEditingController();
+  String? country;
+  String? city;
+  String? number;
+  String? ward;
+  String? district;
   bool isDefaultAddress = false;
 
   @override
@@ -38,120 +39,177 @@ class _AddressFormState extends State<AddressForm> {
           "Address",
           textAlign: TextAlign.center,
         ),
-        leading:
-            CustomArrayBackWidget(function: () => userProvider.resetAddress()),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Consumer<UserViewModel>(
-                builder: (context, value, child) => TextFormField(
-                  controller: value.countryController,
-                  decoration: InputDecoration(labelText: 'Country'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a country';
-                    }
-                    return null;
-                  },
-                  // onSaved: (value) {
-                  //   country = value;
-                  // },
-                ),
-              ),
-              Consumer<UserViewModel>(
-                builder: (context, value, child) => TextFormField(
-                  decoration: InputDecoration(labelText: 'District'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a district';
-                    }
-                    return null;
-                  },
-                  // onSaved: (value) {
-                  //   state = value;
-                  // },
-                  controller: value.districtController,
-                ),
-              ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  
+                  Text("Country"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  DropdownSearch(
+                    items: ["Brazil", "France", "Tunisia", "Canada"],
+                    dropdownDecoratorProps: DropDownDecoratorProps(),
+                    onChanged: print,
+                    selectedItem: "Tunisia",
+                    validator: (String? item) {
+                      if (item == null)
+                        return "Required field";
+                      else if (item == "Brazil")
+                        return "Invalid item";
+                      else
+                        return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text("City"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  DropdownSearch(
+                    items: ["Brazil", "France", "Tunisia", "Canada"],
+                    dropdownDecoratorProps: DropDownDecoratorProps(),
+                    onChanged: print,
+                    selectedItem: "Tunisia",
+                    validator: (String? item) {
+                      if (item == null)
+                        return "Required field";
+                      else if (item == "Brazil")
+                        return "Invalid item";
+                      else
+                        return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  //kkk
+                  Text("District"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  DropdownSearch(
+                    items: ["Brazil", "France", "Tunisia", "Canada"],
+                    dropdownDecoratorProps: DropDownDecoratorProps(),
+                    onChanged: print,
+                    selectedItem: "Tunisia",
+                    validator: (String? item) {
+                      if (item == null)
+                        return "Required field";
+                      else if (item == "Brazil")
+                        return "Invalid item";
+                      else
+                        return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
 
-              Consumer<UserViewModel>(
-                builder: (context, value, child) => TextFormField(
-                  decoration: InputDecoration(labelText: 'City'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a city';
-                    }
-                    return null;
-                  },
-                  // onSaved: (value) {
-                  //   city = value;
-                  // },
-                  controller: value.cityController,
-                ),
-              ),
-              Consumer<UserViewModel>(
-                builder: (context, value, child) => TextFormField(
-                  keyboardType: TextInputType.number,
+                  Text("Ward"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                   DropdownSearch(
+                    items: ["Brazil", "France", "Tunisia", "Canada"],
+                    dropdownDecoratorProps: DropDownDecoratorProps(),
+                    onChanged: print,
+                    selectedItem: "Tunisia",
+                    validator: (String? item) {
+                      if (item == null)
+                        return "Required field";
+                      else if (item == "Brazil")
+                        return "Invalid item";
+                      else
+                        return null;
+                    },
+                  ),
+                  
+                  const SizedBox(
+                    height: 10,
+                  ),
 
-                  decoration: InputDecoration(labelText: 'Latitude'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a latitude';
-                    }
-                    return null;
-                  },
-                  // onSaved: (value) {
-                  //   latitude = double.tryParse(value!);
-                  // },
-                  controller: value.latitudeController,
-                ),
-              ),
-              Consumer<UserViewModel>(
-                builder: (context, value, child) => TextFormField(
-                  keyboardType: TextInputType.number,
+                  Text("Apartment number"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 10.0),
+                      filled: true,
+                      hoverColor: appTheme.gray300,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter an apartment number';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      country = value;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
 
-                  decoration: InputDecoration(labelText: 'Longitude'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a Longitude';
-                    }
-                    return null;
-                  },
-                  // onSaved: (value) {
-                  //   latitude = double.tryParse(value!);
-                  // },
-                  controller: value.longitudeController,
-                ),
-              ),
+                  Text("Name"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 10.0),
+                      filled: true,
+                      hoverColor: appTheme.gray300,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a name';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      country = value;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
 
-              Consumer<UserViewModel>(
-                builder: (context, value, child) => TextFormField(
-                  decoration: InputDecoration(labelText: 'Name'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a name';
-                    }
-                    return null;
-                  },
-                  controller: value.nameController,
-                ),
+                  
+                  CheckboxListTile(
+                    title: Text('Default Address'),
+                    value: isDefaultAddress,
+                    onChanged: (value) {
+                      setState(() {
+                        isDefaultAddress = value!;
+                      });
+                    },
+                  ),
+                  // Các trường khác tương tự
+                  SizedBox(height: 16),
+                ],
               ),
-              CheckboxListTile(
-                title: Text('Default Address'),
-                value: isDefaultAddress,
-                onChanged: (value) {
-                  setState(() {
-                    isDefaultAddress = value!;
-                  });
-                },
-              ),
-              // Các trường khác tương tự
-              SizedBox(height: 16),
-            ],
+            ),
           ),
         ),
       ),

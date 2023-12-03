@@ -7,6 +7,7 @@ import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/address_screen.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/change_language_page.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/favorite_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/profile_setting_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/user_list_voucher.dart';
 import 'package:flutter/cupertino.dart';
@@ -136,9 +137,12 @@ class UserProfilePage extends StatelessWidget {
                                 height: 5,
                               ),
                               ListTile(
-                                  onTap: () {
-                                    // go to wishlist page
-                                  },
+                                 onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FavoriteScreen(),
+                              ),
+                            ),
                                   leading: Icon(Icons.favorite_outline),
                                   title: Padding(
                                     padding: EdgeInsets.only(

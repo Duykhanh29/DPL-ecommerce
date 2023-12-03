@@ -1,16 +1,11 @@
-import 'package:dpl_ecommerce/const/app_decoration.dart';
+
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_elevate_button.dart';
-import 'package:dpl_ecommerce/customs/custom_icon_button.dart';
-import 'package:dpl_ecommerce/customs/custom_image_view.dart';
+
 import 'package:dpl_ecommerce/customs/custom_outline_button.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
-import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
-import 'package:dpl_ecommerce/view_model/user_view_model.dart';
-import 'package:dpl_ecommerce/views/consumer/screens/add_address.dart';
-import 'package:dpl_ecommerce/views/consumer/screens/add_new_address.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/address_edit.dart';
-import 'package:dpl_ecommerce/views/consumer/screens/checkout_page.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -54,23 +49,39 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
           padding: EdgeInsets.all(20),
           itemBuilder: (context, index) {
             AddressInfor address = addresses[index];
-            return GestureDetector(
-              onTap: () {
-                // userProvider.initilizeAddress(address);
-              },
-              child: Container(
-                padding: EdgeInsets.all(5.h),
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(15.r)),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 20,
+            return Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 23.h,
+                    vertical: 21.h,
+                  ),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(9),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          spreadRadius: 2.h,
+                          blurRadius: 2.h,
+                          offset: Offset(
+                            0,
+                            4,
+                          ),
+                        ),
+                      ],
                     ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 23.h,
-                        vertical: 21.h,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${addresses[index].name}',
+                        style: theme.textTheme.titleSmall,
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(9),
