@@ -12,7 +12,20 @@
           "package_name": "com.example.dpl_ecommerce"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "573290240283-ne74e14p1c15parq3sqalumft21bhgqi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dpl_ecommerce",
+            "certificate_hash": "ff22f445a4eacb55d6d89015d81494050d53ce1a"
+          }
+        },
+        {
+          "client_id": "573290240283-tnlcp70ps5n44dc9o9oo0443ljf71l6i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCJb7yN-cd_LYzZP30Z4ImOJbuGBSPpX6w"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "573290240283-tnlcp70ps5n44dc9o9oo0443ljf71l6i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "573290240283-bildr8n47bh53fjiupiiv46lvb8ko4l5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.dplEcommerce"
+              }
+            }
+          ]
         }
       }
     }

@@ -187,7 +187,7 @@ class _AuthorizatedPageState extends State<AuthorizatedPage> {
       } else {
         return Scaffold(
           body: Center(
-            child: CircularProgressIndicator(),
+            child: Text("Waiting ..."),
           ),
         );
       }

@@ -689,7 +689,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     SizedBox(height: 2.h),
                     Text(
                       shop.addressInfor!.city != null
-                          ? shop.addressInfor!.city!
+                          ? shop.addressInfor!.city!.name!
                           : "",
                       style: CustomTextStyles.bodySmallGray600,
                     ),

@@ -3,9 +3,13 @@ import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/customs/custom_text_form_field.dart';
 import 'package:dpl_ecommerce/data_sources/third_party_source/address_repository.dart';
 import 'package:dpl_ecommerce/helpers/toast_helper.dart';
+import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/district.dart';
+import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/models/ward.dart';
+import 'package:dpl_ecommerce/repositories/user_repo.dart';
+import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/chat_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +17,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class AddAddress extends StatefulWidget {
   AddAddress({super.key});
@@ -32,7 +37,7 @@ class _AddAddressState extends State<AddAddress> {
   TextEditingController _wardController = TextEditingController();
 
   TextEditingController _nameController = TextEditingController();
-
+  TextEditingController _homeNumberController = TextEditingController();
   City? _selected_city;
 
   District? _selected_district;
@@ -48,6 +53,9 @@ class _AddAddressState extends State<AddAddress> {
   FocusNode nameFocusNode = FocusNode();
 
   FocusNode countryFocusNode = FocusNode();
+  FocusNode homeNumberFocusNode = FocusNode();
+  UserRepo userRepo = UserRepo();
+  bool isDefaultAddress = false;
   onSelectCityDuringAdd(city) {
     if (_selected_city != null && city.id == _selected_city!.id) {
       setState(() {
@@ -111,14 +119,21 @@ class _AddAddressState extends State<AddAddress> {
     });
   }
 
-  onPressReg() async {
+  onPressReg(UserModel user) async {
     String name = _nameController.text.trim();
     String country = _countryController.text.trim();
+    String homeNumber = _homeNumberController.text.trim();
     // String address = addressController.text.trim();
-    String? city = _selected_city!.name!;
-    String? district = _selected_city!.name!;
-    String? ward = _selected_ward!.name;
-    loading();
+    // loading();
+    AddressInfor addressInfor = AddressInfor(
+        city: _selected_city,
+        district: _selected_district,
+        country: country,
+        isDefaultAddress: isDefaultAddress,
+        name: name,
+        number: homeNumber,
+        ward: _selected_ward);
+    await userRepo.addNewAddress(addressInfor, user);
   }
 
   @override
@@ -130,6 +145,9 @@ class _AddAddressState extends State<AddAddress> {
     _cityController.addListener(_onCityChange);
     _districtController.addListener(_onDistrictChange);
     _wardController.addListener(_onWardChange);
+    _homeNumberController.addListener(() {
+      setState(() {});
+    });
   }
 
   void _onNameChanged() {
@@ -176,6 +194,8 @@ class _AddAddressState extends State<AddAddress> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserViewModel>(context);
+    final user = userProvider.currentUser;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -223,7 +243,7 @@ class _AddAddressState extends State<AddAddress> {
                           borderRadius: BorderRadius.circular(10.r)),
                       hintText: _countryController.text.isEmpty &&
                               !countryFocusNode.hasFocus
-                          ? "Mr. Jhon"
+                          ? "country"
                           : null),
                 ),
               ),
@@ -538,7 +558,40 @@ class _AddAddressState extends State<AddAddress> {
                   ),
                 ),
               ),
-
+              SizedBox(
+                height: 20.h,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                child: TextField(
+                  focusNode: homeNumberFocusNode,
+                  onTap: () {
+                    setState(() {
+                      homeNumberFocusNode.requestFocus();
+                    });
+                  },
+                  onEditingComplete: () {
+                    print("Untap");
+                    setState(() {
+                      homeNumberFocusNode.unfocus();
+                    });
+                  },
+                  controller: _homeNumberController,
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(
+                        255), // Giới hạn độ dài tối đa
+                  ],
+                  decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 5.h, horizontal: 7.w),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r)),
+                      hintText: _homeNumberController.text.isEmpty &&
+                              !homeNumberFocusNode.hasFocus
+                          ? "home number"
+                          : null),
+                ),
+              ),
               SizedBox(
                 height: 20.h,
               ),
@@ -573,7 +626,18 @@ class _AddAddressState extends State<AddAddress> {
                           : null),
                 ),
               ),
-
+              SizedBox(
+                height: 10.h,
+              ),
+              CheckboxListTile(
+                title: Text('Default Address'),
+                value: isDefaultAddress,
+                onChanged: (value) {
+                  setState(() {
+                    isDefaultAddress = value!;
+                  });
+                },
+              ),
               SizedBox(
                 height: 20.h,
               ),
@@ -582,7 +646,19 @@ class _AddAddressState extends State<AddAddress> {
                 padding: EdgeInsets.all(10.h),
                 child: ElevatedButton(
                   onPressed: () async {
-                    await onPressReg();
+                    if (_countryController.text.isEmpty ||
+                        _selected_city == null ||
+                        _selected_district == null ||
+                        _selected_ward == null ||
+                        _homeNumberController.text.isEmpty ||
+                        _nameController.text.isEmpty) {
+                      onPressRegFail();
+                    } else {
+                      await onPressReg(user!);
+                      Future.delayed(const Duration(seconds: 1)).then((value) {
+                        Navigator.of(context).pop();
+                      });
+                    }
                   },
                   child: Text(
                       // LangText(context: context).getLocal()!.

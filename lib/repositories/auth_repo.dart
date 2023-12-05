@@ -1,5 +1,7 @@
 import 'package:dpl_ecommerce/models/address_infor.dart';
+import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/consumer_infor.dart';
+import 'package:dpl_ecommerce/models/district.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 
 class AuthRepo {
@@ -15,21 +17,21 @@ class AuthRepo {
     userInfor: UserInfor(
       consumerInfor: ConsumerInfor(addressInfors: [
         AddressInfor(
-            city: "Ha Noi",
+            city: City(id: 8, name: "Tuyen Quang"),
             country: "Viet Nam",
             isDefaultAddress: true,
             latitude: 123,
             longitude: 150,
             name: "My home",
-            district: "Ha Dong"),
+            district: District(id: 123, name: "Hoang Mai")),
         AddressInfor(
-            city: "Ha Noi",
+            city: City(id: 8, name: "Tuyen Quang"),
             country: "Viet Nam",
             isDefaultAddress: false,
             latitude: 140,
             longitude: 180,
             name: "My school",
-            district: "Thanh Tri"),
+            district: District(id: 123, name: "Hoang Mai")),
       ], raking: Raking.gold, rewardPoints: 100),
     ),
   );
