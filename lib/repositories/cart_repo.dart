@@ -28,4 +28,8 @@ class CartRepo {
         productInCartModel: productInCartModel,
         savingCost: savingCost);
   }
+
+  Future<void> dispose() async {
+    await firestoreDatabase.dispose();
+  }
 }

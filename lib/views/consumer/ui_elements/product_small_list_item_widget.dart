@@ -1,29 +1,42 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/const/app_decoration.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_icon_button.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/models/favourite_product.dart';
 import 'package:dpl_ecommerce/models/product.dart';
+import 'package:dpl_ecommerce/repositories/wishlist_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/product_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+
+import '../../../view_model/user_view_model.dart';
 
 // ignore: must_be_immutable
 class ProductsmalllistItemWidget extends StatelessWidget {
-  ProductsmalllistItemWidget({Key? key, required this.product})
-      : super(
-          key: key,
-        );
+  ProductsmalllistItemWidget({Key? key, required this.product});
   Product? product;
+
+  WishListRepo wishListRepo = WishListRepo();
+
+  bool? isFavourite = false;
+
+  bool isLoading = true;
+
+  // Future<void> fetchData() async {
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserViewModel>(context);
+    final user = userProvider.currentUser;
     return GestureDetector(
       onTap: () {
         print("Product");
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ProductDetailsPage(product: product),
+          builder: (context) => ProductDetailsPage(id: product!.id!),
         ));
       },
       child: SizedBox(
@@ -65,20 +78,7 @@ class ProductsmalllistItemWidget extends StatelessWidget {
                         style: CustomTextStyles.labelMediumOnPrimaryContainer,
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 60.h,
-                        bottom: 72.h,
-                      ),
-                      child: CustomIconButton(
-                        height: 24.h,
-                        width: 24.h,
-                        padding: EdgeInsets.all(4.h),
-                        child: CustomImageView(
-                          imagePath: ImageData.imgFavourite,
-                        ),
-                      ),
-                    ),
+                    buildFavouriteIcon(context)
                   ],
                 ),
               ),
@@ -142,6 +142,47 @@ class ProductsmalllistItemWidget extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildFavouriteIcon(BuildContext context) {
+    final userProvider = Provider.of<UserViewModel>(context);
+    final user = userProvider.currentUser;
+    return StreamBuilder(
+      stream: wishListRepo.isFavouriteProduct(
+          uid: user!.id!, productID: product!.id!),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Icon(Icons.favorite_border);
+        } else {
+          if (snapshot.data != null) {
+            final isFavourite = snapshot.data;
+            return Padding(
+                padding: EdgeInsets.only(
+                  left: 60.h,
+                  bottom: 72.h,
+                ),
+                child: InkWell(
+                    onTap: () async {
+                      if (isFavourite!) {
+                        await wishListRepo.deleteFavouriteByParams(
+                            uid: user!.id!, productID: product!.id!);
+                      } else {
+                        FavouriteProduct favouriteProduct = FavouriteProduct(
+                            createdAt: Timestamp.now(),
+                            productID: product!.id,
+                            userID: user!.id!);
+                        await wishListRepo.addToFavourite(favouriteProduct);
+                      }
+                    },
+                    child: Icon(isFavourite!
+                        ? Icons.favorite
+                        : Icons.favorite_border_rounded)));
+          } else {
+            return Icon(Icons.favorite_border);
+          }
+        }
+      },
     );
   }
 }

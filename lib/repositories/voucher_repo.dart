@@ -26,7 +26,8 @@ class VoucherRepo {
     return await firestoreDatabase.getVoucherByID(id);
   }
 
-  void dispose() {
+  Future<void> dispose() async {
+    await firestoreDatabase.dispose();
     listVoucher?.clear();
   }
 }

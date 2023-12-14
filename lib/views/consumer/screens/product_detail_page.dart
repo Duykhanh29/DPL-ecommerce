@@ -18,6 +18,7 @@ import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
 import 'package:dpl_ecommerce/helpers/show_modal_bottom_sheet.dart';
 import 'package:dpl_ecommerce/models/chat.dart';
+import 'package:dpl_ecommerce/models/favourite_product.dart';
 import 'package:dpl_ecommerce/models/message.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/product_in_cart_model.dart';
@@ -33,6 +34,7 @@ import 'package:dpl_ecommerce/repositories/review_repo.dart';
 import 'package:dpl_ecommerce/repositories/shop_repo.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
+import 'package:dpl_ecommerce/repositories/wishlist_repo.dart';
 import 'package:dpl_ecommerce/utils/common/common_caculated_methods.dart';
 import 'package:dpl_ecommerce/utils/common/common_methods.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
@@ -42,6 +44,7 @@ import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/product_detail_view_model.dart';
+import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/cart_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/chat_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/chatting_page.dart';
@@ -66,11 +69,11 @@ import 'package:badges/badges.dart' as badges;
 
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ProductDetailsPage extends StatefulWidget {
-  ProductDetailsPage({Key? key, required this.product})
+  ProductDetailsPage({Key? key, required this.id})
       : super(
           key: key,
         );
-  Product? product;
+  String id;
 
   @override
   State<ProductDetailsPage> createState() => _ProductDetailsPageState();
@@ -87,7 +90,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   late List<Shop>? listShop;
   List<Product>? listShopProduct;
   List<Product>? listRelatedProduct;
-
+  List<Product>? allProduct;
+  Product? product;
   // repos
   ProductRepo productRepo = ProductRepo();
   VoucherRepo voucherRepo = VoucherRepo();
@@ -105,11 +109,13 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   bool isLoadingVoucher = true;
   bool isLoadingListUser = true;
   bool isLoadingSeller = true;
+  bool isLoadingProduct = true;
   //lists
   // UserModel userModel = AuthRepo().user;
   List<UserModel>? listUser;
   List<Review>? listReview;
   ReviewRepo reviewRepo = ReviewRepo();
+  WishListRepo wishListRepo = WishListRepo();
   @override
   void initState() {
     // TODO: implement initState
@@ -117,31 +123,37 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     fetchAllData();
   }
 
+  Future<void> fetchProduct() async {
+    product = await productRepo.getProductByID(widget.id);
+    setState(() {
+      isLoadingProduct = false;
+    });
+  }
+
   Future<void> fetchAllData() async {
+    await fetchProduct();
     listShop = await shopRepo.getListShop();
-    shop = CommondMethods.getShopByID(widget.product!.shopID!, listShop!);
+    shop = CommondMethods.getShopByID(product!.shopID!, listShop!);
     if (listShop != null && shop != null) {
       setState(() {
         isLoadingShop = false;
       });
     }
-    listShopProduct =
-        await shopRepo.getListProductByShopID(widget.product!.shopID!);
+    listShopProduct = await shopRepo.getListProductByShopID(product!.shopID!);
     if (listShopProduct != null) {
       setState(() {
         isLoadingShopProduct = false;
       });
     }
-    listVoucher = await voucherRepo
-        .getListVoucherByProduct(widget.product!.id!)
-        .then((value) {
+    listVoucher =
+        await voucherRepo.getListVoucherByProduct(product!.id!).then((value) {
       setState(() {
         isLoadingVoucher = false;
       });
     });
 
     listRelatedProduct = await productRepo
-        .getListRelatedProduct(widget.product!.categoryID!)
+        .getListRelatedProduct(product!.categoryID!)
         .then((value) {
       setState(() {
         isLoadingRelatedProduct = false;
@@ -155,8 +167,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       });
     }
 
-    seller =
-        CommondMethods.getUserModelByShopID(widget.product!.shopID!, listUser!);
+    seller = CommondMethods.getUserModelByShopID(product!.shopID!, listUser!);
     if (seller != null) {
       setState(() {
         isLoadingSeller = false;
@@ -179,7 +190,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   Widget build(BuildContext context) {
     // final cartProvider = Provider.of<CartViewModel>(context, listen: false);
     final productDetailProvider = Provider.of<ProductDetailViewModel>(context);
-    // Shop? shop = CommondMethods.getShopByID(widget.product!.shopID!, listShop);
+    // Shop? shop = CommondMethods.getShopByID(product!.shopID!, listShop);
+    final userProvider = Provider.of<UserViewModel>(context);
+    final user = userProvider.currentUser;
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -188,10 +201,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             function: () => productDetailProvider.reset(),
           ),
           actions: [
-            InkWell(
-              onTap: () {},
-              child: const Icon(Icons.favorite_outline),
-            ),
+            buildFavouriteIcon(uid: user!.id!, productID: widget.id),
             const SizedBox(width: 12),
             InkWell(
               onTap: () {},
@@ -233,177 +243,228 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.only(bottom: 5.h),
-            child: Column(
-              children: [
-                _buildSlider(
-                    context: context,
-                    listImage: widget.product!.images,
-                    videos: widget.product!.videos),
-                SizedBox(height: 8.h),
-                _buildAnimatedIndicator(sliderIndex: sliderIndex), // fix
-                SizedBox(height: 17.h),
-                // Align(
-                //   alignment: Alignment.centerLeft,
-                //   child: Padding(
-                //     padding: EdgeInsets.only(left: 16.h),
-                //     child: Text(
-                //       "lbl_calvin_clein",
-                //       style: CustomTextStyles.bodySmallGray600,
-                //     ),
-                //   ),
-                // ),
-                SizedBox(height: 9.h),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 16.h),
-                      child: Text(
-                        widget.product!.name!,
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                    Spacer(),
-                    Padding(
-                        padding: EdgeInsets.only(right: 16.h),
-                        child: Text(
-                            "Available products: ${widget.product!.availableQuantity}")),
-                  ]),
-                ),
-                SizedBox(height: 8.h),
-
-                if (widget.product!.reviewIDs != null) ...{
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 16.h),
-                      child: Row(
-                        children: [
-                          _buildButton(context),
+            child: isLoadingProduct
+                ? Container()
+                : Column(
+                    children: [
+                      _buildSlider(
+                          context: context,
+                          listImage: product!.images,
+                          videos: product!.videos),
+                      SizedBox(height: 8.h),
+                      _buildAnimatedIndicator(sliderIndex: sliderIndex), // fix
+                      SizedBox(height: 17.h),
+                      // Align(
+                      //   alignment: Alignment.centerLeft,
+                      //   child: Padding(
+                      //     padding: EdgeInsets.only(left: 16.h),
+                      //     child: Text(
+                      //       "lbl_calvin_clein",
+                      //       style: CustomTextStyles.bodySmallGray600,
+                      //     ),
+                      //   ),
+                      // ),
+                      SizedBox(height: 9.h),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Row(children: [
                           Padding(
-                            padding: EdgeInsets.only(
-                              left: 8.h,
-                              top: 2.h,
-                              bottom: 2.h,
-                            ),
+                            padding: EdgeInsets.only(left: 16.h),
                             child: Text(
-                              "${widget.product!.reviewIDs!.length} reviews",
-                              style: CustomTextStyles.bodySmallGray600,
+                              product!.name!,
+                              style: TextStyle(color: Colors.black),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  )
-                },
-                SizedBox(height: 10.h),
-                _buildProductPrices(),
-                SizedBox(height: 18.h),
-
-                if (widget.product!.sizes != null) ...{
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.h),
-                    child: _buildSizeText(
-                      context,
-                      sizeLabel: "sizes",
-                      sizeChartLabel: "",
-                    ),
-                  ),
-                  SizedBox(height: 6.h),
-                  _buildProductSize(context, widget.product!.sizes!),
-                },
-                if (widget.product!.types != null) ...{
-                  SizedBox(height: 10.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.h),
-                    child: _buildSizeText(
-                      context,
-                      sizeLabel: "types",
-                      sizeChartLabel: "",
-                    ),
-                  ),
-                  SizedBox(height: 6.h),
-                  _buildProductType(context, widget.product!.types!),
-                },
-
-                if (widget.product!.colors != null) ...{
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.h),
-                    child: _buildSizeText(
-                      context,
-                      sizeLabel: "Colors",
-                      sizeChartLabel: "",
-                    ),
-                  ),
-                  SizedBox(height: 10.h),
-                  _buildProductColor(context, widget.product!.colors!),
-                },
-
-                SizedBox(height: 24.h),
-                isLoadingShop ? Container() : _buildShopInfor(context, shop),
-                SizedBox(height: 24.h),
-                isLoadingVoucher
-                    ? Container()
-                    : listVoucher != null
-                        ? ListVoucherWidget(list: listVoucher!)
-                        : Container(),
-                SizedBox(height: 24.h),
-                // _buildColumn(context),
-                // SizedBox(height: 16.h),
-                if (widget.product!.description != null) ...{
-                  _buildProductDescription(context),
-                },
-
-                SizedBox(height: 16.h),
-                _buildRatingsAndReviews(context, widget.product!),
-                SizedBox(height: 27.h),
-
-                SizedBox(height: 16.h),
-                isLoadingShopProduct
-                    ? Container()
-                    : Column(
-                        children: [
+                          Spacer(),
                           Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 16.w, vertical: 5.h),
-                            child: _buildSizeText(
-                              context,
-                              sizeLabel: "other shop's products",
-                              sizeChartLabel: "view all",
+                              padding: EdgeInsets.only(right: 16.h),
+                              child: Text(
+                                  "Available products: ${product!.availableQuantity}")),
+                        ]),
+                      ),
+                      SizedBox(height: 8.h),
+
+                      if (product!.reviewIDs != null) ...{
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 16.h),
+                            child: Row(
+                              children: [
+                                _buildButton(context),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    left: 8.h,
+                                    top: 2.h,
+                                    bottom: 2.h,
+                                  ),
+                                  child: Text(
+                                    "${product!.reviewIDs!.length} reviews",
+                                    style: CustomTextStyles.bodySmallGray600,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          _buildShopProducts(context, listShopProduct!),
-                        ],
-                      ),
+                        )
+                      },
+                      SizedBox(height: 10.h),
+                      _buildProductPrices(),
+                      SizedBox(height: 18.h),
 
-                SizedBox(height: 16.h),
-                isLoadingRelatedProduct
-                    ? Container()
-                    : listRelatedProduct != null
-                        ? Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16.h),
-                                child: _buildSizeText(
-                                  context,
-                                  sizeLabel: "you may like",
-                                  sizeChartLabel: "view all",
+                      if (product!.sizes != null) ...{
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.h),
+                          child: _buildSizeText(
+                            context,
+                            sizeLabel: "sizes",
+                            sizeChartLabel: "",
+                          ),
+                        ),
+                        SizedBox(height: 6.h),
+                        _buildProductSize(context, product!.sizes!),
+                      },
+                      if (product!.types != null) ...{
+                        SizedBox(height: 10.h),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.h),
+                          child: _buildSizeText(
+                            context,
+                            sizeLabel: "types",
+                            sizeChartLabel: "",
+                          ),
+                        ),
+                        SizedBox(height: 6.h),
+                        _buildProductType(context, product!.types!),
+                      },
+
+                      if (product!.colors != null) ...{
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.h),
+                          child: _buildSizeText(
+                            context,
+                            sizeLabel: "Colors",
+                            sizeChartLabel: "",
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        _buildProductColor(context, product!.colors!),
+                      },
+
+                      SizedBox(height: 24.h),
+                      isLoadingShop
+                          ? Container()
+                          : _buildShopInfor(context, shop),
+                      SizedBox(height: 24.h),
+                      isLoadingVoucher
+                          ? Container()
+                          : listVoucher != null
+                              ? ListVoucherWidget(list: listVoucher!)
+                              : Container(),
+                      SizedBox(height: 24.h),
+                      // _buildColumn(context),
+                      // SizedBox(height: 16.h),
+                      if (product!.description != null) ...{
+                        _buildProductDescription(context),
+                      },
+
+                      SizedBox(height: 16.h),
+                      _buildRatingsAndReviews(context, product!),
+                      SizedBox(height: 27.h),
+
+                      SizedBox(height: 16.h),
+                      isLoadingShopProduct
+                          ? Container()
+                          : Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16.w, vertical: 5.h),
+                                  child: _buildSizeText(
+                                    context,
+                                    sizeLabel: "other shop's products",
+                                    sizeChartLabel: "view all",
+                                  ),
                                 ),
-                              ),
-                              _buildRelatedProducts(
-                                  context, listRelatedProduct!),
-                            ],
-                          )
-                        : const SizedBox(),
-                const SizedBox(
-                  height: 10,
-                )
-              ],
-            ),
+                                _buildShopProducts(context, listShopProduct!),
+                              ],
+                            ),
+
+                      SizedBox(height: 16.h),
+                      isLoadingRelatedProduct
+                          ? Container()
+                          : listRelatedProduct != null
+                              ? Column(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16.h),
+                                      child: _buildSizeText(
+                                        context,
+                                        sizeLabel: "you may like",
+                                        sizeChartLabel: "view all",
+                                      ),
+                                    ),
+                                    _buildRelatedProducts(
+                                        context, listRelatedProduct!),
+                                  ],
+                                )
+                              : const SizedBox(),
+                      const SizedBox(
+                        height: 10,
+                      )
+                    ],
+                  ),
           ),
         ),
         bottomNavigationBar: _buildRow2(context),
       ),
+    );
+  }
+
+  Widget buildFavouriteIcon({required String productID, required String uid}) {
+    return StreamBuilder(
+      stream: wishListRepo.isFavouriteProduct(uid: uid, productID: productID),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Icon(Icons.favorite_border);
+        } else {
+          if (snapshot.data != null) {
+            final isFavourite = snapshot.data;
+            return Padding(
+                padding: EdgeInsets.only(
+                  left: 60.h,
+                  // bottom: 72.h,
+                ),
+                child: InkWell(
+                    onTap: () async {
+                      if (isFavourite!) {
+                        await wishListRepo.deleteFavouriteByParams(
+                            uid: uid, productID: productID);
+                      } else {
+                        FavouriteProduct favouriteProduct = FavouriteProduct(
+                            createdAt: Timestamp.now(),
+                            productID: productID,
+                            userID: uid);
+                        await wishListRepo.addToFavourite(favouriteProduct);
+                      }
+                    },
+                    child: Icon(
+                      isFavourite!
+                          ? Icons.favorite
+                          : Icons.favorite_border_rounded,
+                      color: Colors.red,
+                    )));
+          } else {
+            return Padding(
+                padding: EdgeInsets.only(
+                  left: 60.h,
+                  bottom: 72.h,
+                ),
+                child: Icon(Icons.favorite_border));
+          }
+        }
+      },
     );
   }
 
@@ -598,7 +659,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 SizedBox(
                   width: (MediaQuery.of(context).size.width - 44.w) * 0.8,
                   child: Text(
-                    widget.product!.description!,
+                    product!.description!,
                     overflow: TextOverflow.clip,
                     maxLines: 6,
                     textAlign: TextAlign.left,
@@ -851,8 +912,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             child: Divider(),
           ),
           StreamBuilder<List<Review>?>(
-            stream:
-                firestoreDatabase.getAllReviewByProduct(widget.product!.id!),
+            stream: firestoreDatabase.getAllReviewByProduct(product!.id!),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 print("object empty");
@@ -948,7 +1008,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         Message msg = Message(
             chatType: ChatType.text,
             isShop: false,
-            productID: widget.product!.id,
+            productID: product!.id,
             receiverID: seller!.id,
             senderID: usermodel!.id,
             time: Timestamp.fromDate(DateTime.now()));
@@ -957,9 +1017,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           chat = Chat(
             listMsg: [],
             sellerID: seller!.id,
-            shopID: widget.product!.shopID,
-            shopLogo: widget.product!.shopLogo,
-            shopName: widget.product!.shopName,
+            shopID: product!.shopID,
+            shopLogo: product!.shopLogo,
+            shopName: product!.shopName,
             userAvatar: usermodel.avatar,
             userID: usermodel.id,
             userName: usermodel.firstName,
@@ -990,11 +1050,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     final productDetailProvider = Provider.of<ProductDetailViewModel>(context);
     // productDetailProvider.initialize(
     //   firstColor:
-    //       widget.product!.colors != null ? widget.product!.colors![0] : null,
+    //       product!.colors != null ? product!.colors![0] : null,
     //   firstSize:
-    //       widget.product!.sizes != null ? widget.product!.sizes![0] : null,
+    //       product!.sizes != null ? product!.sizes![0] : null,
     //   firstType:
-    //       widget.product!.types != null ? widget.product!.types![0] : null,
+    //       product!.types != null ? product!.types![0] : null,
     // );
     final size = MediaQuery.of(context).size;
     final userModel = Provider.of<AuthViewModel>(context).currentUser;
@@ -1019,7 +1079,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         CustomImageView(
-                          imagePath: widget.product!.images![0],
+                          imagePath: product!.images![0],
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) {
@@ -1027,7 +1087,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   appBar:
                                       AppBar(leading: CustomArrayBackWidget()),
                                   body: CustomPhotoView(
-                                    urlImage: widget.product!.images![0],
+                                    urlImage: product!.images![0],
                                   ),
                                 );
                               },
@@ -1041,14 +1101,14 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              widget.product!.name!,
+                              product!.name!,
                               style: theme.textTheme.displayMedium,
                             ),
                             const SizedBox(
                               height: 30,
                             ),
                             Text(
-                              widget.product!.availableQuantity.toString(),
+                              product!.availableQuantity.toString(),
                               style: theme.textTheme.labelLarge,
                             )
                           ],
@@ -1056,7 +1116,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       ],
                     ),
                   ),
-                  if (widget.product!.sizes != null) ...{
+                  if (product!.sizes != null) ...{
                     const Padding(
                       padding: EdgeInsets.only(top: 5, left: 25),
                       child: Align(
@@ -1065,10 +1125,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       ),
                     ),
                     CustomradioButton(
-                        list: widget.product!.sizes!,
-                        kindOfData: KindOfData.sizes),
+                        list: product!.sizes!, kindOfData: KindOfData.sizes),
                   },
-                  if (widget.product!.types != null) ...{
+                  if (product!.types != null) ...{
                     const Padding(
                       padding: EdgeInsets.only(top: 5, left: 25),
                       child: Align(
@@ -1077,10 +1136,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       ),
                     ),
                     CustomradioButton(
-                        list: widget.product!.types!,
-                        kindOfData: KindOfData.types),
+                        list: product!.types!, kindOfData: KindOfData.types),
                   },
-                  if (widget.product!.colors != null) ...{
+                  if (product!.colors != null) ...{
                     const SizedBox(
                       width: 15,
                     ),
@@ -1092,8 +1150,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       ),
                     ),
                     CustomradioButton(
-                        list: widget.product!.colors!,
-                        kindOfData: KindOfData.colors),
+                        list: product!.colors!, kindOfData: KindOfData.colors),
                   },
                   Padding(
                     padding: const EdgeInsets.all(5),
@@ -1167,13 +1224,13 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             onPressed: () {
                               // ProductInCartModel productInCartModel =
                               //     ProductInCartModel(
-                              //         cost: widget.product!.price!,
+                              //         cost: product!.price!,
                               //         quantity: value.choseNumber,
                               //         color: value.color,
                               //         currencyID: "currencyID01",
-                              //         productID: widget.product!.id,
-                              //         productImage: widget.product!.images![0],
-                              //         productName: widget.product!.name!,
+                              //         productID: product!.id,
+                              //         productImage: product!.images![0],
+                              //         productName: product!.name!,
                               //         voucherID: "voucherID01",
                               //         userID: "userID01",
                               //         size: value.size,
@@ -1182,29 +1239,26 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               //         type: value.type);
                               ProductInCartModel productInCartModel =
                                   ProductInCartModel(
-                                      cost: widget.product!.price!,
+                                      cost: product!.price!,
                                       quantity: value.choseNumber,
-                                      color: widget.product!.colors != null
-                                          ? (value.color ??
-                                              widget.product!.colors![0])
+                                      color: product!.colors != null
+                                          ? (value.color ?? product!.colors![0])
                                           : null,
                                       currencyID: "704",
-                                      productID: widget.product!.id,
-                                      productImage: widget.product!.images![0],
-                                      productName: widget.product!.name!,
+                                      productID: product!.id,
+                                      productImage: product!.images![0],
+                                      productName: product!.name!,
                                       voucherID: value.voucherIDs != null
                                           ? value.voucherIDs![0]
                                           : null,
                                       userID: userModel!.id!,
-                                      size: widget.product!.sizes != null
-                                          ? (value.size ??
-                                              widget.product!.sizes![0])
+                                      size: product!.sizes != null
+                                          ? (value.size ?? product!.sizes![0])
                                           : null,
                                       createdAt:
                                           Timestamp.fromDate(DateTime.now()),
-                                      type: widget.product!.types != null
-                                          ? (value.type ??
-                                              widget.product!.types![0])
+                                      type: product!.types != null
+                                          ? (value.type ?? product!.types![0])
                                           : null);
                               cartProvider.addToCart(productInCartModel);
                               int savingCost = 0;
@@ -1215,7 +1269,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 if (voucher != null) {
                                   savingCost =
                                       CommonCaculatedMethods.caculateSavignCost(
-                                          voucher, widget.product!.price!);
+                                          voucher, product!.price!);
                                 }
                               }
                               cartRepo.addToCart(

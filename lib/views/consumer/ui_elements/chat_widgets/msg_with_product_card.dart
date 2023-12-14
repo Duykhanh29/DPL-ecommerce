@@ -30,7 +30,7 @@ class _MsgWithProductState extends State<MsgWithProduct> {
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) {
-            return ProductDetailsPage(product: product);
+            return ProductDetailsPage(id: widget.productID!);
           },
         ));
       },

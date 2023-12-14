@@ -8,6 +8,7 @@ import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/language_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/product_detail_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/product_view_model.dart';
+import 'package:dpl_ecommerce/view_model/consumer/review_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/voucher_for_user_view_model.dart';
 import 'package:dpl_ecommerce/view_model/lang_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
@@ -29,12 +30,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'firebase_options.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'dart:io';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
@@ -76,7 +83,7 @@ class _MyAppState extends State<MyApp> {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: LangConfig().supportedLocales(),
+          supportedLocales: AppLocalizations.supportedLocales,
           locale: value.locale,
         ),
       ),
@@ -225,6 +232,9 @@ class AuthPage extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => ProductViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ReviewViewModel(),
         )
       ],
       child: MaterialApp(

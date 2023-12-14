@@ -39,7 +39,7 @@ class _ProductCartItemState extends State<ProductCartItem> {
   Voucher? voucher;
   bool isLoading = true;
   bool isProductLoading = true;
-  Product? product;
+  // Product? product;
   @override
   void initState() {
     // TODO: implement initState
@@ -68,11 +68,11 @@ class _ProductCartItemState extends State<ProductCartItem> {
         isLoading = false;
       });
     }
-    product =
-        await productRepo.getProductByID(widget.productInCartModel!.productID!);
-    setState(() {
-      isProductLoading = false;
-    });
+    // product =
+    //     await productRepo.getProductByID(widget.productInCartModel!.productID!);
+    // setState(() {
+    //   isProductLoading = false;
+    // });
   }
 
   @override
@@ -84,21 +84,21 @@ class _ProductCartItemState extends State<ProductCartItem> {
       onTap: () {
         // Product? product = CommondMethods.getProductByID(
         //     listProduct!, widget.productInCartModel!.productID!);
-        if (!isProductLoading) {
-          if (product != null) {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) {
-                // if (product != null) {
-                return ProductDetailsPage(
-                  product: product,
-                );
-                // }
-              },
-            ));
-          } else {
-            print("Product is null");
-          }
-        }
+        // if (!isProductLoading) {
+        //   if (product != null) {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) {
+            // if (product != null) {
+            return ProductDetailsPage(
+              id: widget.productInCartModel!.productID!,
+            );
+            // }
+          },
+        ));
+        //   } else {
+        //     print("Product is null");
+        //   }
+        // }
       },
       child: Container(
         color: Colors.teal[50],

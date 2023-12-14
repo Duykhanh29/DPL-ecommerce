@@ -1,7 +1,9 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_elevate_button.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
+import 'package:dpl_ecommerce/repositories/voucher_for_user_repo.dart';
 import 'package:dpl_ecommerce/view_model/consumer/voucher_for_user_view_model.dart';
+import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -54,9 +56,11 @@ class VoucherItem extends StatelessWidget {
 class TicketData extends StatelessWidget {
   TicketData({super.key, required this.voucher});
   Voucher? voucher;
-
+  VoucherForUserRepo voucherForUserRepo = VoucherForUserRepo();
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserViewModel>(context);
+    final user = userProvider.currentUser;
     final voucherForUserProvider =
         Provider.of<VoucherForUserViewModel>(context);
     return Row(
@@ -96,9 +100,11 @@ class TicketData extends StatelessWidget {
                       text: "Save",
                       // width: MediaQuery.of(context).size.width * 0.02,
                       // height: MediaQuery.of(context).size.height * 0.03,
-                      onPressed: () {
+                      onPressed: () async {
                         // save
                         if (!value.isSaved(voucher!.id!)) {
+                          await voucherForUserRepo.updateVoucherForUser(
+                              userID: user!.id!, voucherID: voucher!.id!);
                           voucherForUserProvider
                               .addVoucherForUser(voucher!.id!);
                         }

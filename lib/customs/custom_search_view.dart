@@ -28,7 +28,9 @@ class CustomSearchView extends StatelessWidget {
       this.textInputType,
       this.textStyle,
       this.validator,
-      this.width});
+      this.width,
+      this.textInputAction,
+      this.onFieldSubmitted});
   TextEditingController controller;
   FocusNode? focusNode;
   final Alignment? alignment;
@@ -62,13 +64,16 @@ class CustomSearchView extends StatelessWidget {
   final Color? fillColor;
 
   final bool? filled;
+  final TextInputAction? textInputAction;
 
   final FormFieldValidator<String>? validator;
 
   final Function(String)? onChanged;
+  final Function(String)? onFieldSubmitted;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      textInputAction: textInputAction,
       controller: controller,
       focusNode: focusNode ?? FocusNode(),
       keyboardType: textInputType,
@@ -79,6 +84,9 @@ class CustomSearchView extends StatelessWidget {
       style: textStyle ?? theme.textTheme.bodyLarge,
       onChanged: (String value) {
         onChanged!.call(value);
+      },
+      onFieldSubmitted: (value) {
+        onFieldSubmitted!.call(value);
       },
     );
   }

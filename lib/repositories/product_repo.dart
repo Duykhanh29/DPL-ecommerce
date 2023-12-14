@@ -2,11 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/product_firestore_data.dart';
 import 'package:dpl_ecommerce/models/product.dart';
+import 'package:dpl_ecommerce/models/review.dart';
 
 class ProductRepo {
   FirestoreDatabase productFirestoreDatabase = FirestoreDatabase();
   Stream<List<Product>?> getListActiveProduct() async* {
     productFirestoreDatabase.getListActiveProduct();
+  }
+
+  Future<List<Product>?> getActiveProducts() async {
+    await productFirestoreDatabase.getActiveProducts();
   }
 
   Future<List<Product>?> getListRelatedProduct(String categoryID) async {
@@ -38,6 +43,66 @@ class ProductRepo {
     // await productFirestoreDatabase.updateProduct(
     //   productID: productID,
     // );
+  }
+  Future<List<Product>?> searchProductByName(String name) async {
+    return await productFirestoreDatabase.searchProductByName(name);
+  }
+
+  Future<List<Product>?> searchProductByNameAndRating(
+      {required String name, required double rating}) async {
+    return await productFirestoreDatabase.searchProductByNameAndRating(
+        name: name, rating: rating);
+  }
+
+  Future<List<Product>?> searchProductByNameAndPriceRange(
+      {required String name,
+      required int maxPrice,
+      required int minPrice}) async {
+    return await productFirestoreDatabase.searchProductByNameAndPriceRange(
+        maxPrice: maxPrice, minPrice: minPrice, name: name);
+  }
+
+  Future<List<Product>?> searchProductByNameAndNewestProduct(
+      {required String name, required DateTime dateTime}) async {
+    return await productFirestoreDatabase.searchProductByNameAndNewestProduct(
+        dateTime: dateTime, name: name);
+  }
+
+  Future<List<Product>?> searchProductByNameAndCategory(
+      {required String name, required String categoryID}) async {
+    return await productFirestoreDatabase.searchProductByNameAndCategory(
+        categoryID: categoryID, name: name);
+  }
+
+  Future<List<Product>?> filterMixedConditions({
+    String? name,
+    String? categoryID,
+    int? minPrice,
+    int? maxPrice,
+    DateTime? dateTime,
+    double? rating,
+  }) async {
+    return await productFirestoreDatabase.filterMixedConditions(
+        categoryID: categoryID,
+        name: name,
+        dateTime: dateTime,
+        maxPrice: maxPrice,
+        minPrice: minPrice,
+        rating: rating);
+  }
+
+  Future<void> addNewReview(Review review) async {
+    await productFirestoreDatabase.addNewReview(review);
+  }
+
+  Future<void> deleteReview(String reviewID) async {
+    await productFirestoreDatabase.deleteReview(reviewID);
+  }
+
+  Future<void> editReview() async {}
+
+  Future<void> dispose() async {
+    await productFirestoreDatabase.dispose();
   }
 
   List<Product>? list = [

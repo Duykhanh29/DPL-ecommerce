@@ -8,6 +8,10 @@ class CategoryRepo {
     return result;
   }
 
+  Future<void> dispose() async {
+    await firestoreDatabase.dispose();
+  }
+
   List<Category>? list = [
     // Category(
     //     id: "Cate1",

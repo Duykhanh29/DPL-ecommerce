@@ -16,6 +16,10 @@ class ShopRepo {
     return await _shopFirestoreDB.getProductListByShop(shopID);
   }
 
+  Future<void> dispose() async {
+    await _shopFirestoreDB.dispose();
+  }
+
   final List<Shop> listShop = [
     Shop(
       ratingCount: 123,

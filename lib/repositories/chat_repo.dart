@@ -1,8 +1,44 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
 import 'package:dpl_ecommerce/models/chat.dart';
 import 'package:dpl_ecommerce/models/message.dart';
 
 class ChatRepo {
+  FirestoreDatabase firestoreDatabase = FirestoreDatabase();
+
+  Stream<List<Chat>?> getAllChatByUser(String uid) {
+    return firestoreDatabase.getAllChatByUser(uid);
+  }
+
+  Stream<List<Message>?> getListMsgInAChatByID(String id) {
+    return firestoreDatabase.getListMsgInAChatByID(id);
+  }
+
+  Stream<List<Chat>?> getAllChatBySellerID(String uid) {
+    return firestoreDatabase.getAllChatBySellerID(uid);
+  }
+
+  Future<void> addNewChat(Chat chat) async {
+    return firestoreDatabase.addChat(chat);
+  }
+
+  Future<void> sendAMessage(
+      {required String chatID, required Message msg}) async {
+    return firestoreDatabase.sendAMessage(chatID: chatID, msg: msg);
+  }
+
+  Future<Chat?> getChatByID(String id) async {
+    return firestoreDatabase.getChatByID(id);
+  }
+
+  Future<bool?> checkExistedChatBox(String id) async {
+    return firestoreDatabase.checkExistedChatBox(id);
+  }
+
+  Future<void> dispose() async {
+    await firestoreDatabase.dispose();
+  }
+
   final List<Chat> list = [
     Chat(
       id: "chatID01",
