@@ -1,4 +1,11 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/customs/custom_search_view.dart';
+import 'package:dpl_ecommerce/utils/constants/image_data.dart';
+import 'package:dpl_ecommerce/view_model/user_view_model.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/models/product.dart';
@@ -6,17 +13,31 @@ import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/category_search.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/filter_page.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:dpl_ecommerce/repositories/search_history_repo.dart';
+import 'package:provider/provider.dart';
 
 class SearchFilterScreen extends StatefulWidget {
+  String? searchKey;
+  List<Product>? list;
+  double? rating;
+  int? minPrice;
+  int? maxPrice;
+  DateTime? date;
+  SearchFilterScreen({
+    this.minPrice,
+    this.maxPrice,
+    this.rating,
+    this.date,
+    Key? key,
+    this.searchKey,
+    this.list,
+  }) : super(key: key);
   @override
   _SearchFilterScreenState createState() => _SearchFilterScreenState();
 }
 
 class _SearchFilterScreenState extends State<SearchFilterScreen> {
-  String _searchText = '';
-  String _filterText = '';
+  ProductRepo productRepo = ProductRepo();
   Product? product = Product(
     availableQuantity: 100,
     categoryID: "cacd",
@@ -45,8 +66,30 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
     shopName: "fdfds",
     updatedAt: Timestamp.fromDate(DateTime.now()),
   );
+  TextEditingController searchController = TextEditingController();
+  SearchHistoryRepo searchHistoryRepo = SearchHistoryRepo();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    searchController.text = widget.searchKey ?? "";
+  }
+
+  void reset() {
+    searchController.clear();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    reset();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserViewModel>(context);
+    final user = userProvider.currentUser;
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -54,17 +97,47 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
             //Icon(Icons.search),
             //SizedBox(width: 8.0),
             Expanded(
-              child: TextField(
-                style: TextStyle(color: Colors.white),
-                onChanged: (value) {
-                  setState(() {
-                    _searchText = value;
-                  });
+              child: CustomSearchView(
+                onChanged: (p0) {},
+                controller: searchController,
+                textInputAction: TextInputAction.search,
+                // onChanged: (p0) async {
+                //   await productRepo.searchProductByName(p0);
+                // },
+                onFieldSubmitted: (p0) async {
+                  final list = await productRepo.searchProductByName(p0);
+                  await searchHistoryRepo.insertSearchKey(
+                      uid: user!.id!, searchKey: p0);
+                  // ignore: use_build_context_synchronously
+
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SearchFilterScreen(
+                          list: list, searchKey: searchController.text),
+                    ),
+                  );
                 },
-                decoration: InputDecoration(
-                  hintText: "TMA2 Wireless",
-                  hintStyle: TextStyle(color: Colors.white),
-                ),
+                suffix:
+                    searchController.text != "" && searchController.text != null
+                        ? InkWell(
+                            onTap: () {
+                              setState(() {
+                                searchController.text = "";
+                                // reset();
+                                // Navigator.of(context).pop();
+                              });
+                            },
+                            child: const Icon(Icons.close),
+                          )
+                        : null,
+                hintText: "Search Product Name",
+                prefix: Padding(
+                    padding: EdgeInsets.all(7.h),
+                    child: Icon(
+                      Icons.search,
+                      size: 25.h,
+                    )),
               ),
             ),
             SizedBox(width: 8.0),
@@ -73,8 +146,7 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
               icon: Icon(Icons.clear),
               onPressed: () {
                 setState(() {
-                  _searchText = '';
-                  _filterText = '';
+                  searchController.text = '';
                 });
               },
             ),
@@ -83,7 +155,9 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CategoryInterface(),
+                  builder: (context) => CategoryInterface(
+                    name: widget.searchKey!,
+                  ),
                 ),
               ),
             ),
@@ -92,7 +166,9 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => FilterPage(),
+                  builder: (context) => FilterPage(
+                    searhKey: searchController.text,
+                  ),
                 ),
               ),
             ),
@@ -101,34 +177,38 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
-        child: Container(
-          width: double.maxFinite,
-          child: Column(
-            children: [
-              Expanded(
-                  child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: 5.h, left: 10.w),
-                  child: Column(
-                    children: [
-                      //SizedBox(height: 5.h),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10.h),
-                        child: _buildDealOfTheDay(
-                          context,
-                          dealOfTheDayText: "result",
-                          viewAllText: "lbl_view_all",
+        child: widget.list != null
+            ? Container(
+                width: double.maxFinite,
+                child: Column(
+                  children: [
+                    Expanded(
+                        child: SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 5.h, left: 10.w),
+                        child: Column(
+                          children: [
+                            //SizedBox(height: 5.h),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10.h),
+                              child: _buildDealOfTheDay(
+                                context,
+                                dealOfTheDayText: "result",
+                                viewAllText: "lbl_view_all",
+                              ),
+                            ),
+                            //SizedBox(height: 16.h),
+                            _buildProductSmallList1(context, widget.list!),
+                          ],
                         ),
                       ),
-                      //SizedBox(height: 16.h),
-                      _buildProductSmallList1(context, product),
-                    ],
-                  ),
+                    ))
+                  ],
                 ),
-              ))
-            ],
-          ),
-        ),
+              )
+            : Center(
+                child: Image.asset(ImageData.imageNotFound),
+              ),
       ),
     );
   }
@@ -169,7 +249,7 @@ Widget _buildDealOfTheDay(
   );
 }
 
-Widget _buildProductSmallList1(BuildContext context, Product? product) {
+Widget _buildProductSmallList1(BuildContext context, List<Product?> products) {
   return Padding(
     padding: EdgeInsets.only(right: 10.h),
     child: GridView.builder(
@@ -183,11 +263,11 @@ Widget _buildProductSmallList1(BuildContext context, Product? product) {
       ),
       itemBuilder: (context, index) {
         return Productsmalllist1ItemWidget(
-          product: product,
+          product: products[index],
         );
       },
       physics: NeverScrollableScrollPhysics(),
-      itemCount: 10,
+      itemCount: products.length,
     ),
   );
 }

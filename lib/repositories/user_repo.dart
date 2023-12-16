@@ -1,7 +1,9 @@
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/user_firestore_data.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/admin_infor.dart';
+import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/consumer_infor.dart';
+import 'package:dpl_ecommerce/models/district.dart';
 import 'package:dpl_ecommerce/models/seller_infor.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 
@@ -9,6 +11,23 @@ class UserRepo {
   UserFirestoreDatabase _userFirestoreDatabase = UserFirestoreDatabase();
   Future<List<UserModel>?> getListUser() async {
     return await _userFirestoreDatabase.getListUser();
+  }
+
+  Stream<List<AddressInfor>?> getListAddress(String uid) async* {
+    yield* _userFirestoreDatabase.getAddressInfors(uid);
+  }
+
+  Future<void> addNewAddress(AddressInfor addressInfor, UserModel user) async {
+    await _userFirestoreDatabase.addAddress(addressInfor, user);
+  }
+
+  Future<void> updateAddress(
+      AddressInfor addressInfor, UserModel userModel) async {
+    await _userFirestoreDatabase.updateAddressInfor(addressInfor, userModel);
+  }
+
+  Future<void> deleteAddress(String id, UserModel userModel) async {
+    await _userFirestoreDatabase.deleteAddress(id, userModel);
   }
 
   final List<UserModel> listUser = [
@@ -24,21 +43,21 @@ class UserRepo {
       userInfor: UserInfor(
         consumerInfor: ConsumerInfor(addressInfors: [
           AddressInfor(
-              city: "Ha Noi",
+              city: City(id: 8, name: "Tuyen Quang"),
               country: "Viet Nam",
               isDefaultAddress: true,
               latitude: 123,
               longitude: 150,
               name: "My home",
-              district: "Ha Dong"),
+              district: District(id: 123, name: "Hoang Mai")),
           AddressInfor(
-              city: "Ha Noi",
+              city: City(id: 8, name: "Tuyen Quang"),
               country: "Viet Nam",
               isDefaultAddress: false,
               latitude: 140,
               longitude: 180,
               name: "My school",
-              district: "Thanh Tri"),
+              district: District(id: 123, name: "Hoang Mai")),
         ], raking: Raking.gold, rewardPoints: 100),
       ),
     ),
@@ -54,21 +73,21 @@ class UserRepo {
       userInfor: UserInfor(
         consumerInfor: ConsumerInfor(addressInfors: [
           AddressInfor(
-              city: "Ha Noi",
+              city: City(id: 8, name: "Tuyen Quang"),
               country: "Viet Nam",
               isDefaultAddress: true,
               latitude: 123,
               longitude: 150,
               name: "My home",
-              district: "Ha Dong"),
+              district: District(id: 123, name: "Hoang Mai")),
           AddressInfor(
-              city: "Ha Noi",
+              city: City(id: 8, name: "Tuyen Quang"),
               country: "Viet Nam",
               isDefaultAddress: false,
               latitude: 140,
               longitude: 180,
               name: "My school",
-              district: "Thanh Xuan"),
+              district: District(id: 123, name: "Hoang Mai")),
         ], raking: Raking.gold, rewardPoints: 90),
       ),
     ),
@@ -84,31 +103,31 @@ class UserRepo {
       userInfor: UserInfor(
           consumerInfor: ConsumerInfor(addressInfors: [
             AddressInfor(
-                city: "Ha Noi",
+                city: City(id: 8, name: "Tuyen Quang"),
                 country: "Viet Nam",
                 isDefaultAddress: true,
                 latitude: 123,
                 longitude: 150,
                 name: "My home",
-                district: "Ha Dong"),
+                district: District(id: 123, name: "Hoang Mai")),
             AddressInfor(
-                city: "Ha Noi",
+                city: City(id: 8, name: "Tuyen Quang"),
                 country: "Viet Nam",
                 isDefaultAddress: false,
                 latitude: 140,
                 longitude: 180,
                 name: "My school",
-                district: "Thanh Xuan"),
+                district: District(id: 123, name: "Hoang Mai")),
           ], raking: Raking.gold, rewardPoints: 90),
           sellerInfor: SellerInfor(
               contactAddress: AddressInfor(
-                  city: "Ha Noi",
+                  city: City(id: 8, name: "Tuyen Quang"),
                   country: "Viet Nam",
                   isDefaultAddress: false,
                   latitude: 140,
                   longitude: 130,
                   name: "My Shop Address",
-                  district: "Thanh Tri"),
+                  district: District(id: 123, name: "Hoang Mai")),
               isVerified: true,
               licenseNo: "LicenseNo01",
               shopIDs: ["shopID01", "shopID02"],
@@ -126,31 +145,31 @@ class UserRepo {
       userInfor: UserInfor(
           consumerInfor: ConsumerInfor(addressInfors: [
             AddressInfor(
-                city: "Ha Noi",
+                city: City(id: 8, name: "Tuyen Quang"),
                 country: "Viet Nam",
                 isDefaultAddress: true,
                 latitude: 123,
                 longitude: 150,
                 name: "My home",
-                district: "Ha Dong"),
+                district: District(id: 123, name: "Hoang Mai")),
             AddressInfor(
-                city: "Ha Noi",
+                city: City(id: 8, name: "Tuyen Quang"),
                 country: "Viet Nam",
                 isDefaultAddress: false,
                 latitude: 140,
                 longitude: 180,
                 name: "My school",
-                district: "Thanh Xuan"),
+                district: District(id: 123, name: "Hoang Mai")),
           ], raking: Raking.gold, rewardPoints: 90),
           sellerInfor: SellerInfor(
               contactAddress: AddressInfor(
-                  city: "Ha Noi",
+                  city: City(id: 8, name: "Tuyen Quang"),
                   country: "Viet Nam",
                   isDefaultAddress: false,
                   latitude: 140,
                   longitude: 100,
                   name: "My Shop Address",
-                  district: "Thanh Tri"),
+                  district: District(id: 123, name: "Hoang Mai")),
               isVerified: true,
               licenseNo: "LicenseNo02",
               shopIDs: ["shopID03", "shopID04"],
@@ -181,21 +200,21 @@ class UserRepo {
       userInfor: UserInfor(
         consumerInfor: ConsumerInfor(addressInfors: [
           AddressInfor(
-              city: "Ha Noi",
+              city: City(id: 8, name: "Tuyen Quang"),
               country: "Viet Nam",
               isDefaultAddress: true,
               latitude: 70,
               longitude: 150,
               name: "My home",
-              district: "Hai Ba Trung"),
+              district: District(id: 123, name: "Hoang Mai")),
           AddressInfor(
-              city: "Ha Noi",
+              city: City(id: 8, name: "Tuyen Quang"),
               country: "Viet Nam",
               isDefaultAddress: false,
               latitude: 80,
               longitude: 180,
               name: "My school",
-              district: "Thanh Tri"),
+              district: District(id: 123, name: "Hoang Mai")),
         ], raking: Raking.silver, rewardPoints: 100),
       ),
     ),
@@ -212,22 +231,22 @@ class UserRepo {
         consumerInfor: ConsumerInfor(
           addressInfors: [
             AddressInfor(
-              city: "Ha Noi",
+              city: City(id: 8, name: "Tuyen Quang"),
               country: "Viet Nam",
               isDefaultAddress: true,
               latitude: 123,
               longitude: 150,
               name: "My home",
-              district: "Ha Dong",
+              district: District(id: 123, name: "Hoang Mai"),
             ),
             AddressInfor(
-              city: "Ha Noi",
+              city: City(id: 8, name: "Tuyen Quang"),
               country: "Viet Nam",
               isDefaultAddress: false,
               latitude: 140,
               longitude: 180,
               name: "My school",
-              district: "Thanh Tri",
+              district: District(id: 123, name: "Hoang Mai"),
             ),
           ],
           raking: Raking.bronze,
@@ -248,22 +267,22 @@ class UserRepo {
         consumerInfor: ConsumerInfor(
           addressInfors: [
             AddressInfor(
-              city: "Ha Noi",
+              city: City(id: 8, name: "Tuyen Quang"),
               country: "Viet Nam",
               isDefaultAddress: true,
               latitude: 65,
               longitude: 150,
               name: "My home",
-              district: "Ha Dong",
+              district: District(id: 123, name: "Hoang Mai"),
             ),
             AddressInfor(
-              city: "Ha Noi",
+              city: City(id: 8, name: "Tuyen Quang"),
               country: "Viet Nam",
               isDefaultAddress: false,
               latitude: 43,
               longitude: 180,
               name: "My school",
-              district: "Thanh Tri",
+              district: District(id: 123, name: "Hoang Mai"),
             ),
           ],
           raking: Raking.silver,
@@ -284,22 +303,22 @@ class UserRepo {
         consumerInfor: ConsumerInfor(
           addressInfors: [
             AddressInfor(
-              city: "Ha Noi",
+              city: City(id: 8, name: "Tuyen Quang"),
               country: "Viet Nam",
               isDefaultAddress: true,
               latitude: 123,
               longitude: 111,
               name: "My home",
-              district: "Ha Dong",
+              district: District(id: 123, name: "Hoang Mai"),
             ),
             AddressInfor(
-              city: "Ha Noi",
+              city: City(id: 8, name: "Tuyen Quang"),
               country: "Viet Nam",
               isDefaultAddress: false,
               latitude: 111,
               longitude: 180,
               name: "My school",
-              district: "Thanh Tri",
+              district: District(id: 123, name: "Hoang Mai"),
             ),
           ],
           raking: Raking.gold,
@@ -320,22 +339,22 @@ class UserRepo {
         consumerInfor: ConsumerInfor(
           addressInfors: [
             AddressInfor(
-              city: "Ha Noi",
+              city: City(id: 8, name: "Tuyen Quang"),
               country: "Viet Nam",
               isDefaultAddress: true,
               latitude: 123,
               longitude: 150,
               name: "My home",
-              district: "Ha Dong",
+              district: District(id: 123, name: "Hoang Mai"),
             ),
             AddressInfor(
-              city: "Ha Noi",
+              city: City(id: 8, name: "Tuyen Quang"),
               country: "Viet Nam",
               isDefaultAddress: false,
               latitude: 140,
               longitude: 180,
               name: "My school",
-              district: "Thanh Tri",
+              district: District(id: 123, name: "Hoang Mai"),
             ),
           ],
           raking: Raking.bronze,
@@ -356,22 +375,22 @@ class UserRepo {
           consumerInfor: ConsumerInfor(
             addressInfors: [
               AddressInfor(
-                city: "Ha Noi",
+                city: City(id: 8, name: "Tuyen Quang"),
                 country: "Viet Nam",
                 isDefaultAddress: true,
                 latitude: 123,
                 longitude: 150,
                 name: "My home",
-                district: "Ha Dong",
+                district: District(id: 123, name: "Hoang Mai"),
               ),
               AddressInfor(
-                city: "Ha Noi",
+                city: City(id: 8, name: "Tuyen Quang"),
                 country: "Viet Nam",
                 isDefaultAddress: false,
                 latitude: 140,
                 longitude: 180,
                 name: "My school",
-                district: "Thanh Tri",
+                district: District(id: 123, name: "Hoang Mai"),
               ),
             ],
             raking: Raking.gold,
@@ -379,13 +398,13 @@ class UserRepo {
           ),
           sellerInfor: SellerInfor(
               contactAddress: AddressInfor(
-                city: "Ha Noi",
+                city: City(id: 8, name: "Tuyen Quang"),
                 country: "Viet Nam",
                 isDefaultAddress: false,
                 latitude: 140,
                 longitude: 180,
                 name: "My Home address",
-                district: "Thanh Nam",
+                district: District(id: 123, name: "Hoang Mai"),
               ),
               isVerified: false,
               licenseNo: "licenseNo03",
@@ -405,22 +424,22 @@ class UserRepo {
         consumerInfor: ConsumerInfor(
           addressInfors: [
             AddressInfor(
-              city: "Ha Noi",
+              city: City(id: 8, name: "Tuyen Quang"),
               country: "Viet Nam",
               isDefaultAddress: true,
               latitude: 54,
               longitude: 65,
               name: "My home",
-              district: "Ha Dong",
+              district: District(id: 123, name: "Hoang Mai"),
             ),
             AddressInfor(
-              city: "Ha Noi",
+              city: City(id: 8, name: "Tuyen Quang"),
               country: "Viet Nam",
               isDefaultAddress: false,
               latitude: 140,
               longitude: 345,
               name: "My school",
-              district: "Thanh Mai",
+              district: District(id: 123, name: "Hoang Mai"),
             ),
           ],
           raking: Raking.bronze,
@@ -440,22 +459,22 @@ class UserRepo {
         consumerInfor: ConsumerInfor(
           addressInfors: [
             AddressInfor(
-              city: "Ha Noi",
+              city: City(id: 8, name: "Tuyen Quang"),
               country: "Viet Nam",
               isDefaultAddress: true,
               latitude: 123,
               longitude: 150,
               name: "My home",
-              district: "Ha Dong",
+              district: District(id: 123, name: "Hoang Mai"),
             ),
             AddressInfor(
-              city: "Ha Noi",
+              city: City(id: 8, name: "Tuyen Quang"),
               country: "Viet Nam",
               isDefaultAddress: false,
               latitude: 140,
               longitude: 180,
               name: "My school",
-              district: "Thanh Tri",
+              district: District(id: 123, name: "Hoang Mai"),
             ),
           ],
           raking: Raking.silver,

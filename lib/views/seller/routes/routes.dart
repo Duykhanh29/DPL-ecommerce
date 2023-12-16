@@ -40,13 +40,13 @@ class SellerRoutes {
   static const String addressScreen = 'address_screen';
 
   static Map<String, WidgetBuilder> routes = {
-    productsScreen: (context) => ProductsApp(products: []),
-    addProduct: (context) => AddProductScreen(
-          products: [],
-          onProductAdded: (p0) {},
-        ),
-    editProduct: (context) => EditProductScreen(
-        product: Product(), onProductUpdated: (p0) {}, products: []),
+    // productsScreen: (context) => ProductsApp(products: []),
+    // addProduct: (context) => AddProductScreen(
+    //       products: [],
+    //       onProductAdded: (p0) {},
+    //     ),
+    // editProduct: (context) => EditProductScreen(
+    //     product: Product(), onProductUpdated: (p0) {}, products: []),
     changeLanguagePage: (context) => LanguagePage(),
     profileSettingPage: (context) => ProfileSettingScreen(),
     userProfilePage: (context) => UserProfilePage(),

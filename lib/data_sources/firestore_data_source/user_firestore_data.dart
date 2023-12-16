@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/shop.dart';
@@ -47,7 +49,7 @@ class UserFirestoreDatabase {
     return reasult.docs.isNotEmpty;
   }
 
-  Future<UserModel> getUserModel(User user) async {
+  Future<UserModel?> getUserModel(User user) async {
     // final isAmdin = await isAdmin(user.uid);
     // Role role = Role.consumer;
     // if (isAmdin) {
@@ -55,14 +57,15 @@ class UserFirestoreDatabase {
     // } else {
     //   role = Role.consumer;
     // }
-
-    return UserModel(
-        avatar: user.photoURL,
-        email: user.email,
-        id: user.uid,
-        firstName: user.displayName,
-        role: Role.consumer,
-        userInfor: UserInfor());
+    UserModel? userModel = await getUserModel1(user.uid);
+    return userModel!;
+    // return UserModel(
+    //     avatar: user.photoURL,
+    //     email: user.email,
+    //     id: user.uid,
+    //     firstName: user.displayName,
+    //     role: Role.consumer,
+    //     userInfor: UserInfor());
   }
 
   Future<UserModel?> getUserModel1(String id) async {
@@ -86,29 +89,6 @@ class UserFirestoreDatabase {
   Future<void> updateRole(String uid, Role newRole) async {
     try {
       await _firestore.collection('users').doc(uid).update({"role": newRole});
-    } catch (e) {
-      print("Error: $e");
-    }
-  }
-
-  Future<void> addAddress(
-      AddressInfor addressInfor, UserModel userModel) async {
-    try {
-      final userDoc = _firestore.collection('users').doc(userModel.id);
-      final snapshot = await userDoc.get();
-      if (snapshot.exists) {
-        var dataUser = snapshot.data() as Map<String, dynamic>;
-        UserModel user = UserModel.fromJson(dataUser);
-        List<AddressInfor> listAdd = [];
-        if (user.userInfor != null) {
-          if (user.userInfor!.consumerInfor != null) {
-            listAdd = user.userInfor!.consumerInfor!.addressInfors ?? [];
-          }
-        }
-        listAdd.add(addressInfor);
-        userModel.userInfor!.consumerInfor!.addressInfors = listAdd;
-        await userDoc.update(userModel.toJson());
-      }
     } catch (e) {
       print("Error: $e");
     }
@@ -138,6 +118,115 @@ class UserFirestoreDatabase {
         return list;
       } else {
         print("Empty");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  // address section
+  Stream<List<AddressInfor>?> getAddressInfors(String uid) async* {
+    try {
+      final ref = await _firestore.collection('users').doc(uid).snapshots();
+      final StreamController<List<AddressInfor>?> streamController =
+          StreamController<List<AddressInfor>?>();
+      StreamSubscription streamSubscription = ref.listen((event) {
+        List<AddressInfor> addressInfors = [];
+        if (event.exists) {
+          final userData = event.data();
+          if (userData!['userInfor'] != null &&
+              userData['userInfor']['consumerInfor'] != null &&
+              userData['userInfor']['consumerInfor']['addressInfors'] != null) {
+            final addressInforsData = userData['userInfor']['consumerInfor']
+                ['addressInfors'] as List<dynamic>;
+            addressInfors = addressInforsData
+                .map((addressData) => AddressInfor.fromJson(addressData))
+                .toList();
+          }
+          streamController.sink.add(addressInfors);
+        } else {
+          print("Not exists ");
+        }
+      });
+      streamController.onCancel = () {
+        streamSubscription.cancel();
+        streamController.close();
+      };
+      yield* streamController.stream;
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  Future<void> addAddress(
+      AddressInfor addressInfor, UserModel userModel) async {
+    try {
+      final userDoc = _firestore.collection('users').doc(userModel.id);
+      final snapshot = await userDoc.get();
+      if (snapshot.exists) {
+        var dataUser = snapshot.data() as Map<String, dynamic>;
+        UserModel user = UserModel.fromJson(dataUser);
+        List<AddressInfor> listAdd = [];
+        if (user.userInfor != null) {
+          if (user.userInfor!.consumerInfor != null) {
+            listAdd = user.userInfor!.consumerInfor!.addressInfors ?? [];
+          }
+        }
+        listAdd.add(addressInfor);
+        userModel.userInfor!.consumerInfor!.addressInfors = listAdd;
+        await userDoc.update({'userInfor': userModel.userInfor!.toJson()});
+      } else {
+        print("Not exists");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  Future<void> updateAddressInfor(
+      AddressInfor addressInfor, UserModel userModel) async {
+    try {
+      final userDoc = _firestore.collection('users').doc(userModel.id);
+      final snapshot = await userDoc.get();
+      if (snapshot.exists) {
+        var dataUser = snapshot.data() as Map<String, dynamic>;
+        UserModel user = UserModel.fromJson(dataUser);
+        List<AddressInfor> listAdd = [];
+        if (user.userInfor != null) {
+          if (user.userInfor!.consumerInfor != null) {
+            listAdd = user.userInfor!.consumerInfor!.addressInfors ?? [];
+            for (var data in listAdd) {
+              if (data.id == addressInfor.id) {
+                listAdd.removeWhere((element) => element.id == data.id);
+                listAdd.add(addressInfor);
+              }
+            }
+            userModel.userInfor!.consumerInfor!.addressInfors = listAdd;
+            await userDoc.update(userModel.toJson());
+          }
+        }
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  Future<void> deleteAddress(String id, UserModel user) async {
+    try {
+      final userDoc = _firestore.collection('users').doc(user.id);
+      final snapshot = await userDoc.get();
+      if (snapshot.exists) {
+        var dataUser = snapshot.data() as Map<String, dynamic>;
+        UserModel user = UserModel.fromJson(dataUser);
+        List<AddressInfor> listAdd = [];
+        if (user.userInfor != null) {
+          if (user.userInfor!.consumerInfor != null) {
+            listAdd = user.userInfor!.consumerInfor!.addressInfors ?? [];
+            listAdd.removeWhere((element) => element.id == id);
+            user.userInfor!.consumerInfor!.addressInfors = listAdd;
+            await userDoc.update(user.toJson());
+          }
+        }
       }
     } catch (e) {
       print("Error: $e");

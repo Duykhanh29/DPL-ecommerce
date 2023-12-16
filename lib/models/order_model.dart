@@ -12,6 +12,7 @@ class Order {
   DeliverStatus? deliverStatus;
   int? shippingCost;
   int? totalCost;
+  int? totalProduct;
   String? voucherDiscountID;
   bool isCancelled;
   AddressInfor? receivedAddress;
@@ -27,26 +28,27 @@ class Order {
       this.shippingCost,
       this.totalCost,
       this.userID,
-      this.voucherDiscountID}) {
+      this.voucherDiscountID,
+      this.totalProduct}) {
     id ??= Uuid().v4();
   }
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
-      deliverServiceID: json['deliverServiceID'],
-      deliverStatus: DeliverStatus.values.firstWhere((element) =>
-          element.toString().split(".").last == json['deliverStatus']),
-      isCancelled: json['isCancelled'],
-      id: json['id'],
-      orderingProductsID: (json['orderingProductsID'] as List<dynamic>)
-          .map((e) => OrderingProduct.fromJson(e))
-          .toList(),
-      paymentTypeID: json['paymentTypeID'],
-      userID: json['userID'],
-      voucherDiscountID: json['voucherDiscountID'],
-      shippingCost: json['shippingCost'],
-      receivedAddress: AddressInfor.fromJson(json['receivedAddress']),
-      totalCost: json['totalCost'],
-    );
+        deliverServiceID: json['deliverServiceID'],
+        deliverStatus: DeliverStatus.values.firstWhere((element) =>
+            element.toString().split(".").last == json['deliverStatus']),
+        isCancelled: json['isCancelled'],
+        id: json['id'],
+        orderingProductsID: (json['orderingProductsID'] as List<dynamic>)
+            .map((e) => OrderingProduct.fromJson(e))
+            .toList(),
+        paymentTypeID: json['paymentTypeID'],
+        userID: json['userID'],
+        voucherDiscountID: json['voucherDiscountID'],
+        shippingCost: json['shippingCost'],
+        receivedAddress: AddressInfor.fromJson(json['receivedAddress']),
+        totalCost: json['totalCost'],
+        totalProduct: json['totalProduct']);
   }
   Map<String, dynamic> toJson() => {
         'deliverServiceID': deliverServiceID,
@@ -60,6 +62,7 @@ class Order {
         'voucherDiscountID': voucherDiscountID,
         'shippingCost': shippingCost,
         'receivedAddress': receivedAddress!.toJson(),
-        'totalCost': totalCost
+        'totalCost': totalCost,
+        'totalProduct': totalProduct
       };
 }

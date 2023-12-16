@@ -1,17 +1,26 @@
+import 'package:dpl_ecommerce/models/product.dart';
+import 'package:dpl_ecommerce/repositories/product_repo.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/search_result_page.dart';
 import 'package:flutter/material.dart';
 
 class FilterPage extends StatefulWidget {
+  String searhKey;
+  String? categoryID;
+
+  FilterPage({super.key, required this.searhKey, this.categoryID});
   @override
   _FilterPageState createState() => _FilterPageState();
 }
 
 class _FilterPageState extends State<FilterPage> {
-  double _minPrice = 1;
-  double _maxPrice = 10;
+  ProductRepo productRepo = ProductRepo();
+
+  int _minPrice = 1;
+  int _maxPrice = 1000000;
   List<String> _selectedCondition = [];
   List<String> _selectedConst = [];
   List<String> _selectedConn = [];
-
+  double rating = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,8 +41,24 @@ class _FilterPageState extends State<FilterPage> {
             width: double.infinity,
             margin: EdgeInsets.all(16.0),
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 // Xử lý khi nút Apply được nhấn
+                final list = await productRepo.filterMixedConditions(
+                    name: widget.searhKey,
+                    dateTime: DateTime.now().subtract(const Duration(days: 30)),
+                    maxPrice: _maxPrice,
+                    minPrice: _minPrice,
+                    rating: rating,
+                    categoryID: widget.categoryID);
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) {
+                    return SearchFilterScreen(
+                      searchKey: widget.searhKey,
+                      list: list,
+                    );
+                  },
+                ));
               },
               child: const Text('Apply'),
             ),
@@ -55,17 +80,20 @@ class _FilterPageState extends State<FilterPage> {
                 children: [
                   Text('\$$_minPrice'),
                   Expanded(
-                    child: RangeSlider(
-                      min: 1,
-                      max: 10,
-                      divisions: 9,
-                      values: RangeValues(_minPrice, _maxPrice),
-                      onChanged: (RangeValues values) {
-                        setState(() {
-                          _minPrice = values.start;
-                          _maxPrice = values.end;
-                        });
-                      },
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      child: RangeSlider(
+                        min: 1,
+                        max: 1000000,
+                        divisions: 10,
+                        values: RangeValues(1, _maxPrice.toDouble()),
+                        onChanged: (RangeValues values) {
+                          setState(() {
+                            _minPrice = 1;
+                            _maxPrice = values.end.toInt();
+                          });
+                        },
+                      ),
                     ),
                   ),
                   Text('\$$_maxPrice'),
@@ -91,171 +119,42 @@ class _FilterPageState extends State<FilterPage> {
                 const SizedBox(
                   width: 10,
                 ),
-                _buildConditionButton('New', 'Condition'),
+                _buildConditionButton('New'),
                 const SizedBox(
                   width: 5,
                 ),
-                _buildConditionButton('Used', 'Condition'),
+                _buildConditionButton('Newest'),
                 const SizedBox(
                   width: 5,
                 ),
-                _buildConditionButton('Not Specified', 'Condition'),
+                _buildConditionButton(''),
               ],
             ),
             //SizedBox(height: 8),
-            Row(
-              children: [
-                const SizedBox(
-                  width: 10,
-                ),
-                _buildConditionButton('Node', 'Condition'),
-                const SizedBox(
-                  width: 130,
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            const Row(
-              children: [
-                SizedBox(
-                  width: 15,
-                ),
-                Text(
-                  "Condition",
-                  style: TextStyle(),
-                  textAlign: TextAlign.left,
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                const SizedBox(
-                  width: 10,
-                ),
-                _buildConditionButton('New', 'Const'),
-                const SizedBox(
-                  width: 5,
-                ),
-                _buildConditionButton('Us', 'Const'),
-                const SizedBox(
-                  width: 5,
-                ),
-                _buildConditionButton('No Spect', 'Const'),
-              ],
-            ),
-            Row(
-              children: [
-                const SizedBox(
-                  width: 10,
-                ),
-                _buildConditionButton('Node', 'Const'),
-                const SizedBox(
-                  width: 5,
-                ),
-                _buildConditionButton('No', 'Const'),
-              ],
-            ),
-            const SizedBox(height: 8),
-            const Row(
-              children: [
-                SizedBox(
-                  width: 15,
-                ),
-                Text(
-                  "Condition",
-                  style: TextStyle(),
-                  textAlign: TextAlign.left,
-                ),
-              ],
-            ),
-
-            Row(
-              children: [
-                const SizedBox(
-                  width: 10,
-                ),
-                _buildConditionButton('Nw', 'Conn'),
-                const SizedBox(
-                  width: 5,
-                ),
-                _buildConditionButton('Sen', 'Conn'),
-                const SizedBox(
-                  width: 5,
-                ),
-                _buildConditionButton('Not Sped', 'Conn'),
-                const SizedBox(
-                  width: 5,
-                ),
-                _buildConditionButton('Ne', 'Conn'),
-              ],
-            ),
-            const Row(
-              children: [
-                SizedBox(
-                  width: 15,
-                ),
-                Text(
-                  "Condition",
-                  style: TextStyle(),
-                  textAlign: TextAlign.left,
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                const SizedBox(
-                  width: 10,
-                ),
-                _buildConditionButton('New', 'Const'),
-                const SizedBox(
-                  width: 5,
-                ),
-                _buildConditionButton('Us', 'Const'),
-                const SizedBox(
-                  width: 5,
-                ),
-                _buildConditionButton('No Spect', 'Const'),
-              ],
-            ),
-            Row(
-              children: [
-                const SizedBox(
-                  width: 10,
-                ),
-                _buildConditionButton('Node', 'Const'),
-                const SizedBox(
-                  width: 5,
-                ),
-                _buildConditionButton('No', 'Const'),
-              ],
-            ),
-            Row(
-              children: [
-                const SizedBox(
-                  width: 10,
-                ),
-                _buildConditionButton('Node', 'Const'),
-                const SizedBox(
-                  width: 5,
-                ),
-                _buildConditionButton('No', 'Const'),
-              ],
-            ),
-            Row(
-              children: [
-                const SizedBox(
-                  width: 10,
-                ),
-                _buildConditionButton('New', 'Const'),
-                const SizedBox(
-                  width: 5,
-                ),
-                _buildConditionButton('Us', 'Const'),
-                const SizedBox(
-                  width: 5,
-                ),
-                _buildConditionButton('No Spect', 'Const'),
-              ],
+            ListTile(
+              title: Text('Rating'),
+              subtitle: Row(
+                children: [
+                  Text('0'),
+                  Expanded(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      child: RangeSlider(
+                        min: 0,
+                        max: 5,
+                        divisions: 10,
+                        values: RangeValues(0, rating),
+                        onChanged: (RangeValues values) {
+                          setState(() {
+                            rating = values.end;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  Text('${rating.toStringAsFixed(1)}'),
+                ],
+              ),
             ),
           ],
         ),
@@ -263,18 +162,10 @@ class _FilterPageState extends State<FilterPage> {
     );
   }
 
-  Widget _buildConditionButton(String label, String type) {
+  Widget _buildConditionButton(String label) {
     List<String> selectedList = [];
     Color buttonColor;
     Color textColor;
-
-    if (type == 'Condition') {
-      selectedList = _selectedCondition;
-    } else if (type == 'Const') {
-      selectedList = _selectedConst;
-    } else if (type == 'Conn') {
-      selectedList = _selectedConn;
-    }
 
     bool isSelected = selectedList.contains(label);
     buttonColor = isSelected ? Colors.blue : Colors.white;

@@ -22,9 +22,14 @@ import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_9.dart';
 import 'package:video_player/video_player.dart';
 
 class MessageItemWidget extends StatelessWidget {
-  MessageItemWidget({super.key, required this.message, required this.chat});
+  MessageItemWidget(
+      {super.key,
+      required this.message,
+      required this.chat,
+      this.isShop = false});
   Chat? chat;
   Message? message;
+  bool isShop;
   UserModel userModel = AuthRepo().user;
   Widget _buildMsg() {
     if (message!.chatType == ChatType.image) {
@@ -71,8 +76,11 @@ class MessageItemWidget extends StatelessWidget {
                         height: MediaQuery.of(context).size.height / 20,
                         width: MediaQuery.of(context).size.height / 20,
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(chat!.shopLogo ??
-                              "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"),
+                          backgroundImage: NetworkImage(!isShop
+                              ? (chat!.shopLogo ??
+                                  "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png")
+                              : (chat!.userAvatar ??
+                                  "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png")),
                         ),
                       ),
                     ],

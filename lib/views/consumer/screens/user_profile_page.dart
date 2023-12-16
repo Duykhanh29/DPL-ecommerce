@@ -10,11 +10,11 @@ import 'package:dpl_ecommerce/views/consumer/screens/change_language_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/favorite_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/profile_setting_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/user_list_voucher.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/wishlist_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class UserProfilePage extends StatelessWidget {
@@ -27,6 +27,7 @@ class UserProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthViewModel>(context);
     final size = MediaQuery.of(context).size;
+    final user = authProvider.currentUser;
     return SafeArea(
       child: Scaffold(
         body: SizedBox(
@@ -137,12 +138,13 @@ class UserProfilePage extends StatelessWidget {
                                 height: 5,
                               ),
                               ListTile(
-                                 onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => FavoriteScreen(),
-                              ),
-                            ),
+                                  onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              WishlistPage(uid: user!.id!),
+                                        ),
+                                      ),
                                   leading: Icon(Icons.favorite_outline),
                                   title: Padding(
                                     padding: EdgeInsets.only(
@@ -159,7 +161,13 @@ class UserProfilePage extends StatelessWidget {
                                     height: size.width * 0.08,
                                     child: InkWell(
                                       onTap: () {
-                                        // go to wishlist page
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                WishlistPage(uid: user!.id!),
+                                          ),
+                                        );
                                       },
                                       child: Center(
                                         child: Icon(Icons.navigate_next),

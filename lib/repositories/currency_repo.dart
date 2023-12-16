@@ -6,6 +6,10 @@ class CurrencyRepo {
   Future<List<CurrencyInfor>?> getListCurrency() async {
     return await firestoreDatabase.getListCurrencyInfor();
   }
+
+  Future<void> dispose() async {
+    await firestoreDatabase.dispose();
+  }
   // final List<CurrencyInfor> listCurrency = [
   //   CurrencyInfor(
   //       code: "VND",

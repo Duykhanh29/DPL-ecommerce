@@ -1,8 +1,11 @@
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/user_firestore_data.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
+import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/consumer_infor.dart';
+import 'package:dpl_ecommerce/models/district.dart';
 import 'package:dpl_ecommerce/models/user.dart';
+import 'package:dpl_ecommerce/models/ward.dart';
 import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -13,7 +16,7 @@ class UserViewModel extends ChangeNotifier {
   // TextEditingController? lastTextEdittiing = TextEditingController();
   FirestoreDatabase _firestoreDatabase = FirestoreDatabase();
   UserFirestoreDatabase userFirestoreDatabase = UserFirestoreDatabase();
-  AuthViewModel? _authViewModel;
+  AuthViewModel? _authViewModel = AuthViewModel();
   UserModel? userModel;
   UserViewModel(this._authViewModel) {
     userModel = _authViewModel!.currentUser; // _auth null here
@@ -30,46 +33,14 @@ class UserViewModel extends ChangeNotifier {
   final cityController = TextEditingController();
   final countryController = TextEditingController();
   final districtController = TextEditingController();
-  final longitudeController = TextEditingController();
-  final latitudeController = TextEditingController();
+  final wardController = TextEditingController();
+  final homeNumberController = TextEditingController();
   bool isDefaultAddress = false;
+  City? selected_city;
 
-  // UserModel userModel = UserModel(
-  //     avatar:
-  //         "https://letsenhance.io/static/15912da66660b919112b5dfc9f562f6f/f90fb/SC.jpg",
-  //     email: "duykhanh0220@gmail.com",
-  //     firstName: "Khanh",
-  //     id: "userID007",
-  //     lastName: "Dang",
-  //     phone: "0964651146",
-  //     role: Role.consumer,
-  //     userInfor: UserInfor(
-  //         consumerInfor: ConsumerInfor(addressInfors: [
-  //       AddressInfor(
-  //           city: "Ha Noi",
-  //           country: "Viet Nam",
-  //           district: "Ha Dong",
-  //           isDefaultAddress: true,
-  //           latitude: 123.4,
-  //           longitude: 76.45,
-  //           name: "My current rental room"),
-  //       AddressInfor(
-  //           city: "Ha Noi",
-  //           country: "Viet Nam",
-  //           district: "Thanh Tri",
-  //           isDefaultAddress: true,
-  //           latitude: 124.4,
-  //           longitude: 75.5,
-  //           name: "My School"),
-  //       AddressInfor(
-  //           city: "Tuyen Quang",
-  //           country: "Viet Nam",
-  //           district: "Son Duong",
-  //           isDefaultAddress: true,
-  //           latitude: 115.44,
-  //           longitude: 68.45,
-  //           name: "My hometown"),
-  //     ], raking: Raking.gold, rewardPoints: 1000)));
+  District? selected_district;
+
+  Ward? selected_ward;
 
   Future<void> addNewAddress(AddressInfor addressInfor) async {
     userModel!.userInfor!.consumerInfor!.addressInfors!.add(addressInfor);
@@ -86,15 +57,12 @@ class UserViewModel extends ChangeNotifier {
   }
 
   void initilizeAddress(AddressInfor addressInfor) {
-    cityController.text = addressInfor.city!;
+    selected_city = addressInfor.city;
+    selected_district = addressInfor.district;
+    selected_ward = addressInfor.ward;
     nameController.text = addressInfor.name!;
-    countryController.text = addressInfor.country!;
-    districtController.text = addressInfor.district!;
-    latitudeController.text =
-        addressInfor.latitude == null ? "" : addressInfor.latitude.toString();
-    longitudeController.text =
-        addressInfor.longitude == null ? "" : addressInfor.longitude.toString();
     isDefaultAddress = addressInfor.isDefaultAddress;
+    countryController.text = addressInfor.country ?? "";
     notifyListeners();
   }
 
@@ -103,8 +71,6 @@ class UserViewModel extends ChangeNotifier {
     nameController.text = "";
     countryController.text = "";
     districtController.text = "";
-    latitudeController.text = "";
-    longitudeController.text = "";
     isDefaultAddress = false;
     notifyListeners();
   }

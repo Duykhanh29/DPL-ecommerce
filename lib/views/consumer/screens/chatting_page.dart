@@ -14,7 +14,8 @@ import 'package:provider/provider.dart';
 import 'package:grouped_list/grouped_list.dart';
 
 class ChattingPage extends StatelessWidget {
-  ChattingPage({super.key, required this.chat});
+  ChattingPage({super.key, required this.chat, this.isShop = false});
+  bool isShop;
   Chat? chat;
   @override
   Widget build(BuildContext context) {
@@ -34,12 +35,13 @@ class ChattingPage extends StatelessWidget {
                 return ListMsg(
                   list: chat!.listMsg ?? [],
                   chat: chat,
+                  isShop: isShop,
                 );
               },
             ),
           ),
           // Spacer(),
-          Inputter(chat: chat),
+          Inputter(chat: chat, isShop: isShop),
         ],
       ),
     );
@@ -47,9 +49,9 @@ class ChattingPage extends StatelessWidget {
 }
 
 class Inputter extends StatefulWidget {
-  Inputter({super.key, required this.chat});
+  Inputter({super.key, required this.chat, this.isShop = false});
   Chat? chat;
-
+  bool isShop;
   @override
   State<Inputter> createState() => _InputterState();
 }
@@ -110,10 +112,11 @@ class _InputterState extends State<Inputter> {
     Message message = Message(
         chatType: ChatType.text,
         content: text,
-        isShop: false,
+        isShop: widget.isShop,
         senderID: userModel.id,
         time: Timestamp.fromDate(DateTime.now()),
-        receiverID: widget.chat!.sellerID);
+        receiverID:
+            !widget.isShop ? widget.chat!.sellerID : widget.chat!.userID);
     chatProvider.sendMsgToAChatBox(message, widget.chat!.id!);
   }
 

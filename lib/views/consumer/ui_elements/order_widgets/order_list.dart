@@ -1,4 +1,7 @@
 import 'package:dpl_ecommerce/const/app_decoration.dart';
+import 'package:dpl_ecommerce/models/order_model.dart';
+import 'package:dpl_ecommerce/models/ordering_product.dart';
+import 'package:dpl_ecommerce/repositories/order_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/order_widgets/order_item.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +28,9 @@ class MyOrdersOnePageState extends State<MyOrdersListPage>
 
   List<Widget> tab2Containers = [];
   int currentTabIndex = 0;
-
+  OrderRepo orderRepo = OrderRepo();
+  List<Order> listOrder = OrderRepo().listorder;
+  List<OrderingProduct>? list = OrderRepo().order.orderingProductsID;
   void switchTab() {
     // Chuyển container từ Tab 1 sang Tab 2
     if (currentTabIndex == 0 && tab1Containers.isNotEmpty) {
@@ -45,7 +50,7 @@ class MyOrdersOnePageState extends State<MyOrdersListPage>
           child: Column(
             children: [
               SizedBox(height: 32.h),
-              _buildMyOrdersOne(context),
+              _buildMyOrdersOne(context, listOrder),
             ],
           ),
         ),
@@ -54,7 +59,7 @@ class MyOrdersOnePageState extends State<MyOrdersListPage>
   }
 
   /// Section Widget
-  Widget _buildMyOrdersOne(BuildContext context) {
+  Widget _buildMyOrdersOne(BuildContext context, List<Order>? list) {
     return Expanded(
       child: Padding(
         padding: EdgeInsets.only(left: 1.h),
@@ -69,9 +74,11 @@ class MyOrdersOnePageState extends State<MyOrdersListPage>
               height: 5.h,
             );
           },
-          itemCount: 3,
+          itemCount: list!.length,
           itemBuilder: (context, index) {
-            return MyordersoneItemWidget();
+            return MyOrdersoneItemWidget(
+              order: list[index],
+            );
           },
         ),
       ),

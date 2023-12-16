@@ -39,6 +39,25 @@ class _UserListVoucherState extends State<UserListVoucher> {
     });
   }
 
+  Future<void> refresh() async {
+    reset();
+    await getListVoucher();
+  }
+
+  void reset() {
+    setState(() {
+      listVoucher = [];
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    voucherRepo.dispose();
+    voucherForUserRepo.dispose();
+  }
+
   //  List<Voucher> listVoucher = VoucherRepo().list;
   @override
   Widget build(BuildContext context) {
@@ -52,7 +71,13 @@ class _UserListVoucherState extends State<UserListVoucher> {
         leading: CustomArrayBackWidget(),
         title: Text("My vouchers"),
       ),
-      body: Padding(
+      body:
+          //  RefreshIndicator(
+          //   onRefresh: () async {
+          //     await refresh();
+          //   },
+          //   child:
+          Padding(
         padding: const EdgeInsets.only(top: 10, bottom: 5, left: 5, right: 5),
         child: StreamBuilder(
           stream: voucherForUserRepo
@@ -87,6 +112,7 @@ class _UserListVoucherState extends State<UserListVoucher> {
           },
         ),
       ),
+      // ),
     );
   }
 }

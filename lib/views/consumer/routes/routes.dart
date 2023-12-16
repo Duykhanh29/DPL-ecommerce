@@ -60,7 +60,7 @@ class ConsumerRoutes {
     orderPage: (context) => OrderPage(),
     // profileSeller: (context) => ProfileSeller(),
     // shopProfile:(context) => ShopProfile(shop: shop)
-    filterPage: (context) => FilterPage(),
+    // filterPage: (context) => FilterPage(),
     // flashSalePage:(context) => FlashDealList(flashSale: flashSale)
 
     // productDetailPage:(context) => ProductDetailsPage(product: product)
@@ -71,7 +71,7 @@ class ConsumerRoutes {
     // reviewPage: (context) => ReviewPage(list: list)
     searchPage: (context) => SearchScreen(),
     userListVoucher: (context) => UserListVoucher(),
-    wishlistPage: (context) => WishlistPage(),
+    // wishlistPage: (context) => WishlistPage(),
     searchResultPage: (context) => SearchFilterScreen(),
   };
 }

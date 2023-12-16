@@ -10,10 +10,12 @@ import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:dpl_ecommerce/models/cart.dart';
 import 'package:dpl_ecommerce/models/category.dart';
 import 'package:dpl_ecommerce/models/product.dart';
+import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/repositories/category_repo.dart';
 import 'package:dpl_ecommerce/repositories/flash_sale_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
@@ -34,7 +36,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:dpl_ecommerce/models/flash_sale.dart';
 
 class HomePage extends StatelessWidget {
@@ -97,11 +99,11 @@ class HomePage extends StatelessWidget {
                 child: Icon(Icons.notifications_outlined,
                     color: Colors.white, size: 30),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) {
-                      return ProductsApp(products: []);
-                    },
-                  ));
+                  // Navigator.of(context).push(MaterialPageRoute(
+                  //   builder: (context) {
+                  //     return ProductsApp(products: []);
+                  //   },
+                  // ));
                 },
               ),
             ),
@@ -157,25 +159,42 @@ class HomePage extends StatelessWidget {
                               ),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 15),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10.w, vertical: 5.h),
                               child: Container(
-                                width: 330,
-                                height: 45,
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                height: 45.h,
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                       color: Colors.black,
                                       width: 0.5,
                                       style: BorderStyle.solid),
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(15.r),
                                   color: Colors.white,
                                 ),
                                 child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
                                   children: [
-                                    Text("  "),
-                                    Icon(Icons.search),
+                                    // SizedBox(
+                                    //   width: 20.w,
+                                    // ),
                                     Text(
-                                      "search anything",
-                                      style: TextStyle(color: Colors.grey),
+                                      // LangText(context: context)
+                                      //     .getLocal()!
+                                      //     .
+                                      // AppLocalizations.of(context)!
+                                      //     .search_anything,
+                                      "search_anything",
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 14.sp),
+                                    ),
+                                    SizedBox(
+                                      width: 50.w,
+                                    ),
+                                    Icon(
+                                      Icons.search,
+                                      size: 20.h,
                                     ),
                                   ],
                                 ),

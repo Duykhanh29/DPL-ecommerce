@@ -1,6 +1,12 @@
+import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
 import 'package:dpl_ecommerce/models/deliver_service.dart';
 
 class DeliverServiceRepo {
+  FirestoreDatabase firestoreDatabase = FirestoreDatabase();
+  Future<List<DeliverService>?> getDeliverServiceList() async {
+    return await firestoreDatabase.getDeliverServiceList();
+  }
+
   final List<DeliverService> listDeliverService = [
     DeliverService(
         id: "deliverServiceID01",
@@ -23,4 +29,7 @@ class DeliverServiceRepo {
         logo:
             "https://cdn.haitrieu.com/wp-content/uploads/2022/05/Logo-GHN-Orange.png"),
   ];
+  Future<void> dispose() async {
+    await firestoreDatabase.dispose();
+  }
 }

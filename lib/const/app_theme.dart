@@ -230,14 +230,11 @@ class MyTheme {
 
   static Color accent_color = Color(0xff212464);
 
-  static Color splash_screen_color =
-      Colors.white; // if not sure , use the same color as accent color
+  static Color splash_screen_color = Colors.white;
   static Color login_reg_screen_color =
       Color(0xFFFFFFFF); // if not sure , use the same color as accent color
   static Color button_color = Color(0xFF212464);
-  /*configurable colors ends*/
 
-  /*If you are not a developer, do not change the bottom colors*/
   static const Color app_accent_border = Color.fromRGBO(224, 224, 224, 1);
   static const Color app_accent_shado = Color.fromRGBO(0, 0, 0, 0.16);
   static const Color app_accent_tranparent = Color.fromRGBO(0, 0, 0, 0.5);
@@ -256,8 +253,4 @@ class MyTheme {
   static Color shimmer_base = Colors.grey.shade50;
   static Color shimmer_highlighted = Colors.grey.shade200;
   static const black = Color.fromRGBO(0, 0, 0, 1);
-
-  //testing shimmer
-  /*static Color shimmer_base = Colors.redAccent;
-  static Color shimmer_highlighted = Colors.yellow;*/
 }

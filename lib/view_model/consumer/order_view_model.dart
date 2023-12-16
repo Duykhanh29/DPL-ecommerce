@@ -1,4 +1,6 @@
 import 'package:dpl_ecommerce/models/address_infor.dart';
+import 'package:dpl_ecommerce/models/city.dart';
+import 'package:dpl_ecommerce/models/district.dart';
 import 'package:dpl_ecommerce/models/order_model.dart';
 import 'package:dpl_ecommerce/models/ordering_product.dart';
 import 'package:flutter/material.dart';
@@ -117,13 +119,13 @@ class OrderViewModel extends ChangeNotifier {
       ],
       paymentTypeID: "paymentTypeID01",
       receivedAddress: AddressInfor(
-          city: "ha noi",
+          city: City(id: 8, name: "Tuyen Quang"),
           country: "Viet Nam",
           latitude: 120.12,
           longitude: 120.12,
           isDefaultAddress: true,
           name: "Home",
-          district: "Hoang Mai"));
+          district: District(id: 123, name: "Hoang Mai")));
   void orderProduct(OrderingProduct product) {
     order.orderingProductsID!.add(product);
     notifyListeners();

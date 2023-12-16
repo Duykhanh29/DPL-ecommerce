@@ -7,6 +7,10 @@ class ReviewRepo {
   // Future<List<Review>> getListReviewByProduct(String productID)async{
 
   // }
+  Future<void> dispose() async {
+    await _reviewFirestoreDB.dispose();
+  }
+
   final List<Review> listReview = [
     Review(
         id: "reviewID01",

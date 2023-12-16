@@ -1,52 +1,57 @@
+import 'package:dpl_ecommerce/models/city.dart';
+import 'package:dpl_ecommerce/models/district.dart';
+import 'package:dpl_ecommerce/models/ward.dart';
 import 'package:uuid/uuid.dart';
 
 class AddressInfor {
   String? id;
   String? country;
-  String? district;
-  String? city;
+  District? district;
+  City? city;
   double? latitude;
   double? longitude;
   bool isDefaultAddress;
   String? name;
   String? number;
-  String? ward;
+  Ward? ward;
   AddressInfor({
     this.city,
     this.country,
     this.isDefaultAddress = false,
-    this.latitude,
-    this.longitude,
+    this.latitude = 0.0,
+    this.longitude = 0.0,
     this.name,
     this.number,
     this.ward,
     this.district,
     this.id,
-  });
+  }) {
+    id ??= Uuid().v4();
+  }
   factory AddressInfor.fromJson(Map<String, dynamic> json) {
     return AddressInfor(
       id: json['id'],
       country: json['country'],
-      district: json['district'],
-      city: json['city'],
-      latitude: (json['latitude'] as double),
-      longitude: (json['longitude'] as double),
+      district: District.fromJson(json['district']),
+      city: City.fromJson(json['city']),
+      latitude: (json['latitude']),
+      longitude: (json['longitude']),
       isDefaultAddress: json['isDefaultAddress'],
       name: json['name'],
       number: json['number'],
-      ward: json['ward'],
+      ward: Ward.fromJson(json['ward']),
     );
   }
   Map<String, dynamic> toJson() => {
         'country': country,
-        'district': district,
-        'city': city,
+        'district': district!.toJson(),
+        'city': city!.toJson(),
         'latitude': latitude,
         'longitude': longitude,
         'isDefaultAddress': isDefaultAddress,
         'name': name,
         'number': number,
-        'ward': ward,
+        'ward': ward!.toJson(),
         'id': id,
       };
 }

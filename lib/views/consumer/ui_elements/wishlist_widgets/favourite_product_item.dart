@@ -24,7 +24,7 @@ class Productsmalllist1ItemWidget extends StatelessWidget {
         // go to detail
         print("Product");
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ProductDetailsPage(product: product),
+          builder: (context) => ProductDetailsPage(id: product!.id!),
         ));
       },
       child: Container(

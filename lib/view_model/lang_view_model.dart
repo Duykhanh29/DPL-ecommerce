@@ -7,7 +7,7 @@ class LocaleProvider with ChangeNotifier {
   Locale? _locale;
   Language? language;
   Locale get locale {
-    return _locale = Locale(AppConfig.defaultLanguage);
+    return _locale = Locale(AppConfig.defaultLanguage, '');
   }
 
   void setLocale(String code) {

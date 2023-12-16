@@ -9,6 +9,10 @@ class FlashSaleRepo {
     return result;
   }
 
+  Future<void> dispose() async {
+    await firestoreDatabase.dispose();
+  }
+
   List<FlashSale>? list = [
     // FlashSale(
     //     id: "flashSaleID01",

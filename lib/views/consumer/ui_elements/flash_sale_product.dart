@@ -3,10 +3,12 @@ import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:dpl_ecommerce/helpers/string_helper.dart';
 import 'package:dpl_ecommerce/models/flash_sale.dart';
 import 'package:dpl_ecommerce/models/product.dart';
+import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_timer_countdown/flutter_timer_countdown.dart';
+import 'package:provider/provider.dart';
 
 class FlashDealProducts extends StatefulWidget {
   FlashDealProducts({Key? key, required this.list}) : super(key: key);
@@ -200,11 +202,13 @@ class _FlashDealProductsState extends State<FlashDealProducts> {
             //   shopName: "DK",
             //   updatedAt: DateTime.now(),
             // );
-            return
-                //  Text("data");
-                index >= widget.list.length
-                    ? Productsmalllist1ItemWidget(product: widget.list[0])
-                    : Productsmalllist1ItemWidget(product: widget.list[index]);
+            // return
+            //     //  Text("data");
+            index >= widget.list.length
+                ? Productsmalllist1ItemWidget(
+                    product: widget.list[0],
+                  )
+                : Productsmalllist1ItemWidget(product: widget.list[index]);
           },
           itemCount: 15,
           //     )
@@ -229,6 +233,8 @@ class _FlashDealProductsState extends State<FlashDealProducts> {
 
   /// Section Widget
   Widget _buildProductSmallList1(BuildContext context, List<Product> list) {
+    final userProvider = Provider.of<UserViewModel>(context);
+    final user = userProvider.currentUser;
     return Padding(
       padding: EdgeInsets.only(right: 10),
       child: GridView.builder(

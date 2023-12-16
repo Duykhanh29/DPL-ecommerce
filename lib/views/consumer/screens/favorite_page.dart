@@ -1,6 +1,7 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/models/product.dart';
+import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item_widget.dart';
@@ -14,7 +15,7 @@ class FavoriteScreen extends StatefulWidget {
 
 class _RatingState extends State<FavoriteScreen> {
   double rating = 3.0;
- List<Product>? listProduct = ProductRepo().list;
+  List<Product>? listProduct = ProductRepo().list;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,33 +98,35 @@ Widget _buildDealOfTheDay(
     ],
   );
 }
- Widget _buildProductSmallList(BuildContext context, List<Product> list) {
-    return SizedBox(
-      height: 230.h,
-      child: ListView.separated(
-        padding: EdgeInsets.only(left: 16.h),
-        scrollDirection: Axis.horizontal,
-        separatorBuilder: (
-          context,
-          index,
-        ) {
-          return SizedBox(
-            width: 16.h,
-          );
-        },
-        itemCount: list.length,
-        itemBuilder: (context, index) {
-          return ProductsmalllistItemWidget(
-            product: list[index],
-          );
-        },
-      ),
-    );
-  }
+
+Widget _buildProductSmallList(
+    BuildContext context, List<Product> list, UserModel user) {
+  return SizedBox(
+    height: 230.h,
+    child: ListView.separated(
+      padding: EdgeInsets.only(left: 16.h),
+      scrollDirection: Axis.horizontal,
+      separatorBuilder: (
+        context,
+        index,
+      ) {
+        return SizedBox(
+          width: 16.h,
+        );
+      },
+      itemCount: list.length,
+      itemBuilder: (context, index) {
+        return ProductsmalllistItemWidget(
+          product: list[index],
+        );
+      },
+    ),
+  );
+}
 //  Widget _buildProductSmallList(BuildContext context, List<Product> list) {
 //     return Padding(
 //       padding: EdgeInsets.only(right: 10.h),
-     
+
 //       child: GridView.builder(
 //         padding: EdgeInsets.only(left: 16.h),
 //         scrollDirection: Axis.horizontal,
@@ -145,25 +148,24 @@ Widget _buildDealOfTheDay(
 //     );
 //   }
 Widget _buildProductSmallList1(BuildContext context, List<Product> list) {
-    return Padding(
-      padding: EdgeInsets.only(right: 10.h),
-      child: GridView.builder(
-        shrinkWrap: true,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          mainAxisExtent: 283.h,
-          // childAspectRatio: 3 / 2,
-        ),
-        itemBuilder: (context, index) {
-          return Productsmalllist1ItemWidget(
-            product: list[index],
-          );
-        },
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: list.length,
+  return Padding(
+    padding: EdgeInsets.only(right: 10.h),
+    child: GridView.builder(
+      shrinkWrap: true,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        mainAxisExtent: 283.h,
+        // childAspectRatio: 3 / 2,
       ),
-    );
-  }
-
+      itemBuilder: (context, index) {
+        return Productsmalllist1ItemWidget(
+          product: list[index],
+        );
+      },
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: list.length,
+    ),
+  );
+}
