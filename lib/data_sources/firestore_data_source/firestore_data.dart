@@ -5,9 +5,11 @@ import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/cart.dart';
 import 'package:dpl_ecommerce/models/category.dart';
 import 'package:dpl_ecommerce/models/chat.dart';
+import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/consumer_infor.dart';
 import 'package:dpl_ecommerce/models/currency_infor.dart';
 import 'package:dpl_ecommerce/models/deliver_service.dart';
+import 'package:dpl_ecommerce/models/district.dart';
 import 'package:dpl_ecommerce/models/favourite_product.dart';
 import 'package:dpl_ecommerce/models/flash_sale.dart';
 import 'package:dpl_ecommerce/models/message.dart';
@@ -17,8 +19,10 @@ import 'package:dpl_ecommerce/models/product_in_cart_model.dart';
 import 'package:dpl_ecommerce/models/review.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/models/shop.dart';
+import 'package:dpl_ecommerce/models/verification_form.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/models/voucher_for_user.dart';
+import 'package:dpl_ecommerce/models/ward.dart';
 import 'package:dpl_ecommerce/utils/common/common_caculated_methods.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -525,10 +529,24 @@ class FirestoreDatabase {
   }
 
   // shop sections
-  // shop sections
   Future<void> addShop(Shop shop) async {
     await _firestore.collection('shops').doc(shop.id).set(shop.toJson());
   }
+
+  Future<void> sendVerificationForm(
+      {required VerificationForm verificationForm}) async {
+    try {
+      _firestore
+          .collection('verrificationForms')
+          .doc(verificationForm.shopID)
+          .set(verificationForm.toJson());
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  // not yet
+  Future<void> updateShopView(String shopID) async {}
 
   Future<void> updateShop(
       {required String shopID,
@@ -543,8 +561,35 @@ class FirestoreDatabase {
       final shopDoc = _firestore.collection('shops');
       final snapshot = await shopDoc.doc(shopID).get();
       if (snapshot.exists) {
-        final shopData = snapshot.data() as Map<String, dynamic>;
-        // final
+        final shopData = snapshot.data();
+        String shopName = name ?? shopData!['name'];
+        // String logo=
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<Shop?> getSHopByID(String id) async {
+    try {
+      final ref = await _firestore.collection('shops').doc(id).get();
+      if (ref.exists) {
+        final data = ref.data();
+        return Shop(
+            addressInfor: AddressInfor.fromJson(data!['addressInfor']),
+            contactPhone: data['contactPhone'],
+            id: data['id'],
+            logo: data['logo'],
+            name: data['name'],
+            rating: data['rating'],
+            ratingCount: data['ratingCount'],
+            shopDescription: data['shopDescription'],
+            shopView: data['shopView'],
+            totalProduct: data['totalProduct'],
+            totalRevenue: data['totalRevenue'],
+            totalOrder: data['totalOrder']);
+      } else {
+        print("Not exists");
       }
     } catch (e) {
       print("An error occured: $e");
@@ -567,7 +612,9 @@ class FirestoreDatabase {
             ratingCount: data.data()['ratingCount'],
             shopDescription: data.data()['shopDescription'],
             shopView: data.data()['shopView'],
-            totalProduct: data.data()['totalProduct']);
+            totalProduct: data.data()['totalProduct'],
+            totalRevenue: data['totalRevenue'],
+            totalOrder: data['totalOrder']);
         list.add(shop);
       }
       return list;

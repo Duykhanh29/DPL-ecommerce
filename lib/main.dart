@@ -16,6 +16,7 @@ import 'package:dpl_ecommerce/views/consumer/main_view.dart';
 import 'package:dpl_ecommerce/views/consumer/routes/routes.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/login_screen.dart';
 import 'package:dpl_ecommerce/views/general_views/register_seller.dart';
+import 'package:dpl_ecommerce/views/seller/mainviewseller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/scheduler.dart';
@@ -238,8 +239,8 @@ class AuthPage extends StatelessWidget {
         )
       ],
       child: MaterialApp(
-        // home: MainView(),
-        initialRoute: ConsumerRoutes.mainView,
+        home: MainViewSeller(),
+        // initialRoute: ConsumerRoutes.mainView,
         routes: ConsumerRoutes.routes,
       ),
     );

@@ -99,11 +99,11 @@ class HomePage extends StatelessWidget {
                 child: Icon(Icons.notifications_outlined,
                     color: Colors.white, size: 30),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) {
-                      return ProductsApp(products: []);
-                    },
-                  ));
+                  // Navigator.of(context).push(MaterialPageRoute(
+                  //   builder: (context) {
+                  //     return ProductsApp(products: []);
+                  //   },
+                  // ));
                 },
               ),
             ),

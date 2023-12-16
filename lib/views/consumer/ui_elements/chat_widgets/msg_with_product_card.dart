@@ -3,11 +3,14 @@ import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/utils/common/common_methods.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/product_detail_page.dart';
+import 'package:dpl_ecommerce/views/seller/screens/product2/edit_product.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MsgWithProduct extends StatefulWidget {
-  MsgWithProduct({super.key, this.productID});
+  MsgWithProduct({super.key, this.productID, this.isShop = false});
   String? productID;
+  bool isShop;
 
   @override
   State<MsgWithProduct> createState() => _MsgWithProductState();
@@ -28,17 +31,26 @@ class _MsgWithProductState extends State<MsgWithProduct> {
     final size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) {
-            return ProductDetailsPage(id: widget.productID!);
-          },
-        ));
+        if (!widget.isShop) {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) {
+              return ProductDetailsPage(id: widget.productID!);
+            },
+          ));
+        } else {
+          //  Navigator.of(context).push(MaterialPageRoute(
+          //   builder: (context) {
+          //     return EditProductScreen(product: product, onProductUpdated: onProductUpdated, products: products)
+          //   },
+          // ));
+        }
       },
       child: Container(
         height: size.height * 0.1,
         width: size.width,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment:
+              !widget.isShop ? MainAxisAlignment.start : MainAxisAlignment.end,
           children: [
             Container(
               decoration: BoxDecoration(
@@ -57,7 +69,7 @@ class _MsgWithProductState extends State<MsgWithProduct> {
     final size = MediaQuery.of(context).size;
     return Container(
       height: size.height * 0.08,
-      margin: const EdgeInsets.only(left: 10),
+      margin: EdgeInsets.only(left: 10.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [

@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 
 class ListMsg extends StatelessWidget {
-  ListMsg({super.key, required this.list, required this.chat});
+  ListMsg(
+      {super.key, required this.list, required this.chat, this.isShop = false});
   List<Message>? list;
   Chat? chat;
+  bool isShop;
   @override
   Widget build(BuildContext context) {
     return GroupedListView<Message, DateTime>(
@@ -44,6 +46,7 @@ class ListMsg extends StatelessWidget {
         return MessageItemWidget(
           message: message,
           chat: chat,
+          isShop: isShop,
         );
       },
     );

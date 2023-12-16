@@ -1,5 +1,6 @@
 import 'package:dpl_ecommerce/helpers/validators.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
+import 'package:dpl_ecommerce/models/category.dart';
 import 'package:dpl_ecommerce/models/chat.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/product_in_cart_model.dart';
@@ -126,6 +127,15 @@ class CommondMethods {
       if (CommondMethods.getVoucherFromID(list, element) != null) {
         Voucher voucher = CommondMethods.getVoucherFromID(list, element)!;
         result.add(voucher);
+      }
+    }
+  }
+
+  // category
+  static Category? getCategoryByID(String id, List<Category> list) {
+    for (var element in list) {
+      if (element.id == id) {
+        return element;
       }
     }
   }
