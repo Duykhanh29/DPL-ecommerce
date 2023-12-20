@@ -13,7 +13,9 @@ import 'package:dpl_ecommerce/view_model/lang_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/main_view.dart';
 import 'package:dpl_ecommerce/views/consumer/routes/routes.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/category_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/login_screen.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/orderseller.dart';
 import 'package:dpl_ecommerce/views/general_views/register_seller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -126,7 +128,7 @@ class _FirstPageState extends State<FirstPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    super.initState();
+    
     // final authProvider = Provider.of<AuthViewModel>(context);
     auth.FirebaseAuth.instance.authStateChanges().listen((event) {
       setState(() {
@@ -159,7 +161,9 @@ class _FirstPageState extends State<FirstPage> {
     //     }
     //   },
     // );
-    return user != null ? AuthorizatedPage() : LoginScreen();
+    return CategoryPage();
+    
+    //user != null ? AuthorizatedPage() : LoginScreen();
   }
 }
 
