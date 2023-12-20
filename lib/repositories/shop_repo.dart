@@ -44,6 +44,10 @@ class ShopRepo {
         shopView: shopView);
   }
 
+  Future<void> updateShopView(String shopID) async {
+    await _shopFirestoreDB.updateShopView(shopID);
+  }
+
   Future<void> dispose() async {
     await _shopFirestoreDB.dispose();
   }

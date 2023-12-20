@@ -1,4 +1,5 @@
 import 'package:dpl_ecommerce/const/app_decoration.dart';
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/models/order_model.dart';
@@ -6,6 +7,7 @@ import 'package:dpl_ecommerce/models/ordering_product.dart';
 import 'package:dpl_ecommerce/repositories/payment_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/rate_screen.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/track_order.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/order_widgets/list_order_item.dart';
@@ -23,16 +25,22 @@ class OrderDetailScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
           //backgroundColor: appTheme.gray5001,
-          appBar: AppBar(
-            backgroundColor: Colors.blue,
-            title: Text(
-              "Information order",
-              textAlign: TextAlign.center,
-            ),
-            centerTitle: true,
+          appBar: CustomAppBar(
+                  title:
+                      LangText(context: context).getLocal()!.order_details_ucf,
+                  context: context,
+                  centerTitle: true)
+              .show(),
+          //  AppBar(
+          //   backgroundColor: Colors.blue,
+          //   title: Text(
+          //    ,
+          //     textAlign: TextAlign.center,
+          //   ),
+          //   centerTitle: true,
 
-            //leading: Icon(Icons.menu),
-          ),
+          //   //leading: Icon(Icons.menu),
+          // ),
           body: Padding(
             padding: EdgeInsets.only(bottom: 8.h, top: 1.h),
             child: Column(
@@ -50,19 +58,19 @@ class OrderDetailScreen extends StatelessWidget {
                     alignment: Alignment.bottomCenter,
                     child: Container(
                       alignment: Alignment.bottomCenter,
-                      child: Center(
-                        child: Text(
-                          "Rate",
-                          textAlign: TextAlign.center,
-                          style:
-                              TextStyle(fontSize: 16.sp, color: Colors.white),
-                        ),
-                      ),
                       decoration: BoxDecoration(
                           color: Colors.blue,
                           borderRadius: BorderRadius.circular(8)),
                       width: MediaQuery.of(context).size.width * 0.8,
                       height: 50.h,
+                      child: Center(
+                        child: Text(
+                          LangText(context: context).getLocal()!.rate_ucf,
+                          textAlign: TextAlign.center,
+                          style:
+                              TextStyle(fontSize: 16.sp, color: Colors.white),
+                        ),
+                      ),
 
                       // text: "Details",
                       // buttonTextStyle: TextStyle(color: Colors.white),
@@ -114,14 +122,18 @@ class DetailBody extends StatelessWidget {
                                     height: 10.h,
                                   ),
                                   Text(
-                                    "Your order is delivered",
+                                    LangText(context: context)
+                                        .getLocal()!
+                                        .your_order_is_delivered,
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 18.sp),
                                     //style: CustomTextStyles.titleMediumNunitoOnPrimary
                                   ),
                                   SizedBox(height: 10.h),
                                   Text(
-                                    "Rate product to get 5 points for collect.",
+                                    LangText(context: context)
+                                        .getLocal()!
+                                        .rate_product_to_get_points,
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 12.sp),
                                     textAlign: TextAlign.center,
@@ -160,7 +172,7 @@ class DetailBody extends StatelessWidget {
                                 ),
                                 Icon(
                                   Icons.local_shipping_outlined,
-                                  size: 30,
+                                  size: 25.h,
                                 ),
                                 SizedBox(
                                   width: 10.w,

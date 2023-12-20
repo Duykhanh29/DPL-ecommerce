@@ -2,6 +2,8 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,7 +36,7 @@ class _RatingState extends State<RatingScreen> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text(
-          "Rate Product",
+          LangText(context: context).getLocal()!.rate_product,
           textAlign: TextAlign.center,
         ),
         centerTitle: true,
@@ -45,15 +47,15 @@ class _RatingState extends State<RatingScreen> {
         child: Column(
           children: [
             SizedBox(
-              height: 30,
+              height: 30.h,
             ),
             RatingSection(),
             SizedBox(
-              height: 30,
+              height: 30.h,
             ),
             CommentSection(),
             SizedBox(
-              height: 30,
+              height: 30.h,
             ),
             ImageUploadSection(productID: widget.productID),
           ],
@@ -69,12 +71,12 @@ class RatingSection extends StatelessWidget {
     final reviewProvider = Provider.of<ReviewViewModel>(context);
     return Column(
       children: [
-        Row(
-          children: [
-            // Icon(Icons.gif_box_outlined),
-            // Text('Submit your review'),
-          ],
-        ),
+        // Row(
+        //   children: [
+        //     // Icon(Icons.gif_box_outlined),
+        //     // Text('Submit your review'),
+        //   ],
+        // ),
         Consumer<ReviewViewModel>(
           builder: (context, providerValue, child) {
             return RatingBar.builder(
@@ -83,10 +85,11 @@ class RatingSection extends StatelessWidget {
               direction: Axis.horizontal,
               allowHalfRating: true,
               itemCount: 5,
-              itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+              itemPadding: EdgeInsets.symmetric(horizontal: 4.w),
               itemBuilder: (context, _) => Icon(
                 Icons.star,
                 color: Colors.amber,
+                size: 20.h,
               ),
               onRatingUpdate: (newRating) {
                 providerValue.onRatingChanged(newRating);
@@ -104,11 +107,8 @@ class CommentSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final reviewProvider = Provider.of<ReviewViewModel>(context);
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.all(8.h),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        //Text('Comment:',style: TextStyle(fontSize: 24),),
-        // Thêm TextField hoặc TextFormField cho phần bình luận tại đây
-        // Để đơn giản, ở đây chỉ sử dụng một TextFormField để nhập bình luận
         Container(
           decoration: BoxDecoration(
               color: Colors.black12, borderRadius: BorderRadius.circular(14)),
@@ -117,9 +117,10 @@ class CommentSection extends StatelessWidget {
               return TextFormField(
                 controller: provider.reviewTextEditingController,
                 decoration: InputDecoration(
-                  hintText:
-                      ' Would you like to write anything about this product?',
-                  hintStyle: TextStyle(color: Colors.black87),
+                  hintText: LangText(context: context)
+                      .getLocal()!
+                      .write_about_this_product,
+                  hintStyle: TextStyle(color: Colors.black87, fontSize: 16.sp),
                 ),
                 maxLines: 4,
                 onChanged: (value) {
@@ -149,9 +150,12 @@ class _ImageUploadSectionState extends State<ImageUploadSection> {
   ProductRepo productRepo = ProductRepo();
 
   File? _file;
+  String? filePath;
+  String? fileName;
+  String? type;
   ResourseType? resourseType;
-
-  Future getMedia() async {
+  StorageService storageService = StorageService();
+  Future getMedia(String userID) async {
     final result = await FilePicker.platform.pickFiles(
       allowMultiple: false,
       allowedExtensions: ['png', 'jpg', 'mp4'],
@@ -159,29 +163,31 @@ class _ImageUploadSectionState extends State<ImageUploadSection> {
     );
 
     if (result != null && result.files.isNotEmpty) {
-      PlatformFile pickedFile = result.files.first;
+      PlatformFile pickedFile = result.files.single;
 
       print('Đường dẫn tệp: ${pickedFile.path}');
+      setState(() {
+        filePath = pickedFile.path;
+        fileName = pickedFile.name;
+      });
       print('Định dạng tệp: ${pickedFile.extension}');
-
       // Kiểm tra định dạng tệp để thực hiện các xử lý phù hợp
       if (pickedFile.extension == 'png' || pickedFile.extension == 'jpg') {
         // Xử lý khi là ảnh
         setState(() {
           _file = File(pickedFile.path!);
           resourseType = ResourseType.image;
+          type = 'images';
         });
-        print('Đây là một tệp ảnh.');
       } else if (pickedFile.extension == 'mp4') {
         // Xử lý khi là video
         setState(() {
           _file = File(pickedFile.path!);
           resourseType = ResourseType.video;
+          type = 'videos';
         });
-        print('Đây là một tệp video.');
       } else {
         // Xử lý cho các định dạng khác
-        print('Đây không phải là một tệp ảnh hoặc video.');
       }
     } else {
       print('Không có tệp nào được chọn.');
@@ -203,13 +209,14 @@ class _ImageUploadSectionState extends State<ImageUploadSection> {
                     border: Border.all(color: Colors.black)),
                 child: Icon(
                   Icons.add_a_photo_outlined,
-                  size: 40,
+                  size: 40.h,
                   color: Colors.black38,
                 ),
               )
             : Image.file(
                 _file!,
-                height: 200,
+                height: 200.h,
+                width: 200.h,
               ),
         SizedBox(
           height: 60.h,
@@ -218,8 +225,8 @@ class _ImageUploadSectionState extends State<ImageUploadSection> {
         CustomIconButton(
           width: MediaQuery.of(context).size.width * 0.8,
           height: MediaQuery.of(context).size.width * 0.8,
-          onTap: () {
-            getMedia();
+          onTap: () async {
+            await getMedia(user!.id!);
           },
           decoration: BoxDecoration(
               color: Colors.blue, borderRadius: BorderRadius.circular(15.r)),
@@ -227,7 +234,7 @@ class _ImageUploadSectionState extends State<ImageUploadSection> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Add A Photo',
+                LangText(context: context).getLocal()!.add_photo_or_video,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 24.sp, color: Colors.white),
               ),
@@ -241,6 +248,23 @@ class _ImageUploadSectionState extends State<ImageUploadSection> {
           height: 50.h,
           onTap: () async {
             if (reviewProvider.rating != 0.0) {
+              String? url;
+              if (fileName != null && filePath != null && _file != null) {
+                bool isSuccess = await storageService.uploadFile(
+                    filePath: filePath!,
+                    fileName: fileName!,
+                    rootRef: 'reviews',
+                    secondRef: user!.id,
+                    thirdRef: type);
+                if (isSuccess) {
+                  url = await storageService.downloadURL(
+                      filePath: filePath!,
+                      fileName: fileName!,
+                      secondRef: user!.id!,
+                      rootRef: 'avatars',
+                      thirdRef: type);
+                }
+              }
               Review review = Review(
                   productID: widget.productID,
                   rating: reviewProvider.rating,
@@ -248,7 +272,7 @@ class _ImageUploadSectionState extends State<ImageUploadSection> {
                   text: reviewProvider.reviewTextEditingController.text,
                   time: Timestamp.now(),
                   userID: user!.id!,
-                  urlMedia: _file!.path,
+                  urlMedia: url,
                   userAvatar: user.avatar);
               await productRepo.addNewReview(review);
               // Navigator.of(context).pushNamedAndRemoveUntil(newRouteName, (route) => false);
@@ -260,7 +284,7 @@ class _ImageUploadSectionState extends State<ImageUploadSection> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Submit Review',
+                LangText(context: context).getLocal()!.submit_ucf,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 24.sp, color: Colors.white),
               ),

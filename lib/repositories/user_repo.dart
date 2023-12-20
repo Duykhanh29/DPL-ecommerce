@@ -30,6 +30,25 @@ class UserRepo {
     await _userFirestoreDatabase.deleteAddress(id, userModel);
   }
 
+  Future<void> updateAvatar(
+      {required String uid, required String avatar}) async {
+    await _userFirestoreDatabase.updateAvatar(uid: uid, avatar: avatar);
+  }
+
+  Future<void> updateUserInfor(
+      {String? avatar,
+      String? name,
+      String? phone,
+      String? email,
+      required UserModel userModel}) async {
+    await _userFirestoreDatabase.updateUserInfor(
+        userModel: userModel,
+        avatar: avatar,
+        email: email,
+        name: name,
+        phone: phone);
+  }
+
   final List<UserModel> listUser = [
     UserModel(
       avatar:

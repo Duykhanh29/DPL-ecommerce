@@ -1,7 +1,9 @@
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/search_result_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FilterPage extends StatefulWidget {
   String searhKey;
@@ -28,7 +30,7 @@ class _FilterPageState extends State<FilterPage> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text(
-          "Filter",
+          LangText(context: context).getLocal()!.filter_ucf,
           textAlign: TextAlign.center,
         ),
         centerTitle: true,
@@ -39,7 +41,7 @@ class _FilterPageState extends State<FilterPage> {
           _buildConditionBars(),
           Container(
             width: double.infinity,
-            margin: EdgeInsets.all(16.0),
+            margin: EdgeInsets.all(16.h),
             child: ElevatedButton(
               onPressed: () async {
                 // Xử lý khi nút Apply được nhấn
@@ -60,7 +62,7 @@ class _FilterPageState extends State<FilterPage> {
                   },
                 ));
               },
-              child: const Text('Apply'),
+              child: Text(LangText(context: context).getLocal()!.apply_ucf),
             ),
           ),
         ],
@@ -75,7 +77,8 @@ class _FilterPageState extends State<FilterPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ListTile(
-              title: Text('Price range'),
+              title:
+                  Text(LangText(context: context).getLocal()!.price_range_ucf),
               subtitle: Row(
                 children: [
                   Text('\$$_minPrice'),
@@ -101,13 +104,13 @@ class _FilterPageState extends State<FilterPage> {
               ),
             ),
             const SizedBox(height: 16),
-            const Row(
+            Row(
               children: [
                 SizedBox(
-                  width: 15,
+                  width: 15.w,
                 ),
                 Text(
-                  "Condition",
+                  LangText(context: context).getLocal()!.condition,
                   style: TextStyle(),
                   textAlign: TextAlign.left,
                 ),
@@ -119,11 +122,13 @@ class _FilterPageState extends State<FilterPage> {
                 const SizedBox(
                   width: 10,
                 ),
-                _buildConditionButton('New'),
+                _buildConditionButton(
+                    LangText(context: context).getLocal()!.new_ucf),
                 const SizedBox(
                   width: 5,
                 ),
-                _buildConditionButton('Newest'),
+                _buildConditionButton(
+                    LangText(context: context).getLocal()!.newest_ucf),
                 const SizedBox(
                   width: 5,
                 ),
@@ -132,7 +137,7 @@ class _FilterPageState extends State<FilterPage> {
             ),
             //SizedBox(height: 8),
             ListTile(
-              title: Text('Rating'),
+              title: Text(LangText(context: context).getLocal()!.rating_ucf),
               subtitle: Row(
                 children: [
                   Text('0'),

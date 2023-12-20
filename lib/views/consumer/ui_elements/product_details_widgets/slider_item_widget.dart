@@ -1,6 +1,7 @@
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_photo_view.dart';
+import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,7 @@ class SliderItemWidget extends StatelessWidget {
           key: key,
         );
   String? urlImage;
+  StorageService storageService = StorageService();
   @override
   Widget build(BuildContext context) {
     return CustomImageView(
@@ -25,8 +27,8 @@ class SliderItemWidget extends StatelessWidget {
                 leading: CustomArrayBackWidget(),
               ),
               body: CustomPhotoView(
-                function: () {
-                  // save to local device
+                function: () async {
+                  await storageService.downloadAndSaveImage(urlImage!);
                 },
                 height: MediaQuery.of(context).size.height * 0.9,
                 width: MediaQuery.of(context).size.width * 0.9,

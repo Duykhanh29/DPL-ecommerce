@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/district.dart';
 import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/repositories/shop_repo.dart';
+import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,10 +21,12 @@ class GeneralSetting extends StatefulWidget {
 }
 
 class __GeneralSettingState extends State<GeneralSetting> {
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  StorageService storageService = StorageService();
+
   ShopRepo shopRepo = ShopRepo();
   Shop shop = Shop(
     ratingCount: 123,
@@ -47,8 +51,8 @@ class __GeneralSettingState extends State<GeneralSetting> {
   );
 
   File? _image;
-
-  Future getImage() async {
+  String? urlImage;
+  Future getImage(String shopID) async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
@@ -57,6 +61,21 @@ class __GeneralSettingState extends State<GeneralSetting> {
         _image = File(pickedFile.path);
       }
     });
+    bool isSuccess = await storageService.uploadFile(
+      filePath: pickedFile!.path,
+      fileName: pickedFile.name,
+      rootRef: 'shopLogos',
+      secondRef: shopID,
+    );
+    if (isSuccess) {
+      urlImage = await storageService.downloadURL(
+        filePath: pickedFile.path,
+        fileName: pickedFile.name,
+        rootRef: 'shopLogos',
+        secondRef: shopID,
+      );
+      setState(() {});
+    }
   }
 
   @override
@@ -66,10 +85,19 @@ class __GeneralSettingState extends State<GeneralSetting> {
     fetchData();
   }
 
+  @override
+  void dispose() {
+    _nameController.clear();
+    _descriptionController.clear();
+    _phoneController.clear();
+    super.dispose();
+  }
+
   Future<void> fetchData() async {
     _nameController.text = shop.name ?? "";
     _phoneController.text = shop.contactPhone ?? "";
     _descriptionController.text = shop.shopDescription ?? "";
+    urlImage = shop.logo;
   }
 
   @override
@@ -99,8 +127,8 @@ class __GeneralSettingState extends State<GeneralSetting> {
                   height: 10.h,
                 ),
                 GestureDetector(
-                  onTap: () {
-                    getImage();
+                  onTap: () async {
+                    await getImage(shop.id!);
                   },
                   child: Row(
                     children: [
@@ -148,16 +176,40 @@ class __GeneralSettingState extends State<GeneralSetting> {
                 SizedBox(
                   height: 10.h,
                 ),
-                _image == null
-                    ? Icon(
-                        Icons.add_a_photo_outlined,
-                        size: 80,
-                        color: Colors.black38,
+                urlImage != null
+                    ? CachedNetworkImage(
+                        imageUrl: urlImage!,
+                        imageBuilder: (context, imageProvider) {
+                          return Container(
+                            height: 90.h,
+                            width: 90.h,
+                            padding: EdgeInsets.all(2.h),
+                            decoration: BoxDecoration(
+                                image: DecorationImage(image: imageProvider)),
+                          );
+                        },
+                        placeholder: (context, url) => Center(
+                            child: SizedBox(
+                                width: 30.h,
+                                height: 30.h,
+                                child: const CircularProgressIndicator())),
+                        errorWidget: (context, url, error) => Center(
+                            child: Icon(
+                          Icons.error,
+                          size: 10.h,
+                        )),
                       )
-                    : Image.file(
-                        _image!,
-                        height: 80.h,
-                      ),
+                    : (_image == null
+                        ? const Icon(
+                            Icons.add_a_photo_outlined,
+                            size: 80,
+                            color: Colors.black38,
+                          )
+                        : Image.file(
+                            _image!,
+                            height: 90.h,
+                            width: 90.h,
+                          )),
                 SizedBox(
                   height: 20.h,
                 ),
@@ -193,7 +245,7 @@ class __GeneralSettingState extends State<GeneralSetting> {
             if (_formKey.currentState!.validate()) {
               await shopRepo.updateShop(
                   shopID: "shopID",
-                  logo: _image!.path,
+                  logo: urlImage,
                   contactPhone: _phoneController.text,
                   name: _nameController.text,
                   shopDescription: _descriptionController.text);

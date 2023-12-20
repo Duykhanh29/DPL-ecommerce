@@ -1,4 +1,6 @@
+import 'package:dpl_ecommerce/const/app_bar.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/customs/custom_text_form_field.dart';
 import 'package:dpl_ecommerce/data_sources/third_party_source/address_repository.dart';
@@ -9,6 +11,7 @@ import 'package:dpl_ecommerce/models/district.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/models/ward.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/chat_page.dart';
 import 'package:flutter/material.dart';
@@ -28,16 +31,16 @@ class AddAddress extends StatefulWidget {
 
 class _AddAddressState extends State<AddAddress> {
   // final _formKey = GlobalKey<FormState>();
-  TextEditingController _countryController = TextEditingController();
+  final TextEditingController _countryController = TextEditingController();
 
-  TextEditingController _cityController = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
 
-  TextEditingController _districtController = TextEditingController();
+  final TextEditingController _districtController = TextEditingController();
 
-  TextEditingController _wardController = TextEditingController();
+  final TextEditingController _wardController = TextEditingController();
 
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _homeNumberController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _homeNumberController = TextEditingController();
   City? _selected_city;
 
   District? _selected_district;
@@ -187,8 +190,10 @@ class _AddAddressState extends State<AddAddress> {
   }
 
   void onPressRegFail() {
-    ToastHelper.showDialog("Add full infor",
-        gravity: ToastGravity.BOTTOM, duration: Toast.LENGTH_LONG);
+    ToastHelper.showDialog(
+        LangText(context: context).getLocal()!.add_full_infor,
+        gravity: ToastGravity.BOTTOM,
+        duration: Toast.LENGTH_LONG);
     return;
   }
 
@@ -198,10 +203,11 @@ class _AddAddressState extends State<AddAddress> {
     final user = userProvider.currentUser;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        leading: CustomArrayBackWidget(),
-        title: Text("Add new Address 1"),
-      ),
+      appBar: CustomAppBar(
+              centerTitle: true,
+              context: context,
+              title: LangText(context: context).getLocal()!.add_new_address)
+          .show(),
       body: Padding(
           padding: EdgeInsets.all(10.h),
           child: Column(
@@ -243,7 +249,7 @@ class _AddAddressState extends State<AddAddress> {
                           borderRadius: BorderRadius.circular(10.r)),
                       hintText: _countryController.text.isEmpty &&
                               !countryFocusNode.hasFocus
-                          ? "country"
+                          ? LangText(context: context).getLocal()!.country_ucf
                           : null),
                 ),
               ),
@@ -253,7 +259,7 @@ class _AddAddressState extends State<AddAddress> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
                 child: Container(
-                  height: 40,
+                  height: 50.h,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(3),
                       color: MyTheme.textfield_grey),
@@ -281,12 +287,11 @@ class _AddAddressState extends State<AddAddress> {
                     },
                     loadingBuilder: (context) {
                       return SizedBox(
-                        height: 50,
+                        height: 50.h,
                         child: Center(
                             child: Text(
-                                // AppLocalizations.of(context)!
-                                //     .
-                                "loading_cities_ucf",
+                                AppLocalizations.of(context)!
+                                    .loading_cities_ucf,
                                 style: TextStyle(color: MyTheme.medium_grey))),
                       );
                     },
@@ -302,11 +307,10 @@ class _AddAddressState extends State<AddAddress> {
                     },
                     noItemsFoundBuilder: (context) {
                       return SizedBox(
-                        height: 50,
+                        height: 50.h,
                         child: Center(
                             child: Text(
-                                // AppLocalizations.of(context)!.
-                                " no_city_available",
+                                AppLocalizations.of(context)!.no_city_available,
                                 style: TextStyle(color: MyTheme.medium_grey))),
                       );
                     },
@@ -338,7 +342,7 @@ class _AddAddressState extends State<AddAddress> {
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
                               vertical: 5.h, horizontal: 7.w),
-                          hintText: "city",
+                          hintText: AppLocalizations.of(context)!.city_ucf,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -353,7 +357,7 @@ class _AddAddressState extends State<AddAddress> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
                 child: Container(
-                  height: 40,
+                  height: 50.h,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: MyTheme.textfield_grey),
@@ -382,12 +386,11 @@ class _AddAddressState extends State<AddAddress> {
                     },
                     loadingBuilder: (context) {
                       return SizedBox(
-                        height: 50,
+                        height: 50.h,
                         child: Center(
                             child: Text(
-                                // AppLocalizations.of(context)!
-                                //     .
-                                "loading_districts_ucf",
+                                AppLocalizations.of(context)!
+                                    .loading_districts_ucf,
                                 style: TextStyle(color: MyTheme.medium_grey))),
                       );
                     },
@@ -403,12 +406,11 @@ class _AddAddressState extends State<AddAddress> {
                     },
                     noItemsFoundBuilder: (context) {
                       return SizedBox(
-                        height: 50,
+                        height: 50.h,
                         child: Center(
                             child: Text(
-                                // AppLocalizations.of(context)!
-                                //     .
-                                "no_district_available",
+                                AppLocalizations.of(context)!
+                                    .no_district_available,
                                 style: TextStyle(color: MyTheme.medium_grey))),
                       );
                     },
@@ -438,9 +440,9 @@ class _AddAddressState extends State<AddAddress> {
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
                               vertical: 5.h, horizontal: 7.w),
-                          hintText:
-                              // LangText(context: context).getLocal()!.
-                              "district",
+                          hintText: LangText(context: context)
+                              .getLocal()!
+                              .district_ucf,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -456,7 +458,7 @@ class _AddAddressState extends State<AddAddress> {
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
                 child: Container(
                   alignment: Alignment.centerLeft,
-                  height: 40,
+                  height: 50.h,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: MyTheme.textfield_grey),
@@ -486,12 +488,11 @@ class _AddAddressState extends State<AddAddress> {
                       },
                       loadingBuilder: (context) {
                         return Container(
-                          height: 50,
+                          height: 50.h,
                           child: Center(
                               child: Text(
-                                  // AppLocalizations.of(context)!
-                                  //     .
-                                  "loading_wards_ucf",
+                                  AppLocalizations.of(context)!
+                                      .loading_wards_ucf,
                                   style:
                                       TextStyle(color: MyTheme.medium_grey))),
                         );
@@ -509,12 +510,11 @@ class _AddAddressState extends State<AddAddress> {
                       noItemsFoundBuilder: (context) {
                         return Container(
                           alignment: Alignment.centerLeft,
-                          height: 50,
+                          height: 50.h,
                           child: Center(
                               child: Text(
-                                  // AppLocalizations.of(context)!
-                                  //     .
-                                  "no_ward_available",
+                                  AppLocalizations.of(context)!
+                                      .no_ward_available,
                                   style:
                                       TextStyle(color: MyTheme.medium_grey))),
                         );
@@ -547,8 +547,7 @@ class _AddAddressState extends State<AddAddress> {
                             contentPadding: EdgeInsets.symmetric(
                                 vertical: 5.h, horizontal: 7.w),
                             hintText:
-                                // LangText(context: context).getLocal()!.
-                                "ward",
+                                LangText(context: context).getLocal()!.ward_ucf,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -588,7 +587,7 @@ class _AddAddressState extends State<AddAddress> {
                           borderRadius: BorderRadius.circular(10.r)),
                       hintText: _homeNumberController.text.isEmpty &&
                               !homeNumberFocusNode.hasFocus
-                          ? "home number"
+                          ? LangText(context: context).getLocal()!.home_number
                           : null),
                 ),
               ),
@@ -622,7 +621,7 @@ class _AddAddressState extends State<AddAddress> {
                           borderRadius: BorderRadius.circular(10.r)),
                       hintText: _nameController.text.isEmpty &&
                               !nameFocusNode.hasFocus
-                          ? "My home"
+                          ? LangText(context: context).getLocal()!.my_home
                           : null),
                 ),
               ),
@@ -630,7 +629,8 @@ class _AddAddressState extends State<AddAddress> {
                 height: 10.h,
               ),
               CheckboxListTile(
-                title: Text('Default Address'),
+                title: Text(
+                    LangText(context: context).getLocal()!.default_address),
                 value: isDefaultAddress,
                 onChanged: (value) {
                   setState(() {
@@ -660,12 +660,11 @@ class _AddAddressState extends State<AddAddress> {
                       });
                     }
                   },
-                  child: Text(
-                      // LangText(context: context).getLocal()!.
-                      " add_all_capital"),
                   style: ButtonStyle(
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.r)))),
+                  child: Text(
+                      LangText(context: context).getLocal()!.add_all_capital),
                 ),
               )
             ],
@@ -681,12 +680,10 @@ class _AddAddressState extends State<AddAddress> {
               content: Row(
             children: [
               const CircularProgressIndicator(),
-              const SizedBox(
-                width: 10,
+              SizedBox(
+                width: 10.w,
               ),
-              Text(
-                  // AppLocalizations.of(context)!.
-                  " please_wait_ucf"),
+              Text(AppLocalizations.of(context)!.please_wait_ucf),
             ],
           ));
         });

@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
+import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/common/common_methods.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/views/seller/screens/voucher/voucher_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,8 +25,10 @@ class EditVoucher extends StatefulWidget {
 
 class _AddProductScreenState extends State<EditVoucher> {
   //TextEditingController _availableQuantityController = TextEditingController();
-  TextEditingController _nameController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   TextEditingController discountValue = TextEditingController();
+  VoucherRepo voucherRepo = VoucherRepo();
+  String tempShopID = "PkHVNq0E1ZnTUyRnqG4O";
   @override
   void initState() {
     super.initState();
@@ -77,10 +82,26 @@ class _AddProductScreenState extends State<EditVoucher> {
   Widget build(BuildContext context) {
     //final start = dataRange.start;
     //final end = dataRange.end;
+    ;
+    String typeValue;
+    String discountTypeValue;
+    if (dropdownValue == "Product") {
+      typeValue = LangText(context: context).getLocal()!.product_ucf;
+    } else {
+      typeValue = LangText(context: context).getLocal()!.shop_ucf;
+    }
+    if (discountType == "Percent") {
+      discountTypeValue = LangText(context: context).getLocal()!.discount_ucf;
+    } else {
+      discountTypeValue = LangText(context: context).getLocal()!.percent;
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Update Voucher'),
-      ),
+      appBar: CustomAppBar(
+              centerTitle: true,
+              context: context,
+              title: LangText(context: context).getLocal()!.edit_voucher)
+          .show(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -89,7 +110,7 @@ class _AddProductScreenState extends State<EditVoucher> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Voucher name"),
+                Text(LangText(context: context).getLocal()!.voucher_name),
                 SizedBox(
                   height: 10.h,
                 ),
@@ -97,16 +118,18 @@ class _AddProductScreenState extends State<EditVoucher> {
                   controller: _nameController,
                   decoration: InputDecoration(
                     contentPadding:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                        EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
                     filled: true,
                     hoverColor: Color.fromARGB(110, 218, 218, 218),
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(10.r),
                         borderSide: BorderSide.none),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a product number';
+                      return LangText(context: context)
+                          .getLocal()!
+                          .please_enter_number;
                     }
                     return null;
                   },
@@ -117,9 +140,9 @@ class _AddProductScreenState extends State<EditVoucher> {
                 SizedBox(
                   height: 20.h,
                 ),
-                Text("Voucher"),
+                Text(LangText(context: context).getLocal()!.voucher_ucf),
                 DropdownButton(
-                  value: dropdownValue ?? "",
+                  value: typeValue ?? "",
                   onChanged: ((String? newvalue) {
                     setState(() {
                       // dropdownValue = newvalue!;
@@ -127,8 +150,8 @@ class _AddProductScreenState extends State<EditVoucher> {
                   }),
                   items: [
                     DropdownMenuItem(
-                      child: Text(dropdownValue ?? ""),
-                      value: dropdownValue ?? "",
+                      value: typeValue ?? "",
+                      child: Text(typeValue ?? ""),
                     ),
                   ],
                   isExpanded: true,
@@ -137,7 +160,9 @@ class _AddProductScreenState extends State<EditVoucher> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('Select Category:'),
+                      Text(LangText(context: context)
+                          .getLocal()!
+                          .select_category),
                       DropdownButton<Product>(
                         value: selectedProduct,
                         isExpanded: true,
@@ -164,7 +189,7 @@ class _AddProductScreenState extends State<EditVoucher> {
                 // if (dropdownValue == "Shop") Text("hello"),
 
                 DropdownButton(
-                  value: discountType ?? "",
+                  value: discountTypeValue ?? "",
                   onChanged: ((String? newvalue) {
                     setState(() {
                       //dropdownValue1 = newvalue!;
@@ -172,8 +197,8 @@ class _AddProductScreenState extends State<EditVoucher> {
                   }),
                   items: [
                     DropdownMenuItem(
-                      child: Text(discountType ?? ""),
-                      value: discountType ?? "",
+                      value: discountTypeValue ?? "",
+                      child: Text(discountTypeValue ?? ""),
                     ),
                   ],
                   isExpanded: true,
@@ -184,13 +209,17 @@ class _AddProductScreenState extends State<EditVoucher> {
                   controller: discountValue,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
+                      return LangText(context: context)
+                          .getLocal()!
+                          .please_enter_number;
                     }
                     if (discountPercent != null) {
                       if (int.tryParse(value) == null ||
                           int.parse(value) <= 0 ||
                           int.parse(value) >= 100) {
-                        return 'Please enter a number from 1 to 100';
+                        return LangText(context: context)
+                            .getLocal()!
+                            .please_enter_number_range_one_to_hundred;
                       }
                     }
 
@@ -203,11 +232,16 @@ class _AddProductScreenState extends State<EditVoucher> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(child: Text("Released Date")),
+                    Expanded(
+                        child: Text(LangText(context: context)
+                            .getLocal()!
+                            .release_date)),
                     SizedBox(
                       width: 12.w,
                     ),
-                    Expanded(child: Text("Exp Date")),
+                    Expanded(
+                        child: Text(
+                            LangText(context: context).getLocal()!.exp_date)),
                   ],
                 ),
 
@@ -219,7 +253,7 @@ class _AddProductScreenState extends State<EditVoucher> {
                         onPressed: pickDateRange,
                         child: Text(startDate != null
                             ? '${startDate!.toDate().day}/${startDate!.toDate().month}/${startDate!.toDate().year}'
-                            : "waiting"),
+                            : "..."),
                       ),
                     ),
                     SizedBox(
@@ -230,7 +264,7 @@ class _AddProductScreenState extends State<EditVoucher> {
                         onPressed: pickDateRange,
                         child: Text(expDate != null
                             ? '${expDate!.toDate().day}/${expDate!.toDate().month}/${expDate!.toDate().year}'
-                            : "waiting"),
+                            : "..."),
                       ),
                     ),
                   ],
@@ -246,11 +280,11 @@ class _AddProductScreenState extends State<EditVoucher> {
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(15.r)),
         margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 25.h),
         child: ElevatedButton(
-          onPressed: () {
-            _updateVoucher();
+          onPressed: () async {
+            await _updateVoucher();
           },
           child: Text(
-            'Update Voucher',
+            LangText(context: context).getLocal()!.update_voucher,
             style: TextStyle(fontSize: 18.sp),
           ),
         ),
@@ -258,7 +292,7 @@ class _AddProductScreenState extends State<EditVoucher> {
     );
   }
 
-  void _updateVoucher() {
+  Future<void> _updateVoucher() async {
     String name = _nameController.text;
     // String expDate1 = expDate.toString();
     // String releasedDate = startDate.toString();
@@ -280,11 +314,12 @@ class _AddProductScreenState extends State<EditVoucher> {
         discountAmount: newDiscountAmount,
         discountPercent: newDiscountPercent,
         productID: selectedProduct != null ? selectedProduct!.id! : null,
-        shopID: "shopID",
+        shopID: tempShopID,
       );
 
       widget.onVoucherUpdated(updatedVoucher);
-
+      await voucherRepo.editVoucher(
+          id: widget.voucher.id!, voucher: updatedVoucher);
       Navigator.pop(
         context,
         MaterialPageRoute(builder: (context) => VoucherApp()),

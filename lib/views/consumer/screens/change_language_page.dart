@@ -7,6 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LanguagePage extends StatelessWidget {
   LanguagePage({super.key});
@@ -18,10 +20,10 @@ class LanguagePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: CustomArrayBackWidget(),
-        title: Text("Language"),
+        title: Text(AppLocalizations.of(context)!.change_language_ucf),
       ),
       body: Padding(
-          padding: EdgeInsets.all(5),
+          padding: EdgeInsets.all(5.h),
           child: ListView.builder(
             itemBuilder: (context, index) {
               return LanguageItem(
@@ -68,15 +70,15 @@ class LanguageItem extends StatelessWidget {
   Widget buildCheckContainer(bool check) {
     return check
         ? Container(
-            height: 16,
-            width: 16,
+            height: 16.h,
+            width: 16.h,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16.0), color: Colors.green),
+                borderRadius: BorderRadius.circular(16.r), color: Colors.green),
             child: Padding(
-              padding: const EdgeInsets.all(3),
-              child: Icon(Icons.check, color: Colors.white, size: 10),
+              padding: EdgeInsets.all(3.h),
+              child: Icon(Icons.check, color: Colors.white, size: 10.h),
             ),
           )
-        : SizedBox();
+        : const SizedBox();
   }
 }

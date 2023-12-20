@@ -1,8 +1,10 @@
 // products_app.dart
 
 import 'package:dpl_ecommerce/models/product.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/views/seller/screens/product2/display_product_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'add_product_screen.dart';
 
@@ -47,7 +49,7 @@ class _ProductsAppState extends State<ProductsApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Products App'),
+        title: Text(LangText(context: context).getLocal()!.products_ucf),
       ),
       body: DisplayProductsScreen(
         products: products,
@@ -58,7 +60,10 @@ class _ProductsAppState extends State<ProductsApp> {
         onPressed: () {
           _navigateToAddProductScreen(context);
         },
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          size: 20.h,
+        ),
       ),
     );
   }

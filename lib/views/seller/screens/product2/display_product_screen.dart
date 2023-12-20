@@ -2,7 +2,10 @@
 
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dpl_ecommerce/models/product.dart';
+import 'package:dpl_ecommerce/utils/constants/image_data.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/views/seller/screens/product2/edit_product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,7 +30,7 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: widget.products.length,
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.h),
       itemBuilder: (context, index) {
         final product = widget.products[index];
         return Column(
@@ -62,10 +65,42 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                 children: [
                   Row(
                     children: [
-                      Image.file(
-                        File('${product.images?[0]}'),
-                        height: 80.h,
-                        width: 80.w,
+                      product.images != null && product.images!.isNotEmpty
+                          ? (CachedNetworkImage(
+                              imageUrl: product.images![0],
+                              imageBuilder: (context, imageProvider) {
+                                return Container(
+                                  height: 70.h,
+                                  width: 70.h,
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: imageProvider)),
+                                );
+                              },
+                              placeholder: (context, url) => Center(
+                                  child: SizedBox(
+                                      width: 30.h,
+                                      height: 30.h,
+                                      child:
+                                          const CircularProgressIndicator())),
+                              errorWidget: (context, url, error) => Center(
+                                  child: Icon(
+                                Icons.error,
+                                size: 30.h,
+                              )),
+                            ))
+                          : Container(
+                              height: 70.h,
+                              width: 70.h,
+                              child: Image.asset(ImageData.imageNotFound),
+                            ),
+                      // Image.file(
+                      //   File('${product.images?[0]}'),
+                      //   height: 80.h,
+                      //   width: 80.w,
+                      // ),
+                      SizedBox(
+                        width: 5.w,
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,12 +113,12 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                             height: 20.h,
                           ),
                           Text(
-                            'Price: ${product.price}',
+                            '${LangText(context: context).getLocal()!.price_ucf}: ${product.price}',
                             //style: theme.textTheme.bodySmall,
                             maxLines: 2,
                           ),
                           Text(
-                            'Quantity: ${product.availableQuantity}',
+                            '${LangText(context: context).getLocal()!.quantity_ucf}: ${product.availableQuantity}',
                             //style: theme.textTheme.bodySmall,
                           ),
                         ],
@@ -98,31 +133,37 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                           _navigateToEditProductScreen(context, product);
                         },
                         child: Container(
-                          width: 100.w,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 2.w, vertical: 2.h),
+                          width: 80.w,
                           height: 40.h,
-                          child: Center(
-                              child: Text(
-                            "Edit",
-                            style:
-                                TextStyle(fontSize: 16, color: Colors.black54),
-                          )),
                           decoration: BoxDecoration(
                               //color: Colors.white,
                               border: Border.all(
                                 color: Color.fromARGB(35, 0, 0, 0),
                                 width: 1,
                               ),
-                              borderRadius: BorderRadius.circular(5)),
+                              borderRadius: BorderRadius.circular(5.r)),
+                          child: Center(
+                              child: Text(
+                            LangText(context: context).getLocal()!.edit_ucf,
+                            style: TextStyle(
+                                fontSize: 16.sp, color: Colors.black54),
+                          )),
                         ),
                       ),
                       SizedBox(
                         height: 10.h,
                       ),
                       Container(
-                        width: 100.w,
+                        width: 80.w,
                         height: 40.h,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 2.w, vertical: 2.h),
                         child: ElevatedButton(
-                          child: Text("Delete"),
+                          child: Text(LangText(context: context)
+                              .getLocal()!
+                              .delete_ucf),
 
                           // Add onPressed callback for the Delete button
                           onPressed: () {
@@ -131,15 +172,20 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                             showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: Text("Delete Product"),
-                                content: Text(
-                                    "Are you sure you want to delete this product?"),
+                                title: Text(LangText(context: context)
+                                    .getLocal()!
+                                    .delete_product_ucf),
+                                content: Text(LangText(context: context)
+                                    .getLocal()!
+                                    .are_you_sure_to_delete_product),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
-                                    child: Text("Cancel"),
+                                    child: Text(LangText(context: context)
+                                        .getLocal()!
+                                        .cancel_ucf),
                                   ),
                                   TextButton(
                                     onPressed: () {
@@ -155,7 +201,9 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                                       widget.onProductDeleted(
                                           product.id as String);
                                     },
-                                    child: Text("Delete"),
+                                    child: Text(LangText(context: context)
+                                        .getLocal()!
+                                        .delete_ucf),
                                   ),
                                 ],
                               ),

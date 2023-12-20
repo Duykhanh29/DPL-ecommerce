@@ -8,6 +8,7 @@ import 'package:dpl_ecommerce/data_sources/firestore_data_source/user_firestore_
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/add_address.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/address_edit.dart';
@@ -44,7 +45,7 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text(
-          "Address",
+          LangText(context: context).getLocal()!.address_ucf,
           textAlign: TextAlign.center,
         ),
         centerTitle: true,
@@ -54,7 +55,7 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
       body: StreamBuilder(
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator.adaptive(),
             );
           } else {
@@ -62,7 +63,7 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
               final listAddress = snapshot.data;
               return ListView.builder(
                   itemCount: listAddress!.length,
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.all(15.h),
                   itemBuilder: (context, index) {
                     AddressInfor address = listAddress[index];
                     return GestureDetector(
@@ -76,7 +77,7 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
                         child: Column(
                           children: [
                             SizedBox(
-                              height: 20,
+                              height: 20.h,
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(
@@ -84,7 +85,7 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
                                 vertical: 21.h,
                               ),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(9),
+                                borderRadius: BorderRadius.circular(9.r),
                                 border: Border.all(
                                   color: Colors.grey,
                                   width: 1,
@@ -131,13 +132,6 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
                                         child: Container(
                                           width: 110.w,
                                           height: 40.h,
-                                          child: Center(
-                                              child: Text(
-                                            "Edit",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.black54),
-                                          )),
                                           decoration: BoxDecoration(
                                               //color: Colors.white,
                                               border: Border.all(
@@ -146,7 +140,16 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
                                                 width: 1,
                                               ),
                                               borderRadius:
-                                                  BorderRadius.circular(5)),
+                                                  BorderRadius.circular(5.r)),
+                                          child: Center(
+                                              child: Text(
+                                            LangText(context: context)
+                                                .getLocal()!
+                                                .edit_ucf,
+                                            style: TextStyle(
+                                                fontSize: 16.sp,
+                                                color: Colors.black54),
+                                          )),
                                         ),
                                       ),
                                       // CustomOutlinedButton(
@@ -158,7 +161,9 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
                                       CustomOutlinedButton(
                                         width: 110.w,
                                         height: 40.h,
-                                        text: "Delete",
+                                        text: LangText(context: context)
+                                            .getLocal()!
+                                            .delete_ucf,
                                         buttonTextStyle:
                                             TextStyle(color: Colors.black54),
 
@@ -169,15 +174,23 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
                                           showDialog(
                                             context: context,
                                             builder: (context) => AlertDialog(
-                                              title: Text("Delete Address"),
-                                              content: Text(
-                                                  "Are you sure you want to delete this address?"),
+                                              title: Text(
+                                                  LangText(context: context)
+                                                      .getLocal()!
+                                                      .delete_address),
+                                              content: Text(LangText(
+                                                      context: context)
+                                                  .getLocal()!
+                                                  .are_you_sure_to_delete_address),
                                               actions: [
                                                 TextButton(
                                                   onPressed: () {
                                                     Navigator.of(context).pop();
                                                   },
-                                                  child: Text("Cancel"),
+                                                  child: Text(
+                                                      LangText(context: context)
+                                                          .getLocal()!
+                                                          .cancel_all_lower),
                                                 ),
                                                 TextButton(
                                                   onPressed: () async {
@@ -194,7 +207,10 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
                                                     Navigator.of(context)
                                                         .pop(); // Close the dialog
                                                   },
-                                                  child: Text("Delete"),
+                                                  child: Text(
+                                                      LangText(context: context)
+                                                          .getLocal()!
+                                                          .delete_ucf),
                                                 ),
                                               ],
                                             ),
@@ -213,7 +229,7 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
                   });
             } else {
               return Center(
-                child: Text("No address"),
+                child: Text(LangText(context: context).getLocal()!.no_address),
               );
             }
           }
@@ -233,9 +249,9 @@ Widget _buildAddAddressButton(BuildContext context) {
           builder: (context) => AddAddress(),
         ));
       },
-      height: 40,
-      width: 370,
-      text: "Add Address",
-      buttonTextStyle: TextStyle(fontSize: 18),
+      height: 40.h,
+      width: MediaQuery.of(context).size.width * 0.9,
+      text: LangText(context: context).getLocal()!.add_new_address,
+      buttonTextStyle: TextStyle(fontSize: 18.sp),
       margin: EdgeInsets.only(left: 16.h, right: 16.h, bottom: 25.h));
 }

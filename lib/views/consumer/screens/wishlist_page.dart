@@ -1,5 +1,6 @@
 import 'package:dpl_ecommerce/models/favourite_product.dart';
 import 'package:dpl_ecommerce/repositories/wishlist_repo.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/wishlist_widgets/favourite_product_item_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class WishlistPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Wishlish"),
+        title: Text(LangText(context: context).getLocal()!.my_wishlist_ucf),
       ),
       body: Padding(
         padding: EdgeInsets.all(10.h),
@@ -30,7 +31,7 @@ class WishlistPage extends StatelessWidget {
               stream: wishListRepo.getAllFavouriteProduct(uid),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 } else {
@@ -55,7 +56,9 @@ class WishlistPage extends StatelessWidget {
                     );
                   } else {
                     return Center(
-                      child: Text("No data"),
+                      child: Text(LangText(context: context)
+                          .getLocal()!
+                          .no_data_is_available),
                     );
                   }
                 }

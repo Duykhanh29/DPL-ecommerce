@@ -28,6 +28,7 @@ import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/auth_repo.dart';
 import 'package:dpl_ecommerce/repositories/cart_repo.dart';
+import 'package:dpl_ecommerce/repositories/chat_repo.dart';
 import 'package:dpl_ecommerce/repositories/flash_sale_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/repositories/review_repo.dart';
@@ -40,6 +41,7 @@ import 'package:dpl_ecommerce/utils/common/common_methods.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
@@ -66,6 +68,7 @@ import 'package:provider/provider.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ProductDetailsPage extends StatefulWidget {
@@ -98,6 +101,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   ShopRepo shopRepo = ShopRepo();
   UserRepo userRepo = UserRepo();
   CartRepo cartRepo = CartRepo();
+  ChatRepo chatRepo = ChatRepo();
 
   Shop? shop;
   UserModel? seller;
@@ -237,8 +241,17 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             // Consumer<CartViewModel>(builder: (context, value, child) {
             //   return CustomBadgeCart(number: value.cart.productInCarts!.length);
             // }),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
           ],
+          title: Container(
+              padding: EdgeInsets.symmetric(horizontal: 1.w),
+              constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.35),
+              child: Text(
+                product != null ? product!.name! : "",
+                overflow: TextOverflow.ellipsis,
+              )),
+          centerTitle: true,
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -279,7 +292,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           Padding(
                               padding: EdgeInsets.only(right: 16.h),
                               child: Text(
-                                  "Available products: ${product!.availableQuantity}")),
+                                  "${AppLocalizations.of(context)!.available_products}: ${product!.availableQuantity}")),
                         ]),
                       ),
                       SizedBox(height: 8.h),
@@ -299,7 +312,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                     bottom: 2.h,
                                   ),
                                   child: Text(
-                                    "${product!.reviewIDs!.length} reviews",
+                                    "${product!.reviewIDs!.length} ${AppLocalizations.of(context)!.reviews_ucf}",
                                     style: CustomTextStyles.bodySmallGray600,
                                   ),
                                 ),
@@ -317,7 +330,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           padding: EdgeInsets.symmetric(horizontal: 16.h),
                           child: _buildSizeText(
                             context,
-                            sizeLabel: "sizes",
+                            sizeLabel: AppLocalizations.of(context)!.sizes_ucf,
                             sizeChartLabel: "",
                           ),
                         ),
@@ -330,7 +343,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           padding: EdgeInsets.symmetric(horizontal: 16.h),
                           child: _buildSizeText(
                             context,
-                            sizeLabel: "types",
+                            sizeLabel: AppLocalizations.of(context)!.types_ucf,
                             sizeChartLabel: "",
                           ),
                         ),
@@ -343,7 +356,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           padding: EdgeInsets.symmetric(horizontal: 16.h),
                           child: _buildSizeText(
                             context,
-                            sizeLabel: "Colors",
+                            sizeLabel: AppLocalizations.of(context)!.colors_ucf,
                             sizeChartLabel: "",
                           ),
                         ),
@@ -382,8 +395,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                       horizontal: 16.w, vertical: 5.h),
                                   child: _buildSizeText(
                                     context,
-                                    sizeLabel: "other shop's products",
-                                    sizeChartLabel: "view all",
+                                    sizeLabel: AppLocalizations.of(context)!
+                                        .other_products_of_shop,
+                                    sizeChartLabel:
+                                        AppLocalizations.of(context)!
+                                            .view_more_ucf,
                                   ),
                                 ),
                                 _buildShopProducts(context, listShopProduct!),
@@ -401,8 +417,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                           horizontal: 16.h),
                                       child: _buildSizeText(
                                         context,
-                                        sizeLabel: "you may like",
-                                        sizeChartLabel: "view all",
+                                        sizeLabel: AppLocalizations.of(context)!
+                                            .you_may_like,
+                                        sizeChartLabel:
+                                            AppLocalizations.of(context)!
+                                                .view_more_ucf,
                                       ),
                                     ),
                                     _buildRelatedProducts(
@@ -410,8 +429,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   ],
                                 )
                               : const SizedBox(),
-                      const SizedBox(
-                        height: 10,
+                      SizedBox(
+                        height: 10.h,
                       )
                     ],
                   ),
@@ -427,7 +446,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       stream: wishListRepo.isFavouriteProduct(uid: uid, productID: productID),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Icon(Icons.favorite_border);
+          return Icon(
+            Icons.favorite_border,
+            size: 20.h,
+          );
         } else {
           if (snapshot.data != null) {
             final isFavourite = snapshot.data;
@@ -461,7 +483,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   left: 60.h,
                   bottom: 72.h,
                 ),
-                child: Icon(Icons.favorite_border));
+                child: Icon(
+                  Icons.favorite_border,
+                  size: 20.h,
+                ));
           }
         }
       },
@@ -561,7 +586,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       height: 50.h,
       padding: EdgeInsets.only(left: 16.h),
       child: ListView.builder(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         itemBuilder: (context, index) {
           return ChipviewItemWidget(title: list[index]);
         },
@@ -647,7 +672,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           Padding(
             padding: EdgeInsets.only(left: 16.h),
             child: Text(
-              "Product details",
+              LangText(context: context).getLocal()!.product_information_ucf,
               style: theme.textTheme.bodyMedium,
             ),
           ),
@@ -691,7 +716,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   Widget _buildRatingButton(BuildContext context) {
     return CustomOutlinedButton(
       width: 80.h,
-      text: "Rate",
+      text: LangText(context: context).getLocal()!.rating_ucf,
       margin: EdgeInsets.only(bottom: 2.h),
     );
   }
@@ -712,8 +737,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const SizedBox(
-                width: 10,
+              SizedBox(
+                width: 10.w,
               ),
               shop!.logo != null
                   ? CachedNetworkImage(
@@ -729,17 +754,17 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           ),
                         );
                       },
-                      placeholder: (context, url) => const Center(
+                      placeholder: (context, url) => Center(
                           child: SizedBox(
-                              width: 30,
-                              height: 30,
-                              child: CircularProgressIndicator())),
+                              width: 30.h,
+                              height: 30.h,
+                              child: const CircularProgressIndicator())),
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),
                     )
                   : Image.asset(ImageData.placeHolderImg),
               Padding(
-                padding: EdgeInsets.only(left: 10),
+                padding: EdgeInsets.only(left: 10.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -767,12 +792,13 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               //     },
               //     child: Text("See shop"))
               CustomOutlinedButton(
-                text: "See shop",
+                text: LangText(context: context).getLocal()!.see_shop,
                 width: 90.w,
                 height: 40.h,
-                onPressed: () {
+                onPressed: () async {
                   // go to shop profile
-
+                  await shopRepo.updateShopView(shop.id!);
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => ShopProfile(shop: shop),
                   ));
@@ -787,28 +813,28 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           //   padding: EdgeInsets.symmetric(horizontal: 16.h),
           //   child:
           Padding(
-            padding: const EdgeInsets.only(left: 10),
+            padding: EdgeInsets.only(left: 10.w),
             child: SizedBox(
-              height: 22,
+              height: 22.h,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    "${shop.totalProduct} products",
+                    "${shop.totalProduct} ${LangText(context: context).getLocal()!.products_ucf}",
                     style: CustomTextStyles.titleSmallMedium,
                   ),
                   SizedBox(
-                    width: 12,
+                    width: 12.w,
                   ),
                   Text(
-                    "${shop.rating} rating",
+                    "${shop.rating} ${LangText(context: context).getLocal()!.rating_ucf}",
                     style: CustomTextStyles.titleSmallMedium,
                   ),
                   SizedBox(
-                    width: 12,
+                    width: 12.w,
                   ),
                   Text(
-                    "${shop.ratingCount} rating count",
+                    "${shop.ratingCount} ${LangText(context: context).getLocal()!.rating_count}",
                     style: CustomTextStyles.titleSmallMedium,
                   ),
                 ],
@@ -841,7 +867,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           Padding(
             padding: EdgeInsets.only(left: 16.h),
             child: Text(
-              "Ratings and Reivews",
+              LangText(context: context).getLocal()!.ratings_and_reviews,
               style: theme.textTheme.bodyMedium,
             ),
           ),
@@ -884,12 +910,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "overall rating",
+                          LangText(context: context).getLocal()!.overall_rating,
                           style: CustomTextStyles.titleSmallMedium,
                         ),
                         SizedBox(height: 2.h),
                         Text(
-                          "${product.ratingCount} ratings",
+                          "${product.ratingCount} ${LangText(context: context).getLocal()!.ratings_ucf}s",
                           style: CustomTextStyles.bodySmallGray600,
                         ),
                       ],
@@ -930,7 +956,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         if (product.reviewIDs!.length > 1) ...{
                           _buildViewAllReviews(context,
                               viewAllReviewsText:
-                                  "view all ${product.reviewIDs!.length}",
+                                  "${LangText(context: context).getLocal()!.view_more_ucf} ${product.reviewIDs!.length}",
                               list: list!)
                         },
                       ],
@@ -1003,7 +1029,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     final userViewModel = Provider.of<AuthViewModel>(context);
     final usermodel = userViewModel.currentUser;
     return CustomOutlinedButton(
-      onPressed: () {
+      onPressed: () async {
         Chat? chat;
         Message msg = Message(
             chatType: ChatType.text,
@@ -1012,8 +1038,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             receiverID: seller!.id,
             senderID: usermodel!.id,
             time: Timestamp.fromDate(DateTime.now()));
-        if (!CommondMethods.hasConversation(
-            usermodel.id!, seller!.id!, listChat)) {
+
+        // dafd
+
+        bool? hasConversation = await chatRepo.checkExistedChatBoxWithUsers(
+            sellerID: seller!.id!, userID: usermodel.id!);
+        if (hasConversation!) {
           chat = Chat(
             listMsg: [],
             sellerID: seller!.id,
@@ -1024,12 +1054,31 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             userID: usermodel.id,
             userName: usermodel.firstName,
           );
-          chatProvider.addNewChat(chat);
+          await chatRepo.addNewChat(chat);
         } else {
-          chat = CommondMethods.getChatByuserAndSeller(
-              seller!.id!, usermodel.id!, listChat);
+          chat = await chatRepo.getChatWithUsers(
+              userID: usermodel.id!, sellerID: seller!.id!);
         }
-        chatProvider.sendMsgToAChatBox(msg, chat!.id!);
+        await chatRepo.sendAMessage(chatID: chat!.id!, msg: msg);
+        // if (!CommondMethods.hasConversation(
+        //     usermodel.id!, seller!.id!, listChat)) {
+        //   chat = Chat(
+        //     listMsg: [],
+        //     sellerID: seller!.id,
+        //     shopID: product!.shopID,
+        //     shopLogo: product!.shopLogo,
+        //     shopName: product!.shopName,
+        //     userAvatar: usermodel.avatar,
+        //     userID: usermodel.id,
+        //     userName: usermodel.firstName,
+        //   );
+        //   chatProvider.addNewChat(chat);
+        // } else {
+        //   chat = CommondMethods.getChatByuserAndSeller(
+        //       seller!.id!, usermodel.id!, listChat);
+        // }
+        // chatProvider.sendMsgToAChatBox(msg, chat!.id!);
+        // ignore: use_build_context_synchronously
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) {
             return ChattingPage(chat: chat);
@@ -1038,7 +1087,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       },
       height: 48.h,
       width: 80.h,
-      text: "Chat",
+      text: LangText(context: context).getLocal()!.chat_ucf,
       buttonStyle: CustomButtonStyles.outlinePrimaryContainerTL8,
       buttonTextStyle: CustomTextStyles.titleMediumPrimaryContainer,
     );
@@ -1061,18 +1110,18 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     return CustomOutlinedButton(
       height: 48.h,
       width: 110.w,
-      text: "Add to cart",
+      text: LangText(context: context).getLocal()!.add_to_cart_ucf,
       onPressed: () {
         // Navigator.of(context).push(MaterialPageRoute(builder: (context) => CartPage(),));
         BottomSheetHelper.showBottomSheet(
             context: context,
             child: Padding(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.all(5.h),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
-                    padding: EdgeInsets.all(5),
+                    padding: EdgeInsets.all(5.h),
                     height: size.height * 0.1,
                     width: size.width * 0.8,
                     child: Row(
@@ -1094,8 +1143,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             ));
                           },
                         ),
-                        const SizedBox(
-                          width: 15,
+                        SizedBox(
+                          width: 15.h,
                         ),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -1104,8 +1153,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               product!.name!,
                               style: theme.textTheme.displayMedium,
                             ),
-                            const SizedBox(
-                              height: 30,
+                            SizedBox(
+                              height: 30.h,
                             ),
                             Text(
                               product!.availableQuantity.toString(),
@@ -1117,22 +1166,24 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     ),
                   ),
                   if (product!.sizes != null) ...{
-                    const Padding(
-                      padding: EdgeInsets.only(top: 5, left: 25),
+                    Padding(
+                      padding: EdgeInsets.only(top: 5.h, left: 25.w),
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text("Sizes"),
+                        child: Text(
+                            LangText(context: context).getLocal()!.sizes_ucf),
                       ),
                     ),
                     CustomradioButton(
                         list: product!.sizes!, kindOfData: KindOfData.sizes),
                   },
                   if (product!.types != null) ...{
-                    const Padding(
-                      padding: EdgeInsets.only(top: 5, left: 25),
+                    Padding(
+                      padding: EdgeInsets.only(top: 5.h, left: 25.w),
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text("Types"),
+                        child: Text(
+                            LangText(context: context).getLocal()!.types_ucf),
                       ),
                     ),
                     CustomradioButton(
@@ -1142,11 +1193,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     const SizedBox(
                       width: 15,
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(top: 5, left: 25),
+                    Padding(
+                      padding: EdgeInsets.only(top: 5.h, left: 25.w),
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text("Colors"),
+                        child: Text(
+                            LangText(context: context).getLocal()!.colors_ucf),
                       ),
                     ),
                     CustomradioButton(
@@ -1158,19 +1210,19 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Text(
-                          "Number",
+                          LangText(context: context).getLocal()!.number_ucf,
                           style: theme.textTheme.headlineLarge,
                         ),
                         Spacer(),
                         CustomIconButton(
-                          width: 28,
-                          height: 28,
+                          width: 28.h,
+                          height: 28.h,
                           child: Container(
                               decoration:
                                   BoxDecoration(border: Border.all(width: 0.1)),
                               child: Icon(
                                 Icons.remove,
-                                size: 20,
+                                size: 20.h,
                               )),
                           onTap: () {
                             // minus
@@ -1179,10 +1231,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           },
                         ),
                         Container(
-                          width: 58,
+                          width: 58.h,
                           padding: EdgeInsets.symmetric(
-                            horizontal: 18,
-                            vertical: 6,
+                            horizontal: 18.w,
+                            vertical: 6.h,
                           ),
                           decoration: AppDecoration.outlineBlueGray,
                           child: Consumer<ProductDetailViewModel>(
@@ -1197,14 +1249,14 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           ),
                         ),
                         CustomIconButton(
-                          width: 28,
-                          height: 28,
+                          width: 28.h,
+                          height: 28.h,
                           child: Container(
                               decoration:
                                   BoxDecoration(border: Border.all(width: 0.1)),
                               child: Icon(
                                 Icons.add,
-                                size: 20,
+                                size: 20.h,
                               )),
                           onTap: () {
                             // increase
@@ -1279,12 +1331,14 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               productDetailProvider.reset();
                               Navigator.of(context).pop();
                             },
-                            child: const Text("Add to cart"));
+                            child: Text(LangText(context: context)
+                                .getLocal()!
+                                .add_to_cart_ucf));
                       },
                     ),
                   ),
-                  const SizedBox(
-                    height: 10,
+                  SizedBox(
+                    height: 10.h,
                   )
                 ],
               ),
@@ -1304,7 +1358,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       height: 48.h,
       width: 130.h,
       onPressed: () {},
-      text: "Buy now",
+      text: LangText(context: context).getLocal()!.buy_now_ucf,
       // margin: EdgeInsets.only(left: 16.h),
       buttonStyle: CustomButtonStyles.fillPrimaryContainer,
       buttonTextStyle: theme.textTheme.titleMedium!,
@@ -1479,8 +1533,8 @@ class _buildHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            width: 40,
-            height: 40,
+            width: 40.h,
+            height: 40.h,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(100)),
             child: InkWell(
               onTap: () {
@@ -1489,12 +1543,12 @@ class _buildHeader extends StatelessWidget {
               child: Icon(Icons.arrow_back_ios),
             ),
           ),
-          const SizedBox(
-            width: 160,
+          SizedBox(
+            width: 160.w,
           ),
           Container(
-            width: 40,
-            height: 40,
+            width: 40.h,
+            height: 40.h,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(100)),
             child: InkWell(
               onTap: () {},
@@ -1502,8 +1556,8 @@ class _buildHeader extends StatelessWidget {
             ),
           ),
           Container(
-            width: 40,
-            height: 40,
+            width: 40.h,
+            height: 40.h,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(100)),
             child: InkWell(
               onTap: () {},
@@ -1511,8 +1565,8 @@ class _buildHeader extends StatelessWidget {
             ),
           ),
           Container(
-            width: 40,
-            height: 40,
+            width: 40.h,
+            height: 40.h,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(100)),
             child: InkWell(
               onTap: () {},

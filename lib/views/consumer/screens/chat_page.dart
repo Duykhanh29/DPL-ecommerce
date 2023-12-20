@@ -3,6 +3,8 @@ import 'package:dpl_ecommerce/models/chat.dart';
 import 'package:dpl_ecommerce/repositories/chat_repo.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/chat_widgets/list_chat.dart';
 import 'package:flutter/material.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChatPage extends StatelessWidget {
   ChatPage({super.key});
@@ -12,7 +14,7 @@ class ChatPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: CustomArrayBackWidget(),
-        title: Text("Chats"),
+        title: Text(AppLocalizations.of(context)!.chat_list),
       ),
       body: ListChat(),
     );

@@ -5,10 +5,12 @@ import 'package:dpl_ecommerce/repositories/voucher_for_user_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/common/common_methods.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/voucher_for_user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/voucher_widgets/user_voucher_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class UserListVoucher extends StatefulWidget {
@@ -69,7 +71,7 @@ class _UserListVoucherState extends State<UserListVoucher> {
     return Scaffold(
       appBar: AppBar(
         leading: CustomArrayBackWidget(),
-        title: Text("My vouchers"),
+        title: Text(LangText(context: context).getLocal()!.my_vouchers),
       ),
       body:
           //  RefreshIndicator(
@@ -78,7 +80,7 @@ class _UserListVoucherState extends State<UserListVoucher> {
           //   },
           //   child:
           Padding(
-        padding: const EdgeInsets.only(top: 10, bottom: 5, left: 5, right: 5),
+        padding: EdgeInsets.only(top: 10.h, bottom: 5.h, left: 5.w, right: 5.w),
         child: StreamBuilder(
           stream: voucherForUserRepo
               .getVoucherForUser(authViewModel.currentUser!.id!),
@@ -95,8 +97,8 @@ class _UserListVoucherState extends State<UserListVoucher> {
                 return ListView.builder(
                   itemBuilder: (context, index) {
                     return Padding(
-                      padding: const EdgeInsets.only(
-                          bottom: 10, right: 20, left: 20, top: 10),
+                      padding: EdgeInsets.only(
+                          bottom: 10.h, right: 20.w, left: 20.w, top: 10.h),
                       child:
                           UserVoucherItem(voucher: listVoucherForUser[index]),
                     );

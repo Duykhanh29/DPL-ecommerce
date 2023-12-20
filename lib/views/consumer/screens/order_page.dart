@@ -3,6 +3,7 @@ import 'package:dpl_ecommerce/customs/custom_badge_cart.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/models/ordering_product.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 //import 'package:dpl_ecommerce/customs/app_bar_leading.dart';
 ///import 'package:dpl_ecommerce/views/consumer/screens/app_bar_title.dart';
@@ -48,7 +49,7 @@ class MyOrderThreeTabContainerScreenState extends State<OrderPage>
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text(
-          "My Orders",
+          LangText(context: context).getLocal()!.my_orders_ucf,
           textAlign: TextAlign.center,
         ),
         // centerTitle: true,
@@ -108,23 +109,21 @@ class MyOrderThreeTabContainerScreenState extends State<OrderPage>
         tabs: [
           Tab(
             child: Text(
-              "Processing",
+              LangText(context: context).getLocal()!.processing,
             ),
           ),
           Tab(
             child: Text(
-              "Confirmed",
+              LangText(context: context).getLocal()!.confirm_ucf,
             ),
           ),
           Tab(
             child: Text(
-              "Delivering",
+              LangText(context: context).getLocal()!.delivering,
             ),
           ),
           Tab(
-            child: Text(
-              "Delivered",
-            ),
+            child: Text(LangText(context: context).getLocal()!.delivered_ucf),
           ),
         ],
       ),

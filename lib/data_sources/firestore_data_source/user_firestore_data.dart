@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
+import 'package:dpl_ecommerce/models/consumer_infor.dart';
 import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,6 +10,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 class UserFirestoreDatabase {
   UserFirestoreDatabase();
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  static const int awardPointForPurchasing = 10;
+  static const int awardPontForReview = 5;
+  static const int minPointForBronze = 100;
+  static const int minPointForSilver = 200;
+  static const int minPointForGold = 200;
   // user sections
   Future<void> addUser(UserModel userModel) async {
     try {
@@ -21,7 +27,18 @@ class UserFirestoreDatabase {
     }
   }
 
-  Future<void> updateUser(
+  Future<void> updateAvatar(
+      {required String uid, required String avatar}) async {
+    try {
+      await _firestore.collection('users').doc(uid).update({
+        "avatar": avatar,
+      });
+    } catch (e) {
+      print("This error is: $e");
+    }
+  }
+
+  Future<void> updateUserInfor(
       {String? avatar,
       String? name,
       String? phone,
@@ -227,6 +244,68 @@ class UserFirestoreDatabase {
             await userDoc.update(user.toJson());
           }
         }
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  // award point and raking
+  Future<void> updateAwardPontForPurchasing(String uid) async {
+    try {
+      final userDoc = _firestore.collection('users').doc(uid);
+      final snapshot = await userDoc.get();
+      if (snapshot.exists) {
+        var dataUser = snapshot.data() as Map<String, dynamic>;
+        UserModel user = UserModel.fromJson(dataUser);
+        if (user.userInfor != null) {
+          if (user.userInfor!.consumerInfor != null) {
+            int awardPoint = user.userInfor!.consumerInfor!.rewardPoints;
+            awardPoint = awardPoint + awardPointForPurchasing;
+            user.userInfor!.consumerInfor!.rewardPoints = awardPoint;
+            if (awardPoint > minPointForGold &&
+                user.userInfor!.consumerInfor!.raking != Raking.gold) {
+              user.userInfor!.consumerInfor!.raking != Raking.gold;
+            } else if (awardPoint > minPointForGold &&
+                user.userInfor!.consumerInfor!.raking != Raking.silver) {
+              user.userInfor!.consumerInfor!.raking != Raking.silver;
+            }
+            await userDoc.update(user.toJson());
+          }
+        }
+      } else {
+        print("Not exists");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  Future<void> updateAwardPontForReview(String uid) async {
+    try {
+      final userDoc = _firestore.collection('users').doc(uid);
+      final snapshot = await userDoc.get();
+      if (snapshot.exists) {
+        var dataUser = snapshot.data() as Map<String, dynamic>;
+        UserModel user = UserModel.fromJson(dataUser);
+        List<AddressInfor> listAdd = [];
+        if (user.userInfor != null) {
+          if (user.userInfor!.consumerInfor != null) {
+            int awardPoint = user.userInfor!.consumerInfor!.rewardPoints;
+            awardPoint = awardPoint + awardPontForReview;
+            user.userInfor!.consumerInfor!.rewardPoints = awardPoint;
+            if (awardPoint > minPointForGold &&
+                user.userInfor!.consumerInfor!.raking != Raking.gold) {
+              user.userInfor!.consumerInfor!.raking != Raking.gold;
+            } else if (awardPoint > minPointForGold &&
+                user.userInfor!.consumerInfor!.raking != Raking.silver) {
+              user.userInfor!.consumerInfor!.raking != Raking.silver;
+            }
+            await userDoc.update(user.toJson());
+          }
+        }
+      } else {
+        print("Not exists");
       }
     } catch (e) {
       print("Error: $e");

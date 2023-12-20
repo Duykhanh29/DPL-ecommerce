@@ -6,6 +6,7 @@ import 'package:dpl_ecommerce/models/chat.dart';
 import 'package:dpl_ecommerce/models/message.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/repositories/auth_repo.dart';
+import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/chat_widgets/link_msg.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/chat_widgets/msg_with_product_card.dart';
 import 'package:flutter/material.dart';
@@ -131,7 +132,7 @@ class ImageWidget extends StatelessWidget {
   Message? message;
   UserModel userModel = AuthRepo().user;
   Chat? chat;
-
+  StorageService storageService = StorageService();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -157,6 +158,14 @@ class ImageWidget extends StatelessWidget {
                     return Scaffold(
                       appBar: AppBar(
                         leading: CustomArrayBackWidget(),
+                        actions: [
+                          IconButton(
+                              onPressed: () async {
+                                await storageService
+                                    .downloadAndSaveImage(message!.content!);
+                              },
+                              icon: Icon(Icons.download_outlined))
+                        ],
                       ),
                       body: CustomPhotoView(urlImage: message!.content),
                     );

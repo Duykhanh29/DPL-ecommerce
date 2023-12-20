@@ -19,20 +19,44 @@ class ChatRepo {
   }
 
   Future<void> addNewChat(Chat chat) async {
-    return firestoreDatabase.addChat(chat);
+    await firestoreDatabase.addChat(chat);
   }
 
   Future<void> sendAMessage(
       {required String chatID, required Message msg}) async {
-    return firestoreDatabase.sendAMessage(chatID: chatID, msg: msg);
+    await firestoreDatabase.sendAMessage(chatID: chatID, msg: msg);
   }
 
   Future<Chat?> getChatByID(String id) async {
-    return firestoreDatabase.getChatByID(id);
+    return await firestoreDatabase.getChatByID(id);
+  }
+
+  Future<Chat?> getChatWithShop(
+      {required String userID, required String shopID}) async {
+    return await firestoreDatabase.getChatWithShop(
+        userID: userID, shopID: shopID);
+  }
+
+  Future<Chat?> getChatWithUsers(
+      {required String userID, required String sellerID}) async {
+    return await firestoreDatabase.getChatWithUsers(
+        userID: userID, sellerID: sellerID);
   }
 
   Future<bool?> checkExistedChatBox(String id) async {
-    return firestoreDatabase.checkExistedChatBox(id);
+    return await firestoreDatabase.checkExistedChatBox(id);
+  }
+
+  Future<bool?> checkExistedChatBoxWithShop(
+      {required String userID, required String shopID}) async {
+    return await firestoreDatabase.checkExistedChatBoxWithShop(
+        userID: userID, shopID: shopID);
+  }
+
+  Future<bool?> checkExistedChatBoxWithUsers(
+      {required String userID, required String sellerID}) async {
+    return await firestoreDatabase.checkExistedChatBoxWithUsers(
+        userID: userID, sellerID: sellerID);
   }
 
   Future<void> dispose() async {

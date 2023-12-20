@@ -5,6 +5,8 @@ import 'package:dpl_ecommerce/models/voucher.dart';
 class VoucherRepo {
   FirestoreDatabase firestoreDatabase = FirestoreDatabase();
   List<Voucher>? listVoucher;
+
+  // get methods
   Future<List<Voucher>?> getListVoucher() async {
     List<Voucher>? result = await firestoreDatabase.getActivceVoucherList();
     return result;
@@ -24,6 +26,16 @@ class VoucherRepo {
 
   Future<Voucher?> getVoucherByID(String id) async {
     return await firestoreDatabase.getVoucherByID(id);
+  }
+
+  // post methods
+  Future<void> addVoucher(Voucher voucher) async {
+    await firestoreDatabase.addVoucher(voucher);
+  }
+
+  Future<void> editVoucher(
+      {required String id, required Voucher voucher}) async {
+    await firestoreDatabase.editVoucher(id: id, voucher: voucher);
   }
 
   Future<void> dispose() async {

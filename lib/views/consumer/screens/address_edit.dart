@@ -1,10 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/data_sources/third_party_source/address_repository.dart';
 import 'package:dpl_ecommerce/helpers/toast_helper.dart';
 import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/district.dart';
 import 'package:dpl_ecommerce/models/ward.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,6 +23,7 @@ import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EditAddress extends StatefulWidget {
   AddressInfor addressInfor;
@@ -143,8 +146,10 @@ class _EditAddressState extends State<EditAddress> {
   }
 
   void onPressRegFail() {
-    ToastHelper.showDialog("Add full infor",
-        gravity: ToastGravity.BOTTOM, duration: Toast.LENGTH_LONG);
+    ToastHelper.showDialog(
+        LangText(context: context).getLocal()!.add_full_infor,
+        gravity: ToastGravity.BOTTOM,
+        duration: Toast.LENGTH_LONG);
     return;
   }
 
@@ -187,13 +192,11 @@ class _EditAddressState extends State<EditAddress> {
     userProvider.initialize();
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Text(
-          "Address",
-          textAlign: TextAlign.center,
-        ),
-      ),
+      appBar: CustomAppBar(
+              centerTitle: true,
+              context: context,
+              title: LangText(context: context).getLocal()!.edit_address)
+          .show(),
       body: GestureDetector(
         onTap: () {
           if (cityFocusNode.hasFocus) {
@@ -235,14 +238,15 @@ class _EditAddressState extends State<EditAddress> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(
-                    height: 10,
+                  SizedBox(
+                    height: 10.h,
                   ),
 
                   Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
-                      child: Text("Country")),
+                      child: Text(
+                          LangText(context: context).getLocal()!.country_ucf)),
                   Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
@@ -250,35 +254,38 @@ class _EditAddressState extends State<EditAddress> {
                       controller: _countryController,
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 10.0),
+                            vertical: 10.h, horizontal: 10.w),
                         filled: true,
                         hoverColor: appTheme.gray300,
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(10.r),
                             borderSide: BorderSide.none),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter an apartment number';
+                          return LangText(context: context)
+                              .getLocal()!
+                              .please_enter_country;
                         }
                         return null;
                       },
                       onSaved: (value) {},
                     ),
                   ),
-                  const SizedBox(
-                    height: 10,
+                  SizedBox(
+                    height: 10.h,
                   ),
                   Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
-                      child: Text("City")),
+                      child: Text(
+                          LangText(context: context).getLocal()!.city_ucf)),
 
                   Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
                     child: Container(
-                      height: 40,
+                      height: 40.h,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(3),
                           color: MyTheme.textfield_grey),
@@ -306,12 +313,11 @@ class _EditAddressState extends State<EditAddress> {
                         },
                         loadingBuilder: (context) {
                           return SizedBox(
-                            height: 50,
+                            height: 50.h,
                             child: Center(
                                 child: Text(
-                                    // AppLocalizations.of(context)!
-                                    //     .
-                                    "loading_cities_ucf",
+                                    AppLocalizations.of(context)!
+                                        .loading_cities_ucf,
                                     style:
                                         TextStyle(color: MyTheme.medium_grey))),
                           );
@@ -328,11 +334,11 @@ class _EditAddressState extends State<EditAddress> {
                         },
                         noItemsFoundBuilder: (context) {
                           return SizedBox(
-                            height: 50,
+                            height: 50.h,
                             child: Center(
                                 child: Text(
-                                    // AppLocalizations.of(context)!.
-                                    " no_city_available",
+                                    AppLocalizations.of(context)!
+                                        .no_city_available,
                                     style:
                                         TextStyle(color: MyTheme.medium_grey))),
                           );
@@ -358,16 +364,18 @@ class _EditAddressState extends State<EditAddress> {
                           },
                           //autofocus: true,
                           controller: _cityController,
-                          style: const TextStyle(fontSize: 12),
+                          style: TextStyle(fontSize: 12.sp),
                           onSubmitted: (txt) {
                             // keep blank
                           },
                           decoration: InputDecoration(
                               contentPadding: EdgeInsets.symmetric(
                                   vertical: 5.h, horizontal: 7.w),
-                              hintText: "city",
+                              hintText: LangText(context: context)
+                                  .getLocal()!
+                                  .city_ucf,
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10.r),
                               ),
                               suffixIcon: const Icon(Icons.arrow_drop_down)),
                         ),
@@ -381,12 +389,13 @@ class _EditAddressState extends State<EditAddress> {
                   Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
-                      child: Text("District")),
+                      child: Text(
+                          LangText(context: context).getLocal()!.district_ucf)),
                   Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
                     child: Container(
-                      height: 40,
+                      height: 40.h,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: MyTheme.textfield_grey),
@@ -415,12 +424,11 @@ class _EditAddressState extends State<EditAddress> {
                         },
                         loadingBuilder: (context) {
                           return SizedBox(
-                            height: 50,
+                            height: 50.h,
                             child: Center(
                                 child: Text(
-                                    // AppLocalizations.of(context)!
-                                    //     .
-                                    "loading_districts_ucf",
+                                    AppLocalizations.of(context)!
+                                        .loading_districts_ucf,
                                     style:
                                         TextStyle(color: MyTheme.medium_grey))),
                           );
@@ -437,12 +445,11 @@ class _EditAddressState extends State<EditAddress> {
                         },
                         noItemsFoundBuilder: (context) {
                           return SizedBox(
-                            height: 50,
+                            height: 50.h,
                             child: Center(
                                 child: Text(
-                                    // AppLocalizations.of(context)!
-                                    //     .
-                                    "no_district_available",
+                                    AppLocalizations.of(context)!
+                                        .no_district_available,
                                     style:
                                         TextStyle(color: MyTheme.medium_grey))),
                           );
@@ -466,18 +473,18 @@ class _EditAddressState extends State<EditAddress> {
                           },
                           //autofocus: true,
                           controller: _districtController,
-                          style: const TextStyle(fontSize: 12),
+                          style: TextStyle(fontSize: 12.sp),
                           onSubmitted: (txt) {
                             // keep blank
                           },
                           decoration: InputDecoration(
                               contentPadding: EdgeInsets.symmetric(
                                   vertical: 5.h, horizontal: 7.w),
-                              hintText:
-                                  // LangText(context: context).getLocal()!.
-                                  "district",
+                              hintText: LangText(context: context)
+                                  .getLocal()!
+                                  .district_ucf,
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10.r),
                               ),
                               suffixIcon: const Icon(Icons.arrow_drop_down)),
                         ),
@@ -490,13 +497,14 @@ class _EditAddressState extends State<EditAddress> {
                   Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
-                      child: Text("Ward")),
+                      child: Text(
+                          LangText(context: context).getLocal()!.wallet_ucf)),
                   Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
                     child: Container(
                       alignment: Alignment.centerLeft,
-                      height: 40,
+                      height: 40.h,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: MyTheme.textfield_grey),
@@ -526,12 +534,11 @@ class _EditAddressState extends State<EditAddress> {
                           },
                           loadingBuilder: (context) {
                             return Container(
-                              height: 50,
+                              height: 50.h,
                               child: Center(
                                   child: Text(
-                                      // AppLocalizations.of(context)!
-                                      //     .
-                                      "loading_wards_ucf",
+                                      AppLocalizations.of(context)!
+                                          .loading_wards_ucf,
                                       style: TextStyle(
                                           color: MyTheme.medium_grey))),
                             );
@@ -550,12 +557,11 @@ class _EditAddressState extends State<EditAddress> {
                           noItemsFoundBuilder: (context) {
                             return Container(
                               alignment: Alignment.centerLeft,
-                              height: 50,
+                              height: 50.h,
                               child: Center(
                                   child: Text(
-                                      // AppLocalizations.of(context)!
-                                      //     .
-                                      "no_ward_available",
+                                      AppLocalizations.of(context)!
+                                          .no_ward_available,
                                       style: TextStyle(
                                           color: MyTheme.medium_grey))),
                             );
@@ -580,18 +586,18 @@ class _EditAddressState extends State<EditAddress> {
 
                             //autofocus: true,
                             controller: _wardController,
-                            style: const TextStyle(fontSize: 12),
+                            style: TextStyle(fontSize: 12.sp),
                             onSubmitted: (txt) {
                               // keep blank
                             },
                             decoration: InputDecoration(
                                 contentPadding: EdgeInsets.symmetric(
                                     vertical: 5.h, horizontal: 7.w),
-                                hintText:
-                                    // LangText(context: context).getLocal()!.
-                                    "ward",
+                                hintText: LangText(context: context)
+                                    .getLocal()!
+                                    .ward_ucf,
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(10.r),
                                 ),
                                 suffixIcon: const Icon(Icons.arrow_drop_down)),
                           ),
@@ -600,14 +606,15 @@ class _EditAddressState extends State<EditAddress> {
                     ),
                   ),
 
-                  const SizedBox(
-                    height: 10,
+                  SizedBox(
+                    height: 10.h,
                   ),
 
                   Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
-                      child: Text("Apartment number")),
+                      child: Text(
+                          LangText(context: context).getLocal()!.home_number)),
 
                   Padding(
                     padding:
@@ -616,33 +623,36 @@ class _EditAddressState extends State<EditAddress> {
                       controller: _homeNumberController,
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 10.0),
+                            vertical: 10.h, horizontal: 10.w),
                         filled: true,
                         hoverColor: appTheme.gray300,
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(10.r),
                             borderSide: BorderSide.none),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter an apartment number';
+                          return LangText(context: context)
+                              .getLocal()!
+                              .please_enter_home_numer;
                         }
                         return null;
                       },
                       onSaved: (value) {},
                     ),
                   ),
-                  const SizedBox(
-                    height: 10,
+                  SizedBox(
+                    height: 10.h,
                   ),
 
                   Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
-                    child: Text("Name"),
+                    child:
+                        Text(LangText(context: context).getLocal()!.name_ucf),
                   ),
-                  const SizedBox(
-                    height: 10,
+                  SizedBox(
+                    height: 10.h,
                   ),
                   Padding(
                     padding:
@@ -651,28 +661,31 @@ class _EditAddressState extends State<EditAddress> {
                       controller: _nameController,
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 10.0),
+                            vertical: 10.h, horizontal: 10.w),
                         filled: true,
                         hoverColor: appTheme.gray300,
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(10.r),
                             borderSide: BorderSide.none),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter a name';
+                          return LangText(context: context)
+                              .getLocal()!
+                              .please_enter_name;
                         }
                         return null;
                       },
                       onSaved: (value) {},
                     ),
                   ),
-                  const SizedBox(
-                    height: 10,
+                  SizedBox(
+                    height: 10.h,
                   ),
 
                   CheckboxListTile(
-                    title: Text('Default Address'),
+                    title: Text(
+                        LangText(context: context).getLocal()!.default_address),
                     value: isDefaultAddress,
                     onChanged: (value) {
                       setState(() {
@@ -681,7 +694,7 @@ class _EditAddressState extends State<EditAddress> {
                     },
                   ),
                   // Các trường khác tương tự
-                  SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                 ],
               ),
             ),
@@ -689,8 +702,8 @@ class _EditAddressState extends State<EditAddress> {
         ),
       ),
       bottomNavigationBar: Container(
-        height: 40,
-        width: 370,
+        height: 40.h,
+        width: MediaQuery.of(context).size.width * 0.9,
         margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 25.h),
         child: ElevatedButton(
           onPressed: () async {
@@ -725,8 +738,8 @@ class _EditAddressState extends State<EditAddress> {
             }
           },
           child: Text(
-            'Update',
-            style: TextStyle(fontSize: 18),
+            LangText(context: context).getLocal()!.update_all_capital,
+            style: TextStyle(fontSize: 18.sp),
           ),
         ),
       ),

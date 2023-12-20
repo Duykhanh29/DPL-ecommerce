@@ -104,8 +104,8 @@ class _SearchScreenState extends State<SearchScreen> {
         appBar: AppBar(
           backgroundColor: Colors.blue,
           title: Text(
-            "search_anything",
-            // LangText(context: context).getLocal()!.search_anything,
+            // "search_anything",
+            LangText(context: context).getLocal()!.search_anything,
             textAlign: TextAlign.center,
           ),
 
@@ -149,7 +149,8 @@ class _SearchScreenState extends State<SearchScreen> {
                       );
                     },
                     controller: searchController,
-                    hintText: "Search Product Name",
+                    hintText:
+                        LangText(context: context).getLocal()!.search_anything,
                     prefix: Padding(
                         padding: EdgeInsets.all(7.h),
                         child: Icon(
@@ -164,7 +165,10 @@ class _SearchScreenState extends State<SearchScreen> {
                         alignment: Alignment.centerLeft,
                         child: Padding(
                             padding: EdgeInsets.only(left: 20.w),
-                            child: Text("Recent searches",
+                            child: Text(
+                                LangText(context: context)
+                                    .getLocal()!
+                                    .recent_search,
                                 style: theme.textTheme.titleSmall)))
                     : Container(),
                 SizedBox(height: 20.h),
@@ -307,7 +311,7 @@ class _SearchScreenState extends State<SearchScreen> {
             product: product,
           );
         },
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: 10,
       ),
     );

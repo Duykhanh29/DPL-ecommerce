@@ -3,17 +3,21 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/category.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/repositories/category_repo.dart';
+import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
 import 'package:dpl_ecommerce/views/seller/screens/product/product_app.dart';
 import 'package:dpl_ecommerce/views/seller/screens/product2/product_app.dart';
-import 'package:dpl_ecommerce/views/seller/screens/video_asset_widget.dart';
+import 'package:dpl_ecommerce/views/seller/ui_elements/video_asset_widget.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddProductScreen extends StatefulWidget {
   final List<Product> products;
@@ -26,16 +30,19 @@ class AddProductScreen extends StatefulWidget {
 }
 
 class _AddProductScreenState extends State<AddProductScreen> {
-  TextEditingController _availableQuantityController = TextEditingController();
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _priceController = TextEditingController();
-  TextEditingController _typeController = TextEditingController();
-  TextEditingController _sizeController = TextEditingController();
-  TextEditingController _colorController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _availableQuantityController =
+      TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _typeController = TextEditingController();
+  final TextEditingController _sizeController = TextEditingController();
+  final TextEditingController _colorController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
   List<String>? images = [];
   List<String>? videos = [];
+  List<XFile>? listImage = [];
+  List<PlatformFile>? listVideo = [];
   String? name;
   String? description;
   int? availableQuantity;
@@ -46,12 +53,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Category? selectedCategory;
   List<Category>? listCategory = CategoryRepo().list;
   final _formKey = GlobalKey<FormState>();
+  StorageService storageService = StorageService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Add New Product'),
-      ),
+      appBar: CustomAppBar(
+              centerTitle: true,
+              context: context,
+              title: AppLocalizations.of(context)!.add_new_product_ucf)
+          .show(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -61,30 +72,32 @@ class _AddProductScreenState extends State<AddProductScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Product information",
-                  style: TextStyle(fontSize: 20),
+                  AppLocalizations.of(context)!.product_information_ucf,
+                  style: TextStyle(fontSize: 20.sp),
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 10.h,
                 ),
-                Text("Product name"),
-                const SizedBox(
-                  height: 10,
+                Text(AppLocalizations.of(context)!.product_name_ucf),
+                SizedBox(
+                  height: 10.h,
                 ),
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
                     contentPadding:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                        EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
                     filled: true,
                     hoverColor: Color.fromARGB(110, 218, 218, 218),
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(10.r),
                         borderSide: BorderSide.none),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a product number';
+                      return AppLocalizations.of(context)!
+                          .please_enter_phone_number;
+                      ;
                     }
                     return null;
                   },
@@ -92,10 +105,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     _nameController;
                   },
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 10.h,
                 ),
-                Text("Category"),
+                Text(AppLocalizations.of(context)!.category_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
@@ -120,34 +133,36 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   //     return null;
                   // },
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 10.h,
                 ),
 
-                Text("Quantity"),
-                const SizedBox(
-                  height: 10,
+                Text(AppLocalizations.of(context)!.quantity_ucf),
+                SizedBox(
+                  height: 10.h,
                 ),
                 TextFormField(
                   controller: _availableQuantityController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     contentPadding:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                        EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
                     filled: true,
                     hoverColor: Color.fromARGB(110, 218, 218, 218),
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(10.r),
                         borderSide: BorderSide.none),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter  a price';
+                      return AppLocalizations.of(context)!
+                          .please_enter_quantity;
                     }
 
                     // Kiểm tra xem giá trị có phải là số nguyên dương hay không
                     if (int.tryParse(value) == null || int.parse(value) <= 0) {
-                      return 'Please enter a positive integer for price';
+                      return AppLocalizations.of(context)!
+                          .please_enter_positive_integer;
                     }
 
                     return null;
@@ -159,33 +174,34 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   //   }
                   // },
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 10.h,
                 ),
-                Text("Price"),
-                const SizedBox(
-                  height: 10,
+                Text(AppLocalizations.of(context)!.price_ucf),
+                SizedBox(
+                  height: 10.h,
                 ),
                 TextFormField(
                   controller: _priceController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     contentPadding:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                        EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
                     filled: true,
                     hoverColor: Color.fromARGB(110, 218, 218, 218),
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(10.r),
                         borderSide: BorderSide.none),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter  a price';
+                      return AppLocalizations.of(context)!.please_enter_price;
                     }
 
                     // Kiểm tra xem giá trị có phải là số nguyên dương hay không
                     if (int.tryParse(value) == null || int.parse(value) <= 0) {
-                      return 'Please enter a positive integer for price';
+                      return AppLocalizations.of(context)!
+                          .please_enter_positive_integer;
                     }
 
                     return null;
@@ -197,10 +213,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   //   }
                   // },
                 ),
-                const SizedBox(
-                  height: 15,
+                SizedBox(
+                  height: 15.h,
                 ),
-                Text("Types"),
+                Text(AppLocalizations.of(context)!.types_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
@@ -228,7 +244,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 SizedBox(
                   height: 15.h,
                 ),
-                Text("Size"),
+                Text(AppLocalizations.of(context)!.sizes_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
@@ -256,7 +272,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 SizedBox(
                   height: 15.h,
                 ),
-                Text("Colors"),
+                Text(AppLocalizations.of(context)!.colors_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
@@ -285,7 +301,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 SizedBox(
                   height: 15.h,
                 ),
-                Text("Description"),
+                Text(AppLocalizations.of(context)!.description_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
@@ -294,16 +310,17 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   maxLines: 4,
                   decoration: InputDecoration(
                     contentPadding:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                        EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
                     filled: true,
                     hoverColor: Color.fromARGB(110, 218, 218, 218),
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(10.r),
                         borderSide: BorderSide.none),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a description';
+                      return AppLocalizations.of(context)!
+                          .please_enter_description;
                     }
                     return null;
                   },
@@ -316,7 +333,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   height: 10.h,
                 ),
 
-                Text("Image"),
+                Text(AppLocalizations.of(context)!.product_images_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
@@ -330,18 +347,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       Container(
                         height: 50.h,
                         width: 260.w,
-                        //child: Center(child: Text("Choose file")),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 10.w,
-                            ),
-                            Text(
-                              "Choose file",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
                         decoration: BoxDecoration(
                           border: Border.all(
                             color: Color.fromARGB(110, 218, 218, 218),
@@ -353,17 +358,30 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             left: Radius.circular(10.r),
                           ),
                         ),
+                        //child: Center(child: Text("Choose file")),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Text(
+                              AppLocalizations.of(context)!.choose_file,
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
                       ),
                       Container(
                         height: 50.h,
                         width: 70.w,
-                        child: Center(child: Text("Brower")),
                         decoration: BoxDecoration(
                           color: Color.fromARGB(110, 218, 218, 218),
                           borderRadius: BorderRadius.horizontal(
-                            right: Radius.circular(10),
+                            right: Radius.circular(10.r),
                           ),
                         ),
+                        child: Center(
+                            child: Text(AppLocalizations.of(context)!.brower)),
                       ),
                     ],
                   ),
@@ -371,14 +389,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 images == null || images!.isEmpty
                     ? Icon(
                         Icons.add_a_photo_outlined,
-                        size: 40,
+                        size: 40.h,
                         color: Colors.black38,
                       )
                     : buildListImage(),
 
                 // Các trường khác tương tự
-                SizedBox(height: 16),
-                Text("Video"),
+                SizedBox(height: 16.h),
+                Text(AppLocalizations.of(context)!.product_videos_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
@@ -391,18 +409,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       Container(
                         height: 50.h,
                         width: 260.w,
-                        //child: Center(child: Text("Choose file")),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 10.w,
-                            ),
-                            Text(
-                              "Choose file",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
                         decoration: BoxDecoration(
                           border: Border.all(
                             color: Color.fromARGB(110, 218, 218, 218),
@@ -414,17 +420,30 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             left: Radius.circular(10.r),
                           ),
                         ),
+                        //child: Center(child: Text("Choose file")),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Text(
+                              AppLocalizations.of(context)!.choose_file,
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
                       ),
                       Container(
                         height: 50.h,
                         width: 70.w,
-                        child: Center(child: Text("Brower")),
                         decoration: BoxDecoration(
                           color: Color.fromARGB(110, 218, 218, 218),
                           borderRadius: BorderRadius.horizontal(
-                            right: Radius.circular(10),
+                            right: Radius.circular(10.r),
                           ),
                         ),
+                        child: Center(
+                            child: Text(AppLocalizations.of(context)!.brower)),
                       ),
                     ],
                   ),
@@ -432,9 +451,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 videos != null && videos!.isNotEmpty
                     ? buildListVideo()
                     : Icon(Icons.video_library_outlined,
-                        size: 40, color: Colors.black38),
-                const SizedBox(
-                  height: 10,
+                        size: 40.h, color: Colors.black38),
+                SizedBox(
+                  height: 10.h,
                 ),
               ],
             ),
@@ -458,22 +477,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
           //       _quantityController.clear();
           //   }
           // },
-          onPressed: () {
-            // String name = _nameController.text;
-            // //double price = double.tryParse(_priceController.text) ?? 0.0;
-            _addProduct(context);
-            // if (name.isNotEmpty) {
-            //   Product newProduct = Product(name: name,);
-            //   widget.onProductAdded(newProduct);
-
-            //   // Clear text fields
-            //   _nameController.clear();
-            //   _priceController.clear();
-            // }
+          onPressed: () async {
+            await _addProduct(context);
           },
           child: Text(
-            'Add Product',
-            style: TextStyle(fontSize: 18),
+            AppLocalizations.of(context)!.add_new_product_ucf,
+            style: TextStyle(fontSize: 18.sp),
           ),
         ),
       ),
@@ -485,7 +494,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
       alignment: Alignment.centerLeft,
-      constraints: BoxConstraints(minHeight: 40),
+      constraints: BoxConstraints(minHeight: 40.h),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.r),
           color: Colors.grey.shade300),
@@ -529,24 +538,24 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 controller: textEditingController,
                 keyboardType: TextInputType.text,
                 maxLines: 1,
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 16.sp),
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(5.h),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.r),
                     ),
-                    hintText: "Input"),
+                    hintText: AppLocalizations.of(context)!.input_ucf),
               ),
             );
           }
           return Container(
             decoration: BoxDecoration(
                 color: Colors.yellow.shade300,
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(5.r),
                 border: Border.all(width: 2, color: Colors.black)),
             constraints: BoxConstraints(
                 maxWidth: (MediaQuery.of(context).size.width - 50) / 4),
-            margin: const EdgeInsets.only(right: 5, bottom: 5),
+            margin: EdgeInsets.only(right: 5.w, bottom: 5.w),
             padding: EdgeInsets.symmetric(horizontal: 5.w),
             child: Stack(
               children: [
@@ -589,17 +598,37 @@ class _AddProductScreenState extends State<AddProductScreen> {
         // padding: EdgeInsets.only(left: 10.w,top: 5.h,bottom: 5.h),
         child: ListView.separated(
           itemBuilder: (context, index) {
-            return Image.file(
-              File(images![index]),
-              height: 80.h,
-              width: 120.h,
+            return Stack(
+              children: [
+                Image.file(
+                  File(images![index]),
+                  height: 80.h,
+                  width: 120.h,
+                ),
+                Positioned(
+                    top: 5.h,
+                    right: 5.h,
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          images!.removeAt(index);
+                          listImage!.removeAt(index);
+                        });
+                      },
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.red,
+                        size: 12.h,
+                      ),
+                    ))
+              ],
             );
           },
           itemCount: images!.length,
           separatorBuilder: (context, index) => SizedBox(
             width: 10.w,
           ),
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           // shrinkWrap: true,
           scrollDirection: Axis.horizontal,
         ),
@@ -615,13 +644,36 @@ class _AddProductScreenState extends State<AddProductScreen> {
         // padding: EdgeInsets.only(left: 10.w,top: 5.h,bottom: 5.h),
         child: ListView.separated(
           itemBuilder: (context, index) {
-            return VideoLocalItemWidget(filePath: videos![index]);
+            return Stack(
+              children: [
+                VideoLocalItemWidget(
+                  filePath: videos![index],
+                  key: UniqueKey(),
+                ),
+                Positioned(
+                    top: 5.h,
+                    right: 5.h,
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          videos!.removeAt(index);
+                          listVideo!.removeAt(index);
+                        });
+                      },
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.red,
+                        size: 12.h,
+                      ),
+                    ))
+              ],
+            );
           },
           itemCount: videos!.length,
           separatorBuilder: (context, index) => SizedBox(
             width: 10.w,
           ),
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           // shrinkWrap: true,
           scrollDirection: Axis.horizontal,
         ),
@@ -635,6 +687,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
     if (image != null) {
       setState(() {
+        listImage!.add(image);
         images!.add(image.path);
         // _imagePath = shopLogo.path;
       });
@@ -647,6 +700,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
           .pickFiles(type: FileType.custom, allowedExtensions: ['mp4']);
       if (filePath != null) {
         setState(() {
+          listVideo!.add(filePath.files.single);
           videos!.add(filePath.files.single.path!);
         });
       }
@@ -655,7 +709,55 @@ class _AddProductScreenState extends State<AddProductScreen> {
     }
   }
 
-  void _addProduct(BuildContext context) {
+  Future<List<String>?> getListUrlImage(
+      List<XFile> listImage, String id) async {
+    List<String>? list = [];
+    for (var image in listImage) {
+      bool isSuccess = await storageService.uploadFile(
+        filePath: image.path,
+        fileName: image.name,
+        rootRef: 'products',
+        secondRef: id,
+        thirdRef: 'images',
+      );
+      if (isSuccess) {
+        String url = await storageService.downloadURL(
+            filePath: image.path,
+            fileName: image.name,
+            secondRef: id,
+            rootRef: 'products',
+            thirdRef: 'images');
+        list!.add(url);
+      }
+    }
+    return list;
+  }
+
+  Future<List<String>?> getListUrlVideo(
+      List<PlatformFile> listVideo, String id) async {
+    List<String>? list = [];
+    for (var image in listVideo) {
+      bool isSuccess = await storageService.uploadFile(
+        filePath: image.path!,
+        fileName: image.name,
+        rootRef: 'products',
+        secondRef: id,
+        thirdRef: 'videos',
+      );
+      if (isSuccess) {
+        String url = await storageService.downloadURL(
+            filePath: image.path!,
+            fileName: image.name,
+            secondRef: id,
+            rootRef: 'products',
+            thirdRef: 'videos');
+        list!.add(url);
+      }
+    }
+    return list;
+  }
+
+  Future<void> _addProduct(BuildContext context) async {
     String name = _nameController.text;
     String priceString = _priceController.text;
     String availableQuantity1 = _availableQuantityController.text;
@@ -667,19 +769,30 @@ class _AddProductScreenState extends State<AddProductScreen> {
       int price = int.tryParse(priceString) ?? 0;
       int availableQuantity = int.tryParse(availableQuantity1) ?? 0;
       if (price > 0) {
+        String id = Uuid().v4();
+        List<String>? productImages;
+        List<String>? productVideos;
+        if (listImage!.isNotEmpty) {
+          productImages = await getListUrlImage(listImage!, id);
+        }
+        if (listVideo!.isNotEmpty) {
+          productVideos = await getListUrlVideo(listVideo!, id);
+        }
+        // Future.delayed(const Duration(seconds: 1)).then((value) {
         Product newProduct = Product(
-          images: images,
+          id: id,
+          images: productImages,
           name: name,
           price: price,
           availableQuantity: availableQuantity,
-          videos: videos,
+          videos: productVideos,
           sizes: sizes,
           colors: colors,
           categoryID: selectedCategory!.id,
           createdAt: Timestamp.now(),
           updatedAt: Timestamp.now(),
           description: _descriptionController.text,
-          reviewIDs: [],
+          // reviewIDs: [],
 
           // shopLogo: ,
           // shopID: ,
@@ -694,12 +807,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
         _priceController.clear();
 
         // Navigate to ProductsApp
+        // ignore: use_build_context_synchronously
         Navigator.pop(
           context,
           MaterialPageRoute(
             builder: (context) => ProductsApp(),
           ),
         );
+        // });
       }
     }
   }

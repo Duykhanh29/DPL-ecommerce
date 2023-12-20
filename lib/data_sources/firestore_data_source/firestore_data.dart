@@ -139,6 +139,21 @@ class FirestoreDatabase {
     }
   }
 
+  Future<List<Product>?> getListProductByShopID(String shopID) async {
+    List<Product> list = [];
+    final snapshot = await _firestore
+        .collection('products')
+        .where('availableQuantity', isGreaterThan: 0)
+        .where('shopID', isEqualTo: shopID)
+        .get();
+    for (var data in snapshot.docs) {
+      final productData = data.data();
+      Product product = Product.fromJson(productData);
+      list.add(product);
+    }
+    return list;
+  }
+
   Future<Product?> getProductByID(String id) async {
     try {
       final productSnapshot =
@@ -546,7 +561,22 @@ class FirestoreDatabase {
   }
 
   // not yet
-  Future<void> updateShopView(String shopID) async {}
+  Future<void> updateShopView(String shopID) async {
+    try {
+      final shopDoc = _firestore.collection('shops').doc(shopID);
+      final ref = await shopDoc.get();
+      if (ref.exists) {
+        final data = ref.data();
+        int shopView = data!['shopView'];
+        shopView++;
+        await shopDoc.update({'shopView': shopView});
+      } else {
+        print("Not exists");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
 
   Future<void> updateShop(
       {required String shopID,
@@ -603,18 +633,19 @@ class FirestoreDatabase {
           await _firestore.collection('shops').get();
       for (var data in ref.docs) {
         Shop shop = Shop(
-            id: data.id,
-            logo: data.data()['logo'],
-            name: data.data()['name'],
-            addressInfor: AddressInfor.fromJson(data.data()['addressInfor']),
-            contactPhone: data.data()['contactPhone'],
-            rating: (data.data()['rating'] as double),
-            ratingCount: data.data()['ratingCount'],
-            shopDescription: data.data()['shopDescription'],
-            shopView: data.data()['shopView'],
-            totalProduct: data.data()['totalProduct'],
-            totalRevenue: data['totalRevenue'],
-            totalOrder: data['totalOrder']);
+          id: data.id,
+          logo: data.data()['logo'],
+          name: data.data()['name'],
+          addressInfor: AddressInfor.fromJson(data.data()['addressInfor']),
+          contactPhone: data.data()['contactPhone'],
+          rating: (data.data()['rating'] as double),
+          ratingCount: data.data()['ratingCount'],
+          shopDescription: data.data()['shopDescription'],
+          shopView: data.data()['shopView'],
+          totalProduct: data.data()['totalProduct'],
+          totalRevenue: data['totalRevenue'],
+          totalOrder: data['totalOrder'],
+        );
         list.add(shop);
       }
       return list;
@@ -953,10 +984,114 @@ class FirestoreDatabase {
     }
   }
 
+  Future<Chat?> getChatWithShop(
+      {required String userID, required String shopID}) async {
+    try {
+      final ref = await _firestore
+          .collection('chats')
+          .where('shopID', isEqualTo: shopID)
+          .where('userID', isEqualTo: userID)
+          .get();
+      if (ref.docs.isNotEmpty) {
+        Chat c = Chat(
+            id: ref.docs[0].data()['id'],
+            lastChatType: ref.docs[0].data()['lastChatType'],
+            lastMessage: ref.docs[0].data()['lastMessage'],
+            listMsg: ref.docs[0].data()['listMsg'] != null
+                ? (ref.docs[0].data()['listMsg'] as List)
+                    .map((e) => Message.fromJson(e))
+                    .toList()
+                : null,
+            sellerID: ref.docs[0].data()['sellerID'],
+            shopID: ref.docs[0].data()['shopID'],
+            shopLogo: ref.docs[0].data()['shopLogo'],
+            shopName: ref.docs[0].data()['shopName'],
+            userAvatar: ref.docs[0].data()['userAvatar'],
+            userID: ref.docs[0].data()['userID'],
+            userName: ref.docs[0].data()['userName']);
+        return c;
+      } else {
+        print("Not exists");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<Chat?> getChatWithUsers(
+      {required String userID, required String sellerID}) async {
+    try {
+      final ref = await _firestore
+          .collection('chats')
+          .where('sellerID', isEqualTo: sellerID)
+          .where('userID', isEqualTo: userID)
+          .get();
+      if (ref.docs.isNotEmpty) {
+        Chat c = Chat(
+            id: ref.docs[0].data()['id'],
+            lastChatType: ref.docs[0].data()['lastChatType'],
+            lastMessage: ref.docs[0].data()['lastMessage'],
+            listMsg: ref.docs[0].data()['listMsg'] != null
+                ? (ref.docs[0].data()['listMsg'] as List)
+                    .map((e) => Message.fromJson(e))
+                    .toList()
+                : null,
+            sellerID: ref.docs[0].data()['sellerID'],
+            shopID: ref.docs[0].data()['shopID'],
+            shopLogo: ref.docs[0].data()['shopLogo'],
+            shopName: ref.docs[0].data()['shopName'],
+            userAvatar: ref.docs[0].data()['userAvatar'],
+            userID: ref.docs[0].data()['userID'],
+            userName: ref.docs[0].data()['userName']);
+        return c;
+      } else {
+        print("Not exists");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
   Future<bool?> checkExistedChatBox(String id) async {
     try {
       final ref = await _firestore.collection('chats').doc(id).get();
       if (ref.exists) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<bool?> checkExistedChatBoxWithUsers(
+      {required String userID, required String sellerID}) async {
+    try {
+      final ref = await _firestore
+          .collection('chats')
+          .where('sellerID', isEqualTo: sellerID)
+          .where('userID', isEqualTo: userID)
+          .get();
+      if (ref.docs.isNotEmpty) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<bool?> checkExistedChatBoxWithShop(
+      {required String userID, required String shopID}) async {
+    try {
+      final ref = await _firestore
+          .collection('chats')
+          .where('shopID', isEqualTo: shopID)
+          .where('userID', isEqualTo: userID)
+          .get();
+      if (ref.docs.isNotEmpty) {
         return true;
       } else {
         return false;
@@ -1093,12 +1228,36 @@ class FirestoreDatabase {
     }
   }
 
-  // voucher
+  // voucher section
   Future<void> addVoucher(Voucher voucher) async {
     await _firestore
         .collection('vouchers')
         .doc(voucher.id)
         .set(voucher.toJson());
+  }
+
+  Future<void> editVoucher(
+      {required String id, required Voucher voucher}) async {
+    try {
+      final voucherDoc = _firestore.collection('vouchers').doc(id);
+      final ref = await voucherDoc.get();
+      if (ref.exists) {
+        Voucher voucherInstance = Voucher(
+            id: ref.data()![id],
+            discountAmount: voucher.discountAmount,
+            discountPercent: voucher.discountPercent,
+            expDate: voucher.expDate,
+            name: voucher.name,
+            productID: voucher.productID,
+            releasedDate: voucher.releasedDate,
+            shopID: voucher.shopID);
+        await voucherDoc.update(voucherInstance.toJson());
+      } else {
+        print("Not exists");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
   }
 
   Future<List<Voucher>?> getActivceVoucherList() async {

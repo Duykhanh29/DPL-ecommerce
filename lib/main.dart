@@ -17,6 +17,7 @@ import 'package:dpl_ecommerce/views/consumer/routes/routes.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/login_screen.dart';
 import 'package:dpl_ecommerce/views/general_views/register_seller.dart';
 import 'package:dpl_ecommerce/views/seller/mainviewseller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/scheduler.dart';
@@ -36,9 +37,20 @@ import 'dart:io';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+        options: const FirebaseOptions(
+      apiKey: "AIzaSyCvYPQtWkglo82ULGV_fQ0qF6qwQtI5w5o",
+      projectId: "dpl-ecommerce",
+      messagingSenderId: "573290240283",
+      appId: "1:573290240283:web:19665cceff745bb604dbbe",
+    ));
+  } else {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
@@ -71,21 +83,18 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => LocaleProvider(),
-      child: Consumer<LocaleProvider>(
-        builder: (context, value, child) => MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: "DPL Ecommerce",
-          home: RootWidget(),
-          localizationsDelegates: [
-            AppLocalizations.delegate, // Add this line
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          locale: value.locale,
+    return ScreenUtilInit(
+      designSize: Size(360, 800),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) => ChangeNotifierProvider(
+        create: (context) => LocaleProvider(),
+        child: Consumer<LocaleProvider>(
+          builder: (context, value, child) => MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: "DPL Ecommerce",
+            home: RootWidget(),
+          ),
         ),
       ),
     );
@@ -99,24 +108,17 @@ class RootWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: Size(360, 800),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (context, child) {
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider(
-              create: (context) => AuthViewModel(),
-            ),
-            ChangeNotifierProvider(
-              create: (context) =>
-                  UserViewModel(Provider.of<AuthViewModel>(context)),
-            )
-          ],
-          child: FirstPage(),
-        );
-      },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => AuthViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) =>
+              UserViewModel(Provider.of<AuthViewModel>(context)),
+        )
+      ],
+      child: FirstPage(),
     );
   }
 }
@@ -134,7 +136,7 @@ class _FirstPageState extends State<FirstPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    super.initState();
+    // super.initState();
     // final authProvider = Provider.of<AuthViewModel>(context);
     auth.FirebaseAuth.instance.authStateChanges().listen((event) {
       setState(() {
@@ -145,6 +147,7 @@ class _FirstPageState extends State<FirstPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("user is: ${user}");
     // print("WTH are you doing");
     // final authProvider = Provider.of<AuthViewModel>(context);
     // final auth = FirebaseAuth.instance;
@@ -238,11 +241,24 @@ class AuthPage extends StatelessWidget {
           create: (context) => ReviewViewModel(),
         )
       ],
-      child: MaterialApp(
-        home: MainViewSeller(),
+      child: Consumer<LocaleProvider>(
+        builder: (context, value, child) => MaterialApp(
+          home: MainView(),
+          localizationsDelegates: [
+            AppLocalizations.delegate, // Add this line
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: value.locale,
+        ),
         // initialRoute: ConsumerRoutes.mainView,
-        routes: ConsumerRoutes.routes,
+        // routes: ConsumerRoutes.routes,
       ),
+      // initialRoute: ConsumerRoutes.mainView,
+      // routes: ConsumerRoutes.routes,
+      // ),
     );
   }
 }

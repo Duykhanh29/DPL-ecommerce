@@ -11,7 +11,11 @@ class ProductRepo {
   }
 
   Future<List<Product>?> getActiveProducts() async {
-    await productFirestoreDatabase.getActiveProducts();
+    return await productFirestoreDatabase.getActiveProducts();
+  }
+
+  Future<List<Product>?> getListProductByShopID(String shopID) async {
+    return await productFirestoreDatabase.getListProductByShopID(shopID);
   }
 
   Future<List<Product>?> getListRelatedProduct(String categoryID) async {

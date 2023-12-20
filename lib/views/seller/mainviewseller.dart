@@ -4,6 +4,7 @@ import 'package:dpl_ecommerce/views/seller/screens/seller_profile.dart';
 import 'package:dpl_ecommerce/views/seller/screens/voucher/voucher_app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MainViewSeller extends StatefulWidget {
   const MainViewSeller({super.key});
@@ -39,11 +40,12 @@ class _MainViewState extends State<MainViewSeller> {
         unselectedItemColor: Colors.black26,
         useLegacyColorScheme: false,
         backgroundColor: Color.fromARGB(255, 98, 170, 212),
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_outlined),
-            label: "Dashboard",
-          ),
+              icon: Icon(Icons.dashboard_outlined),
+              label: AppLocalizations.of(context)!.dashboard_ucf
+              //     .search_anything,,
+              ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.cube_box),
             label: "Products",

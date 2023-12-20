@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/customs/custom_photo_view.dart';
 import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
@@ -7,10 +8,13 @@ import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/repositories/flash_sale_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
+import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/flash_sale_product.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:shimmer/shimmer.dart';
 
@@ -34,15 +38,18 @@ class _FlashDealListState extends State<FlashDealList> {
     return dateToTimeStamp;
   }
 
+  StorageService storageService = StorageService();
+
   VoucherRepo voucherRepo = VoucherRepo();
   @override
   Widget build(BuildContext context) {
     print("object");
     return Scaffold(
-      appBar: AppBar(
-        leading: CustomArrayBackWidget(),
-        title: Text("Flash sale"),
-      ),
+      appBar: CustomAppBar(
+              centerTitle: true,
+              context: context,
+              title: LangText(context: context).getLocal()!.flash_sales_ucf)
+          .show(),
       body: FutureBuilder(
         builder: (context, snapshot) =>
             buildFlashDealList(context, widget.flashSale!, listProduct!),
@@ -59,48 +66,74 @@ class _FlashDealListState extends State<FlashDealList> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Center(
-            child: CachedNetworkImage(
-              imageUrl: widget.flashSale!.coverImage!,
-              imageBuilder: (context, imageProvider) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) {
-                        return Scaffold(
-                          appBar: AppBar(
-                            leading: CustomArrayBackWidget(),
-                          ),
-                          body: CustomPhotoView(
-                              urlImage: widget.flashSale!.coverImage!),
-                        );
-                      },
-                    ));
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) {
+                    return Scaffold(
+                      appBar: AppBar(
+                        leading: CustomArrayBackWidget(),
+                        actions: [
+                          IconButton(
+                              onPressed: () async {
+                                await storageService.downloadAndSaveImage(
+                                    widget.flashSale!.coverImage!);
+                              },
+                              icon: Icon(Icons.download_outlined))
+                        ],
+                      ),
+                      body: CustomPhotoView(
+                          urlImage: widget.flashSale!.coverImage!),
+                    );
                   },
-                  child: Container(
-                    width: size.width * 0.9,
-                    height: size.height * 0.2,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: imageProvider, fit: BoxFit.cover),
-                    ),
-                    padding: EdgeInsets.all(5),
-                  ),
-                );
+                ));
               },
-              placeholder: (context, url) => Image.network(
-                  "https://png.pngtree.com/png-vector/20210604/ourmid/pngtree-gray-network-placeholder-png-image_3416659.jpg"),
+              child: CachedNetworkImage(
+                imageUrl: widget.flashSale!.coverImage!,
+                imageBuilder: (context, imageProvider) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) {
+                          return Scaffold(
+                            appBar: AppBar(
+                              leading: CustomArrayBackWidget(),
+                            ),
+                            body: CustomPhotoView(
+                                urlImage: widget.flashSale!.coverImage!),
+                          );
+                        },
+                      ));
+                    },
+                    child: Container(
+                      width: size.width * 0.9,
+                      height: size.height * 0.2,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: imageProvider, fit: BoxFit.cover),
+                      ),
+                      padding: EdgeInsets.all(5.h),
+                    ),
+                  );
+                },
+                placeholder: (context, url) => Image.network(
+                    "https://png.pngtree.com/png-vector/20210604/ourmid/pngtree-gray-network-placeholder-png-image_3416659.jpg"),
+              ),
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(15),
+            padding: EdgeInsets.all(15.h),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Icon(Icons.watch_later_outlined),
+                Icon(
+                  Icons.watch_later_outlined,
+                  size: 20.h,
+                ),
                 TimerCountdown(
                   timeTextStyle: TextStyle(
                       color: Colors.red,
-                      fontSize: 22,
+                      fontSize: 22.sp,
                       fontWeight: FontWeight.w500),
                   enableDescriptions: false,
                   endTime: flashSale!.expDate!.toDate(),
@@ -109,10 +142,7 @@ class _FlashDealListState extends State<FlashDealList> {
                     // disappear this flashsale
                   },
                 ),
-                Icon(
-                  Icons.flash_on,
-                  color: Colors.yellow,
-                )
+                Icon(Icons.flash_on, color: Colors.yellow, size: 20.h)
               ],
             ),
           ),
@@ -175,13 +205,13 @@ class _FlashDealListState extends State<FlashDealList> {
   /// Section Widget
   Widget _buildProductSmallList1(BuildContext context, List<Product> list) {
     return Padding(
-      padding: EdgeInsets.only(right: 10, left: 10),
+      padding: EdgeInsets.only(right: 10.w, left: 10.w),
       child: GridView.builder(
         shrinkWrap: true,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
+          crossAxisSpacing: 10.w,
+          mainAxisSpacing: 10.h,
           mainAxisExtent: 283,
           // childAspectRatio: 3 / 2,
         ),
@@ -190,7 +220,7 @@ class _FlashDealListState extends State<FlashDealList> {
             product: list[index],
           );
         },
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: list.length,
       ),
     );

@@ -3,6 +3,7 @@ import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/district.dart';
 import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/views/seller/screens/chatlist.dart';
 import 'package:dpl_ecommerce/views/seller/screens/payhistory.dart';
 import 'package:dpl_ecommerce/views/seller/screens/product2/edit_product.dart';
@@ -50,7 +51,7 @@ class Dashboard extends StatelessWidget {
     print("ProductRepo().list: ${products!.length}");
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Product'),
+        title: Text(LangText(context: context).getLocal()!.facebook_ucf),
       ),
       body: SingleChildScrollView(
         child: Column(

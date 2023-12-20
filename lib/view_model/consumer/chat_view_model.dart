@@ -287,4 +287,15 @@ class ChatViewModel extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  bool isNew = false;
+  void changeIsNew() {
+    isNew = true;
+    notifyListeners();
+  }
+
+  void resetChangeNew() {
+    isNew = false;
+    notifyListeners();
+  }
 }

@@ -46,13 +46,13 @@ class SellerProfilePage extends StatelessWidget {
                         _buildAvatarRow(context),
                         SizedBox(height: 58.h),
                         Container(
-                          margin: EdgeInsets.symmetric(horizontal: 23),
+                          margin: EdgeInsets.symmetric(horizontal: 20.w),
                           padding: EdgeInsets.symmetric(
                             horizontal: 6.w,
                             vertical: 4.h,
                           ),
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(15.r),
                               // color: Colors.green[100],
                               border:
                                   Border.all(color: Colors.black, width: 0.3)),
@@ -98,8 +98,8 @@ class SellerProfilePage extends StatelessWidget {
                                 ),
                               ),
 
-                              const Divider(
-                                height: 5,
+                              Divider(
+                                height: 5.h,
                               ),
                               ListTile(
                                   onTap: () {
@@ -171,8 +171,8 @@ class SellerProfilePage extends StatelessWidget {
                                       ),
                                     ),
                                   )),
-                              const Divider(
-                                height: 5,
+                              Divider(
+                                height: 5.h,
                               ),
                               ListTile(
                                   onTap: () async {
@@ -185,8 +185,8 @@ class SellerProfilePage extends StatelessWidget {
                                   ),
                                   title: Padding(
                                     padding: EdgeInsets.only(
-                                      left: 10,
-                                      bottom: 3,
+                                      left: 10.w,
+                                      bottom: 3.h,
                                     ),
                                     child: Text(
                                       "Log out",
@@ -257,7 +257,7 @@ class SellerProfilePage extends StatelessWidget {
           leading: Consumer<UserViewModel>(
             builder: (context, value, child) {
               return CircleAvatar(
-                radius: 40,
+                radius: 40.r,
                 backgroundImage: NetworkImage(value.userModel!.avatar!),
               );
             },
@@ -266,7 +266,7 @@ class SellerProfilePage extends StatelessWidget {
             builder: (context, value, child) {
               return Text(
                 value.userModel!.firstName!,
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.w600),
               );
             },
           ),
@@ -275,7 +275,7 @@ class SellerProfilePage extends StatelessWidget {
               return Text(
                 value.userModel!.email!,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w200),
+                style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w200),
               );
             },
           ),

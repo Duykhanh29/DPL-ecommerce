@@ -84,7 +84,7 @@ class ProductsmalllistItemWidget extends StatelessWidget {
               ),
               SizedBox(height: 8.h),
               Container(
-                padding: const EdgeInsets.only(left: 8),
+                padding: EdgeInsets.only(left: 8.w),
                 width: 147.h,
                 child: Text(
                   product!.name!,

@@ -70,7 +70,7 @@ class PromotionbannerItemWidget extends StatelessWidget {
                         TimerCountdown(
                           timeTextStyle: TextStyle(
                               color: Colors.red,
-                              fontSize: 22,
+                              fontSize: 22.sp,
                               fontWeight: FontWeight.w500),
                           enableDescriptions: false,
                           endTime: flashSale!.releasedDate!.toDate(),
@@ -81,8 +81,8 @@ class PromotionbannerItemWidget extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 5,
+                    SizedBox(
+                      height: 5.h,
                     ),
                     Row(
                       children: [
@@ -90,7 +90,7 @@ class PromotionbannerItemWidget extends StatelessWidget {
                         TimerCountdown(
                           timeTextStyle: TextStyle(
                               color: Colors.red,
-                              fontSize: 22,
+                              fontSize: 22.sp,
                               fontWeight: FontWeight.w500),
                           enableDescriptions: false,
                           endTime: flashSale!.expDate!.toDate(),

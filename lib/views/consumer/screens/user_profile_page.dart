@@ -2,6 +2,7 @@ import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
 // import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
@@ -38,19 +39,19 @@ class UserProfilePage extends StatelessWidget {
               Expanded(
                 child: SingleChildScrollView(
                   child: Padding(
-                    padding: EdgeInsets.only(left: 1),
+                    padding: EdgeInsets.only(left: 1.w),
                     child: Column(
                       children: [
                         _buildAvatarRow(context),
-                        SizedBox(height: 58),
+                        SizedBox(height: 58.h),
                         Container(
-                          margin: EdgeInsets.symmetric(horizontal: 23),
+                          margin: EdgeInsets.symmetric(horizontal: 20.w),
                           padding: EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 4,
+                            horizontal: 6.w,
+                            vertical: 4.h,
                           ),
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(15.r),
                               // color: Colors.green[100],
                               border:
                                   Border.all(color: Colors.black, width: 0.3)),
@@ -66,14 +67,19 @@ class UserProfilePage extends StatelessWidget {
                                     builder: (context) => AddressScreen(),
                                   ));
                                 },
-                                leading: Icon(Icons.location_on),
+                                leading: Icon(
+                                  Icons.location_on,
+                                  size: 20.h,
+                                ),
                                 title: Padding(
                                   padding: EdgeInsets.only(
-                                    left: 10,
-                                    bottom: 3,
+                                    left: 10.w,
+                                    bottom: 3.h,
                                   ),
                                   child: Text(
-                                    "address",
+                                    LangText(context: context)
+                                        .getLocal()!
+                                        .address_ucf,
                                     style: CustomTextStyles.labelLargeGray600,
                                   ),
                                 ),
@@ -89,13 +95,16 @@ class UserProfilePage extends StatelessWidget {
                                       ));
                                     },
                                     child: Center(
-                                      child: Icon(Icons.navigate_next),
+                                      child: Icon(
+                                        Icons.navigate_next,
+                                        size: 20.h,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                              const Divider(
-                                height: 5,
+                              Divider(
+                                height: 5.h,
                               ),
                               ListTile(
                                   onTap: () {
@@ -105,14 +114,19 @@ class UserProfilePage extends StatelessWidget {
                                       builder: (context) => UserListVoucher(),
                                     ));
                                   },
-                                  leading: Icon(Icons.card_giftcard_rounded),
+                                  leading: Icon(
+                                    Icons.card_giftcard_rounded,
+                                    size: 20.h,
+                                  ),
                                   title: Padding(
                                     padding: EdgeInsets.only(
-                                      left: 10,
-                                      bottom: 3,
+                                      left: 10.w,
+                                      bottom: 3.h,
                                     ),
                                     child: Text(
-                                      "My Vouchers",
+                                      LangText(context: context)
+                                          .getLocal()!
+                                          .my_vouchers,
                                       style: CustomTextStyles.labelLargeGray600,
                                     ),
                                   ),
@@ -129,13 +143,16 @@ class UserProfilePage extends StatelessWidget {
                                         ));
                                       },
                                       child: Center(
-                                        child: Icon(Icons.navigate_next),
+                                        child: Icon(
+                                          Icons.navigate_next,
+                                          size: 20.h,
+                                        ),
                                       ),
                                     ),
                                   )),
 
-                              const Divider(
-                                height: 5,
+                              Divider(
+                                height: 5.h,
                               ),
                               ListTile(
                                   onTap: () => Navigator.push(
@@ -145,14 +162,19 @@ class UserProfilePage extends StatelessWidget {
                                               WishlistPage(uid: user!.id!),
                                         ),
                                       ),
-                                  leading: Icon(Icons.favorite_outline),
+                                  leading: Icon(
+                                    Icons.favorite_outline,
+                                    size: 20.h,
+                                  ),
                                   title: Padding(
                                     padding: EdgeInsets.only(
-                                      left: 10,
-                                      bottom: 3,
+                                      left: 10.w,
+                                      bottom: 3.h,
                                     ),
                                     child: Text(
-                                      "Wishlist",
+                                      LangText(context: context)
+                                          .getLocal()!
+                                          .my_wishlist_ucf,
                                       style: CustomTextStyles.labelLargeGray600,
                                     ),
                                   ),
@@ -170,12 +192,15 @@ class UserProfilePage extends StatelessWidget {
                                         );
                                       },
                                       child: Center(
-                                        child: Icon(Icons.navigate_next),
+                                        child: Icon(
+                                          Icons.navigate_next,
+                                          size: 20.h,
+                                        ),
                                       ),
                                     ),
                                   )),
-                              const Divider(
-                                height: 5,
+                              Divider(
+                                height: 5.h,
                               ),
                               ListTile(
                                   onTap: () {
@@ -187,14 +212,19 @@ class UserProfilePage extends StatelessWidget {
                                       },
                                     ));
                                   },
-                                  leading: Icon(Icons.language),
+                                  leading: Icon(
+                                    Icons.language,
+                                    size: 20.h,
+                                  ),
                                   title: Padding(
                                     padding: EdgeInsets.only(
-                                      left: 10,
-                                      bottom: 3,
+                                      left: 10.w,
+                                      bottom: 3.h,
                                     ),
                                     child: Text(
-                                      "Languages",
+                                      LangText(context: context)
+                                          .getLocal()!
+                                          .language_ucf,
                                       style: CustomTextStyles.labelLargeGray600,
                                     ),
                                   ),
@@ -212,7 +242,10 @@ class UserProfilePage extends StatelessWidget {
                                         ));
                                       },
                                       child: Center(
-                                        child: Icon(Icons.navigate_next),
+                                        child: Icon(
+                                          Icons.navigate_next,
+                                          size: 20.h,
+                                        ),
                                       ),
                                     ),
                                   )),
@@ -230,11 +263,13 @@ class UserProfilePage extends StatelessWidget {
                                   ),
                                   title: Padding(
                                     padding: EdgeInsets.only(
-                                      left: 10,
-                                      bottom: 3,
+                                      left: 10.w,
+                                      bottom: 3.h,
                                     ),
                                     child: Text(
-                                      "Award point & raking",
+                                      LangText(context: context)
+                                          .getLocal()!
+                                          .award_point_and_raking,
                                       style: CustomTextStyles.labelLargeGray600,
                                     ),
                                   ),
@@ -246,25 +281,33 @@ class UserProfilePage extends StatelessWidget {
                                         // go to Languages page
                                       },
                                       child: Center(
-                                        child: Icon(Icons.navigate_next),
+                                        child: Icon(
+                                          Icons.navigate_next,
+                                          size: 20.h,
+                                        ),
                                       ),
                                     ),
                                   )),
-                              const Divider(
-                                height: 5,
+                              Divider(
+                                height: 5.h,
                               ),
                               ListTile(
                                   onTap: () {
                                     // go to Languages page
                                   },
-                                  leading: Icon(Icons.star),
+                                  leading: Icon(
+                                    Icons.star,
+                                    size: 20.h,
+                                  ),
                                   title: Padding(
                                     padding: EdgeInsets.only(
-                                      left: 10,
-                                      bottom: 3,
+                                      left: 10.w,
+                                      bottom: 3.h,
                                     ),
                                     child: Text(
-                                      "Rate app",
+                                      LangText(context: context)
+                                          .getLocal()!
+                                          .rate_app,
                                       style: CustomTextStyles.labelLargeGray600,
                                     ),
                                   ),
@@ -276,12 +319,15 @@ class UserProfilePage extends StatelessWidget {
                                         // go to Languages page
                                       },
                                       child: Center(
-                                        child: Icon(Icons.navigate_next),
+                                        child: Icon(
+                                          Icons.navigate_next,
+                                          size: 20.h,
+                                        ),
                                       ),
                                     ),
                                   )),
-                              const Divider(
-                                height: 5,
+                              Divider(
+                                height: 5.h,
                               ),
                               ListTile(
                                   onTap: () async {
@@ -291,17 +337,21 @@ class UserProfilePage extends StatelessWidget {
                                   leading: Icon(
                                     Icons.logout_rounded,
                                     color: Colors.redAccent,
+                                    size: 20.h,
                                   ),
                                   title: Padding(
                                     padding: EdgeInsets.only(
-                                      left: 10,
-                                      bottom: 3,
+                                      left: 10.w,
+                                      bottom: 3.h,
                                     ),
                                     child: Text(
-                                      "Log out",
+                                      LangText(context: context)
+                                          .getLocal()!
+                                          .logout_ucf,
                                       style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.redAccent),
+                                          fontSize: 15.sp,
+                                          color: const Color.fromARGB(
+                                              255, 61, 52, 52)),
                                     ),
                                   ),
                                   trailing: SizedBox(
@@ -313,6 +363,7 @@ class UserProfilePage extends StatelessWidget {
                                       },
                                       child: Center(
                                         child: Icon(Icons.navigate_next,
+                                            size: 20.h,
                                             color: Colors.redAccent),
                                       ),
                                     ),
@@ -320,8 +371,8 @@ class UserProfilePage extends StatelessWidget {
                             ],
                           ),
                         ),
-                        const SizedBox(
-                          height: 40,
+                        SizedBox(
+                          height: 40.h,
                         )
                       ],
                     ),
@@ -375,7 +426,7 @@ class UserProfilePage extends StatelessWidget {
             builder: (context, value, child) {
               return Text(
                 value.userModel!.firstName!,
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.w600),
               );
             },
           ),
@@ -384,7 +435,7 @@ class UserProfilePage extends StatelessWidget {
               return Text(
                 value.userModel!.email!,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w200),
+                style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w200),
               );
             },
           ),

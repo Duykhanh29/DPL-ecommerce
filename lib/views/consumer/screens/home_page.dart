@@ -88,16 +88,16 @@ class HomePage extends StatelessWidget {
                   }
                 }
               }),
-          const SizedBox(width: 15),
+          SizedBox(width: 15.w),
           Center(
             child: badges.Badge(
               badgeContent: Text(
                 "3",
-                style: TextStyle(fontSize: 12, color: Colors.white),
+                style: TextStyle(fontSize: 12.sp, color: Colors.white),
               ),
               child: InkWell(
                 child: Icon(Icons.notifications_outlined,
-                    color: Colors.white, size: 30),
+                    color: Colors.white, size: 30.sp),
                 onTap: () {
                   // Navigator.of(context).push(MaterialPageRoute(
                   //   builder: (context) {
@@ -108,19 +108,19 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 15),
+          SizedBox(width: 15.w),
           Center(
             child: Consumer<ChatViewModel>(
               builder: (context, value, child) {
                 return badges.Badge(
                   badgeContent: Text(
                     value.list.length.toString(),
-                    style: TextStyle(fontSize: 12, color: Colors.white),
+                    style: TextStyle(fontSize: 12.sp, color: Colors.white),
                   ),
                   child: InkWell(
                     child: Icon(
                       Icons.chat_bubble_outline,
-                      size: 24,
+                      size: 24.sp,
                       color: Colors.white,
                     ),
                     onTap: () {
@@ -133,13 +133,13 @@ class HomePage extends StatelessWidget {
               },
             ),
           ),
-          const SizedBox(
-            width: 12,
+          SizedBox(
+            width: 12.w,
           )
         ],
       ),
       body: Padding(
-          padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
+          padding: EdgeInsets.fromLTRB(5.w, 5.h, 0, 5.h),
           child: Container(
             width: double.maxFinite,
             child: Column(
@@ -281,7 +281,7 @@ class HomePage extends StatelessWidget {
         future: flashSaleRepo.getActiveFlashSale(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           } else {
@@ -330,7 +330,7 @@ class HomePage extends StatelessWidget {
         future: categoryRepo.getListCategory(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           } else {
@@ -600,8 +600,8 @@ class HomePage extends StatelessWidget {
                 shrinkWrap: true,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10.w,
+                  mainAxisSpacing: 10.h,
                   mainAxisExtent: 283.h,
                   // childAspectRatio: 3 / 2,
                 ),

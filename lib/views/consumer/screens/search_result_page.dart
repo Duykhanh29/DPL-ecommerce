@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/customs/custom_search_view.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -131,7 +132,8 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                             child: const Icon(Icons.close),
                           )
                         : null,
-                hintText: "Search Product Name",
+                hintText:
+                    LangText(context: context).getLocal()!.search_anything,
                 prefix: Padding(
                     padding: EdgeInsets.all(7.h),
                     child: Icon(
@@ -140,10 +142,13 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                     )),
               ),
             ),
-            SizedBox(width: 8.0),
+            SizedBox(width: 8.w),
 
             IconButton(
-              icon: Icon(Icons.clear),
+              icon: Icon(
+                Icons.clear,
+                size: 20.h,
+              ),
               onPressed: () {
                 setState(() {
                   searchController.text = '';
@@ -151,7 +156,7 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.list),
+              icon: Icon(Icons.list, size: 20.h),
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -162,7 +167,7 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
               ),
             ),
             IconButton(
-              icon: Icon(Icons.filter_list),
+              icon: Icon(Icons.filter_list, size: 20.h),
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -176,7 +181,7 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
+        padding: EdgeInsets.fromLTRB(5.w, 5.h, 0, 5.h),
         child: widget.list != null
             ? Container(
                 width: double.maxFinite,
@@ -266,7 +271,7 @@ Widget _buildProductSmallList1(BuildContext context, List<Product?> products) {
           product: products[index],
         );
       },
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: products.length,
     ),
   );

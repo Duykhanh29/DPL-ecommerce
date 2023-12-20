@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
@@ -30,6 +31,8 @@ import 'package:dpl_ecommerce/views/consumer/screens/detail_seller_profile.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 
 class ShopProfile extends StatefulWidget {
   ShopProfile({required this.shop});
@@ -54,6 +57,7 @@ class _ShopProfileState extends State<ShopProfile>
   ProductRepo productRepo = ProductRepo();
   ShopRepo shopRepo = ShopRepo();
   UserRepo userRepo = UserRepo();
+  ChatRepo chatRepo = ChatRepo();
 
   // UserModel userModel = AuthRepo().user;
   // List<Chat> listChat = ChatRepo().list;
@@ -102,16 +106,19 @@ class _ShopProfileState extends State<ShopProfile>
     final userProvider = Provider.of<UserViewModel>(context);
     final currentUser = userProvider.currentUser;
     return Scaffold(
-      appBar:
-          AppBar(leading: CustomArrayBackWidget(), title: Text("Shop profile")),
+      appBar: CustomAppBar(
+              centerTitle: true,
+              context: context,
+              title: AppLocalizations.of(context)!.shop_profile)
+          .show(),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(8.0.h),
         child: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(8.0.h),
                   child: Column(children: [
                     Row(
                       children: [
@@ -125,12 +132,12 @@ class _ShopProfileState extends State<ShopProfile>
                             ),
                           ),
                           child: CircleAvatar(
-                            radius: 35,
+                            radius: 35.r,
                             backgroundImage: NetworkImage(widget.shop!.logo!),
                           ),
                         ),
-                        const SizedBox(
-                          width: 12,
+                        SizedBox(
+                          width: 12.w,
                         ),
                         GestureDetector(
                           onTap: () => Navigator.push(
@@ -146,7 +153,8 @@ class _ShopProfileState extends State<ShopProfile>
                               Text(
                                 widget.shop!.name!,
                                 style: TextStyle(
-                                    fontSize: 17, fontWeight: FontWeight.bold),
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold),
                               ),
                               Row(
                                 children: [
@@ -154,14 +162,14 @@ class _ShopProfileState extends State<ShopProfile>
                                     Icons.star,
                                     color: Color.fromARGB(255, 230, 207, 6),
                                   ),
-                                  const SizedBox(
-                                    width: 5,
+                                  SizedBox(
+                                    width: 5.w,
                                   ),
                                   Text(widget.shop!.rating != null
                                       ? widget.shop!.rating.toString()
                                       : ""),
-                                  const SizedBox(
-                                    width: 5,
+                                  SizedBox(
+                                    width: 5.w,
                                   ),
                                   // Text("|"),
                                   // SizedBox(
@@ -180,9 +188,9 @@ class _ShopProfileState extends State<ShopProfile>
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 8),
+                                      horizontal: 16.w, vertical: 8.h),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5),
+                                    borderRadius: BorderRadius.circular(5.r),
                                   ),
                                 ),
                                 onPressed: () async {
@@ -192,12 +200,24 @@ class _ShopProfileState extends State<ShopProfile>
                                   UserModel? seller =
                                       CommondMethods.getUserModelByShopID(
                                           widget.shop!.id!, lisUser!);
+
                                   Chat? chat;
-                                  // TODO: Add button press logic
-                                  if (!CommondMethods.hasConversation(
-                                      currentUser!.id!,
-                                      seller!.id!,
-                                      chatProvider.list)) {
+                                  // // TODO: Add button press logic
+                                  bool? hasConversation = await chatRepo
+                                      .checkExistedChatBoxWithUsers(
+                                          sellerID: seller!.id!,
+                                          userID: currentUser!.id!);
+                                  if (hasConversation!) {
+                                    chat = await chatRepo.getChatWithUsers(
+                                        userID: currentUser.id!,
+                                        sellerID: seller.id!);
+                                    // chatProvider.addNewChat(chat);
+                                  } else {
+                                    // chat =
+                                    //     CommondMethods.getChatByuserAndSeller(
+                                    //         seller.id!,
+                                    //         currentUser.id!,
+                                    //         chatProvider.list);
                                     chat = Chat(
                                       listMsg: [],
                                       sellerID: seller.id,
@@ -209,33 +229,30 @@ class _ShopProfileState extends State<ShopProfile>
                                       userName: currentUser.firstName,
                                     );
                                     chatProvider.addNewChat(chat);
-                                  } else {
-                                    chat =
-                                        CommondMethods.getChatByuserAndSeller(
-                                            seller.id!,
-                                            currentUser.id!,
-                                            chatProvider.list);
+                                    await chatRepo.addNewChat(chat);
                                   }
 
+                                  // ignore: use_build_context_synchronously
                                   Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) {
-                                      return ChattingPage(chat: chat);
+                                      return ChattingPage(
+                                          chat: chat, isNew: !hasConversation);
                                     },
                                   ));
                                 },
-                                child: const Row(
+                                child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(
                                       Icons.chat,
                                       color: Colors.white,
                                     ),
-                                    SizedBox(width: 8),
+                                    SizedBox(width: 8.w),
                                     Text(
-                                      'Chat',
+                                      AppLocalizations.of(context)!.chat_ucf,
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 16,
+                                        fontSize: 16.sp,
                                       ),
                                     ),
                                   ],
@@ -244,8 +261,8 @@ class _ShopProfileState extends State<ShopProfile>
                             ),
                           ],
                         ),
-                        const SizedBox(
-                          width: 10,
+                        SizedBox(
+                          width: 10.w,
                         )
                       ],
                     ),
@@ -254,24 +271,25 @@ class _ShopProfileState extends State<ShopProfile>
                         labelColor: Colors.blue,
                         unselectedLabelColor: Colors.black,
                         isScrollable: true,
-                        indicator: const UnderlineTabIndicator(
+                        indicator: UnderlineTabIndicator(
                             borderSide: BorderSide(
-                              width: 3,
+                              width: 3.w,
                               color: Colors.blue,
                             ),
-                            insets: EdgeInsets.symmetric(horizontal: 16)),
-                        labelPadding:
-                            const EdgeInsets.symmetric(horizontal: 20),
+                            insets: EdgeInsets.symmetric(horizontal: 16.w)),
+                        labelPadding: EdgeInsets.symmetric(horizontal: 20.w),
                         labelStyle: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w500),
-                        tabs: const [
-                          Tab(text: "Shop"),
-                          Tab(text: "Products"),
-                          Tab(text: "Product category"),
+                        tabs: [
+                          Tab(text: AppLocalizations.of(context)!.shop_ucf),
+                          Tab(text: AppLocalizations.of(context)!.products_ucf),
+                          Tab(
+                              text: AppLocalizations.of(context)!
+                                  .product_category),
                           //Tab(text: "Live"),
                         ]),
                     SizedBox(
-                      height: 10,
+                      height: 10.h,
                     ),
                     Align(
                       alignment: Alignment.bottomLeft,
@@ -279,7 +297,7 @@ class _ShopProfileState extends State<ShopProfile>
                         Container(
                           //color: Colors.pink,
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0.h),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -293,9 +311,12 @@ class _ShopProfileState extends State<ShopProfile>
                                         horizontal: 10.h, vertical: 6),
                                     child: _buildDealOfTheDay(
                                       context,
-                                      dealOfTheDayText: "Featured products",
+                                      dealOfTheDayText:
+                                          AppLocalizations.of(context)!
+                                              .featured_products_ucf,
                                       viewAllText: listProduct!.length > 2
-                                          ? "View all"
+                                          ? AppLocalizations.of(context)!
+                                              .view_more_ucf
                                           : "",
                                     ),
                                   ),
@@ -324,12 +345,12 @@ class _ShopProfileState extends State<ShopProfile>
                                             child: Text(
                                               widget.shop!.name!,
                                               style: TextStyle(
-                                                  fontSize: 20,
+                                                  fontSize: 20.sp,
                                                   fontWeight: FontWeight.bold),
                                             ),
                                           ),
-                                          const SizedBox(
-                                            height: 5,
+                                          SizedBox(
+                                            height: 5.h,
                                           ),
                                           Padding(
                                             padding:
@@ -338,13 +359,13 @@ class _ShopProfileState extends State<ShopProfile>
                                               widget.shop!.shopDescription!,
                                               overflow: TextOverflow.clip,
                                               textAlign: TextAlign.left,
-                                              style: const TextStyle(
-                                                  fontSize: 15,
+                                              style: TextStyle(
+                                                  fontSize: 15.sp,
                                                   fontWeight: FontWeight.w300),
                                             ),
                                           ),
-                                          const SizedBox(
-                                            height: 5,
+                                          SizedBox(
+                                            height: 5.sp,
                                           ),
                                           Padding(
                                             padding:
@@ -352,8 +373,8 @@ class _ShopProfileState extends State<ShopProfile>
                                             child: Text(
                                               widget.shop!.contactPhone!,
                                               textAlign: TextAlign.left,
-                                              style: const TextStyle(
-                                                  fontSize: 18,
+                                              style: TextStyle(
+                                                  fontSize: 18.sp,
                                                   fontWeight: FontWeight.w400),
                                             ),
                                           ),
@@ -373,7 +394,9 @@ class _ShopProfileState extends State<ShopProfile>
                                           //padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                                           child: _buildDealOfTheDay(
                                             context,
-                                            dealOfTheDayText: "Recommend",
+                                            dealOfTheDayText:
+                                                AppLocalizations.of(context)!
+                                                    .recommended_ucf,
                                             viewAllText: "",
                                           ),
                                         ),
@@ -445,7 +468,7 @@ class _ShopProfileState extends State<ShopProfile>
                                               );
                                             },
                                             placeholder: (context, url) =>
-                                                Center(
+                                                const Center(
                                               child:
                                                   CircularProgressIndicator(),
                                             ),
@@ -455,9 +478,10 @@ class _ShopProfileState extends State<ShopProfile>
                                       }).toList(),
                                     )
                                   : Center(
-                                      child: Text("No category"),
+                                      child: Text(AppLocalizations.of(context)!
+                                          .no_category),
                                     )
-                              : Center(
+                              : const Center(
                                   child: CircularProgressIndicator(),
                                 ),
                         ),
@@ -588,7 +612,7 @@ Widget _buildProductSmallList1(BuildContext context, List<Product> list) {
           product: list[index],
         );
       },
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: list.length,
     ),
   );

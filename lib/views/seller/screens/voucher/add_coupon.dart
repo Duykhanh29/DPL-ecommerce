@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
+import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/views/seller/screens/voucher/voucher_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,13 +38,31 @@ class __AddCouponState extends State<AddCoupon> {
 
   Product? selectedProduct;
   List<Product>? list = ProductRepo().list;
+  ProductRepo productRepo = ProductRepo();
+  List<Product>? listProduct;
+  VoucherRepo voucherRepo = VoucherRepo();
+  String tempShopID = "PkHVNq0E1ZnTUyRnqG4O";
+  bool isLoading = true;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  Future<void> fetchData() async {
+    listProduct = await productRepo.getListProductByShopID(tempShopID);
+    isLoading = false;
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('AddCoupon'),
-      ),
+      appBar: CustomAppBar(
+              centerTitle: true,
+              context: context,
+              title: LangText(context: context).getLocal()!.add_vouvher)
+          .show(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -51,21 +72,21 @@ class __AddCouponState extends State<AddCoupon> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: 20,
+                  height: 20.h,
                 ),
                 Text(
-                  "Voucher",
-                  style: TextStyle(fontSize: 20),
+                  LangText(context: context).getLocal()!.voucher_ucf,
+                  style: TextStyle(fontSize: 20.sp),
                 ),
                 SizedBox(
                   height: 10.h,
                 ),
                 DropdownButtonFormField(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                   //dropdownColor: Colors.grey,
                   decoration: InputDecoration(
                     contentPadding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                        EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -76,14 +97,16 @@ class __AddCouponState extends State<AddCoupon> {
                       dropdownValue = newvalue!;
                     });
                   }),
-                  items: const [
+                  items: [
                     DropdownMenuItem(
-                      child: Text("For Product"),
                       value: "Product",
+                      child: Text(
+                          LangText(context: context).getLocal()!.for_product),
                     ),
                     DropdownMenuItem(
-                      child: Text("For Shop"),
                       value: "Shop",
+                      child:
+                          Text(LangText(context: context).getLocal()!.for_shop),
                     ),
                   ],
                   isExpanded: true,
@@ -100,37 +123,44 @@ class __AddCouponState extends State<AddCoupon> {
                         height: 10.h,
                       ),
                       Text(
-                        'Select Product:',
-                        style: TextStyle(fontSize: 20),
+                        LangText(context: context)
+                            .getLocal()!
+                            .select_product_ucf,
+                        style: TextStyle(fontSize: 20.sp),
                       ),
                       SizedBox(
                         height: 10.h,
                       ),
-                      DropdownButtonFormField<Product>(
-                        borderRadius: BorderRadius.circular(10),
-                        //dropdownColor: Colors.grey,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 15),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        value: selectedProduct,
-                        isExpanded: true,
-                        items: list!.map((Product p) {
-                          return DropdownMenuItem<Product>(
-                            value: p,
-                            child: Text(p.name!),
-                          );
-                        }).toList(),
-                        onChanged: (newValue) {
-                          setState(() {
-                            selectedProduct = newValue!;
-                            // Reset selected product when category changes
-                          });
-                        },
-                      ),
+                      isLoading
+                          ? DropdownButtonFormField(
+                              items: [],
+                              onChanged: (value) {},
+                            )
+                          : DropdownButtonFormField<Product>(
+                              borderRadius: BorderRadius.circular(10),
+                              //dropdownColor: Colors.grey,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10.h, horizontal: 15.w),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.r),
+                                ),
+                              ),
+                              value: selectedProduct,
+                              isExpanded: true,
+                              items: listProduct!.map((Product p) {
+                                return DropdownMenuItem<Product>(
+                                  value: p,
+                                  child: Text(p.name!),
+                                );
+                              }).toList(),
+                              onChanged: (newValue) {
+                                setState(() {
+                                  selectedProduct = newValue!;
+                                  // Reset selected product when category changes
+                                });
+                              },
+                            ),
                       // Hiển thị danh sách sản phẩm ở đây
                       // Ví dụ: ListView.builder(...)
                     ],
@@ -138,29 +168,31 @@ class __AddCouponState extends State<AddCoupon> {
                 // Hiển thị dòng "hello" khi chọn "Shop"
                 if (dropdownValue == "Shop") Text(""),
                 SizedBox(
-                  height: 20,
+                  height: 20.h,
                 ),
                 Text(
-                  "Voucher name",
-                  style: TextStyle(fontSize: 20),
+                  LangText(context: context).getLocal()!.name_ucf,
+                  style: TextStyle(fontSize: 20.sp),
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 10.h,
                 ),
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
                     contentPadding:
-                        EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+                        EdgeInsets.symmetric(vertical: 15.h, horizontal: 10.w),
                     filled: true,
                     hoverColor: Color.fromARGB(110, 218, 218, 218),
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(10.r),
                         borderSide: BorderSide.none),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a product number';
+                      return LangText(context: context)
+                          .getLocal()!
+                          .please_enter_name;
                     }
                     return null;
                   },
@@ -169,11 +201,11 @@ class __AddCouponState extends State<AddCoupon> {
                   },
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 20.h,
                 ),
                 Text(
-                  "Discount ",
-                  style: TextStyle(fontSize: 20),
+                  LangText(context: context).getLocal()!.discount_ucf,
+                  style: TextStyle(fontSize: 20.sp),
                 ),
                 SizedBox(
                   height: 10.h,
@@ -184,9 +216,9 @@ class __AddCouponState extends State<AddCoupon> {
                   //dropdownColor: Colors.grey,
                   decoration: InputDecoration(
                     contentPadding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                        EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
                   ),
                   value: discountType,
@@ -195,14 +227,16 @@ class __AddCouponState extends State<AddCoupon> {
                       discountType = newvalue!;
                     });
                   }),
-                  items: const [
+                  items: [
                     DropdownMenuItem(
-                      child: Text("Percent"),
                       value: "Percent",
+                      child:
+                          Text(LangText(context: context).getLocal()!.percent),
                     ),
                     DropdownMenuItem(
-                      child: Text("Amount"),
                       value: "Amount",
+                      child:
+                          Text(LangText(context: context).getLocal()!.amount),
                     ),
                   ],
                   isExpanded: true,
@@ -215,8 +249,8 @@ class __AddCouponState extends State<AddCoupon> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Percent",
-                        style: TextStyle(fontSize: 20),
+                        LangText(context: context).getLocal()!.percent,
+                        style: TextStyle(fontSize: 20.sp),
                       ),
                       SizedBox(
                         height: 10.h,
@@ -226,22 +260,26 @@ class __AddCouponState extends State<AddCoupon> {
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
-                              vertical: 15.0, horizontal: 10.0),
+                              vertical: 15.h, horizontal: 10.w),
                           filled: true,
                           hoverColor: Color.fromARGB(110, 218, 218, 218),
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(10.r),
                               borderSide: BorderSide.none),
                         ),
                         // The validator receives the text that the user has entered.
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter some text';
+                            return LangText(context: context)
+                                .getLocal()!
+                                .please_enter_number;
                           }
                           if (int.tryParse(value) == null ||
                               int.parse(value) <= 0 ||
                               int.parse(value) >= 100) {
-                            return 'Please enter a positive integer for price';
+                            return LangText(context: context)
+                                .getLocal()!
+                                .please_enter_positive_integer;
                           }
                           return null;
                         },
@@ -254,8 +292,8 @@ class __AddCouponState extends State<AddCoupon> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Amount",
-                        style: TextStyle(fontSize: 20),
+                        LangText(context: context).getLocal()!.amount_ucf,
+                        style: TextStyle(fontSize: 20.sp),
                       ),
                       SizedBox(
                         height: 10.h,
@@ -265,22 +303,33 @@ class __AddCouponState extends State<AddCoupon> {
                         controller: _amountController,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 10.0),
+                              vertical: 10.h, horizontal: 10.w),
                           filled: true,
                           hoverColor: Color.fromARGB(110, 218, 218, 218),
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(10.r),
                               borderSide: BorderSide.none),
                         ),
                         // The validator receives the text that the user has entered.
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter some text';
+                            return LangText(context: context)
+                                .getLocal()!
+                                .please_enter_number;
                           }
                           if (int.tryParse(value) == null ||
-                              int.parse(value) <= 0 ||
-                              int.parse(value) >= 100) {
-                            return 'Please enter a number from 1 to 100';
+                              int.parse(value) <= 0) {
+                            return LangText(context: context)
+                                .getLocal()!
+                                .please_enter_number_greater_than_zero;
+                          }
+                          if (selectedProduct != null) {
+                            if (int.tryParse(value)! >=
+                                selectedProduct!.price!) {
+                              return LangText(context: context)
+                                  .getLocal()!
+                                  .please_enter_number_less_than_real_price;
+                            }
                           }
                           return null;
                         },
@@ -289,23 +338,23 @@ class __AddCouponState extends State<AddCoupon> {
                   ),
                 // _buidck(name: "Discount Amount", hintname: "Discount Amount", namevalue: "Discount Amount", namctr: TextEditingController()),
                 SizedBox(
-                  height: 20,
+                  height: 20.h,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Expanded(
                         child: Text(
-                      "Released Date",
-                      style: TextStyle(fontSize: 20),
+                      LangText(context: context).getLocal()!.release_date,
+                      style: TextStyle(fontSize: 20.sp),
                     )),
                     SizedBox(
-                      width: 12,
+                      width: 12.w,
                     ),
                     Expanded(
                         child: Text(
-                      "Exp Date",
-                      style: TextStyle(fontSize: 20),
+                      LangText(context: context).getLocal()!.exp_date,
+                      style: TextStyle(fontSize: 20.sp),
                     )),
                   ],
                 ),
@@ -341,11 +390,11 @@ class __AddCouponState extends State<AddCoupon> {
         ),
       ),
       bottomNavigationBar: Container(
-        height: 40,
-        width: 370,
+        height: 40.h,
+        width: MediaQuery.of(context).size.width * 0.9,
         margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 25.h),
         child: ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             // if (_formKey.currentState!.validate()) {
             //   // If the form is valid, perform your action
             //   // e.g., submit the form or perform some other logic
@@ -355,10 +404,10 @@ class __AddCouponState extends State<AddCoupon> {
             //   //    v=Voucher(productID: selectedProduct!=null ? selectedProduct!.id!:null,expDate: expDate,discountAmount: );
             //   // }
             // }
-            _addVoucher(context);
+            await _addVoucher(context);
           },
           child: Text(
-            'Send',
+            LangText(context: context).getLocal()!.send_ucf,
             style: TextStyle(fontSize: 18.sp),
           ),
         ),
@@ -383,7 +432,7 @@ class __AddCouponState extends State<AddCoupon> {
     });
   }
 
-  void _addVoucher(BuildContext context) {
+  Future<void> _addVoucher(BuildContext context) async {
     String name = _nameController.text;
     String? shopID;
     String? productID;
@@ -410,6 +459,7 @@ class __AddCouponState extends State<AddCoupon> {
           releasedDate: startDate,
           shopID: shopID,
         );
+        await voucherRepo.addVoucher(newVoucher);
         widget.onVoucherAdded(newVoucher);
       } else if (discountType != "Percent" &&
           _amountController.text.isNotEmpty) {
@@ -423,6 +473,7 @@ class __AddCouponState extends State<AddCoupon> {
           shopID: shopID,
         );
         widget.onVoucherAdded(newVoucher);
+        await voucherRepo.addVoucher(newVoucher);
       }
 
       // Clear text fields and image path

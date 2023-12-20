@@ -1,7 +1,11 @@
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
+import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/views/seller/screens/voucher/add_coupon.dart';
 import 'package:dpl_ecommerce/views/seller/screens/voucher/display_coupon.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class VoucherApp extends StatefulWidget {
   const VoucherApp({super.key});
@@ -20,12 +24,28 @@ class __VoucherAppState extends State<VoucherApp> {
 
     // Add more products if needed
   ];
+  List<Voucher>? listVoucher;
+  VoucherRepo voucherRepo = VoucherRepo();
+  bool isLoading = true;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  String tempShopID = "PkHVNq0E1ZnTUyRnqG4O";
+  Future<void> fetchData() async {
+    listVoucher = await voucherRepo.getListVoucherByShop(tempShopID);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Voucher'),
-      ),
+      appBar: CustomAppBar(
+              title: LangText(context: context).getLocal()!.vouchers_ucf,
+              context: context,
+              centerTitle: true)
+          .show(),
       body: DisplayCoupon(
         vouchers: vouchers,
         onVoucherDeleted: _deleteVoucher,
@@ -35,7 +55,10 @@ class __VoucherAppState extends State<VoucherApp> {
         onPressed: () {
           _navigateToAddVocherScreen(context);
         },
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          size: 20.h,
+        ),
       ),
     );
   }

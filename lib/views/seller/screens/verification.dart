@@ -1,10 +1,16 @@
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
+import 'package:dpl_ecommerce/models/city.dart';
+import 'package:dpl_ecommerce/models/district.dart';
+import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/models/verification_form.dart';
 import 'package:dpl_ecommerce/repositories/shop_repo.dart';
+import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
+import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class Verification extends StatefulWidget {
   const Verification({super.key});
@@ -26,10 +32,34 @@ class __VerificationState extends State<Verification> {
   TextEditingController shopNameController = TextEditingController();
   TextEditingController lisenceController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
-
-  String? taxPaper;
+  StorageService storageService = StorageService();
+  String? taxPaperPath;
+  String? taxPaperName;
+  Shop shop = Shop(
+    ratingCount: 123,
+    totalProduct: 32,
+    name: "DK",
+    addressInfor: AddressInfor(
+        city: City(id: 8, name: "Tuyen Quang"),
+        country: "Viet nam",
+        isDefaultAddress: false,
+        latitude: 123.12,
+        longitude: 123,
+        name: "My address",
+        district: District(id: 123, name: "Hoang Mai")),
+    contactPhone: "0987654321",
+    id: "shopID01",
+    shopDescription:
+        "Cultivate your love for gardening with Green Thumb Nursery. We offer a variety of plants, gardening tools, and expert advice to help you create a vibrant and thriving garden.",
+    logo:
+        "https://cdn.shopify.com/shopifycloud/hatchful_web_two/bundles/4a14e7b2de7f6eaf5a6c98cb8c00b8de.png",
+    rating: 4.4,
+    shopView: 120,
+  );
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserViewModel>(context);
+    final user = userProvider.currentUser;
     return Scaffold(
       appBar: AppBar(
         title: Text('Verification'),
@@ -97,7 +127,8 @@ class __VerificationState extends State<Verification> {
                         print("No file selected");
                       } else {
                         setState(() {
-                          taxPaper = result?.files.single.path;
+                          taxPaperPath = result?.files.single.path;
+                          taxPaperName = result?.files.single.name;
                           print(result?.files.single.name);
                         });
                       }
@@ -163,23 +194,41 @@ class __VerificationState extends State<Verification> {
         child: ElevatedButton(
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
-              VerificationForm verificationForm = VerificationForm(
-                  contactAddress: AddressInfor(),
-                  email: "duykhanh@gmail.com",
-                  licenseNo: lisenceController.text,
-                  homeNumber: homeNumberController.text,
-                  phoneNumber: phoneNumberController.text,
-                  shopName: shopNameController.text,
-                  taxPaper: taxPaper,
-                  sellerID: "sellerID01",
-                  shopID: "shopID04");
-              print("OKe: ${verificationForm}");
-              // await _sendVerificationForm(verificationForm);
-              // await shopRepo.updateShop(
-              //     shopID: "shopID",
-              //     name: shopNameController.text,
-              //     // addressInfor:
-              //     contactPhone: phoneNumberController.text);
+              if (taxPaperName == null || taxPaperPath == null) {
+                //
+              } else {
+                bool isSuccess = await storageService.uploadFile(
+                  filePath: taxPaperPath!,
+                  fileName: taxPaperName!,
+                  rootRef: 'verifications',
+                  secondRef: shop.id,
+                );
+                if (isSuccess) {
+                  String url = await storageService.downloadURL(
+                    filePath: taxPaperPath!,
+                    fileName: taxPaperName!,
+                    rootRef: 'verifications',
+                    secondRef: shop.id,
+                  );
+                  VerificationForm verificationForm = VerificationForm(
+                      contactAddress: AddressInfor(),
+                      email: user!.email ?? "",
+                      licenseNo: lisenceController.text,
+                      homeNumber: homeNumberController.text,
+                      phoneNumber: phoneNumberController.text,
+                      shopName: shopNameController.text,
+                      taxPaper: url,
+                      sellerID: user.id,
+                      shopID: shop.id);
+                  print("OKe: ${verificationForm}");
+                }
+                // await _sendVerificationForm(verificationForm);
+                // await shopRepo.updateShop(
+                //     shopID: "shopID",
+                //     name: shopNameController.text,
+                //     // addressInfor:
+                //     contactPhone: phoneNumberController.text);
+              }
             }
           },
           child: Text(

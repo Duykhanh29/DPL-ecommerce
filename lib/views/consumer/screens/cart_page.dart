@@ -13,6 +13,7 @@ import 'package:dpl_ecommerce/repositories/cart_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_in_cart_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/common/common_methods.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/cart_widgets/product_cart_item.dart';
@@ -76,7 +77,7 @@ class _CartPageState extends State<CartPage> {
         leading: CustomArrayBackWidget(function: () {
           provider.reset();
         }),
-        title: Text("Your cart"),
+        title: Text(LangText(context: context).getLocal()!.cart_ucf),
       ),
       body: Container(
         // color: Colors.green,
@@ -104,7 +105,8 @@ class _CartPageState extends State<CartPage> {
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.r)))),
                   onPressed: () {},
-                  child: const Text("Check out")),
+                  child: Text(
+                      LangText(context: context).getLocal()!.checkout_ucf)),
             ),
             SizedBox(height: 10.h),
           ],
@@ -148,7 +150,8 @@ class _CartPageState extends State<CartPage> {
           Consumer<CartViewModel>(
             builder: (context, value, child) => _buildShipping(
               context,
-              shippingLabel: "Items ${selectedProduct.length}",
+              shippingLabel:
+                  "${LangText(context: context).getLocal()!.item_number} ${selectedProduct.length}",
               priceLabel: "${provider.totalCost} VND",
             ),
           ),
@@ -156,7 +159,7 @@ class _CartPageState extends State<CartPage> {
           Consumer<CartViewModel>(
             builder: (context, value, child) => _buildShipping(
               context,
-              shippingLabel: "Save",
+              shippingLabel: LangText(context: context).getLocal()!.save_ucf,
               priceLabel: "${provider.savingCost}",
             ),
           ),
@@ -166,7 +169,7 @@ class _CartPageState extends State<CartPage> {
           Consumer<CartViewModel>(
             builder: (context, value, child) => _buildShipping(
               context,
-              shippingLabel: "real price",
+              shippingLabel: LangText(context: context).getLocal()!.real_price,
               priceLabel: "${provider.totalCost - provider.savingCost}",
             ),
           ),
@@ -277,7 +280,8 @@ class CartBody extends StatelessWidget {
               return Container(
                 height: size.height * 0.5,
                 child: Center(
-                  child: Text("No product"),
+                  child:
+                      Text(LangText(context: context).getLocal()!.no_product),
                 ),
               );
             }
@@ -285,7 +289,7 @@ class CartBody extends StatelessWidget {
             return Container(
               height: size.height * 0.5,
               child: Center(
-                child: Text("No product"),
+                child: Text(LangText(context: context).getLocal()!.no_product),
               ),
             );
           }
@@ -309,7 +313,7 @@ class ProductInCartDetails extends StatelessWidget {
         // color: Colors.amber,
         width: size.width,
         height: size.height * 0.62,
-        padding: EdgeInsets.symmetric(horizontal: 8),
+        padding: EdgeInsets.symmetric(horizontal: 8.w),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -318,8 +322,8 @@ class ProductInCartDetails extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const SizedBox(
-                    width: 10,
+                  SizedBox(
+                    width: 10.w,
                   ),
                   Consumer<CartViewModel>(
                     builder: (context, value, child) {
@@ -331,23 +335,23 @@ class ProductInCartDetails extends StatelessWidget {
                       );
                     },
                   ),
-                  const SizedBox(
-                    width: 10,
+                  SizedBox(
+                    width: 10.w,
                   ),
-                  Text("Select all")
+                  Text(LangText(context: context).getLocal()!.select_all)
                 ],
               ),
             ),
             Expanded(
               child: ListView.separated(
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 shrinkWrap: true,
                 separatorBuilder: (
                   context,
                   index,
                 ) {
                   return Padding(
-                    padding: EdgeInsets.symmetric(vertical: 3.0),
+                    padding: EdgeInsets.symmetric(vertical: 3.h),
                     child: SizedBox(
                       width: double.maxFinite,
                       child: Divider(

@@ -575,8 +575,9 @@ class _RegistrationState extends State<Registration> {
                             // keep blank
                           },
                           decoration: InputDecoration(
-                              hintText:
-                                  LangText(context: context).getLocal()!.city,
+                              hintText: LangText(context: context)
+                                  .getLocal()!
+                                  .city_ucf,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -674,7 +675,7 @@ class _RegistrationState extends State<Registration> {
                           decoration: InputDecoration(
                               hintText: LangText(context: context)
                                   .getLocal()!
-                                  .district,
+                                  .district_ucf,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -775,8 +776,9 @@ class _RegistrationState extends State<Registration> {
                               // keep blank
                             },
                             decoration: InputDecoration(
-                                hintText:
-                                    LangText(context: context).getLocal()!.ward,
+                                hintText: LangText(context: context)
+                                    .getLocal()!
+                                    .ward_ucf,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),

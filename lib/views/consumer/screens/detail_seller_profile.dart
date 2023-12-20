@@ -1,11 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
+import 'package:dpl_ecommerce/customs/custom_photo_view.dart';
+import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/category.dart';
 import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/repositories/category_repo.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfileSeller extends StatefulWidget {
   Shop shop;
@@ -19,7 +23,7 @@ class ProfileSeller extends StatefulWidget {
 
 class _CategoryScreenState extends State<ProfileSeller> {
   List<Category>? listCategory = CategoryRepo().list;
-
+  StorageService storageService = StorageService();
   // Shop shop = Shop(
   //     name: "Sports World",
   //     addressInfor: AddressInfor(
@@ -46,26 +50,49 @@ class _CategoryScreenState extends State<ProfileSeller> {
       ),
       body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         SizedBox(
-          height: 10,
+          height: 10.h,
         ),
         Row(
           children: [
             SizedBox(
-              width: 10,
+              width: 10.w,
             ),
-            CircleAvatar(
-              radius: 35,
-              backgroundImage: NetworkImage(widget.shop.logo!),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) {
+                    return Scaffold(
+                      appBar: AppBar(
+                        leading: CustomArrayBackWidget(),
+                        actions: [
+                          IconButton(
+                              onPressed: () async {
+                                await storageService
+                                    .downloadAndSaveImage(widget.shop.logo!);
+                              },
+                              icon: Icon(Icons.download_outlined))
+                        ],
+                      ),
+                      body: CustomPhotoView(urlImage: widget.shop.logo!),
+                    );
+                  },
+                ));
+              },
+              child: CircleAvatar(
+                radius: 35.r,
+                backgroundImage: NetworkImage(widget.shop.logo!),
+              ),
             ),
             SizedBox(
-              width: 12,
+              width: 12.w,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   widget.shop.name!,
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                  style:
+                      TextStyle(fontSize: 17.sp, fontWeight: FontWeight.bold),
                 ),
                 Row(
                   children: [
@@ -74,13 +101,13 @@ class _CategoryScreenState extends State<ProfileSeller> {
                       color: Color.fromARGB(255, 230, 207, 6),
                     ),
                     SizedBox(
-                      width: 5,
+                      width: 5.w,
                     ),
                     Text(widget.shop.rating != null
                         ? widget.shop.rating.toString()
                         : ""),
                     SizedBox(
-                      width: 5,
+                      width: 5.w,
                     ),
                   ],
                 ),
@@ -93,6 +120,7 @@ class _CategoryScreenState extends State<ProfileSeller> {
             child: Column(
               children: listCategory!.map((category) {
                 return ListTile(
+                  onTap: () {},
                   leading: CachedNetworkImage(
                     imageUrl: category.logo!,
                     imageBuilder: (context, imageProvider) {
@@ -104,7 +132,7 @@ class _CategoryScreenState extends State<ProfileSeller> {
                         ),
                       );
                     },
-                    placeholder: (context, url) => Center(
+                    placeholder: (context, url) => const Center(
                       child: CircularProgressIndicator(),
                     ),
                   ),

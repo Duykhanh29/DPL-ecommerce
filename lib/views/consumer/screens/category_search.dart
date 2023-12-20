@@ -8,6 +8,8 @@ import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/models/category.dart';
 import 'package:dpl_ecommerce/repositories/category_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CategoryInterface extends StatefulWidget {
   String name;
@@ -50,7 +52,7 @@ class _CategoryInterfaceState extends State<CategoryInterface> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Danh mục'),
+        title: Text(LangText(context: context).getLocal()!.category_ucf),
       ),
       body: !isLoading
           ? list != null
@@ -102,7 +104,7 @@ class _CategoryInterfaceState extends State<CategoryInterface> {
               : Center(
                   child: Image.asset(ImageData.imageNotFound),
                 )
-          : Center(
+          : const Center(
               child: CircularProgressIndicator(),
             ),
     );

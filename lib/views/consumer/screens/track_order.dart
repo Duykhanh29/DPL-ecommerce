@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:flutter/material.dart';
 // import 'package:timelines/timelines.dart';
 import 'package:dpl_ecommerce/const/app_decoration.dart';
@@ -22,7 +23,7 @@ class TrackOrderScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text(
-          "Track order",
+          LangText(context: context).getLocal()!.track_orders,
           textAlign: TextAlign.center,
         ),
         centerTitle: true,
@@ -39,7 +40,9 @@ class TrackOrderScreen extends StatelessWidget {
                   width: 150.w,
                   // decoration: BoxDecoration(color: Colors.red),
                   height: 100,
-                  child: Center(child: Text("processing")),
+                  child: Center(
+                      child: Text(
+                          LangText(context: context).getLocal()!.processing)),
                 ),
               ),
               // isFirst: true,
@@ -52,7 +55,8 @@ class TrackOrderScreen extends StatelessWidget {
                   // decoration: BoxDecoration(color: Colors.red),
                   height: 100,
                   child: Center(
-                    child: Text("confirmed"),
+                    child: Text(
+                        LangText(context: context).getLocal()!.confirmed_ucf),
                   ),
                 ),
               ),
@@ -65,7 +69,8 @@ class TrackOrderScreen extends StatelessWidget {
                   // decoration: BoxDecoration(color: Colors.red),
                   height: 100,
                   child: Center(
-                    child: Text("delivering"),
+                    child:
+                        Text(LangText(context: context).getLocal()!.delivering),
                   ),
                 ),
               ),
@@ -78,7 +83,8 @@ class TrackOrderScreen extends StatelessWidget {
                   // decoration: BoxDecoration(color: Colors.red),
                   height: 100,
                   child: Center(
-                    child: Text("delivered"),
+                    child: Text(
+                        LangText(context: context).getLocal()!.delivered_ucf),
                   ),
                 ),
               ),
