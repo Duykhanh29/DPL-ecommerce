@@ -12,6 +12,7 @@ import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/models/ward.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:dpl_ecommerce/view_model/address_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/chat_page.dart';
 import 'package:flutter/material.dart';
@@ -122,7 +123,7 @@ class _AddAddressState extends State<AddAddress> {
     });
   }
 
-  onPressReg(UserModel user) async {
+  onPressReg(UserModel user, AddressViewModel addressViewModel) async {
     String name = _nameController.text.trim();
     String country = _countryController.text.trim();
     String homeNumber = _homeNumberController.text.trim();
@@ -136,6 +137,7 @@ class _AddAddressState extends State<AddAddress> {
         name: name,
         number: homeNumber,
         ward: _selected_ward);
+    addressViewModel.addAdd(addressInfor);
     await userRepo.addNewAddress(addressInfor, user);
   }
 
@@ -200,6 +202,7 @@ class _AddAddressState extends State<AddAddress> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserViewModel>(context);
+    final addressProvider = Provider.of<AddressViewModel>(context);
     final user = userProvider.currentUser;
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -654,7 +657,7 @@ class _AddAddressState extends State<AddAddress> {
                         _nameController.text.isEmpty) {
                       onPressRegFail();
                     } else {
-                      await onPressReg(user!);
+                      await onPressReg(user!, addressProvider);
                       Future.delayed(const Duration(seconds: 1)).then((value) {
                         Navigator.of(context).pop();
                       });

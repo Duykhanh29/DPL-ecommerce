@@ -234,7 +234,7 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
             }
           }
         },
-        stream: userRepo.getListAddress(currentUser!.id!),
+        stream: userRepo.getAllAddressInfor(currentUser!.id!),
       ),
       bottomNavigationBar: _buildAddAddressButton(context),
     );

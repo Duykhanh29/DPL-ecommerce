@@ -2,6 +2,7 @@ import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
 // import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
@@ -40,7 +41,7 @@ class SellerProfilePage extends StatelessWidget {
               Expanded(
                 child: SingleChildScrollView(
                   child: Padding(
-                    padding: EdgeInsets.only(left: 1),
+                    padding: EdgeInsets.only(left: 1.w),
                     child: Column(
                       children: [
                         _buildAvatarRow(context),
@@ -68,14 +69,19 @@ class SellerProfilePage extends StatelessWidget {
                                     builder: (context) => AddressSellerScreen(),
                                   ));
                                 },
-                                leading: Icon(Icons.location_on),
+                                leading: Icon(
+                                  Icons.location_on,
+                                  size: 20.h,
+                                ),
                                 title: Padding(
                                   padding: EdgeInsets.only(
                                     left: 10.w,
                                     bottom: 3.h,
                                   ),
                                   child: Text(
-                                    "address",
+                                    LangText(context: context)
+                                        .getLocal()!
+                                        .address_ucf,
                                     style: CustomTextStyles.labelLargeGray600,
                                   ),
                                 ),
@@ -92,7 +98,10 @@ class SellerProfilePage extends StatelessWidget {
                                       ));
                                     },
                                     child: Center(
-                                      child: Icon(Icons.navigate_next),
+                                      child: Icon(
+                                        Icons.navigate_next,
+                                        size: 20.h,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -111,14 +120,19 @@ class SellerProfilePage extends StatelessWidget {
                                       },
                                     ));
                                   },
-                                  leading: Icon(Icons.language),
+                                  leading: Icon(
+                                    Icons.language,
+                                    size: 20.h,
+                                  ),
                                   title: Padding(
                                     padding: EdgeInsets.only(
                                       left: 10.w,
                                       bottom: 3.h,
                                     ),
                                     child: Text(
-                                      "Languages",
+                                      LangText(context: context)
+                                          .getLocal()!
+                                          .language_ucf,
                                       style: CustomTextStyles.labelLargeGray600,
                                     ),
                                   ),
@@ -136,7 +150,10 @@ class SellerProfilePage extends StatelessWidget {
                                         ));
                                       },
                                       child: Center(
-                                        child: Icon(Icons.navigate_next),
+                                        child: Icon(
+                                          Icons.navigate_next,
+                                          size: 20.h,
+                                        ),
                                       ),
                                     ),
                                   )),
@@ -148,14 +165,19 @@ class SellerProfilePage extends StatelessWidget {
                                   onTap: () {
                                     // go to Languages page
                                   },
-                                  leading: Icon(Icons.star),
+                                  leading: Icon(
+                                    Icons.star,
+                                    size: 20.h,
+                                  ),
                                   title: Padding(
                                     padding: EdgeInsets.only(
                                       left: 10.w,
                                       bottom: 3.h,
                                     ),
                                     child: Text(
-                                      "Rate app",
+                                      LangText(context: context)
+                                          .getLocal()!
+                                          .rate_app,
                                       style: CustomTextStyles.labelLargeGray600,
                                     ),
                                   ),
@@ -167,7 +189,10 @@ class SellerProfilePage extends StatelessWidget {
                                         // go to Languages page
                                       },
                                       child: Center(
-                                        child: Icon(Icons.navigate_next),
+                                        child: Icon(
+                                          Icons.navigate_next,
+                                          size: 20.h,
+                                        ),
                                       ),
                                     ),
                                   )),
@@ -182,6 +207,7 @@ class SellerProfilePage extends StatelessWidget {
                                   leading: Icon(
                                     Icons.logout_rounded,
                                     color: Colors.redAccent,
+                                    size: 20.h,
                                   ),
                                   title: Padding(
                                     padding: EdgeInsets.only(
@@ -189,7 +215,9 @@ class SellerProfilePage extends StatelessWidget {
                                       bottom: 3.h,
                                     ),
                                     child: Text(
-                                      "Log out",
+                                      LangText(context: context)
+                                          .getLocal()!
+                                          .logout_ucf,
                                       style: TextStyle(
                                           fontSize: 15.sp,
                                           color: Colors.redAccent),
@@ -204,6 +232,7 @@ class SellerProfilePage extends StatelessWidget {
                                       },
                                       child: Center(
                                         child: Icon(Icons.navigate_next,
+                                            size: 20.h,
                                             color: Colors.redAccent),
                                       ),
                                     ),

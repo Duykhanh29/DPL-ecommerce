@@ -2,9 +2,11 @@ import 'package:dpl_ecommerce/app_obsever.dart';
 import 'package:dpl_ecommerce/lang_config.dart';
 import 'package:dpl_ecommerce/models/user.dart' as userModel;
 import 'package:dpl_ecommerce/models/voucher_for_user.dart';
+import 'package:dpl_ecommerce/view_model/address_view_model.dart';
 import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
+import 'package:dpl_ecommerce/view_model/consumer/checkout_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/language_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/product_detail_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/product_view_model.dart';
@@ -17,6 +19,7 @@ import 'package:dpl_ecommerce/views/consumer/routes/routes.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/login_screen.dart';
 import 'package:dpl_ecommerce/views/general_views/register_seller.dart';
 import 'package:dpl_ecommerce/views/seller/mainviewseller.dart';
+import 'package:dpl_ecommerce/views/seller/routes/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -193,8 +196,8 @@ class _AuthorizatedPageState extends State<AuthorizatedPage> {
     return Consumer<AuthViewModel>(builder: (context, authProvider, child) {
       if (authProvider.userModel != null) {
         return authProvider.userModel!.role == userModel.Role.consumer
-            ? const AuthPage()
-            : const TestScreen();
+            ? const UserPageView()
+            : const SellerPageView();
       } else {
         return Scaffold(
           body: Center(
@@ -206,8 +209,8 @@ class _AuthorizatedPageState extends State<AuthorizatedPage> {
   }
 }
 
-class AuthPage extends StatelessWidget {
-  const AuthPage({
+class UserPageView extends StatelessWidget {
+  const UserPageView({
     super.key,
   });
 
@@ -239,6 +242,12 @@ class AuthPage extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => ReviewViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => AddressViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => CheckoutViewModel(),
         )
       ],
       child: Consumer<LocaleProvider>(
@@ -255,6 +264,61 @@ class AuthPage extends StatelessWidget {
         ),
         // initialRoute: ConsumerRoutes.mainView,
         // routes: ConsumerRoutes.routes,
+      ),
+      // initialRoute: ConsumerRoutes.mainView,
+      // routes: ConsumerRoutes.routes,
+      // ),
+    );
+  }
+}
+
+class SellerPageView extends StatelessWidget {
+  const SellerPageView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthViewModel>(context);
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => UserViewModel(authProvider),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => LanguageViewModel(),
+        ),
+        // ChangeNotifierProvider(
+        //   create: (context) => CartViewModel(),
+        // ),
+        ChangeNotifierProvider(
+          create: (context) => ProductDetailViewModel(),
+        ),
+        // ChangeNotifierProvider(
+        //   create: (context) => VoucherForUserViewModel(authProvider),
+        // ),
+        ChangeNotifierProvider(
+          create: (context) => ChatViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ProductViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ReviewViewModel(),
+        )
+      ],
+      child: Consumer<LocaleProvider>(
+        builder: (context, value, child) => MaterialApp(
+          home: MainViewSeller(),
+          localizationsDelegates: [
+            AppLocalizations.delegate, // Add this line
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: value.locale,
+          initialRoute: SellerRoutes.initialSellerPage,
+          routes: SellerRoutes.routes,
+        ),
       ),
       // initialRoute: ConsumerRoutes.mainView,
       // routes: ConsumerRoutes.routes,

@@ -142,7 +142,31 @@ class UserFirestoreDatabase {
   }
 
   // address section
-  Stream<List<AddressInfor>?> getAddressInfors(String uid) async* {
+  Future<List<AddressInfor>?> getListAddressInfor(String uid) async {
+    try {
+      final ref = await _firestore.collection('users').doc(uid).get();
+      if (ref.exists) {
+        List<AddressInfor> addressInfors = [];
+        final userData = ref.data();
+        if (userData!['userInfor'] != null &&
+            userData['userInfor']['consumerInfor'] != null &&
+            userData['userInfor']['consumerInfor']['addressInfors'] != null) {
+          final addressInforsData = userData['userInfor']['consumerInfor']
+              ['addressInfors'] as List<dynamic>;
+          addressInfors = addressInforsData
+              .map((addressData) => AddressInfor.fromJson(addressData))
+              .toList();
+        }
+        return addressInfors;
+      } else {
+        print("Empty");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  Stream<List<AddressInfor>?> getAllAddressInfors(String uid) async* {
     try {
       final ref = await _firestore.collection('users').doc(uid).snapshots();
       final StreamController<List<AddressInfor>?> streamController =
@@ -189,6 +213,13 @@ class UserFirestoreDatabase {
             listAdd = user.userInfor!.consumerInfor!.addressInfors ?? [];
           }
         }
+        if (addressInfor.isDefaultAddress) {
+          for (var element in listAdd) {
+            if (element.isDefaultAddress) {
+              element.isDefaultAddress = false;
+            }
+          }
+        }
         listAdd.add(addressInfor);
         userModel.userInfor!.consumerInfor!.addressInfors = listAdd;
         await userDoc.update({'userInfor': userModel.userInfor!.toJson()});
@@ -215,9 +246,17 @@ class UserFirestoreDatabase {
             for (var data in listAdd) {
               if (data.id == addressInfor.id) {
                 listAdd.removeWhere((element) => element.id == data.id);
+                if (addressInfor.isDefaultAddress) {
+                  for (var element in listAdd) {
+                    if (element.isDefaultAddress) {
+                      element.isDefaultAddress = false;
+                    }
+                  }
+                }
                 listAdd.add(addressInfor);
               }
             }
+
             userModel.userInfor!.consumerInfor!.addressInfors = listAdd;
             await userDoc.update(userModel.toJson());
           }
@@ -244,6 +283,34 @@ class UserFirestoreDatabase {
             await userDoc.update(user.toJson());
           }
         }
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  Future<AddressInfor?> getDefaultAddress(String uid) async {
+    try {
+      final ref = await _firestore.collection('users').doc(uid).get();
+      if (ref.exists) {
+        List<AddressInfor> addressInfors = [];
+        final userData = ref.data();
+        if (userData!['userInfor'] != null &&
+            userData['userInfor']['consumerInfor'] != null &&
+            userData['userInfor']['consumerInfor']['addressInfors'] != null) {
+          final addressInforsData = userData['userInfor']['consumerInfor']
+              ['addressInfors'] as List<dynamic>;
+          addressInfors = addressInforsData
+              .map((addressData) => AddressInfor.fromJson(addressData))
+              .toList();
+          for (var element in addressInfors) {
+            if (element.isDefaultAddress) {
+              return element;
+            }
+          }
+        }
+      } else {
+        print("NOt exists");
       }
     } catch (e) {
       print("Error: $e");

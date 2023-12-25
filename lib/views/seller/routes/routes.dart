@@ -19,26 +19,44 @@ import 'package:dpl_ecommerce/views/consumer/screens/shop_profile.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/user_list_voucher.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/user_profile_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/wishlist_page.dart';
+import 'package:dpl_ecommerce/views/seller/mainviewseller.dart';
+import 'package:dpl_ecommerce/views/seller/screens/address_seller_screen.dart';
+import 'package:dpl_ecommerce/views/seller/screens/chatlist.dart';
+import 'package:dpl_ecommerce/views/seller/screens/dashboard.dart';
+import 'package:dpl_ecommerce/views/seller/screens/payhistory.dart';
 import 'package:dpl_ecommerce/views/seller/screens/product/add_product_screen.dart';
 import 'package:dpl_ecommerce/views/seller/screens/product/edit_product.dart';
 import 'package:dpl_ecommerce/views/seller/screens/product/product_app.dart';
+import 'package:dpl_ecommerce/views/seller/screens/product2/product_app.dart';
+import 'package:dpl_ecommerce/views/seller/screens/seller_setting_page.dart';
+import 'package:dpl_ecommerce/views/seller/screens/shop_setting/general_setting.dart';
+import 'package:dpl_ecommerce/views/seller/screens/shop_setting/setting.dart';
+import 'package:dpl_ecommerce/views/seller/screens/verification.dart';
+import 'package:dpl_ecommerce/views/seller/screens/voucher/voucher_app.dart';
 import 'package:flutter/cupertino.dart';
 
 class SellerRoutes {
+  static const String initialSellerPage = '/initial_seller_page';
   static const String productsScreen = '/products_screen';
   static const String addProduct = '/add_product';
   static const String editProduct = '/edit_product';
   static const String dashboard = '/dashboard';
   static const String profile = '/profile';
   static const String changeLanguagePage = '/change_language_page';
-
-//user settings
-  static const String userProfilePage = '/user_profile_page';
-  static const String profileSettingPage = '/profile_setting_page';
-
+  static const String chatList = '/chat_list';
+//seller settings
+  static const String sellerProfilePage = '/seller_profile_page';
+  static const String profileSettingSellerPage = '/profile_setting_seller_page';
+  static const changeLanguage = '/change_language';
+  static const addressSellerPage = '/address_seller_page';
+  static const paymentHistory = '/payment_history';
+  static const String verification = '/verification';
+  static const String vouchersPage = '/vouchers_page';
+  static const String productsPage = '/products_page';
   // address
-  static const String addressScreen = 'address_screen';
-
+  static const String addressScreen = '/address_screen';
+  static const String generalSetting = '/general_setting';
+  static const String setting_page = '/setting_page';
   static Map<String, WidgetBuilder> routes = {
     // productsScreen: (context) => ProductsApp(products: []),
     // addProduct: (context) => AddProductScreen(
@@ -47,8 +65,19 @@ class SellerRoutes {
     //     ),
     // editProduct: (context) => EditProductScreen(
     //     product: Product(), onProductUpdated: (p0) {}, products: []),
+    initialSellerPage: (context) => MainViewSeller(),
     changeLanguagePage: (context) => LanguagePage(),
-    profileSettingPage: (context) => ProfileSettingScreen(),
-    userProfilePage: (context) => UserProfilePage(),
+    profileSettingSellerPage: (context) => ProfileSettingSellerScreen(),
+    sellerProfilePage: (context) => UserProfilePage(),
+    verification: (context) => Verification(),
+    dashboard: (context) => Dashboard(),
+    chatList: (context) => ChatList(),
+    changeLanguage: (context) => LanguagePage(),
+    addressSellerPage: (context) => AddressSellerScreen(),
+    paymentHistory: (context) => PayHistory(),
+    vouchersPage: (context) => VoucherApp(),
+    productsPage: (context) => ProductsApp(),
+    generalSetting: (context) => GeneralSetting(),
+    setting_page: (context) => SettingSeller()
   };
 }

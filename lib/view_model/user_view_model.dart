@@ -17,6 +17,7 @@ class UserViewModel extends ChangeNotifier {
   FirestoreDatabase _firestoreDatabase = FirestoreDatabase();
   UserFirestoreDatabase userFirestoreDatabase = UserFirestoreDatabase();
   AuthViewModel? _authViewModel = AuthViewModel();
+
   UserModel? userModel;
   UserViewModel(this._authViewModel) {
     userModel = _authViewModel!.currentUser; // _auth null here

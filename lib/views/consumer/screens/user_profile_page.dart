@@ -1,8 +1,11 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/models/address_infor.dart';
+import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:dpl_ecommerce/view_model/address_view_model.dart';
 import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
 // import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
@@ -19,14 +22,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class UserProfilePage extends StatelessWidget {
-  const UserProfilePage({Key? key})
+  UserProfilePage({Key? key})
       : super(
           key: key,
         );
-
+  UserRepo userRepo = UserRepo();
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthViewModel>(context);
+    final addressProvider = Provider.of<AddressViewModel>(context);
     final size = MediaQuery.of(context).size;
     final user = authProvider.currentUser;
     return SafeArea(
@@ -61,7 +65,16 @@ class UserProfilePage extends StatelessWidget {
                             children: [
                               // SizedBox(height: 24),
                               ListTile(
-                                onTap: () {
+                                onTap: () async {
+                                  AddressInfor? addressInfor = await userRepo
+                                      .getDefaultAddress(user!.id!);
+                                  addressProvider
+                                      .setDefaultAddress(addressInfor!);
+                                  addressProvider
+                                      .setOrderingAddress(addressInfor);
+                                  List<AddressInfor>? list = await userRepo
+                                      .getListAddressInfor(user!.id!);
+                                  addressProvider.setListAddressInfor(list!);
                                   // go to address page
                                   Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => AddressScreen(),
@@ -87,7 +100,19 @@ class UserProfilePage extends StatelessWidget {
                                   width: size.width * 0.08,
                                   height: size.width * 0.08,
                                   child: InkWell(
-                                    onTap: () {
+                                    onTap: () async {
+                                      AddressInfor? addressInfor =
+                                          await userRepo
+                                              .getDefaultAddress(user!.id!);
+                                      addressProvider
+                                          .setDefaultAddress(addressInfor!);
+                                      addressProvider
+                                          .setOrderingAddress(addressInfor);
+                                      List<AddressInfor>? list = await userRepo
+                                          .getListAddressInfor(user!.id!);
+
+                                      addressProvider
+                                          .setListAddressInfor(list!);
                                       // go to address page
                                       Navigator.of(context)
                                           .push(MaterialPageRoute(

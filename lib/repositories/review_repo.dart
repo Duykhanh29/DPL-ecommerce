@@ -4,9 +4,24 @@ import 'package:dpl_ecommerce/models/review.dart';
 
 class ReviewRepo {
   FirestoreDatabase _reviewFirestoreDB = FirestoreDatabase();
-  // Future<List<Review>> getListReviewByProduct(String productID)async{
+  Future<Review?> getReviewByID(String id) async {}
+  Future<void> addNewReview(Review review) async {
+    await _reviewFirestoreDB.addNewReview(review);
+  }
 
-  // }
+  Future<void> deleteReview(String id) async {
+    await _reviewFirestoreDB.deleteReview(id);
+  }
+
+  Future<List<Review>?> getListReviewByProduct(String id) async {
+    return await _reviewFirestoreDB.getListReviewByProduct(id);
+  }
+
+  Stream<List<Review>?> getAllReviewByProduct(String id) {
+    return _reviewFirestoreDB.getAllReviewByProduct(id);
+  }
+
+  // Future<Review?>
   Future<void> dispose() async {
     await _reviewFirestoreDB.dispose();
   }

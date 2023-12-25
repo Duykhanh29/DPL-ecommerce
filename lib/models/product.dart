@@ -89,24 +89,31 @@ class Product {
   Map<String, dynamic> toJson() => {
         'availableQuantity': availableQuantity,
         'categoryID': categoryID,
-        'colors': colors!.map((e) => e.toString()).toList(),
+        'colors':
+            colors != null ? colors!.map((e) => e.toString()).toList() : null,
         'id': id,
         'createdAt': createdAt,
         'description': description,
-        'images': images!.map((e) => e.toString()).toList(),
+        'images':
+            images != null ? images!.map((e) => e.toString()).toList() : null,
         'name': name,
         'price': price,
         'purchasingCount': purchasingCount,
         'rating': rating,
         'ratingCount': ratingCount,
         'shopID': shopID,
-        'reviewIDs': reviewIDs!.map((e) => e.toString()).toList(),
+        'reviewIDs': reviewIDs != null
+            ? reviewIDs!.map((e) => e.toString()).toList()
+            : null,
         'shopLogo': shopLogo,
         'shopName': shopName,
         'updatedAt': updatedAt,
         'voucherID': voucherID,
-        'videos': videos!.map((e) => e.toString()).toList(),
-        'types': types!.map((e) => e.toString()).toList(),
-        'sizes': sizes!.map((e) => e.toString()).toList(),
+        'videos':
+            videos != null ? videos!.map((e) => e.toString()).toList() : null,
+        'types':
+            types != null ? types!.map((e) => e.toString()).toList() : null,
+        'sizes':
+            sizes != null ? sizes!.map((e) => e.toString()).toList() : null,
       };
 }

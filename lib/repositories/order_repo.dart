@@ -8,14 +8,39 @@ import 'package:dpl_ecommerce/models/ordering_product.dart';
 class OrderRepo {
   FirestoreDatabase firestoreDatabase = FirestoreDatabase();
   Future<List<Order>?> getListOrderByUserID(String uid) async {
-    List<Order>? list = await firestoreDatabase.getListOrderByUserID(uid);
+    return await firestoreDatabase.getListOrderByUserID(uid);
+  }
+
+  Stream<List<Order>?> getAllOrderByUser(String uid) {
+    return firestoreDatabase.getAllOrderByUserID(uid);
+  }
+
+  Future<void> addAnOrder(Order order) async {
+    await firestoreDatabase.addAnOrder(order);
+  }
+
+  Future<Order?> getOrderByID(String id) async {
+    return await firestoreDatabase.getOrderByID(id);
+  }
+
+  Future<void> updateOrderingProductStatus(
+      {required String orderID,
+      required String orderingProductID,
+      required DeliverStatus status}) async {
+    await firestoreDatabase.updateOrderingProductStatus(
+        orderID: orderID, orderingProductID: orderingProductID, status: status);
+  }
+
+  Future<List<OrderingProduct>?> getListOrderingProductByOrder(
+      String orderID) async {
+    return await firestoreDatabase.getListOrderingProductByOrder(orderID);
   }
 
   final listorder = List.generate(
       15,
       (index) => Order(
           deliverServiceID: "deliverID01",
-          deliverStatus: DeliverStatus.delivering,
+          // deliverStatus: DeliverStatus.delivering,
           id: "orderID01",
           orderingProductsID: [
             OrderingProduct(
@@ -135,7 +160,7 @@ class OrderRepo {
               district: District(id: 123, name: "Hoang Mai"))));
   final Order order = Order(
       deliverServiceID: "deliverID01",
-      deliverStatus: DeliverStatus.delivering,
+      // deliverStatus: DeliverStatus.delivering,
       id: "orderID01",
       orderingProductsID: [
         OrderingProduct(

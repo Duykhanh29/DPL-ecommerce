@@ -165,7 +165,7 @@ class __DisplayCouponState extends State<DisplayCoupon> {
                               //   ),
                               // ),
                               IconButton(
-                                icon: Icon(Icons.delete),
+                                icon: Icon(Icons.delete, size: 20.h),
                                 //color: Colors.blueGrey,
                                 onPressed: () {
                                   widget.onVoucherDeleted(voucher.id!);

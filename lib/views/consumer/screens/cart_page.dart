@@ -1,21 +1,32 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/const/app_decoration.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/const/my_text_style.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/customs/custom_button_style.dart';
 import 'package:dpl_ecommerce/customs/custom_elevate_button.dart';
 import 'package:dpl_ecommerce/customs/custom_text_form_field.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/cart.dart';
+import 'package:dpl_ecommerce/models/order_model.dart' as orderModel;
+import 'package:dpl_ecommerce/models/ordering_product.dart';
 import 'package:dpl_ecommerce/models/product_in_cart_model.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/cart_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_in_cart_repo.dart';
+import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/common/common_methods.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:dpl_ecommerce/view_model/address_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
+import 'package:dpl_ecommerce/view_model/consumer/checkout_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/checkout.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/cart_widgets/product_cart_item.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/product_detail_page.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +47,7 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   CartRepo cartrepo = CartRepo();
   VoucherRepo voucherRepo = VoucherRepo();
+  UserRepo userRepo = UserRepo();
   List<Voucher>? listVoucher;
   bool isLoading = true;
   @override
@@ -65,6 +77,8 @@ class _CartPageState extends State<CartPage> {
     final provider = Provider.of<CartViewModel>(context, listen: true);
     final cart = provider.cart;
     final userProvider = Provider.of<UserViewModel>(context);
+    final checkoutProvider = Provider.of<CheckoutViewModel>(context);
+    final addressProvider = Provider.of<AddressViewModel>(context);
     final user = userProvider.currentUser;
     final size = MediaQuery.of(context).size;
     if (!isLoading) {
@@ -76,8 +90,14 @@ class _CartPageState extends State<CartPage> {
       appBar: AppBar(
         leading: CustomArrayBackWidget(function: () {
           provider.reset();
+          checkoutProvider.reset();
         }),
-        title: Text(LangText(context: context).getLocal()!.cart_ucf),
+        centerTitle: true,
+        backgroundColor: MyTheme.accent_color,
+        title: Text(
+          LangText(context: context).getLocal()!.cart_ucf,
+          style: MyTextStyle1().appBarText(),
+        ),
       ),
       body: Container(
         // color: Colors.green,
@@ -96,17 +116,79 @@ class _CartPageState extends State<CartPage> {
 
             // Spacer(),
             SizedBox(height: 10.h),
-            Container(
-              padding: EdgeInsets.all(3.h),
-              height: size.height * 0.06,
-              width: size.width * 0.9,
-              child: ElevatedButton(
-                  style: ButtonStyle(
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.r)))),
-                  onPressed: () {},
-                  child: Text(
-                      LangText(context: context).getLocal()!.checkout_ucf)),
+            Consumer<CartViewModel>(
+              builder: (context, provider, child) => Container(
+                padding: EdgeInsets.all(3.h),
+                height: size.height * 0.07,
+                width: size.width * 0.9,
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.r)))),
+                    onPressed: () async {
+                      // set address
+                      AddressInfor? addressInfor =
+                          await userRepo.getDefaultAddress(user!.id!);
+                      addressProvider.setDefaultAddress(addressInfor!);
+                      addressProvider.setOrderingAddress(addressInfor);
+                      List<AddressInfor>? list =
+                          await userRepo.getListAddressInfor(user!.id!);
+
+                      addressProvider.setListAddressInfor(list!);
+
+                      // set order
+                      int totalCost = provider.totalCost;
+                      int realCost = provider.totalCost - provider.savingCost;
+                      List<OrderingProduct>? listOrderingProduct = [];
+                      List<String> listProductInCartID = [];
+                      for (var element in provider.list) {
+                        listProductInCartID.add(element.id!);
+                        int realCost = element.cost;
+                        if (element.voucherID != null) {
+                          Voucher? voucher = await voucherRepo
+                              .getVoucherByID(element.voucherID!);
+                          if (voucher != null) {
+                            if (voucher.discountAmount != null) {
+                              realCost = realCost - voucher.discountAmount!;
+                            } else {
+                              realCost = realCost -
+                                  (realCost * voucher.discountPercent!).toInt();
+                            }
+                          }
+                        }
+
+                        OrderingProduct orderingProduct = OrderingProduct(
+                            color: element.color,
+                            date: Timestamp.now(),
+                            price: element.cost,
+                            productID: element.productID,
+                            quantity: element.quantity,
+                            realPrice: realCost,
+                            size: element.size,
+                            type: element.type,
+                            userID: element.userID,
+                            voucherID: element.voucherID,
+                            deliverStatus: DeliverStatus.processing);
+                        listOrderingProduct.add(orderingProduct);
+                      }
+
+                      orderModel.Order order = orderModel.Order(
+                        orderingProductsID: listOrderingProduct,
+                        totalCost: totalCost,
+                        userID: user!.id,
+                        totalProduct: listOrderingProduct.length,
+                      );
+                      checkoutProvider.setOrder(order);
+
+                      checkoutProvider
+                          .setListProductInCartID(listProductInCartID);
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => CheckOut(uid: user.id!),
+                      ));
+                    },
+                    child: Text(
+                        LangText(context: context).getLocal()!.checkout_ucf)),
+              ),
             ),
             SizedBox(height: 10.h),
           ],

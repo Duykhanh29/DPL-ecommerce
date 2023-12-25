@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class CustomArrayBackWidget extends StatelessWidget {
@@ -16,7 +17,10 @@ class CustomArrayBackWidget extends StatelessWidget {
           }
           Navigator.of(context).pop();
         },
-        child: Icon(Icons.arrow_back_ios),
+        child: Icon(
+          Icons.arrow_back_ios,
+          color: MyTheme.white,
+        ),
       ),
     );
   }

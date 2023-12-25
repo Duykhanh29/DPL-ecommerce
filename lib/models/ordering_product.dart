@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
+enum DeliverStatus { processing, confirmed, delivering, delivered, isCanceled }
+
 class OrderingProduct {
   String? id;
   String? productID;
@@ -13,7 +15,9 @@ class OrderingProduct {
   String? color;
   String? type;
   Timestamp? date;
+  DeliverStatus? deliverStatus;
   OrderingProduct({
+    this.deliverStatus,
     this.id,
     this.price,
     this.productID,
@@ -29,7 +33,10 @@ class OrderingProduct {
     id ??= Uuid().v4();
   }
   factory OrderingProduct.fromJson(Map<String, dynamic> json) {
+    print("${json['quantity']}");
     return OrderingProduct(
+        deliverStatus: DeliverStatus.values.firstWhere((element) =>
+            element.toString().split(".").last == json['deliverStatus']),
         productID: json['productID'],
         id: json['id'],
         price: json['price'],
@@ -43,13 +50,14 @@ class OrderingProduct {
         date: (json['date'] as Timestamp?));
   }
   Map<String, dynamic> toJson() => {
+        'deliverStatus': deliverStatus.toString().split(".").last,
         'productID': productID,
         'id': id,
         'price': price,
         'realPrice': realPrice,
         'voucherID': voucherID,
         'userID': userID,
-        'quatity': quantity,
+        'quantity': quantity,
         'size': size,
         'color': color,
         'type': type,

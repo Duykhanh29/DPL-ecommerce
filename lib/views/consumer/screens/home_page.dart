@@ -20,6 +20,7 @@ import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/category_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/chat_page.dart';
 
 import 'package:dpl_ecommerce/views/consumer/screens/search_page.dart';
@@ -206,8 +207,20 @@ class HomePage extends StatelessWidget {
                             padding: EdgeInsets.symmetric(horizontal: 10.h),
                             child: _buildDealOfTheDay(
                               context,
-                              dealOfTheDayText: "categories",
-                              viewAllText: "view all",
+                              dealOfTheDayText: LangText(context: context)
+                                  .getLocal()!
+                                  .categories_ucf,
+                              viewAllText: LangText(context: context)
+                                  .getLocal()!
+                                  .view_more_ucf,
+                              onCall: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const CategoryPage(),
+                                    ));
+                              },
                             ),
                           ),
                           // SizedBox(height: 15.h),
@@ -352,8 +365,8 @@ class HomePage extends StatelessWidget {
                 },
               );
             } else {
-              return Center(
-                child: Text("No data here"),
+              return const Center(
+                child: CircularProgressIndicator(),
               );
             }
           }
@@ -625,11 +638,10 @@ class HomePage extends StatelessWidget {
   }
 
   /// Common widget
-  Widget _buildDealOfTheDay(
-    BuildContext context, {
-    required String dealOfTheDayText,
-    required String viewAllText,
-  }) {
+  Widget _buildDealOfTheDay(BuildContext context,
+      {required String dealOfTheDayText,
+      required String viewAllText,
+      Function()? onCall}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -645,9 +657,12 @@ class HomePage extends StatelessWidget {
         Padding(
           padding: EdgeInsets.only(bottom: 3.h),
           child: TextButton(
-            onPressed: () {
-              // go to see all
-            },
+            onPressed:
+                // go to see all
+                // if (onCall != null) {
+                onCall
+            // }
+            ,
             child: Text(
               viewAllText,
               style: CustomTextStyles.bodySmallGray600.copyWith(

@@ -12,6 +12,7 @@ import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/common/common_caculated_methods.dart';
 import 'package:dpl_ecommerce/utils/common/common_methods.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/product_detail_page.dart';
@@ -299,8 +300,10 @@ class _ProductCartItemState extends State<ProductCartItem> {
               Padding(
                 padding: const EdgeInsets.only(top: 6, left: 5),
                 child: voucher!.discountPercent != null
-                    ? Text("Decrease  ${voucher!.discountPercent}%")
-                    : Text("Decrease  ${voucher!.discountAmount} VND"),
+                    ? Text(
+                        "${LangText(context: context).getLocal()!.decrease_ucf}  ${voucher!.discountPercent}%")
+                    : Text(
+                        "${LangText(context: context).getLocal()!.decrease_ucf}  ${voucher!.discountAmount} VND"),
               ),
             },
             if (widget.productInCartModel!.color != null ||

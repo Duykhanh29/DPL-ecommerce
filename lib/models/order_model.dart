@@ -1,25 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/ordering_product.dart';
 import 'package:uuid/uuid.dart';
-
-enum DeliverStatus { processing, confirmed, delivering, delivered, isCanceled }
 
 class Order {
   String? id;
   String? userID;
   String? paymentTypeID;
   String? deliverServiceID;
-  DeliverStatus? deliverStatus;
   int? shippingCost;
   int? totalCost;
   int? totalProduct;
   String? voucherDiscountID;
   bool isCancelled;
   AddressInfor? receivedAddress;
+  Timestamp? time;
   List<OrderingProduct>? orderingProductsID;
   Order(
       {this.deliverServiceID,
-      this.deliverStatus,
       this.id,
       this.isCancelled = false,
       this.orderingProductsID,
@@ -29,14 +27,13 @@ class Order {
       this.totalCost,
       this.userID,
       this.voucherDiscountID,
-      this.totalProduct}) {
+      this.totalProduct,
+      this.time}) {
     id ??= Uuid().v4();
   }
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
         deliverServiceID: json['deliverServiceID'],
-        deliverStatus: DeliverStatus.values.firstWhere((element) =>
-            element.toString().split(".").last == json['deliverStatus']),
         isCancelled: json['isCancelled'],
         id: json['id'],
         orderingProductsID: (json['orderingProductsID'] as List<dynamic>)
@@ -48,11 +45,11 @@ class Order {
         shippingCost: json['shippingCost'],
         receivedAddress: AddressInfor.fromJson(json['receivedAddress']),
         totalCost: json['totalCost'],
-        totalProduct: json['totalProduct']);
+        totalProduct: json['totalProduct'],
+        time: (json['time'] as Timestamp?));
   }
   Map<String, dynamic> toJson() => {
         'deliverServiceID': deliverServiceID,
-        'deliverStatus': deliverStatus.toString().split(".").last,
         'isCancelled': isCancelled,
         'id': id,
         'orderingProductsID':
@@ -63,6 +60,7 @@ class Order {
         'shippingCost': shippingCost,
         'receivedAddress': receivedAddress!.toJson(),
         'totalCost': totalCost,
-        'totalProduct': totalProduct
+        'totalProduct': totalProduct,
+        'time': time
       };
 }

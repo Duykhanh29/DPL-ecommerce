@@ -1,17 +1,23 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/customs/custom_elevate_button.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_photo_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_form_field.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/models/seller_infor.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // ignore_for_file: must_be_immutable
 class ProfileSettingSellerScreen extends StatelessWidget {
@@ -22,13 +28,16 @@ class ProfileSettingSellerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserViewModel>(context);
     final user = userProvider.currentUser;
+    final userInfo = user!.userInfor;
+    final sellerInfo = userInfo!.sellerInfor;
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          leading: CustomArrayBackWidget(),
-          title: Text("Profile setting"),
-        ),
+        appBar: CustomAppBar(
+                centerTitle: true,
+                context: context,
+                title: LangText(context: context).getLocal()!.profile_setting)
+            .show(),
         body: Padding(
           padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 5.h),
           child: Column(
@@ -55,7 +64,10 @@ class ProfileSettingSellerScreen extends StatelessWidget {
                                               .downloadAndSaveImage(
                                                   value.userModel!.avatar!);
                                         },
-                                        icon: Icon(Icons.download_outlined))
+                                        icon: Icon(
+                                          Icons.download_outlined,
+                                          size: 20.h,
+                                        ))
                                   ],
                                 ),
                                 body: CustomPhotoView(
@@ -103,14 +115,17 @@ class ProfileSettingSellerScreen extends StatelessWidget {
                         decoration: const BoxDecoration(
                             shape: BoxShape.circle, color: Colors.blueAccent),
                         padding: EdgeInsets.all(2.h),
-                        child: Icon(Icons.edit),
+                        child: Icon(
+                          Icons.edit,
+                          size: 20.h,
+                        ),
                       ),
                     )
                   ],
                 ),
               ),
               SizedBox(height: 90.h),
-              BuildForm(provider: userProvider),
+              BuildForm(),
             ],
           ),
         ),
@@ -120,8 +135,8 @@ class ProfileSettingSellerScreen extends StatelessWidget {
 }
 
 class BuildForm extends StatefulWidget {
-  BuildForm({super.key, required this.provider});
-  UserViewModel provider;
+  BuildForm({super.key});
+  // UserViewModel provider;
   @override
   State<BuildForm> createState() => _BuildFormState();
 }
@@ -143,6 +158,9 @@ class _BuildFormState extends State<BuildForm> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserViewModel>(context, listen: false);
     print("Check test");
+    final user = userProvider.currentUser;
+    final userInfo = user!.userInfor;
+    final sellerInfo = userInfo!.sellerInfor;
     // firstNameEditTextController =
     //     TextEditingController(text: userProvider.firstName);
     // lastNameEditTextController =
@@ -164,13 +182,16 @@ class _BuildFormState extends State<BuildForm> {
                     },
                     validator: (value) {
                       if (value == null || value == "") {
-                        return "Input again";
+                        return LangText(context: context)
+                            .getLocal()!
+                            .input_again;
                       }
                       return null;
                     },
                     controller: value.firstNameEditTextController,
                     decoration: InputDecoration(
-                      hintText: "first name",
+                      hintText:
+                          LangText(context: context).getLocal()!.first_name,
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15)),
                     ),
@@ -194,7 +215,8 @@ class _BuildFormState extends State<BuildForm> {
                     // },
                     controller: value.lastNameEditTextController,
                     decoration: InputDecoration(
-                      hintText: "last name",
+                      hintText:
+                          LangText(context: context).getLocal()!.last_name,
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15)),
                     ),
@@ -219,7 +241,9 @@ class _BuildFormState extends State<BuildForm> {
                     keyboardType: TextInputType.phone,
                     controller: value.phoneEditTextController,
                     decoration: InputDecoration(
-                      hintText: "phone",
+                      hintText: LangText(context: context)
+                          .getLocal()!
+                          .phone_number_ucf,
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15)),
                     ),
@@ -237,14 +261,17 @@ class _BuildFormState extends State<BuildForm> {
                     },
                     validator: (value) {
                       if (value == null || value == "") {
-                        return "Input again";
+                        return LangText(context: context)
+                            .getLocal()!
+                            .input_again;
                       }
                       return null;
                     },
                     keyboardType: TextInputType.emailAddress,
                     controller: value.emailEditTextController,
                     decoration: InputDecoration(
-                      hintText: "email",
+                      hintText:
+                          LangText(context: context).getLocal()!.email_ucf,
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15)),
                     ),
@@ -252,7 +279,11 @@ class _BuildFormState extends State<BuildForm> {
                 },
               ),
               SizedBox(
-                height: 80.h,
+                height: 20.h,
+              ),
+              buildTaxPaper(context, sellerInfo!),
+              SizedBox(
+                height: 60.h,
               ),
               _buildSaveChangeButton(context, userProvider),
               SizedBox(
@@ -297,10 +328,53 @@ class _BuildFormState extends State<BuildForm> {
             print("object");
           }
         },
-        child: const Text("Save"),
         style: ButtonStyle(
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.r)))),
+        child: Text(LangText(context: context).getLocal()!.save_ucf),
+      ),
+    );
+  }
+
+  Widget buildTaxPaper(BuildContext context, SellerInfor sellerInfor) {
+    return Container(
+      // height: MediaQuery.of(context).size.height * 0.24,
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.h),
+            child: Text(AppLocalizations.of(context)!.tax_paper_ucf,
+                style: TextStyle(
+                    color: MyTheme.font_grey,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.sp)),
+          ),
+          Container(
+              height: MediaQuery.of(context).size.height * 0.21,
+              width: MediaQuery.of(context).size.width * 0.9,
+              // padding: EdgeInsets.symmetric(horizontal: 1),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15.r),
+                  border: Border.all(color: MyTheme.dark_grey, width: 0.5)),
+              child: sellerInfor.taxPaper != null
+                  ? CachedNetworkImage(
+                      placeholder: (context, url) =>
+                          Image.asset("assets/placeholder.png"),
+                      errorWidget: (context, url, error) => Icon(
+                        Icons.error,
+                        size: 28.h,
+                      ),
+                      imageUrl: sellerInfor.taxPaper!,
+                      height: MediaQuery.of(context).size.height * 0.06,
+                      fit: BoxFit.fill,
+                    )
+                  : Image.asset(
+                      'assets/placeholder.png',
+                      fit: BoxFit.fill,
+                    )),
+        ],
       ),
     );
   }

@@ -7,6 +7,7 @@ import 'package:dpl_ecommerce/models/district.dart';
 import 'package:dpl_ecommerce/models/ward.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:dpl_ecommerce/view_model/address_view_model.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -128,7 +129,7 @@ class _EditAddressState extends State<EditAddress> {
     });
   }
 
-  onPressReg(UserModel user) async {
+  onPressReg(UserModel user, AddressViewModel addressViewModel) async {
     String name = _nameController.text.trim();
     String country = _countryController.text.trim();
     String homeNumber = _homeNumberController.text.trim();
@@ -142,6 +143,7 @@ class _EditAddressState extends State<EditAddress> {
         name: name,
         number: homeNumber,
         ward: _selected_ward);
+    addressViewModel.updateAddress(addressInfor);
     await userRepo.updateAddress(addressInfor, user);
   }
 
@@ -189,6 +191,7 @@ class _EditAddressState extends State<EditAddress> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserViewModel>(context);
+    final addressProvider = Provider.of<AddressViewModel>(context);
     userProvider.initialize();
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -725,7 +728,7 @@ class _EditAddressState extends State<EditAddress> {
                   _nameController.text.isNotEmpty &&
                   _countryController.text.isNotEmpty &&
                   _homeNumberController.text.isNotEmpty) {
-                await onPressReg(userProvider.currentUser!);
+                await onPressReg(userProvider.currentUser!, addressProvider);
                 Future.delayed(const Duration(seconds: 1)).then((value) {
                   Navigator.pop(context);
                 });

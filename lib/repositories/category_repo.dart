@@ -8,6 +8,14 @@ class CategoryRepo {
     return result;
   }
 
+  Future<Category?> getCategoryByID(String id) async {
+    return await firestoreDatabase.getCategoryByID(id);
+  }
+
+  Future<void> deleteCategory(String id) async {
+    await firestoreDatabase.deleteCategory(id);
+  }
+
   Future<void> dispose() async {
     await firestoreDatabase.dispose();
   }

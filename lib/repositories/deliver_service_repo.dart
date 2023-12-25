@@ -7,6 +7,18 @@ class DeliverServiceRepo {
     return await firestoreDatabase.getDeliverServiceList();
   }
 
+  Future<void> addDeliveryService(DeliverService deliverService) async {
+    await firestoreDatabase.addDeliverService(deliverService);
+  }
+
+  Future<void> deleteDeliveryService(String id) async {
+    await firestoreDatabase.deleteDeliveryService(id);
+  }
+
+  Future<DeliverService?> getDeliveryServiceByID(String id) async {
+    return await firestoreDatabase.getDeliveryService(id);
+  }
+
   final List<DeliverService> listDeliverService = [
     DeliverService(
         id: "deliverServiceID01",

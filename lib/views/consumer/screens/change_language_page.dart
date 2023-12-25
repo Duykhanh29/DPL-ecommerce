@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/models/language.dart';
 import 'package:dpl_ecommerce/repositories/language_repo.dart';
@@ -18,10 +19,11 @@ class LanguagePage extends StatelessWidget {
     final languageProvider = Provider.of<LanguageViewModel>(context);
     final listLanguage = languageProvider.list;
     return Scaffold(
-      appBar: AppBar(
-        leading: CustomArrayBackWidget(),
-        title: Text(AppLocalizations.of(context)!.change_language_ucf),
-      ),
+      appBar: CustomAppBar(
+              centerTitle: true,
+              context: context,
+              title: AppLocalizations.of(context)!.change_language_ucf)
+          .show(),
       body: Padding(
           padding: EdgeInsets.all(5.h),
           child: ListView.builder(

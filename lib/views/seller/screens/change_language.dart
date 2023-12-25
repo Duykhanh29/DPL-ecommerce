@@ -1,6 +1,7 @@
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/models/language.dart';
 import 'package:dpl_ecommerce/repositories/language_repo.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/consumer/language_view_model.dart';
 import 'package:dpl_ecommerce/view_model/lang_view_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,10 +19,10 @@ class LanguagePageSellerSide extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: CustomArrayBackWidget(),
-        title: Text("Language"),
+        title: Text(LangText(context: context).getLocal()!.language_ucf),
       ),
       body: Padding(
-          padding: EdgeInsets.all(5),
+          padding: EdgeInsets.all(5.h),
           child: ListView.builder(
             itemBuilder: (context, index) {
               return LanguageItem(
@@ -73,8 +74,8 @@ class LanguageItem extends StatelessWidget {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.0), color: Colors.green),
             child: Padding(
-              padding: const EdgeInsets.all(3),
-              child: Icon(Icons.check, color: Colors.white, size: 10),
+              padding: EdgeInsets.all(3.h),
+              child: Icon(Icons.check, color: Colors.white, size: 10.h),
             ),
           )
         : SizedBox();

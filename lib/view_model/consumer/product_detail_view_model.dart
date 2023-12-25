@@ -7,10 +7,10 @@ class ProductDetailViewModel extends ChangeNotifier {
   String? type;
   String? size;
   List<String>? voucherIDs;
-  void addNewVoucher(String voucherID) {
-    voucherIDs!.add(voucherID);
-    notifyListeners();
-  }
+  // void addNewVoucher(String voucherID) {
+  //   voucherIDs!.add(voucherID);
+  //   notifyListeners();
+  // }
 
   void reset() {
     choseNumber = 1;
@@ -47,9 +47,9 @@ class ProductDetailViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void initialize({String? firstType, String? firstSize, String? firstColor}) {
-    type = firstType;
-    color = firstColor;
-    size = firstSize;
-  }
+  // void initialize({String? firstType, String? firstSize, String? firstColor}) {
+  //   type = firstType;
+  //   color = firstColor;
+  //   size = firstSize;
+  // }
 }

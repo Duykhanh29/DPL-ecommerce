@@ -1,3 +1,5 @@
+import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/const/my_text_style.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -6,8 +8,14 @@ class CustomAppBar {
   String? title;
   BuildContext? context;
   Color? backgroundColor;
+  bool isLeading;
 
-  CustomAppBar({this.title, this.context, this.centerTitle});
+  CustomAppBar(
+      {this.title,
+      this.context,
+      this.centerTitle,
+      this.backgroundColor,
+      this.isLeading = true});
 
   AppBar show({var elevation = 5.0}) {
     return AppBar(
@@ -16,9 +24,10 @@ class CustomAppBar {
         elevation: elevation,
         title: Text(
           title!,
-          // style: MyTextStyle().appbarText(),
+          style: TextStyle(
+              fontSize: 17, fontWeight: FontWeight.bold, color: MyTheme.white),
         ),
-        backgroundColor: backgroundColor ?? Colors.white,
-        leading: CustomArrayBackWidget());
+        backgroundColor: backgroundColor ?? MyTheme.accent_color,
+        leading: isLeading ? CustomArrayBackWidget() : null);
   }
 }

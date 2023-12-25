@@ -23,6 +23,7 @@ import 'package:dpl_ecommerce/utils/common/common_methods.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/category_detail_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/chatting_page.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/voucher_widgets/list_voucher_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_item_widget1.dart';
@@ -448,6 +449,17 @@ class _ShopProfileState extends State<ShopProfile>
                                   ? Column(
                                       children: listCategory!.map((category) {
                                         return ListTile(
+                                          onTap: () {
+                                            Navigator.of(context)
+                                                .push(MaterialPageRoute(
+                                              builder: (context) {
+                                                return CategoryDetail(
+                                                  categoryID: category.id!,
+                                                  shopID: widget.shop!.id,
+                                                );
+                                              },
+                                            ));
+                                          },
                                           leading: CachedNetworkImage(
                                             imageUrl: category.logo!,
                                             imageBuilder:

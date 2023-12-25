@@ -13,8 +13,12 @@ class UserRepo {
     return await _userFirestoreDatabase.getListUser();
   }
 
-  Stream<List<AddressInfor>?> getListAddress(String uid) async* {
-    yield* _userFirestoreDatabase.getAddressInfors(uid);
+  Stream<List<AddressInfor>?> getAllAddressInfor(String uid) {
+    return _userFirestoreDatabase.getAllAddressInfors(uid);
+  }
+
+  Future<List<AddressInfor>?> getListAddressInfor(String uid) async {
+    return await _userFirestoreDatabase.getListAddressInfor(uid);
   }
 
   Future<void> addNewAddress(AddressInfor addressInfor, UserModel user) async {
@@ -47,6 +51,10 @@ class UserRepo {
         email: email,
         name: name,
         phone: phone);
+  }
+
+  Future<AddressInfor?> getDefaultAddress(String uid) async {
+    return await _userFirestoreDatabase.getDefaultAddress(uid);
   }
 
   final List<UserModel> listUser = [

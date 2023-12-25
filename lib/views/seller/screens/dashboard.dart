@@ -85,14 +85,17 @@ class Dashboard extends StatelessWidget {
                   Column(
                     children: [
                       _buiditeam(
-                          lable: "Rating",
+                          lable:
+                              LangText(context: context).getLocal()!.rating_ucf,
                           value: shop.rating.toString(),
                           icon1: CupertinoIcons.star),
                       SizedBox(
                         height: 12.h,
                       ),
                       _buiditeam(
-                        lable: "Total Sales",
+                        lable: LangText(context: context)
+                            .getLocal()!
+                            .total_orders_ucf,
                         value: shop.totalRevenue.toString(),
                         icon1: Icons.money,
                       ),
@@ -122,7 +125,8 @@ class Dashboard extends StatelessWidget {
                       ),
                     ),
                     child: _buildicon(
-                        name: "Messages",
+                        name:
+                            LangText(context: context).getLocal()!.messages_ucf,
                         icon: CupertinoIcons.chat_bubble_2_fill),
                   ),
                   const Spacer(),
@@ -134,7 +138,10 @@ class Dashboard extends StatelessWidget {
                             ),
                           ),
                       child: _buildicon(
-                          name: "Coupons", icon: CupertinoIcons.ticket_fill)),
+                          name: LangText(context: context)
+                              .getLocal()!
+                              .vouchers_ucf,
+                          icon: CupertinoIcons.ticket_fill)),
                   const Spacer(),
                   GestureDetector(
                       onTap: () => Navigator.push(
@@ -144,7 +151,10 @@ class Dashboard extends StatelessWidget {
                             ),
                           ),
                       child: _buildicon(
-                          name: "Payment History", icon: Icons.history)),
+                          name: LangText(context: context)
+                              .getLocal()!
+                              .payment_history_ucf,
+                          icon: Icons.history)),
                   const Spacer(),
                   GestureDetector(
                       onTap: () => Navigator.push(
@@ -155,7 +165,10 @@ class Dashboard extends StatelessWidget {
                           ),
                       child: Container(
                           child: _buildicon(
-                              name: "Setting", icon: Icons.settings))),
+                              name: LangText(context: context)
+                                  .getLocal()!
+                                  .settings_ucf,
+                              icon: Icons.settings))),
                   SizedBox(
                     width: 20.w,
                   ),
@@ -178,7 +191,9 @@ class Dashboard extends StatelessWidget {
                       width: 20.w,
                     ),
                     Text(
-                      "Your account has not been verified",
+                      LangText(context: context)
+                          .getLocal()!
+                          .your_account_is_unverified,
                       style: TextStyle(
                         fontSize: 12.sp,
                         color: Colors.white,
@@ -200,7 +215,7 @@ class Dashboard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8)),
                         child: Center(
                           child: Text(
-                            "Verify now",
+                            LangText(context: context).getLocal()!.verify_now,
                             style: TextStyle(
                               color: Colors.blue,
                               fontSize: 12.sp,
@@ -221,7 +236,7 @@ class Dashboard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Sales statistics"),
+                  Text(LangText(context: context).getLocal()!.sales_stat_ucf),
                   SizedBox(
                     height: 10.h,
                   ),
@@ -242,7 +257,9 @@ class Dashboard extends StatelessWidget {
                     height: 10.h,
                   ),
 
-                  const Text("Your Categories"),
+                  Text(LangText(context: context)
+                      .getLocal()!
+                      .your_categories_ucf),
                   SizedBox(
                     height: 10.h,
                   ),
@@ -253,12 +270,12 @@ class Dashboard extends StatelessWidget {
                             // width: double.infinity,
                             child: ListView.separated(
                                 separatorBuilder: (context, index) => SizedBox(
-                                      width: 10,
+                                      width: 10.w,
                                     ),
                                 scrollDirection: Axis.horizontal,
                                 // shrinkWrap: true,
                                 //scrollDirection: Axis.horizontal,
-                                physics: BouncingScrollPhysics(),
+                                physics: const BouncingScrollPhysics(),
                                 itemCount: products!.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return Container(
@@ -268,7 +285,7 @@ class Dashboard extends StatelessWidget {
                                       children: [
                                         ClipRRect(
                                           borderRadius:
-                                              BorderRadius.circular(10.0),
+                                              BorderRadius.circular(10.r),
                                           child: Image.network(
                                               products![0]!.images![0]),
                                         ),
@@ -316,8 +333,7 @@ class Dashboard extends StatelessWidget {
                   SizedBox(
                     height: 20.h,
                   ),
-
-                  const Text("Top Prducts"),
+                  Text(LangText(context: context).getLocal()!.top_products_ucf),
                   SizedBox(
                     height: 5.h,
                   ),

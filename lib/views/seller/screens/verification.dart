@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/city.dart';
@@ -6,6 +7,7 @@ import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/models/verification_form.dart';
 import 'package:dpl_ecommerce/repositories/shop_repo.dart';
 import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -61,12 +63,14 @@ class __VerificationState extends State<Verification> {
     final userProvider = Provider.of<UserViewModel>(context);
     final user = userProvider.currentUser;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Verification'),
-      ),
+      appBar: CustomAppBar(
+              centerTitle: true,
+              context: context,
+              title: LangText(context: context).getLocal()!.verification_ucf)
+          .show(),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: EdgeInsets.all(15.h),
           child: Form(
             key: _formKey,
             child: Column(
@@ -79,8 +83,8 @@ class __VerificationState extends State<Verification> {
                 _buidck(
                     textInputType: TextInputType.text,
                     name: "",
-                    hintname: "Shop name",
-                    namevalue: "Shop name",
+                    hintname: LangText(context: context).getLocal()!.shop_name,
+                    namevalue: LangText(context: context).getLocal()!.shop_name,
                     namctr: shopNameController),
                 SizedBox(
                   height: 20.h,
@@ -88,8 +92,10 @@ class __VerificationState extends State<Verification> {
                 _buidck(
                     textInputType: TextInputType.text,
                     name: "",
-                    hintname: "License No",
-                    namevalue: "License No",
+                    hintname:
+                        LangText(context: context).getLocal()!.license_no_ucf,
+                    namevalue:
+                        LangText(context: context).getLocal()!.license_no_ucf,
                     namctr: lisenceController),
                 SizedBox(
                   height: 20.h,
@@ -97,23 +103,27 @@ class __VerificationState extends State<Verification> {
                 _buidck(
                     textInputType: TextInputType.streetAddress,
                     name: "",
-                    hintname: "Home number",
-                    namevalue: "Home number",
+                    hintname:
+                        LangText(context: context).getLocal()!.home_number,
+                    namevalue:
+                        LangText(context: context).getLocal()!.home_number,
                     namctr: homeNumberController),
                 SizedBox(
                   height: 20.h,
                 ),
                 _buidck(
                     textInputType: TextInputType.phone,
-                    name: "Phone number",
-                    hintname: "Phone number",
-                    namevalue: "Phone number",
+                    name: "",
+                    hintname:
+                        LangText(context: context).getLocal()!.phone_number_ucf,
+                    namevalue:
+                        LangText(context: context).getLocal()!.phone_number_ucf,
                     namctr: phoneNumberController),
                 SizedBox(
                   height: 20.h,
                 ),
                 //_buidck(name: "Email", hintname: "Email", namevalue: "Email", namctr: TextEditingController()),
-                Text("Tax paper"),
+                Text(LangText(context: context).getLocal()!.tax_paper_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
@@ -138,6 +148,17 @@ class __VerificationState extends State<Verification> {
                         Container(
                           height: 50.h,
                           width: 261.w,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Color.fromARGB(110, 218, 218, 218),
+                              width: 2,
+                            ),
+                            color: Colors.white10,
+                            //color: Color.fromARGB(110, 218, 218, 218),
+                            borderRadius: BorderRadius.horizontal(
+                              left: Radius.circular(10.r),
+                            ),
+                          ),
                           //child: Center(child: Text("Choose file")),
                           child: Row(
                             children: [
@@ -150,33 +171,27 @@ class __VerificationState extends State<Verification> {
                                         fontSize: 14.sp,
                                       ))
                                   : Text(
-                                      "Choose file",
+                                      LangText(context: context)
+                                          .getLocal()!
+                                          .choose_file,
                                       style: TextStyle(color: Colors.grey),
                                     ),
                             ],
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Color.fromARGB(110, 218, 218, 218),
-                              width: 2,
-                            ),
-                            color: Colors.white10,
-                            //color: Color.fromARGB(110, 218, 218, 218),
-                            borderRadius: BorderRadius.horizontal(
-                              left: Radius.circular(10.r),
-                            ),
                           ),
                         ),
                         Container(
                           height: 50.h,
                           width: 71.5.w,
-                          child: Center(child: Text("Brower")),
                           decoration: BoxDecoration(
                             color: Color.fromARGB(110, 218, 218, 218),
                             borderRadius: BorderRadius.horizontal(
                               right: Radius.circular(10.r),
                             ),
                           ),
+                          child: Center(
+                              child: Text(LangText(context: context)
+                                  .getLocal()!
+                                  .brower)),
                         ),
                       ],
                     ),
@@ -189,7 +204,7 @@ class __VerificationState extends State<Verification> {
       ),
       bottomNavigationBar: Container(
         height: 40,
-        width: 370,
+        width: MediaQuery.of(context).size.width * 0.9,
         margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 25.h),
         child: ElevatedButton(
           onPressed: () async {
@@ -232,7 +247,7 @@ class __VerificationState extends State<Verification> {
             }
           },
           child: Text(
-            'Send',
+            LangText(context: context).getLocal()!.send_ucf,
             style: TextStyle(fontSize: 18.sp),
           ),
         ),
@@ -269,7 +284,8 @@ class __VerificationState extends State<Verification> {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return "Please enter " + namevalue;
+                return LangText(context: context).getLocal()!.please_enter +
+                    namevalue;
               }
               return null;
             },

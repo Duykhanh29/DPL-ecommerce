@@ -1,4 +1,6 @@
 import 'package:dpl_ecommerce/const/app_decoration.dart';
+import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/const/my_text_style.dart';
 import 'package:dpl_ecommerce/customs/custom_badge_cart.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/models/ordering_product.dart';
@@ -47,12 +49,13 @@ class MyOrderThreeTabContainerScreenState extends State<OrderPage>
       resizeToAvoidBottomInset: false,
       //backgroundColor: Colors.blue,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: MyTheme.accent_color,
         title: Text(
           LangText(context: context).getLocal()!.my_orders_ucf,
           textAlign: TextAlign.center,
+          style: MyTextStyle1().appBarText(),
         ),
-        // centerTitle: true,
+        centerTitle: true,
 
         //leading: Icon(Icons.menu),
       ),
@@ -70,11 +73,11 @@ class MyOrderThreeTabContainerScreenState extends State<OrderPage>
                       height: 589.h,
                       child: TabBarView(
                         controller: tabviewController,
-                        children: [
-                          MyOrdersListPage(),
-                          MyOrdersListPage(),
-                          MyOrdersListPage(),
-                          MyOrdersListPage(),
+                        children: const [
+                          // MyOrdersListPage(),
+                          // MyOrdersListPage(),
+                          // MyOrdersListPage(),
+                          // MyOrdersListPage(),
                         ],
                       ),
                     ),
@@ -95,17 +98,17 @@ class MyOrderThreeTabContainerScreenState extends State<OrderPage>
       width: 309.h,
       child: TabBar(
         controller: tabviewController,
-        labelColor: Colors.blue,
+        labelColor: MyTheme.accent_color,
         unselectedLabelColor: Colors.black,
         isScrollable: true,
-        indicator: const UnderlineTabIndicator(
+        indicator: UnderlineTabIndicator(
             borderSide: BorderSide(
-              width: 2,
-              color: Colors.blue,
+              width: 2.h,
+              color: MyTheme.accent_color,
             ),
-            insets: EdgeInsets.symmetric(horizontal: 16)),
-        labelPadding: const EdgeInsets.symmetric(horizontal: 20),
-        labelStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+            insets: EdgeInsets.symmetric(horizontal: 16.w)),
+        labelPadding: EdgeInsets.symmetric(horizontal: 20.w),
+        labelStyle: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500),
         tabs: [
           Tab(
             child: Text(

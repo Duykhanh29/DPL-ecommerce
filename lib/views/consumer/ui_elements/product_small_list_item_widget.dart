@@ -175,11 +175,14 @@ class ProductsmalllistItemWidget extends StatelessWidget {
                         await wishListRepo.addToFavourite(favouriteProduct);
                       }
                     },
-                    child: Icon(isFavourite!
-                        ? Icons.favorite
-                        : Icons.favorite_border_rounded)));
+                    child: Icon(
+                      isFavourite!
+                          ? Icons.favorite
+                          : Icons.favorite_border_rounded,
+                      color: MyTheme.red,
+                    )));
           } else {
-            return Icon(Icons.favorite_border);
+            return Icon(Icons.favorite_border, color: MyTheme.red);
           }
         }
       },

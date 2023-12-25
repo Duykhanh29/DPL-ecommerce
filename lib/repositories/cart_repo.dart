@@ -29,6 +29,16 @@ class CartRepo {
         savingCost: savingCost);
   }
 
+  Future<void> deleteByProductInCartModelID(
+      {required String uid,
+      String? productInCartModelID,
+      int savingCost = 0}) async {
+    await firestoreDatabase.deleteByProductInCartModelID(
+        uid: uid,
+        productInCartModelID: productInCartModelID,
+        savingCost: savingCost);
+  }
+
   Future<void> dispose() async {
     await firestoreDatabase.dispose();
   }

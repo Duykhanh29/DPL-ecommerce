@@ -224,7 +224,7 @@ class _ImageUploadSectionState extends State<ImageUploadSection> {
 
         CustomIconButton(
           width: MediaQuery.of(context).size.width * 0.8,
-          height: MediaQuery.of(context).size.width * 0.8,
+          height: 50.h,
           onTap: () async {
             await getMedia(user!.id!);
           },
@@ -261,7 +261,7 @@ class _ImageUploadSectionState extends State<ImageUploadSection> {
                       filePath: filePath!,
                       fileName: fileName!,
                       secondRef: user!.id!,
-                      rootRef: 'avatars',
+                      rootRef: 'reviews',
                       thirdRef: type);
                 }
               }
@@ -276,6 +276,7 @@ class _ImageUploadSectionState extends State<ImageUploadSection> {
                   userAvatar: user.avatar);
               await productRepo.addNewReview(review);
               // Navigator.of(context).pushNamedAndRemoveUntil(newRouteName, (route) => false);
+              Navigator.of(context).pop();
             }
           },
           decoration: BoxDecoration(

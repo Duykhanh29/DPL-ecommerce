@@ -51,9 +51,23 @@ class _AddProductScreenState extends State<AddProductScreen> {
   List<String>? colors = [];
   List<String>? sizes = [];
   Category? selectedCategory;
-  List<Category>? listCategory = CategoryRepo().list;
+  List<Category>? listCategory;
+  CategoryRepo categoryRepo = CategoryRepo();
   final _formKey = GlobalKey<FormState>();
   StorageService storageService = StorageService();
+  bool isLoading = true;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    listCategory = await categoryRepo.getListCategory();
+    isLoading = false;
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,27 +126,29 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 SizedBox(
                   height: 10.h,
                 ),
-                DropdownSearch<Category>(
-                  items: listCategory!,
+                isLoading
+                    ? Container()
+                    : DropdownSearch<Category>(
+                        items: listCategory!,
 
-                  dropdownDecoratorProps: DropDownDecoratorProps(),
-                  onChanged: (value) {
-                    setState(() {
-                      print("Value here: $value");
-                      selectedCategory = value!;
-                    });
-                  },
-                  selectedItem: selectedCategory,
-                  itemAsString: (item) => item.name!,
-                  // validator: (Category? category) {
-                  //   if (category == null)
-                  //     return "Required field";
-                  //   else if (category == "Brazil")
-                  //     return "Invalid item";
-                  //   else
-                  //     return null;
-                  // },
-                ),
+                        dropdownDecoratorProps: DropDownDecoratorProps(),
+                        onChanged: (value) {
+                          setState(() {
+                            print("Value here: $value");
+                            selectedCategory = value!;
+                          });
+                        },
+                        selectedItem: selectedCategory,
+                        itemAsString: (item) => item.name!,
+                        // validator: (Category? category) {
+                        //   if (category == null)
+                        //     return "Required field";
+                        //   else if (category == "Brazil")
+                        //     return "Invalid item";
+                        //   else
+                        //     return null;
+                        // },
+                      ),
                 SizedBox(
                   height: 10.h,
                 ),

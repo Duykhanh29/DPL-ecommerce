@@ -14,6 +14,7 @@ import 'package:dpl_ecommerce/models/favourite_product.dart';
 import 'package:dpl_ecommerce/models/flash_sale.dart';
 import 'package:dpl_ecommerce/models/message.dart';
 import 'package:dpl_ecommerce/models/ordering_product.dart';
+import 'package:dpl_ecommerce/models/payment_type.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/product_in_cart_model.dart';
 import 'package:dpl_ecommerce/models/review.dart';
@@ -57,6 +58,7 @@ class FirestoreDatabase {
         Product product = Product.fromJson(productData);
         list.add(product);
       }
+      list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
       return list;
     } catch (e) {
       print("An error occured: $e");
@@ -126,6 +128,7 @@ class FirestoreDatabase {
             );
             list.add(product);
           }
+          list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
           streamController.sink.add(list);
         }
       });
@@ -151,6 +154,7 @@ class FirestoreDatabase {
       Product product = Product.fromJson(productData);
       list.add(product);
     }
+    list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
     return list;
   }
 
@@ -231,6 +235,48 @@ class FirestoreDatabase {
         }
       }
       list.sort((a, b) => a.name!.compareTo(b.name!));
+      list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
+      return list;
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<List<Product>?> getListTopProduct() async {
+    try {
+      List<Product> list = [];
+      final snapshot = await _firestore
+          .collection('products')
+          .where('availableQuantity', isGreaterThan: 0)
+          .where('ratingCount', isGreaterThan: 4)
+          .get();
+      for (var data in snapshot.docs) {
+        final productData = data.data();
+        Product product = Product.fromJson(productData);
+        list.add(product);
+      }
+      list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
+      return list;
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<List<Product>?> getListTopProductByShop(String shopID) async {
+    try {
+      List<Product> list = [];
+      final snapshot = await _firestore
+          .collection('products')
+          .where('availableQuantity', isGreaterThan: 0)
+          .where('shopID', isEqualTo: shopID)
+          .where('ratingCount', isGreaterThan: 4)
+          .get();
+      for (var data in snapshot.docs) {
+        final productData = data.data();
+        Product product = Product.fromJson(productData);
+        list.add(product);
+      }
+      list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
       return list;
     } catch (e) {
       print("An error occured: $e");
@@ -255,6 +301,7 @@ class FirestoreDatabase {
         }
       }
       list.sort((a, b) => a.name!.compareTo(b.name!));
+      list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
       return list;
     } catch (e) {
       print("An error occured: $e");
@@ -282,6 +329,7 @@ class FirestoreDatabase {
         }
       }
       list.sort((a, b) => a.name!.compareTo(b.name!));
+      list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
       return list;
     } catch (e) {
       print("An error occured: $e");
@@ -306,6 +354,7 @@ class FirestoreDatabase {
         }
       }
       list.sort((a, b) => a.name!.compareTo(b.name!));
+      list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
       return list;
     } catch (e) {
       print("An error occured: $e");
@@ -330,6 +379,7 @@ class FirestoreDatabase {
         }
       }
       list.sort((a, b) => a.name!.compareTo(b.name!));
+      list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
       return list;
     } catch (e) {
       print("An error occured: $e");
@@ -387,7 +437,16 @@ class FirestoreDatabase {
         }
       }
       list.sort((a, b) => a.name!.compareTo(b.name!));
+      list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
       return list;
+    } catch (e) {
+      print("An error occurred: $e");
+    }
+  }
+
+  Future<void> deleteProduct(String productID) async {
+    try {
+      await _firestore.collection('products').doc(productID).delete();
     } catch (e) {
       print("An error occurred: $e");
     }
@@ -403,12 +462,64 @@ class FirestoreDatabase {
     List<String>? images,
     List<String>? videos,
     String? description,
-    int? ratingCount,
-    int? purchasingCount,
   }) async {
-// update product
+    try {
+      final doc = _firestore.collection('products').doc(productID);
+      final ref = await doc.get();
+      if (ref.exists) {
+        final productData = ref.data();
+        Product product = Product.fromJson(productData!);
+        if (sizes != null) {
+          product.sizes = sizes;
+        }
+        if (videos != null) {
+          product.videos = videos;
+        }
+        if (colors != null) {
+          product.colors = colors;
+        }
+        if (description != null) {
+          product.description = description;
+        }
+
+        if (colors != null) {
+          product.colors = colors;
+        }
+        if (types != null) {
+          product.types = types;
+        }
+        if (quantity != null) {
+          product.availableQuantity = quantity;
+        }
+        if (cost != null) {
+          product.price = cost;
+        }
+        await doc.update(product.toJson());
+      } else {
+        print("Not exists");
+      }
+    } catch (e) {
+      print("An error occurred: $e");
+    }
   }
-  Future<void> buyAProduct() async {}
+
+  Future<void> buyAProduct(String productID, int number) async {
+    try {
+      final doc = _firestore.collection('products').doc(productID);
+      final ref = await doc.get();
+      if (ref.exists) {
+        final productData = ref.data();
+        Product product = Product.fromJson(productData!);
+        product.availableQuantity = product.availableQuantity! - number;
+        product.purchasingCount++;
+        await doc.update(product.toJson());
+      } else {
+        print("Not exists");
+      }
+    } catch (e) {
+      print("An error occurred: $e");
+    }
+  }
 
   // get products list of a shop
   Future<List<Product>?> getProductListByShop(String shopID) async {
@@ -469,6 +580,7 @@ class FirestoreDatabase {
         );
         list.add(product);
       }
+      list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
       return list;
     } catch (e) {
       print("An error occured: $e");
@@ -534,10 +646,55 @@ class FirestoreDatabase {
           );
           list.add(product);
         }
+        list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
         return list;
       } else {
         print("Empty");
       }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<List<Product>?> getListProductByCategory(String categoryID) async {
+    try {
+      List<Product> list = [];
+      final snapshot = await _firestore
+          .collection('products')
+          .where('availableQuantity', isGreaterThan: 0)
+          .where('categoryID', isEqualTo: categoryID)
+          .get();
+      for (var data in snapshot.docs) {
+        final productData = data.data();
+
+        Product product = Product.fromJson(productData);
+        list.add(product);
+      }
+      list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
+      return list;
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<List<Product>?> getListProductByCategoryAndShop(
+      {required String categoryID, required String shopID}) async {
+    try {
+      List<Product> list = [];
+      final snapshot = await _firestore
+          .collection('products')
+          .where('availableQuantity', isGreaterThan: 0)
+          .where('categoryID', isEqualTo: categoryID)
+          .where('shopID', isEqualTo: shopID)
+          .get();
+      for (var data in snapshot.docs) {
+        final productData = data.data();
+
+        Product product = Product.fromJson(productData);
+        list.add(product);
+      }
+      list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
+      return list;
     } catch (e) {
       print("An error occured: $e");
     }
@@ -787,6 +944,48 @@ class FirestoreDatabase {
     }
   }
 
+  Future<void> deleteByProductInCartModelID(
+      {required String uid,
+      String? productInCartModelID,
+      int savingCost = 0}) async {
+    try {
+      final querySnapshot = _firestore.collection('carts').get();
+      final cartDocs = _firestore.collection('carts').doc(uid);
+      // _firestore.runTransaction((transaction) async {
+      //   DocumentSnapshot documentSnapshot = await transaction.get(cartDocs);
+      final cartSnapshot = await cartDocs.get();
+      final dataSnapshot = cartSnapshot.data();
+      List<ProductInCartModel> listProductIncart = [];
+      int realSavingCost = 0;
+      if (dataSnapshot!['productInCarts'] != null) {
+        listProductIncart = (dataSnapshot['productInCarts'] as List<dynamic>)
+            .map((e) => ProductInCartModel.fromJson(e))
+            .toList();
+        realSavingCost = dataSnapshot['savingCost'] - savingCost;
+      }
+      listProductIncart
+          .removeWhere((element) => element.id == productInCartModelID);
+
+      int totalCost =
+          CommonCaculatedMethods.caculateTotalCostInCart(listProductIncart);
+
+      final data = {
+        'productInCarts': listProductIncart,
+        'totalCost': totalCost,
+        'savingCost': realSavingCost,
+        'userID': uid,
+      };
+      Cart c = Cart(
+          productInCarts: listProductIncart,
+          savingCost: savingCost,
+          totalCost: totalCost,
+          userID: uid);
+      await cartDocs.update(c.toJson());
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
   Future<Cart?> getCartByUserID(String uid) async {
     try {
       final snapshot = await _firestore
@@ -842,25 +1041,6 @@ class FirestoreDatabase {
     } catch (e) {
       print("An error occured: $e");
     }
-  }
-
-  // category
-  Future<void> addCategory(Category category) async {
-    await _firestore
-        .collection('categories')
-        .doc(category.id)
-        .set(category.toJson());
-  }
-
-  Future<List<Category>> getListCategory() async {
-    List<Category> result = [];
-    final snapshot = await _firestore.collection('categories').get();
-    for (var data in snapshot.docs) {
-      Category category = Category(
-          id: data.id, logo: data.data()['logo'], name: data.data()['name']);
-      result.add(category);
-    }
-    return result;
   }
 
   // chat section
@@ -1169,15 +1349,6 @@ class FirestoreDatabase {
       print("An error occured: $e");
     }
   }
-  // send msg seller side
-
-  // flashsale
-  Future<void> addFlashSale(FlashSale flashSale) async {
-    await _firestore
-        .collection('flashsales')
-        .doc(flashSale.id)
-        .set(flashSale.toJson());
-  }
 
   Future<List<FlashSale>?> getActiveFlashSales() async {
     try {
@@ -1195,32 +1366,6 @@ class FirestoreDatabase {
             name: data.data()['name'],
             releasedDate: data.data()['releasedDate']);
         list.add(flashSale);
-      }
-      return list;
-    } catch (e) {
-      print("An error occured: $e");
-    }
-  }
-
-  // deliver services
-  Future<void> addDeliverService(DeliverService deliverService) async {
-    await _firestore
-        .collection('deliverservices')
-        .doc(deliverService.id)
-        .set(deliverService.toJson());
-  }
-
-  Future<List<DeliverService>?> getDeliverServiceList() async {
-    try {
-      List<DeliverService> list = [];
-      final snapshot = await _firestore.collection('deliverservices').get();
-      for (var data in snapshot.docs) {
-        DeliverService deliverService =
-            DeliverService.fromJson({'id': data.id, ...data.data()});
-        // final deliverServiceData = data.data();
-        // DeliverService deliverService =
-        //     DeliverService.fromJson(deliverServiceData);
-        list.add(deliverService);
       }
       return list;
     } catch (e) {
@@ -1366,6 +1511,36 @@ class FirestoreDatabase {
     }
   }
 
+  Future<void> reviewAProduct(
+      {required String productID,
+      required String reviewID,
+      required double rating}) async {
+    try {
+      final doc = _firestore.collection('products').doc(productID);
+      final ref = await doc.get();
+      if (ref.exists) {
+        final productData = ref.data();
+        Product product = Product.fromJson(productData!);
+        product.reviewIDs ??= [];
+        product.reviewIDs!.add(reviewID);
+        if (product.ratingCount == 0) {
+          product.ratingCount = 1;
+          product.rating = rating;
+        } else {
+          product.ratingCount++;
+          double newRating = (product.rating! * product.ratingCount + rating) /
+              (product.ratingCount + 1);
+          product.rating = double.parse(newRating.toStringAsFixed(1));
+        }
+        await doc.update(product.toJson());
+      } else {
+        print("Not exists");
+      }
+    } catch (e) {
+      print("An error occurred: $e");
+    }
+  }
+
   Stream<VoucherForUser?> getListVoucherForUser(String uid) async* {
     try {
       final ref = _firestore
@@ -1398,30 +1573,72 @@ class FirestoreDatabase {
 
   // review section
   Future<void> addNewReview(Review review) async {
-    await _firestore.collection('reviews').doc(review.id).set(review.toJson());
-    //update to product
-    final querySnapshotProducts = _firestore.collection('products').get();
-    final productDocs = _firestore.collection('products').doc(review.productID);
-    FirebaseFirestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot documentSnapshot = await transaction.get(productDocs);
-      final productSnapshot = await productDocs.get();
-      var dataSnapshot = productSnapshot.data();
-      List<String> listReview = [];
-      if (dataSnapshot != null) {
-        listReview =
-            (dataSnapshot as List<dynamic>).map((e) => e.toString()).toList();
-      }
-      listReview.add(review.id!);
-      final data = {
-        "reviewIDs": FieldValue.arrayUnion([review.id!])
-      };
-      await transaction.update(productDocs, data);
-    });
+    try {
+      await _firestore
+          .collection('reviews')
+          .doc(review.id)
+          .set(review.toJson());
+      //update to product
+      await reviewAProduct(
+          productID: review.productID!,
+          reviewID: review.id!,
+          rating: review.rating!);
+      // final querySnapshotProducts = _firestore.collection('products').get();
+      // final productDocs = _firestore.collection('products').doc(review.productID);
+      // FirebaseFirestore.instance.runTransaction((transaction) async {
+      //   DocumentSnapshot documentSnapshot = await transaction.get(productDocs);
+      //   final productSnapshot = await productDocs.get();
+      //   var dataSnapshot = productSnapshot.data();
+      //   List<String> listReview = [];
+      //   if (dataSnapshot != null) {
+      //     listReview =
+      //         (dataSnapshot as List<dynamic>).map((e) => e.toString()).toList();
+      //   }
+      //   listReview.add(review.id!);
+
+      //   final data = {
+      //     "reviewIDs": FieldValue.arrayUnion([review.id!])
+      //   };
+      //   await transaction.update(productDocs, data);
+      // });
+    } catch (e) {
+      print("An error occured: $e");
+    }
   }
 
   Future<void> deleteReview(String reviewID) async {
     try {
       await _firestore.collection('reviews').doc(reviewID).delete();
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<List<Review>?> getListReviewByProduct(String productID) async {
+    try {
+      final snapshot = await _firestore
+          .collection('reviews')
+          .where('productID', isEqualTo: productID)
+          .get();
+      if (snapshot.docs.isNotEmpty) {
+        List<Review>? list = [];
+        for (var data in snapshot.docs) {
+          Review review = Review(
+              id: data.id,
+              productID: data.data()['productID'],
+              rating: data.data()['rating'],
+              resourseType: data.data()['resourseType'],
+              text: data.data()['text'],
+              time: data.data()['time'],
+              urlMedia: data.data()['urlMedia'],
+              userAvatar: data.data()['userAvatar'],
+              userID: data.data()['userID']);
+          list.add(review);
+        }
+        return list;
+      } else {
+        print("Empty");
+      }
     } catch (e) {
       print("An error occured: $e");
     }
@@ -1652,7 +1869,7 @@ class FirestoreDatabase {
     }
   }
 
-  // order section
+  // order sections
   Future<List<orderModel.Order>?> getListOrderByUserID(String uid) async {
     try {
       final snapshot = await _firestore
@@ -1664,13 +1881,16 @@ class FirestoreDatabase {
         for (var element in snapshot.docs) {
           orderModel.Order order = orderModel.Order(
               deliverServiceID: element.data()['deliverServiceID'],
-              deliverStatus: element.data()['deliverStatus'],
+              // deliverStatus: element.data()['deliverStatus'],
               id: element.data()['id'],
               isCancelled: element.data()['isCancelled'],
               orderingProductsID: element.data()['orderingProductsID'] != null
-                  ? (element.data()['orderingProductsID'] as List)
-                      .map((e) => OrderingProduct.fromJson(e))
-                      .toList()
+                  ? (element.data()['orderingProductsID'] as List<dynamic>)
+                      .map((e) {
+                      OrderingProduct o = OrderingProduct.fromJson(e);
+                      print("Nothing: ${o.quantity}");
+                      return o;
+                    }).toList()
                   : null,
               paymentTypeID: element.data()['paymentTypeID'],
               receivedAddress:
@@ -1679,13 +1899,590 @@ class FirestoreDatabase {
               totalCost: element.data()['totalCost'],
               userID: element.data()['userID'],
               voucherDiscountID: element.data()['voucherDiscountID'],
-              totalProduct: element.data()['totalProduct']);
+              totalProduct: element.data()['totalProduct'],
+              time: (element.data()['time'] as Timestamp));
+          List<OrderingProduct>? listO =
+              element.data()['orderingProductsID'] != null
+                  ? (element.data()['orderingProductsID'] as List)
+                      .map((e) => OrderingProduct.fromJson(e))
+                      .toList()
+                  : null;
+          print(listO);
           list.add(order);
+        }
+        for (var element in list) {
+          for (var data in element.orderingProductsID!) {
+            if (data.deliverStatus != DeliverStatus.delivered) {
+              DateTime now = DateTime.now();
+              DateTime time = data.date!.toDate();
+              final difference = now.difference(time);
+              if (difference.inMinutes > 24) {
+                await updateOrderingProductStatus(
+                    orderID: element.id!,
+                    orderingProductID: data.id!,
+                    status: DeliverStatus.delivering);
+              } else if (difference.inMinutes > 12) {
+                await updateOrderingProductStatus(
+                    orderID: element.id!,
+                    orderingProductID: data.id!,
+                    status: DeliverStatus.confirmed);
+              } else {}
+            }
+          }
         }
         return list;
       } else {
         print("Empty");
       }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Stream<List<orderModel.Order>?> getAllOrderByUserID(String uid) async* {
+    try {
+      final snapshot = await _firestore
+          .collection('orders')
+          .where('userID', isEqualTo: uid)
+          .snapshots();
+      final StreamController<List<orderModel.Order>?> streamController =
+          StreamController<List<orderModel.Order>?>();
+      final StreamSubscription streamSubscription = snapshot.listen((event) {
+        List<orderModel.Order>? list = [];
+        if (event.docs.isNotEmpty) {
+          for (var element in event.docs) {
+            orderModel.Order order = orderModel.Order(
+                deliverServiceID: element.data()['deliverServiceID'],
+                // deliverStatus: element.data()['deliverStatus'],
+                id: element.data()['id'],
+                isCancelled: element.data()['isCancelled'],
+                orderingProductsID: element.data()['orderingProductsID'] != null
+                    ? (element.data()['orderingProductsID'] as List)
+                        .map((e) => OrderingProduct.fromJson(e))
+                        .toList()
+                    : null,
+                paymentTypeID: element.data()['paymentTypeID'],
+                receivedAddress:
+                    AddressInfor.fromJson(element.data()['receivedAddress']),
+                shippingCost: element.data()['shippingCost'] ?? 0,
+                totalCost: element.data()['totalCost'],
+                userID: element.data()['userID'],
+                voucherDiscountID: element.data()['voucherDiscountID'],
+                totalProduct: element.data()['totalProduct'],
+                time: (element.data()['time'] as Timestamp));
+            list.add(order);
+          }
+          streamController.sink.add(list);
+        } else {
+          print("Empty");
+        }
+      });
+      streamController.onCancel = () {
+        streamSubscription.cancel();
+        streamController.close();
+      };
+      yield* streamController.stream;
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<void> addAnOrder(orderModel.Order order) async {
+    try {
+      await _firestore.collection('orders').doc(order.id).set(order.toJson());
+      for (var element in order.orderingProductsID!) {
+        await buyAProduct(element.productID!, element.quantity!);
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<void> updateOrderingProductStatus(
+      {required String orderID,
+      required String orderingProductID,
+      required DeliverStatus status}) async {
+    try {
+      final doc = _firestore.collection('orders').doc(orderID);
+      final ref = await doc.get();
+      if (ref.exists) {
+        final data = ref.data();
+
+        final listProduct = data!['orderingProductsID'] != null
+            ? (data['orderingProductsID'] as List<dynamic>)
+                .map((e) => OrderingProduct.fromJson(e))
+                .toList()
+            : null;
+        if (listProduct != null) {
+          for (var element in listProduct) {
+            if (element.id == orderingProductID) {
+              element.deliverStatus = status;
+            }
+          }
+        }
+        orderModel.Order order = orderModel.Order(
+            deliverServiceID: data!['deliverServiceID'],
+            id: data['id'],
+            isCancelled: data['isCancelled'],
+            orderingProductsID: listProduct,
+            paymentTypeID: data['paymentTypeID'],
+            receivedAddress: AddressInfor.fromJson(data['receivedAddress']),
+            shippingCost: data['shippingCost'],
+            totalCost: data['totalCost'],
+            totalProduct: data['totalProduct'],
+            userID: data['userID'],
+            voucherDiscountID: data['voucherDiscountID'],
+            time: (data['time'] as Timestamp));
+        await doc.update(order.toJson());
+      } else {
+        print("NOt exists");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<orderModel.Order?> getOrderByID(String id) async {
+    try {
+      final ref = await _firestore.collection('orders').doc(id).get();
+      if (ref.exists) {
+        final data = ref.data();
+        return orderModel.Order.fromJson(data!);
+      } else {
+        print("Empty");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<List<OrderingProduct>?> getListOrderingProductByOrder(
+      String orderID) async {
+    try {
+      final ref = await _firestore.collection('orders').doc(orderID).get();
+      if (ref.exists) {
+        final data = ref.data();
+        orderModel.Order order = orderModel.Order.fromJson(data!);
+        final list = order.orderingProductsID;
+        return list;
+      } else {
+        print("Empty");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  // admin sides
+// category sections
+  Future<void> addCategory(Category category) async {
+    await _firestore
+        .collection('categories')
+        .doc(category.id)
+        .set(category.toJson());
+  }
+
+  Future<List<Category>> getListCategory() async {
+    List<Category> result = [];
+    final snapshot = await _firestore.collection('categories').get();
+    for (var data in snapshot.docs) {
+      Category category = Category(
+          id: data.id, logo: data.data()['logo'], name: data.data()['name']);
+      result.add(category);
+    }
+    return result;
+  }
+
+  Future<Category?> getCategoryByID(String id) async {
+    try {
+      final ref = await _firestore.collection('categories').doc(id).get();
+      if (ref.exists) {
+        final data = ref.data();
+        return Category.fromJson(data!);
+      } else {
+        print("Not exists");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<void> deleteCategory(String id) async {
+    try {
+      await _firestore.collection('categories').doc(id).delete();
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  // flash sales section
+  Future<void> addFlashSale(FlashSale flashSale) async {
+    try {
+      await _firestore
+          .collection('flashSales')
+          .doc(flashSale.id)
+          .set(flashSale.toJson());
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<List<FlashSale>?> getListFlashSale() async {
+    try {
+      final ref = await _firestore.collection('flashSales').get();
+      if (ref.docs.isNotEmpty) {
+        List<FlashSale>? list = [];
+        for (var flashSaleData in ref.docs) {
+          final data = flashSaleData.data();
+          FlashSale flashSale = FlashSale(
+            coverImage: data['coverImage'],
+            discountPercent: data['discountPercent'],
+            expDate: data['expDate'],
+            id: data['id'],
+            name: data['name'],
+            releasedDate: data['releasedDate'],
+          );
+          list.add(flashSale);
+        }
+        return list;
+      } else {
+        print("Empty");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<List<FlashSale>?> getListActiveFlashSale() async {
+    try {
+      final ref = await _firestore
+          .collection('flashSales')
+          .where('expDate', isLessThan: Timestamp.now())
+          .get();
+      if (ref.docs.isNotEmpty) {
+        List<FlashSale>? list = [];
+        for (var flashSaleData in ref.docs) {
+          final data = flashSaleData.data();
+          FlashSale flashSale = FlashSale(
+            coverImage: data['coverImage'],
+            discountPercent: data['discountPercent'],
+            expDate: data['expDate'],
+            id: data['id'],
+            name: data['name'],
+            releasedDate: data['releasedDate'],
+          );
+          list.add(flashSale);
+        }
+        return list;
+      } else {
+        print("Empty");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Stream<List<FlashSale>?> getAllFlashSale() async* {
+    try {
+      final ref = await _firestore.collection('flashSales').snapshots();
+      StreamController<List<FlashSale>?> streamController =
+          StreamController<List<FlashSale>?>();
+      final StreamSubscription streamSubscription = ref.listen((event) {
+        List<FlashSale>? list = [];
+        if (event.docs.isNotEmpty) {
+          // streamController.sink.add(true);
+
+          for (var flashSaleData in event.docs) {
+            final data = flashSaleData.data();
+            FlashSale flashSale = FlashSale(
+              coverImage: data['coverImage'],
+              discountPercent: data['discountPercent'],
+              expDate: data['expDate'],
+              id: data['id'],
+              name: data['name'],
+              releasedDate: data['releasedDate'],
+            );
+            list.add(flashSale);
+          }
+        } else {
+          // streamController.sink.add(false);
+        }
+        streamController.sink.add(list);
+      });
+      streamController.onCancel = () {
+        streamSubscription.cancel();
+        streamController.close();
+      };
+      yield* streamController.stream;
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Stream<List<FlashSale>?> getAllActiveFlashSale() async* {
+    try {
+      final ref = await _firestore
+          .collection('flashSales')
+          .where('expDate', isLessThan: Timestamp.now())
+          .snapshots();
+      StreamController<List<FlashSale>?> streamController =
+          StreamController<List<FlashSale>?>();
+      final StreamSubscription streamSubscription = ref.listen((event) {
+        List<FlashSale>? list = [];
+        if (event.docs.isNotEmpty) {
+          // streamController.sink.add(true);
+
+          for (var flashSaleData in event.docs) {
+            final data = flashSaleData.data();
+            FlashSale flashSale = FlashSale(
+              coverImage: data['coverImage'],
+              discountPercent: data['discountPercent'],
+              expDate: data['expDate'],
+              id: data['id'],
+              name: data['name'],
+              releasedDate: data['releasedDate'],
+            );
+            list.add(flashSale);
+          }
+        } else {
+          // streamController.sink.add(false);
+        }
+        streamController.sink.add(list);
+      });
+      streamController.onCancel = () {
+        streamSubscription.cancel();
+        streamController.close();
+      };
+      yield* streamController.stream;
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  // add seller by admin
+  Future<void> addSellerByAdmin(UserModel userModel, Shop shop) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(userModel.id)
+          .set(userModel.toJson());
+      await _firestore.collection('shops').doc(shop.id).set(shop.toJson());
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<void> confirmSellerRequest(VerificationForm verificationForm) async {}
+  Future<void> denySellerRequest(VerificationForm verificationForm) async {}
+  Future<int?> getTotalUser() async {
+    try {
+      final ref = await _firestore.collection('users').get();
+      return ref.size;
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<int?> getTotalConsumer() async {
+    try {
+      final ref = await _firestore.collection('users').get();
+      if (ref.docs.isEmpty) {
+        return 0;
+      } else {
+        int result = 0;
+        for (var element in ref.docs) {
+          final data = element.data();
+          UserInfor? userInfor = data['userInfor'] != null
+              ? UserInfor.fromJson(data['userInfor'])
+              : null;
+          if (userInfor != null) {
+            var role = data['role'] ?? null;
+            if (role == Role.consumer.toString() ||
+                role == Role.mixedUser.toString()) {
+              result++;
+            }
+          } else {
+            return 0;
+          }
+        }
+        return result;
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<int?> getTotalSeller() async {
+    try {
+      final ref = await _firestore.collection('users').get();
+      if (ref.docs.isEmpty) {
+        return 0;
+      } else {
+        int result = 0;
+        for (var element in ref.docs) {
+          final data = element.data();
+          UserInfor? userInfor = data['userInfor'] != null
+              ? UserInfor.fromJson(data['userInfor'])
+              : null;
+          if (userInfor != null) {
+            var role = data['role'] ?? null;
+            if (role == Role.seller.toString() ||
+                role == Role.mixedUser.toString()) {
+              result++;
+            }
+          } else {
+            return 0;
+          }
+        }
+        return result;
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<int?> getTotalConsumerNotUser() async {
+    try {
+      final ref = await _firestore.collection('users').get();
+      if (ref.docs.isEmpty) {
+        return 0;
+      } else {
+        int result = 0;
+        for (var element in ref.docs) {
+          final data = element.data();
+          UserInfor? userInfor = data['userInfor'] != null
+              ? UserInfor.fromJson(data['userInfor'])
+              : null;
+          if (userInfor != null) {
+            var role = data['role'] ?? null;
+            if (role == Role.seller.toString()) {
+              result++;
+            }
+          } else {
+            return 0;
+          }
+        }
+        return result;
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<int?> getTotalUserNotBeSeller() async {
+    try {
+      final ref = await _firestore.collection('users').get();
+      if (ref.docs.isEmpty) {
+        return 0;
+      } else {
+        int result = 0;
+        for (var element in ref.docs) {
+          final data = element.data();
+          UserInfor? userInfor = data['userInfor'] != null
+              ? UserInfor.fromJson(data['userInfor'])
+              : null;
+          if (userInfor != null) {
+            var role = data['role'] ?? null;
+            if (role == Role.consumer.toString()) {
+              result++;
+            }
+          } else {
+            return 0;
+          }
+        }
+        return result;
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  // delivery service section
+  Future<void> addDeliverService(DeliverService deliverService) async {
+    try {
+      await _firestore
+          .collection('deliverservices')
+          .doc(deliverService.id)
+          .set(deliverService.toJson());
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<DeliverService?> getDeliveryService(String id) async {
+    try {
+      final docs = await _firestore.collection('deliverservices').doc(id).get();
+      if (docs.exists) {
+        final data = docs.data();
+        return DeliverService(
+            id: data!['id'], logo: data!['logo'], name: data['name']);
+      } else {
+        print("Not exists");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<List<DeliverService>?> getDeliverServiceList() async {
+    try {
+      List<DeliverService> list = [];
+      final snapshot = await _firestore.collection('deliverservices').get();
+      for (var data in snapshot.docs) {
+        DeliverService deliverService =
+            DeliverService.fromJson({'id': data.id, ...data.data()});
+        // final deliverServiceData = data.data();
+        // DeliverService deliverService =
+        //     DeliverService.fromJson(deliverServiceData);
+        list.add(deliverService);
+      }
+      return list;
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<void> deleteDeliveryService(String id) async {
+    try {
+      await _firestore.collection('deliverservices').doc(id).delete();
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  // payment sections
+  Future<PaymentType?> getPaymentByID(String id) async {
+    try {
+      final ref = await _firestore.collection('payments').doc(id).get();
+      if (ref.exists) {
+        PaymentType paymentType = PaymentType.fromJson(ref.data()!);
+        return paymentType;
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<List<PaymentType>?> getListPayment() async {
+    try {
+      final ref = await _firestore.collection('payments').get();
+
+      if (ref.docs.isNotEmpty) {
+        List<PaymentType>? list = [];
+        for (var data in ref.docs) {
+          PaymentType paymentType = PaymentType.fromJson(data.data());
+          list.add(paymentType);
+        }
+        return list;
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<void> deletePaymentByID(String id) async {
+    try {
+      final ref = await _firestore.collection('payments').doc(id).delete();
     } catch (e) {
       print("An error occured: $e");
     }

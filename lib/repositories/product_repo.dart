@@ -30,7 +30,10 @@ class ProductRepo {
     await productFirestoreDatabase.postProduct(product);
   }
 
-  Future<void> deleteProduct({required String productID}) async {}
+  Future<void> deleteProduct({required String productID}) async {
+    await productFirestoreDatabase.deleteProduct(productID);
+  }
+
   Future<void> updateProduct({
     required String productID,
     int? quantity,
@@ -41,13 +44,20 @@ class ProductRepo {
     List<String>? images,
     List<String>? videos,
     String? description,
-    int? ratingCount,
-    int? purchasingCount,
   }) async {
-    // await productFirestoreDatabase.updateProduct(
-    //   productID: productID,
-    // );
+    await productFirestoreDatabase.updateProduct(
+      productID: productID,
+      colors: colors,
+      cost: cost,
+      description: description,
+      images: images,
+      quantity: quantity,
+      sizes: sizes,
+      types: types,
+      videos: videos,
+    );
   }
+
   Future<List<Product>?> searchProductByName(String name) async {
     return await productFirestoreDatabase.searchProductByName(name);
   }
@@ -104,6 +114,16 @@ class ProductRepo {
   }
 
   Future<void> editReview() async {}
+
+  Future<List<Product>?> getListProductByCategory(String id) async {
+    return await productFirestoreDatabase.getListProductByCategory(id);
+  }
+
+  Future<List<Product>?> getListProductByCategoryInShop(
+      {required String categoryID, required String shopID}) async {
+    return await productFirestoreDatabase.getListProductByCategoryAndShop(
+        categoryID: categoryID, shopID: shopID);
+  }
 
   Future<void> dispose() async {
     await productFirestoreDatabase.dispose();

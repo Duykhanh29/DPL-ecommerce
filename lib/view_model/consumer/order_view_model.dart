@@ -6,9 +6,19 @@ import 'package:dpl_ecommerce/models/ordering_product.dart';
 import 'package:flutter/material.dart';
 
 class OrderViewModel extends ChangeNotifier {
+  List<Order>? listOrder;
+  // List<Order>? listProcessingOrder;
+  // List<Order>? listConfirmedOrder;
+  // List<Order>?
+  void setListorder(List<Order>? list) {
+    listOrder = list;
+    notifyListeners();
+  }
+  // void
+
   final Order order = Order(
       deliverServiceID: "deliverID01",
-      deliverStatus: DeliverStatus.delivering,
+      // deliverStatus: DeliverStatus.delivering,
       id: "orderID01",
       orderingProductsID: [
         OrderingProduct(

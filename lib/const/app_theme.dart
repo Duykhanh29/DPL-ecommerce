@@ -253,4 +253,18 @@ class MyTheme {
   static Color shimmer_base = Colors.grey.shade50;
   static Color shimmer_highlighted = Colors.grey.shade200;
   static const black = Color.fromRGBO(0, 0, 0, 1);
+
+  static Color borderColor = Color.fromARGB(226, 63, 63, 61);
+  static Color background = Color(0xccefeeee);
+  static Color accent_color_shadow = Color.fromRGBO(229, 65, 28, .40);
+  static Color soft_accent_color = Color.fromRGBO(254, 234, 209, 1);
+
+  static Color blue_grey = Color.fromRGBO(168, 175, 179, 1);
+  static Color dark_font_grey = Color.fromRGBO(62, 68, 71, 1);
+  static Color amber = Color.fromRGBO(254, 234, 209, 1);
+  static Color amber_medium = Color.fromRGBO(254, 240, 215, 1);
+  static Color golden_shadow = Color.fromRGBO(255, 168, 0, .4);
+  static Color? green_light = Colors.green[200];
+
+  static Color btn_checkout = Colors.blue;
 }

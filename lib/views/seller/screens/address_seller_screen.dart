@@ -8,6 +8,7 @@ import 'package:dpl_ecommerce/data_sources/firestore_data_source/user_firestore_
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/add_address.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/address_edit.dart';
@@ -44,7 +45,7 @@ class _AddresslistItemWidgetState extends State<AddressSellerScreen> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text(
-          "Address",
+          LangText(context: context).getLocal()!.address_ucf,
           textAlign: TextAlign.center,
         ),
         centerTitle: true,
@@ -54,7 +55,7 @@ class _AddresslistItemWidgetState extends State<AddressSellerScreen> {
       body: StreamBuilder(
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator.adaptive(),
             );
           } else {
@@ -62,7 +63,7 @@ class _AddresslistItemWidgetState extends State<AddressSellerScreen> {
               final listAddress = snapshot.data;
               return ListView.builder(
                   itemCount: listAddress!.length,
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.all(20.h),
                   itemBuilder: (context, index) {
                     AddressInfor address = listAddress[index];
                     return GestureDetector(
@@ -133,13 +134,6 @@ class _AddresslistItemWidgetState extends State<AddressSellerScreen> {
                                         child: Container(
                                           width: 110.w,
                                           height: 40.h,
-                                          child: Center(
-                                              child: Text(
-                                            "Edit",
-                                            style: TextStyle(
-                                                fontSize: 16.sp,
-                                                color: Colors.black54),
-                                          )),
                                           decoration: BoxDecoration(
                                               //color: Colors.white,
                                               border: Border.all(
@@ -149,6 +143,15 @@ class _AddresslistItemWidgetState extends State<AddressSellerScreen> {
                                               ),
                                               borderRadius:
                                                   BorderRadius.circular(5)),
+                                          child: Center(
+                                              child: Text(
+                                            LangText(context: context)
+                                                .getLocal()!
+                                                .edit_ucf,
+                                            style: TextStyle(
+                                                fontSize: 16.sp,
+                                                color: Colors.black54),
+                                          )),
                                         ),
                                       ),
                                     ],
@@ -163,12 +166,14 @@ class _AddresslistItemWidgetState extends State<AddressSellerScreen> {
                   });
             } else {
               return Center(
-                child: Text("No address"),
+                child: Text(LangText(context: context)
+                    .getLocal()!
+                    .no_data_is_available),
               );
             }
           }
         },
-        stream: userRepo.getListAddress(currentUser!.id!),
+        stream: userRepo.getAllAddressInfor(currentUser!.id!),
       ),
       // bottomNavigationBar: _buildAddAddressButton(context),
     );

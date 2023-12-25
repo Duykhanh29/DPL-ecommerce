@@ -51,7 +51,7 @@ class Productsmalllist1ItemWidget extends StatelessWidget {
                   productID: product!.id!),
               SizedBox(height: 6.h),
               Container(
-                padding: EdgeInsets.only(left: 10),
+                padding: EdgeInsets.only(left: 10.w),
                 width: 119.h,
                 child: Text(
                   product!.name!,
@@ -64,7 +64,7 @@ class Productsmalllist1ItemWidget extends StatelessWidget {
               ),
               SizedBox(height: 6.h),
               Container(
-                padding: EdgeInsets.only(left: 10, right: 10),
+                padding: EdgeInsets.only(left: 10.w, right: 10.w),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -109,7 +109,7 @@ class Productsmalllist1ItemWidget extends StatelessWidget {
               ),
               SizedBox(height: 10.h),
               Container(
-                padding: EdgeInsets.only(left: 10),
+                padding: EdgeInsets.only(left: 10.w),
                 child: Text(
                   "${product!.price!} VND",
                   style: theme.textTheme.displayLarge,
@@ -165,18 +165,18 @@ class _buildVisualProduct extends StatelessWidget {
                   ),
                 );
               },
-              placeholder: (context, url) => const Center(
+              placeholder: (context, url) => Center(
                   child: SizedBox(
-                      width: 30,
-                      height: 30,
-                      child: CircularProgressIndicator())),
+                      width: 30.h,
+                      height: 30.h,
+                      child: const CircularProgressIndicator())),
               errorWidget: (context, url, error) => const Icon(Icons.error),
             ),
           ),
           Positioned(
             top: 5,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -215,7 +215,10 @@ class _buildVisualProduct extends StatelessWidget {
       stream: wishListRepo.isFavouriteProduct(uid: uid, productID: productID),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Icon(Icons.favorite_border);
+          return Icon(
+            Icons.favorite_border,
+            size: 20.h,
+          );
         } else {
           if (snapshot.data != null) {
             final isFavourite = snapshot.data;
@@ -237,11 +240,19 @@ class _buildVisualProduct extends StatelessWidget {
                         await wishListRepo.addToFavourite(favouriteProduct);
                       }
                     },
-                    child: Icon(isFavourite!
-                        ? Icons.favorite
-                        : Icons.favorite_border_rounded)));
+                    child: Icon(
+                      isFavourite!
+                          ? Icons.favorite
+                          : Icons.favorite_border_rounded,
+                      color: MyTheme.red,
+                      size: 20.h,
+                    )));
           } else {
-            return Icon(Icons.favorite_border);
+            return Icon(
+              Icons.favorite_border,
+              size: 20.h,
+              color: MyTheme.red,
+            );
           }
         }
       },

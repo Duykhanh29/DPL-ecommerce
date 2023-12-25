@@ -9,6 +9,7 @@ import 'package:dpl_ecommerce/views/consumer/screens/filter_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/flash_sale_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/home_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/order_page.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/ordering_success_screen.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/product_detail_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/profile_setting_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/review_view_page.dart';
@@ -49,6 +50,7 @@ class ConsumerRoutes {
 
   // address
   static const String addressScreen = 'address_screen';
+  static const String successScreen = '/success_screen';
 
   static Map<String, WidgetBuilder> routes = {
     mainView: (context) => MainView(),
@@ -73,5 +75,6 @@ class ConsumerRoutes {
     userListVoucher: (context) => UserListVoucher(),
     // wishlistPage: (context) => WishlistPage(),
     searchResultPage: (context) => SearchFilterScreen(),
+    successScreen: (context) => SuccessScreen()
   };
 }

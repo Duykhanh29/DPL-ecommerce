@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class DateHelper {
@@ -143,5 +144,11 @@ class DateHelper {
     } else {
       return DateFormat.yMd().format(time);
     }
+  }
+
+  static String convertCommonDateTime(Timestamp time) {
+    DateTime dateTime = time.toDate();
+    String formattedDate = DateFormat('dd-MM-yyyy HH:mm').format(dateTime);
+    return formattedDate;
   }
 }

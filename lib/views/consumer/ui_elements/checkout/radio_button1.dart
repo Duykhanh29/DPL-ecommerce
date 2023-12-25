@@ -1,19 +1,21 @@
+import 'package:dpl_ecommerce/view_model/consumer/checkout_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/product_detail_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/product_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// enum KindOfData { types, sizes, colors }
-
-class CustomradioButton extends StatefulWidget {
-  CustomradioButton({super.key, required this.list, required this.kindOfData});
+class CustomradioButtonForBuyNow extends StatefulWidget {
+  CustomradioButtonForBuyNow(
+      {super.key, required this.list, required this.kindOfData});
   List<String>? list;
   KindOfData? kindOfData;
   @override
-  State<CustomradioButton> createState() => _CustomradioButtonState();
+  State<CustomradioButtonForBuyNow> createState() =>
+      _CustomradioButtonForBuyNowState();
 }
 
-class _CustomradioButtonState extends State<CustomradioButton> {
+class _CustomradioButtonForBuyNowState
+    extends State<CustomradioButtonForBuyNow> {
   int selectedIndex = 0;
 
   void changeIndex(int index) {
@@ -25,7 +27,7 @@ class _CustomradioButtonState extends State<CustomradioButton> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final productDetailProvider = Provider.of<ProductDetailViewModel>(context);
+    final checkoutProvider = Provider.of<CheckoutViewModel>(context);
     return Container(
       padding: const EdgeInsets.only(right: 20),
       height: size.height * 0.06,
@@ -42,7 +44,7 @@ class _CustomradioButtonState extends State<CustomradioButton> {
   }
 
   Widget customRadio(BuildContext context, int index, String text) {
-    final productDetailProvider = Provider.of<ProductDetailViewModel>(context);
+    final checkoutProvider = Provider.of<CheckoutViewModel>(context);
     final size = MediaQuery.of(context).size;
     return SizedBox(
       height: size.height * 0.04,
@@ -51,11 +53,11 @@ class _CustomradioButtonState extends State<CustomradioButton> {
           onPressed: () {
             changeIndex(index);
             if (widget.kindOfData == KindOfData.colors) {
-              productDetailProvider.changeColor(text);
+              checkoutProvider.changeColor(text);
             } else if (widget.kindOfData == KindOfData.sizes) {
-              productDetailProvider.changeSize(text);
+              checkoutProvider.changeSize(text);
             } else {
-              productDetailProvider.changeType(text);
+              checkoutProvider.changeType(text);
             }
           },
           style: ButtonStyle(
