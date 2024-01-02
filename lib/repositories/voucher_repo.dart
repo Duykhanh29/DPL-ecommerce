@@ -12,6 +12,10 @@ class VoucherRepo {
     return result;
   }
 
+  Stream<List<Voucher>?> getAllVoucherByShop(String shopID) {
+    return firestoreDatabase.getAllVoucherByShop(shopID);
+  }
+
   Future<List<Voucher>?> getListVoucherByShop(String shopID) async {
     List<Voucher>? result =
         await firestoreDatabase.getListVoucherByShop(shopID);
@@ -36,6 +40,10 @@ class VoucherRepo {
   Future<void> editVoucher(
       {required String id, required Voucher voucher}) async {
     await firestoreDatabase.editVoucher(id: id, voucher: voucher);
+  }
+
+  Future<void> deleteVoucherByID(String id) async {
+    await firestoreDatabase.deleteVoucherByID(id);
   }
 
   Future<void> dispose() async {

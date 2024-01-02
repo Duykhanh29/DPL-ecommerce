@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dpl_ecommerce/models/product.dart';
+import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/views/seller/screens/product2/edit_product.dart';
@@ -11,28 +12,108 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DisplayProductsScreen extends StatefulWidget {
-  final List<Product> products;
-  final Function(String) onProductDeleted;
-  final Function(Product) onProductUpdated;
+  // final List<Product> products;
+  // final Function(String) onProductDeleted;
+  // final Function(Product) onProductUpdated;
+  String shopID;
 
-  DisplayProductsScreen({
-    required this.products,
-    required this.onProductDeleted,
-    required this.onProductUpdated,
-  });
+  DisplayProductsScreen({super.key, required this.shopID});
+
+  // DisplayProductsScreen({
+  //   required this.products,
+  //   required this.onProductDeleted,
+  //   required this.onProductUpdated,
+  // });
 
   @override
   _DisplayProductsScreenState createState() => _DisplayProductsScreenState();
 }
 
 class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
+  ProductRepo productRepo = ProductRepo();
+  List<Product>? listProduct;
+  // bool isLoading = true;
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   fetchData();
+  // }
+
+  // Future<void> fetchData() async {
+  //   listProduct = await productRepo.getListProductByShopID(widget.shopID);
+  //   isLoading = false;
+  //   if (mounted) {
+  //     setState(() {});
+  //   }
+  // }
+
+  // @override
+  // void didChangeDependencies() {
+  //   // TODO: implement didChangeDependencies
+  //   super.didChangeDependencies();
+  //   fetchData();
+  // }
+
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: productRepo.getAllProductByShopID(widget.shopID),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          if (snapshot.hasData) {
+            if (snapshot.data != null) {
+              final list = snapshot.data;
+              if (list!.isNotEmpty) {
+                return buildListProduct(context, list);
+              } else {
+                Center(
+                  child: Text(LangText(context: context)
+                      .getLocal()!
+                      .no_data_is_available),
+                );
+              }
+            } else {
+              return Center(
+                child: Text(LangText(context: context)
+                    .getLocal()!
+                    .no_data_is_available),
+              );
+            }
+          }
+          return Center(
+            child: Text(
+                LangText(context: context).getLocal()!.no_data_is_available),
+          );
+        }
+      },
+    );
+
+    // isLoading
+    //     ? Container(
+    //         child: CircularProgressIndicator(),
+    //       )
+    //     : listProduct == null || listProduct!.isEmpty
+    //         ? Center(
+    //             child: Container(
+    //               child: Text(LangText(context: context)
+    //                   .getLocal()!
+    //                   .no_data_is_available),
+    //             ),
+    //           )
+    //         : ;
+  }
+
+  Widget buildListProduct(BuildContext context, List<Product>? list) {
     return ListView.builder(
-      itemCount: widget.products.length,
+      itemCount: list!.length,
       padding: EdgeInsets.all(20.h),
       itemBuilder: (context, index) {
-        final product = widget.products[index];
+        final product = list![index];
         return Column(
           children: [
             SizedBox(
@@ -130,7 +211,7 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          _navigateToEditProductScreen(context, product);
+                          _navigateToEditProductScreen(product);
                         },
                         child: Container(
                           padding: EdgeInsets.symmetric(
@@ -171,7 +252,7 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                             // For example, you can show a confirmation dialog and then delete the address
                             showDialog(
                               context: context,
-                              builder: (context) => AlertDialog(
+                              builder: (_) => AlertDialog(
                                 title: Text(LangText(context: context)
                                     .getLocal()!
                                     .delete_product_ucf),
@@ -181,14 +262,14 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                                 actions: [
                                   TextButton(
                                     onPressed: () {
-                                      Navigator.of(context).pop();
+                                      Navigator.of(_).pop();
                                     },
                                     child: Text(LangText(context: context)
                                         .getLocal()!
                                         .cancel_ucf),
                                   ),
                                   TextButton(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       // Add logic to delete the address here
                                       // You can use setState or any state management solution to update the UI
                                       // setState(() {
@@ -198,8 +279,11 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                                       //     .onProductDeleted(product.id as int);
                                       // Navigator.of(context)
                                       //     .pop(); // Close the dialog
-                                      widget.onProductDeleted(
-                                          product.id as String);
+                                      // widget.onProductDeleted(
+                                      //     product.id as String);
+                                      await productRepo.deleteProduct(
+                                          productID: product.id!);
+                                      Navigator.of(_).pop(); // Close the dialog
                                     },
                                     child: Text(LangText(context: context)
                                         .getLocal()!
@@ -222,15 +306,12 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
     );
   }
 
-  void _navigateToEditProductScreen(
-      BuildContext context, Product product) async {
+  void _navigateToEditProductScreen(Product product) async {
     await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => EditProductScreen(
           product: product,
-          onProductUpdated: widget.onProductUpdated,
-          products: [],
         ),
       ),
     );

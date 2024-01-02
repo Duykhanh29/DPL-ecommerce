@@ -7,14 +7,14 @@ class ToastHelper {
       {duration = 0,
       gravity = 0,
       textStyle = const TextStyle(color: MyTheme.font_grey),
-      Color bgColor = const Color.fromRGBO(239, 239, 239, .9)}) {
+      Color bgColor = Colors.cyan}) {
     Fluttertoast.showToast(
       msg: msg,
       toastLength: duration != 0 ? duration : Toast.LENGTH_LONG,
       gravity: gravity != 0 ? gravity : ToastGravity.CENTER,
       timeInSecForIosWeb: 1,
       backgroundColor: bgColor,
-      textColor: Colors.white,
+      textColor: Colors.black,
       fontSize: 16.0,
     );
   }

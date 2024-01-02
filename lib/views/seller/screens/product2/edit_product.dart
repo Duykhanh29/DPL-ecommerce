@@ -7,10 +7,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/category.dart';
 import 'package:dpl_ecommerce/models/product.dart';
+import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/repositories/category_repo.dart';
+import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
 import 'package:dpl_ecommerce/utils/common/common_methods.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:dpl_ecommerce/view_model/seller/shop_view_model.dart';
+import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/seller/screens/product2/product_app.dart';
 import 'package:dpl_ecommerce/views/seller/ui_elements/video_asset_widget.dart';
 import 'package:dpl_ecommerce/views/seller/ui_elements/video_network_widget.dart';
@@ -19,15 +23,14 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class EditProductScreen extends StatefulWidget {
   final Product product;
-  final Function(Product) onProductUpdated;
 
-  EditProductScreen(
-      {required this.product,
-      required this.onProductUpdated,
-      required List products});
+  EditProductScreen({
+    required this.product,
+  });
   List<String>? images = [];
   @override
   _AddProductScreenState createState() => _AddProductScreenState();
@@ -48,12 +51,25 @@ class _AddProductScreenState extends State<EditProductScreen> {
     // _priceController.text = widget.product.price.toString();
     // _availableQuantityController.text =
     //     widget.product.availableQuantity.toString();
-    fetchData();
+
+    fetchAllData();
+  }
+
+  fetchAllData() async {
+    await fetchCategories();
+    await fetchData();
+  }
+
+  fetchCategories() async {
+    selectedCategory =
+        await categoryRepo.getCategoryByID(widget.product.categoryID!);
+    setState(() {});
   }
 
   Future<void> fetchData() async {
     images = widget.product.images;
     description = widget.product.description;
+    print("Des: $description");
     name = widget.product.name;
     availableQuantity = widget.product.availableQuantity;
     types = widget.product.types;
@@ -65,10 +81,11 @@ class _AddProductScreenState extends State<EditProductScreen> {
     availableQuantity = widget.product.availableQuantity;
     types = widget.product.types;
     colors = widget.product.colors;
-    selectedCategory = CommondMethods.getCategoryByID(
-        widget.product.categoryID!, listCategory!);
+    // selectedCategory = CommondMethods.getCategoryByID(
+    //     widget.product.categoryID!, listCategory!);
     price = widget.product.price;
     initializeText();
+    setState(() {});
   }
 
   void initializeText() {
@@ -76,6 +93,7 @@ class _AddProductScreenState extends State<EditProductScreen> {
     _descriptionController.text = description ?? "";
     _priceController.text = price != null ? price.toString() : "0";
     _availableQuantityController.text = availableQuantity.toString();
+    setState(() {});
   }
 
   List<String>? images = [];
@@ -90,14 +108,23 @@ class _AddProductScreenState extends State<EditProductScreen> {
   List<String>? colors;
   List<String>? sizes;
   Category? selectedCategory;
-  List<Category>? listCategory = CategoryRepo().list;
+  List<Category>? listCategory;
+  CategoryRepo categoryRepo = CategoryRepo();
   final _formKey = GlobalKey<FormState>();
   StorageService storageService = StorageService();
-
+  ProductRepo productRepo = ProductRepo();
   @override
   Widget build(BuildContext context) {
+    final shopProvider = Provider.of<ShopViewModel>(context);
+    final shop = shopProvider.shop;
+    final userProvider = Provider.of<UserViewModel>(context);
+    final user = userProvider.currentUser;
     return Scaffold(
-      appBar: CustomAppBar(centerTitle: true,context: context,title: LangText(context: context).getLocal()!.update_product_ucf).show(),
+      appBar: CustomAppBar(
+              centerTitle: true,
+              context: context,
+              title: LangText(context: context).getLocal()!.update_product_ucf)
+          .show(),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(15.h),
@@ -107,13 +134,15 @@ class _AddProductScreenState extends State<EditProductScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                   LangText(context: context).getLocal()!.product_information_ucf,
+                  LangText(context: context)
+                      .getLocal()!
+                      .product_information_ucf,
                   style: TextStyle(fontSize: 20.sp),
                 ),
                 SizedBox(
                   height: 10.h,
                 ),
-                Text( LangText(context: context).getLocal()!.product_name_ucf),
+                Text(LangText(context: context).getLocal()!.product_name_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
@@ -131,7 +160,9 @@ class _AddProductScreenState extends State<EditProductScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a product number'; 
+                      return LangText(context: context)
+                          .getLocal()!
+                          .please_enter_number;
                     }
                     return null;
                   },
@@ -142,30 +173,32 @@ class _AddProductScreenState extends State<EditProductScreen> {
                 SizedBox(
                   height: 10.h,
                 ),
-                Text( LangText(context: context).getLocal()!.category_ucf),
+                Text(LangText(context: context).getLocal()!.category_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
-                DropdownSearch<Category>(
-                  items: [selectedCategory!],
-                  dropdownDecoratorProps: DropDownDecoratorProps(),
-                  // onChanged: print,
-                  selectedItem: selectedCategory,
-                  itemAsString: (item) => selectedCategory!.name!,
-                  // validator: (String? item) {
-                  //   if (item == null)
-                  //     return "Required field";
-                  //   else if (item == "Brazil")
-                  //     return "Invalid item";
-                  //   else
-                  //     return null;
-                  // },
-                ),
+                selectedCategory != null
+                    ? DropdownSearch<Category>(
+                        items: [selectedCategory!],
+                        dropdownDecoratorProps: DropDownDecoratorProps(),
+                        // onChanged: print,
+                        selectedItem: selectedCategory,
+                        itemAsString: (item) => selectedCategory!.name!,
+                        // validator: (String? item) {
+                        //   if (item == null)
+                        //     return "Required field";
+                        //   else if (item == "Brazil")
+                        //     return "Invalid item";
+                        //   else
+                        //     return null;
+                        // },
+                      )
+                    : Container(),
                 SizedBox(
                   height: 10.h,
                 ),
 
-                Text( LangText(context: context).getLocal()!.quantity_ucf),
+                Text(LangText(context: context).getLocal()!.quantity_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
@@ -183,12 +216,16 @@ class _AddProductScreenState extends State<EditProductScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return LangText(context: context).getLocal()!.please_enter_quantity  ;
+                      return LangText(context: context)
+                          .getLocal()!
+                          .please_enter_quantity;
                     }
 
                     // Kiểm tra xem giá trị có phải là số nguyên dương hay không
                     if (int.tryParse(value) == null || int.parse(value) <= 0) {
-                      return LangText(context: context).getLocal()!.please_enter_positive_integer  ;
+                      return LangText(context: context)
+                          .getLocal()!
+                          .please_enter_positive_integer;
                     }
 
                     return null;
@@ -203,7 +240,7 @@ class _AddProductScreenState extends State<EditProductScreen> {
                 SizedBox(
                   height: 10.h,
                 ),
-                Text( LangText(context: context).getLocal()!.price_ucf),
+                Text(LangText(context: context).getLocal()!.price_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
@@ -221,12 +258,16 @@ class _AddProductScreenState extends State<EditProductScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return LangText(context: context).getLocal()!.please_enter_price ;
+                      return LangText(context: context)
+                          .getLocal()!
+                          .please_enter_price;
                     }
 
                     // Kiểm tra xem giá trị có phải là số nguyên dương hay không
                     if (int.tryParse(value) == null || int.parse(value) <= 0) {
-                      return LangText(context: context).getLocal()!.please_enter_positive_integer ;
+                      return LangText(context: context)
+                          .getLocal()!
+                          .please_enter_positive_integer;
                     }
 
                     return null;
@@ -241,31 +282,39 @@ class _AddProductScreenState extends State<EditProductScreen> {
                 SizedBox(
                   height: 10.h,
                 ),
-                Text( LangText(context: context).getLocal()!.types_ucf),
+                Text(LangText(context: context).getLocal()!.types_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
-                buildWrapTextField(types, _typeController),
+                types == null
+                    ? Container()
+                    : buildWrapTextField(types, _typeController),
                 SizedBox(
                   height: 10.h,
                 ),
-                Text( LangText(context: context).getLocal()!.sizes_ucf),
+                Text(LangText(context: context).getLocal()!.sizes_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
-                buildWrapTextField(sizes, _sizeController),
+                sizes == null
+                    ? Container()
+                    : buildWrapTextField(sizes, _sizeController),
                 const SizedBox(
                   height: 10,
                 ),
-                Text( LangText(context: context).getLocal()!.colors_ucf),
+                Text(LangText(context: context).getLocal()!.colors_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
-                buildWrapTextField(colors, _colorsController),
+                colors == null
+                    ? Container()
+                    : buildWrapTextField(colors, _colorsController),
                 SizedBox(
                   height: 10.h,
                 ),
-                Text( LangText(context: context).getLocal()!.product_description_ucf),
+                Text(LangText(context: context)
+                    .getLocal()!
+                    .product_description_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
@@ -283,7 +332,9 @@ class _AddProductScreenState extends State<EditProductScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return LangText(context: context).getLocal()!.please_enter_description ;
+                      return LangText(context: context)
+                          .getLocal()!
+                          .please_enter_description;
                     }
                     return null;
                   },
@@ -296,7 +347,7 @@ class _AddProductScreenState extends State<EditProductScreen> {
                   height: 10.h,
                 ),
 
-                Text( LangText(context: context).getLocal()!.product_images_ucf),
+                Text(LangText(context: context).getLocal()!.product_images_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
@@ -328,7 +379,9 @@ class _AddProductScreenState extends State<EditProductScreen> {
                               width: 10.w,
                             ),
                             Text(
-                               LangText(context: context).getLocal()!.choose_file,
+                              LangText(context: context)
+                                  .getLocal()!
+                                  .choose_file,
                               style: TextStyle(color: Colors.grey),
                             ),
                           ],
@@ -343,7 +396,9 @@ class _AddProductScreenState extends State<EditProductScreen> {
                             right: Radius.circular(10.r),
                           ),
                         ),
-                        child: Center(child: Text( LangText(context: context).getLocal()!.brower)),
+                        child: Center(
+                            child: Text(
+                                LangText(context: context).getLocal()!.brower)),
                       ),
                     ],
                   ),
@@ -364,7 +419,7 @@ class _AddProductScreenState extends State<EditProductScreen> {
                     : buildNewListImage(),
                 // Các trường khác tương tự
                 SizedBox(height: 16.h),
-                Text( LangText(context: context).getLocal()!.product_videos_ucf),
+                Text(LangText(context: context).getLocal()!.product_videos_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
@@ -395,7 +450,9 @@ class _AddProductScreenState extends State<EditProductScreen> {
                               width: 10.w,
                             ),
                             Text(
-                               LangText(context: context).getLocal()!.choose_file,
+                              LangText(context: context)
+                                  .getLocal()!
+                                  .choose_file,
                               style: TextStyle(color: Colors.grey),
                             ),
                           ],
@@ -410,7 +467,9 @@ class _AddProductScreenState extends State<EditProductScreen> {
                             right: Radius.circular(10.r),
                           ),
                         ),
-                        child: Center(child: Text( LangText(context: context).getLocal()!.brower)),
+                        child: Center(
+                            child: Text(
+                                LangText(context: context).getLocal()!.brower)),
                       ),
                     ],
                   ),
@@ -446,10 +505,10 @@ class _AddProductScreenState extends State<EditProductScreen> {
         margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 25.h),
         child: ElevatedButton(
           onPressed: () async {
-            await _updateProduct();
+            await _updateProduct(shop!);
           },
           child: Text(
-             LangText(context: context).getLocal()!.update_product_ucf,
+            LangText(context: context).getLocal()!.update_product_ucf,
             style: TextStyle(fontSize: 18.sp),
           ),
         ),
@@ -512,7 +571,7 @@ class _AddProductScreenState extends State<EditProductScreen> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.r),
                     ),
-                    hintText:  LangText(context: context).getLocal()!.input_ucf),
+                    hintText: LangText(context: context).getLocal()!.input_ucf),
               ),
             );
           }
@@ -831,7 +890,7 @@ class _AddProductScreenState extends State<EditProductScreen> {
     return list;
   }
 
-  Future<void> _updateProduct() async {
+  Future<void> _updateProduct(Shop shop) async {
     String name = _nameController.text;
     String priceString = _priceController.text;
     String quantityString = _availableQuantityController.text;
@@ -883,15 +942,24 @@ class _AddProductScreenState extends State<EditProductScreen> {
           createdAt: widget.product.createdAt,
           updatedAt: Timestamp.now(),
           description: _descriptionController.text,
-          // shopID: ,
-          // shopLogo: ,
+          shopID: shop.id,
+          shopLogo: shop.logo,
           sizes: sizes,
           types: types,
           videos: productVideos,
-          // shopName: ,
+          shopName: shop.name,
         );
-
-        widget.onProductUpdated(updatedProduct);
+        await productRepo.updateProduct(
+            productID: widget.product.id!,
+            colors: colors,
+            cost: price,
+            description: _descriptionController.text,
+            images: productImages,
+            videos: productVideos,
+            quantity: quantity,
+            sizes: sizes,
+            types: types);
+        // widget.onProductUpdated  (updatedProduct);
 
         Navigator.pop(
           context,

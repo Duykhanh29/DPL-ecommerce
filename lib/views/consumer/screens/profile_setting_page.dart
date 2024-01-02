@@ -231,6 +231,7 @@ class _BuildFormState extends State<BuildForm> {
                       }
                       return null;
                     },
+                    keyboardType: TextInputType.phone,
                     controller: value.phoneEditTextController,
                     decoration: InputDecoration(
                       hintText: LangText(context: context)
@@ -259,6 +260,7 @@ class _BuildFormState extends State<BuildForm> {
                       }
                       return null;
                     },
+                    readOnly: true,
                     controller: value.emailEditTextController,
                     decoration: InputDecoration(
                       hintText:

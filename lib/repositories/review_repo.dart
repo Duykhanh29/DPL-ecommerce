@@ -21,6 +21,12 @@ class ReviewRepo {
     return _reviewFirestoreDB.getAllReviewByProduct(id);
   }
 
+  Future<bool> isReviewedByUserAndOrderingProduct(
+      {required String orderingProductID, required String orderID}) async {
+    return await _reviewFirestoreDB.isReviewedByUserAndOrderingProduct(
+        orderingProductID: orderingProductID, orderID: orderID);
+  }
+
   // Future<Review?>
   Future<void> dispose() async {
     await _reviewFirestoreDB.dispose();

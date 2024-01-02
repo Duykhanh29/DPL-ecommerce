@@ -4,6 +4,7 @@ import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/consumer_infor.dart';
 import 'package:dpl_ecommerce/models/district.dart';
+import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/models/ward.dart';
 import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
@@ -19,9 +20,16 @@ class UserViewModel extends ChangeNotifier {
   AuthViewModel? _authViewModel = AuthViewModel();
 
   UserModel? userModel;
+  Shop? shop;
   UserViewModel(this._authViewModel) {
     userModel = _authViewModel!.currentUser; // _auth null here
+    // if (userModel != null) {
+    //   if (userModel!.role == Role.seller) {}
+    // }
+
+    print(_authViewModel!.userModel);
   }
+  Shop? get currentShop => shop;
   UserModel? get currentUser => userModel;
 
   final firstNameEditTextController = TextEditingController();

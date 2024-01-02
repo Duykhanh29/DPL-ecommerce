@@ -1,23 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/product.dart';
+import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/common/common_methods.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:dpl_ecommerce/view_model/seller/shop_view_model.dart';
+import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/seller/screens/voucher/voucher_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class EditVoucher extends StatefulWidget {
   final Voucher voucher;
-  final Function(Voucher) onVoucherUpdated;
+  // final Function(Voucher) onVoucherUpdated;
 
-  EditVoucher(
-      {required this.voucher,
-      required this.onVoucherUpdated,
-      required List vouchers});
+  EditVoucher({
+    required this.voucher,
+    // required this.onVoucherUpdated,
+    // required List vouchers
+  });
 
   @override
   _AddProductScreenState createState() => _AddProductScreenState();
@@ -28,33 +33,35 @@ class _AddProductScreenState extends State<EditVoucher> {
   final TextEditingController _nameController = TextEditingController();
   TextEditingController discountValue = TextEditingController();
   VoucherRepo voucherRepo = VoucherRepo();
-  String tempShopID = "PkHVNq0E1ZnTUyRnqG4O";
+  ProductRepo productRepo =
+      ProductRepo(); // String tempShopID = "PkHVNq0E1ZnTUyRnqG4O";
   @override
   void initState() {
     super.initState();
     fetchData();
   }
 
-  void fetchData() {
+  Future<void> fetchData() async {
     _nameController.text = widget.voucher.name.toString();
     startDate = widget.voucher.releasedDate;
     expDate = widget.voucher.expDate;
 
     if (widget.voucher.productID != null) {
-      dropdownValue = "Product";
+      // dropdownValue = "Product";
       selectedProduct =
-          CommondMethods.getProductByID(list!, widget.voucher.productID!);
+          await productRepo.getProductByID(widget.voucher.productID!);
+      // CommondMethods.getProductByID(list!, widget.voucher.productID!);
     } else {
-      dropdownValue = "Shop";
+      // dropdownValue = "Shop";
     }
     if (widget.voucher.discountAmount != null) {
       discountAmount = widget.voucher.discountAmount;
       discountValue.text = discountAmount.toString();
-      discountType = "Amount";
+      // discountType = "Amount";
     } else {
       discountPercent = widget.voucher.discountPercent;
       discountValue.text = discountPercent.toString();
-      discountType = "Percent";
+      // discountType = "Percent";
     }
     setState(() {});
   }
@@ -76,10 +83,13 @@ class _AddProductScreenState extends State<EditVoucher> {
   bool isDefaultAddress = false;
 
   Product? selectedProduct;
-  List<Product>? list = ProductRepo().list;
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserViewModel>(context);
+    final shopProvider = Provider.of<ShopViewModel>(context);
+    final user = userProvider.currentUser;
+    final shop = shopProvider.shop;
     //final start = dataRange.start;
     //final end = dataRange.end;
     ;
@@ -281,7 +291,7 @@ class _AddProductScreenState extends State<EditVoucher> {
         margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 25.h),
         child: ElevatedButton(
           onPressed: () async {
-            await _updateVoucher();
+            await _updateVoucher(shop!);
           },
           child: Text(
             LangText(context: context).getLocal()!.update_voucher,
@@ -292,7 +302,7 @@ class _AddProductScreenState extends State<EditVoucher> {
     );
   }
 
-  Future<void> _updateVoucher() async {
+  Future<void> _updateVoucher(Shop shop) async {
     String name = _nameController.text;
     // String expDate1 = expDate.toString();
     // String releasedDate = startDate.toString();
@@ -314,10 +324,10 @@ class _AddProductScreenState extends State<EditVoucher> {
         discountAmount: newDiscountAmount,
         discountPercent: newDiscountPercent,
         productID: selectedProduct != null ? selectedProduct!.id! : null,
-        shopID: tempShopID,
+        shopID: shop.id,
       );
 
-      widget.onVoucherUpdated(updatedVoucher);
+      // widget.onVoucherUpdated(updatedVoucher);j
       await voucherRepo.editVoucher(
           id: widget.voucher.id!, voucher: updatedVoucher);
       Navigator.pop(

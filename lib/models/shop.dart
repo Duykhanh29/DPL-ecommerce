@@ -5,7 +5,7 @@ class Shop {
   String? id;
   String? name;
   String? logo;
-  double? rating;
+  double rating;
   AddressInfor? addressInfor;
   String? contactPhone;
   int shopView;
@@ -20,14 +20,14 @@ class Shop {
       this.id,
       this.logo,
       this.name,
-      this.rating,
+      this.rating = 0,
       this.shopView = 0,
       this.shopDescription,
       this.ratingCount = 0,
       this.totalProduct = 0,
       this.totalRevenue = 0,
       this.totalOrder = 0}) {
-    id ??= Uuid().v4();
+    id ??= const Uuid().v4();
   }
   factory Shop.fromJson(Map<String, dynamic> json) {
     return Shop(

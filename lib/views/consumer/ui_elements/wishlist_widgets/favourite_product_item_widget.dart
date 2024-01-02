@@ -66,130 +66,133 @@ class _FavouriteProductItemWidgetState
           builder: (context) => ProductDetailsPage(id: currentProduct!.id!),
         ));
       },
-      child: SizedBox(
-        width: 170.h,
+      child: Container(
+        decoration: BoxDecoration(color: MyTheme.background),
+        width: MediaQuery.of(context).size.width * 0.3,
+        height: 220.h,
         child: Padding(
           padding: EdgeInsets.only(bottom: 1.h),
           child: currentProduct != null
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 150.h,
-                      height: 120.h,
-                      padding: EdgeInsets.all(4.h),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadiusStyle.roundedBorder2,
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            currentProduct!.images![0],
+              ? Container(
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  height: 120.h,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.45,
+                        height: 120.h,
+                        padding: EdgeInsets.all(4.h),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadiusStyle.roundedBorder2,
+                          image: DecorationImage(
+                            image: NetworkImage(
+                              currentProduct!.images![0],
+                            ),
+                            fit: BoxFit.cover,
                           ),
-                          fit: BoxFit.cover,
                         ),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 56.h,
-                            margin: EdgeInsets.only(bottom: 77.h),
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 4.h,
-                              vertical: 2.h,
-                            ),
-                            decoration: AppDecoration.fillOrange.copyWith(
-                              borderRadius: BorderRadiusStyle.roundedBorder2,
-                            ),
-                            child: Text(
-                              "top_seller",
-                              style: CustomTextStyles
-                                  .labelMediumOnPrimaryContainer,
-                            ),
-                          ),
-                          Padding(
-                              padding: EdgeInsets.only(
-                                left: 60.h,
-                                bottom: 72.h,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: 56.h,
+                              margin: EdgeInsets.only(bottom: 77.h),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 4.h,
+                                vertical: 2.h,
                               ),
-                              child: InkWell(
-                                  onTap: () async {
-                                    await wishListRepo.deleteFavourite(
-                                        widget.favouriteProduct!.id!);
-                                  },
-                                  child: Icon(Icons.favorite))),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 8.h),
-                    Container(
-                      padding: const EdgeInsets.only(left: 8),
-                      width: 147.h,
-                      child: Text(
-                        currentProduct!.name!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.displayLarge!.copyWith(
-                          height: 1.50,
+                              decoration: AppDecoration.fillOrange.copyWith(
+                                borderRadius: BorderRadiusStyle.roundedBorder2,
+                              ),
+                              child: Text(
+                                "top_seller",
+                                style: CustomTextStyles
+                                    .labelMediumOnPrimaryContainer,
+                              ),
+                            ),
+                            Padding(
+                                padding: EdgeInsets.only(
+                                  // right: 10.w,
+                                  bottom: 72.h,
+                                ),
+                                child: InkWell(
+                                    onTap: () async {
+                                      await wishListRepo.deleteFavourite(
+                                          widget.favouriteProduct!.id!);
+                                    },
+                                    child: Icon(
+                                      Icons.favorite,
+                                      color: MyTheme.red,
+                                    ))),
+                          ],
                         ),
                       ),
-                    ),
-                    SizedBox(height: 10.h),
-                    Container(
-                      padding: const EdgeInsets.only(left: 8, right: 8),
-                      child: Row(
-                        children: [
-                          Container(
-                            height: 16.h,
-                            width: 16.h,
-                            padding: EdgeInsets.all(2.h),
-                            decoration: AppDecoration.fillAmber.copyWith(
-                              borderRadius: BorderRadiusStyle.roundedBorder2,
-                            ),
-                            child: CustomImageView(
-                              imagePath: ImageData.imgIconBoldStar,
-                              height: 12.h,
-                              width: 12.h,
-                              alignment: Alignment.center,
-                            ),
+                      SizedBox(height: 8.h),
+                      Container(
+                        padding: const EdgeInsets.only(left: 8),
+                        width: 147.h,
+                        child: Text(
+                          currentProduct!.name!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.displayLarge!.copyWith(
+                            height: 1.50,
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 4.h),
-                            child: Text(
-                              "lbl_4_8",
-                              style: theme.textTheme.bodySmall,
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 4.h),
-                            child: Text(
-                              "lbl_692",
-                              style: CustomTextStyles.bodySmallGray600,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 9.h),
-                    Container(
+                      SizedBox(height: 10.h),
+                      // Container(
+                      //   padding: const EdgeInsets.only(left: 8, right: 8),
+                      //   child: Row(
+                      //     children: [
+                      //       Container(
+                      //         height: 16.h,
+                      //         width: 16.h,
+                      //         padding: EdgeInsets.all(2.h),
+                      //         decoration: AppDecoration.fillAmber.copyWith(
+                      //           borderRadius: BorderRadiusStyle.roundedBorder2,
+                      //         ),
+                      //         child: CustomImageView(
+                      //           imagePath: ImageData.imgIconBoldStar,
+                      //           height: 12.h,
+                      //           width: 12.h,
+                      //           alignment: Alignment.center,
+                      //         ),
+                      //       ),
+                      //       Padding(
+                      //         padding: EdgeInsets.only(left: 4.h),
+                      //         child: Text(
+                      //           "lbl_4_8",
+                      //           style: theme.textTheme.bodySmall,
+                      //         ),
+                      //       ),
+                      //       Padding(
+                      //         padding: EdgeInsets.only(left: 4.h),
+                      //         child: Text(
+                      //           "lbl_692",
+                      //           style: CustomTextStyles.bodySmallGray600,
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      // SizedBox(height: 9.h),
+                      Container(
                         padding: const EdgeInsets.only(left: 10),
                         child: Text(
                           "${currentProduct!.price} VND",
                           style: theme.textTheme.displayLarge,
-                        )),
-                  ],
+                        ),
+                      ),
+                    ],
+                  ),
                 )
               : Container(),
         ),
       ),
-      // );
-      //     } else {
-      //       return Center(
-      //         child: Text("No data"),
-      //       );
-      //     }
-      //   }
-      // },
     );
   }
 }

@@ -10,6 +10,10 @@ import 'package:dpl_ecommerce/models/verification_form.dart';
 
 class ShopRepo {
   FirestoreDatabase _shopFirestoreDB = FirestoreDatabase();
+  Future<Shop?> getShopByID(String id) async {
+    return await _shopFirestoreDB.getSHopByID(id);
+  }
+
   Future<List<Shop>?> getListShop() async {
     return await _shopFirestoreDB.getListShop();
   }

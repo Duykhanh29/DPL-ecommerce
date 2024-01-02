@@ -1,8 +1,10 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item_widget.dart';
 import 'package:flutter/material.dart';
@@ -19,18 +21,13 @@ class _RatingState extends State<FavoriteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Text(
-          "Favorite Product",
-          textAlign: TextAlign.center,
-        ),
-        centerTitle: true,
-
-        //leading: Icon(Icons.menu),
-      ),
+      appBar: CustomAppBar(
+              centerTitle: true,
+              context: context,
+              title: LangText(context: context).getLocal()!.my_wishlist_ucf)
+          .show(),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
+        padding: EdgeInsets.fromLTRB(5.w, 5.h, 0, 5.h),
         child: Container(
           width: double.maxFinite,
           child: Column(
@@ -164,7 +161,7 @@ Widget _buildProductSmallList1(BuildContext context, List<Product> list) {
           product: list[index],
         );
       },
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: list.length,
     ),
   );

@@ -6,12 +6,16 @@ import 'package:dpl_ecommerce/models/review.dart';
 
 class ProductRepo {
   FirestoreDatabase productFirestoreDatabase = FirestoreDatabase();
-  Stream<List<Product>?> getListActiveProduct() async* {
-    productFirestoreDatabase.getListActiveProduct();
+  Stream<List<Product>?> getListActiveProduct() {
+    return productFirestoreDatabase.getListActiveProduct();
   }
 
   Future<List<Product>?> getActiveProducts() async {
     return await productFirestoreDatabase.getActiveProducts();
+  }
+
+  Stream<List<Product>?> getAllProductByShopID(String shopID) {
+    return productFirestoreDatabase.getAllProductByShopID(shopID);
   }
 
   Future<List<Product>?> getListProductByShopID(String shopID) async {
@@ -26,8 +30,8 @@ class ProductRepo {
     return await productFirestoreDatabase.getProductByID(id);
   }
 
-  Future<void> addProduct(Product product) async {
-    await productFirestoreDatabase.postProduct(product);
+  Future<void> addProduct(Product product, String shopID) async {
+    await productFirestoreDatabase.postProduct(product, shopID);
   }
 
   Future<void> deleteProduct({required String productID}) async {

@@ -16,6 +16,7 @@ class OrderingProduct {
   String? type;
   Timestamp? date;
   DeliverStatus? deliverStatus;
+  bool isReviewed;
   OrderingProduct({
     this.deliverStatus,
     this.id,
@@ -29,6 +30,7 @@ class OrderingProduct {
     this.color,
     this.type,
     this.date,
+    this.isReviewed = false,
   }) {
     id ??= Uuid().v4();
   }
@@ -47,7 +49,8 @@ class OrderingProduct {
         size: json['size'],
         color: json['color'],
         type: json['type'],
-        date: (json['date'] as Timestamp?));
+        date: (json['date'] as Timestamp?),
+        isReviewed: json['isReviewed']);
   }
   Map<String, dynamic> toJson() => {
         'deliverStatus': deliverStatus.toString().split(".").last,
@@ -62,5 +65,6 @@ class OrderingProduct {
         'color': color,
         'type': type,
         'date': date,
+        'isReviewed': isReviewed
       };
 }

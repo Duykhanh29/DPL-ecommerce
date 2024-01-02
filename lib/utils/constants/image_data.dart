@@ -2,7 +2,7 @@ class ImageData {
   // static String googleLogo = "assets/images/google-logo.png";
   // Image folder path
   static String imagePath = 'assets/images';
-  static String appLogo = '$imagePath/hasu_logo.jpg';
+  static String appLogo = '$imagePath/dpl_logo.png';
   static String logo = '$imagePath/hasu.jpg';
 
   // Search Result images
@@ -56,4 +56,6 @@ class ImageData {
 
   // logo
   static String googleLogo = '$imagePath/google_logo.png';
+  static String circelAvatar = '$imagePath/circel_avatar.png';
+  static String placeHolder = '$imagePath/place_holder.png';
 }

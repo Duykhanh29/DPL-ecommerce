@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/models/chat.dart';
 import 'package:dpl_ecommerce/models/message.dart';
@@ -6,6 +7,7 @@ import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/repositories/auth_repo.dart';
 import 'package:dpl_ecommerce/repositories/chat_repo.dart';
 import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/media_preview.dart';
@@ -24,29 +26,54 @@ class ChattingPage extends StatelessWidget {
   bool isShop;
   Chat? chat;
   bool isNew;
+  ChatRepo chatRepo = ChatRepo();
   @override
   Widget build(BuildContext context) {
     final chatProvider = Provider.of<ChatViewModel>(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        leading: CustomArrayBackWidget(),
-        title: const Text("Chatting page"),
-      ),
+      appBar: CustomAppBar(
+              centerTitle: true,
+              context: context,
+              title: LangText(context: context).getLocal()!.chat_ucf)
+          .show(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Expanded(
-            child: Consumer<ChatViewModel>(
-              builder: (context, value, child) {
-                return ListMsg(
-                  list: chat!.listMsg ?? [],
-                  chat: chat,
-                  isShop: isShop,
+              child: StreamBuilder(
+            stream: chatRepo.getListMsgInAChatByID(chat!.id!),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
                 );
-              },
-            ),
-          ),
+              } else {
+                if (snapshot.hasData) {
+                  if (snapshot.data != null) {
+                    final list = snapshot.data;
+                    return ListMsg(
+                      list: list,
+                      chat: chat,
+                      isShop: isShop,
+                    );
+                  } else {
+                    return Center(
+                      child: Text(LangText(context: context)
+                          .getLocal()!
+                          .no_data_is_available),
+                    );
+                  }
+                } else {
+                  return Center(
+                    child: Text(LangText(context: context)
+                        .getLocal()!
+                        .no_data_is_available),
+                  );
+                }
+              }
+            },
+          )),
           // Spacer(),
           Inputter(chat: chat, isShop: isShop),
         ],
@@ -88,7 +115,7 @@ class _InputterState extends State<Inputter> {
             children: [
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: const Text("Gallery"),
+                title: Text(LangText(context: context).getLocal()!.gallery_ucf),
                 onTap: () async {
                   final result = await FilePicker.platform.pickFiles(
                       allowMultiple: false,
@@ -191,8 +218,9 @@ class _InputterState extends State<Inputter> {
               child: InkWell(
                 onTap: () async {
                   if (controller.text != null || controller.text != "") {
+                    print("Text: ${controller.text}");
                     sendMsg(controller.text, chatProvider);
-                    controller.text = "";
+
                     Message msg = Message(
                       chatType: ChatType.text,
                       content: controller.text,
@@ -205,6 +233,7 @@ class _InputterState extends State<Inputter> {
                     );
                     await chatRepo.sendAMessage(
                         chatID: widget.chat!.id!, msg: msg);
+                    controller.text = "";
                   }
                 },
                 child: Icon(Icons.send),

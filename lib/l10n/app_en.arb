@@ -682,5 +682,18 @@
     "received_address":"Received address",
     "total_product_ucf":"Total product",
     "type_ucf":"Type",
-    "size_ucf":"Size"
+    "size_ucf":"Size",
+    "welcome_to_DPL":"Welcome to DPL Ecommerce",
+    "sign_in_to_continue":"Sign in to continue",
+    "login_with_google":"Login with Google",
+    "login_as_seller":"Login as seller side",
+    "login_as_admin":"Login as admin",
+    "please_enter_valid_email":"Please enter valid email",
+    "product_detail_ucf":"Product detail",
+    "a_image_is_send":"An image is sent",
+    "a_video_is_send":"A video is sent",
+    "a_link_is_send":"A link is sent",
+    "gallery_ucf":"Gallery",
+    "total_revenue_ucf":"Total revenue",
+    "deal_of_the_day":"Deal of the day"
 }

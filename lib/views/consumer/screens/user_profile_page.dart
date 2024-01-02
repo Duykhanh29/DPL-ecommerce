@@ -46,6 +46,9 @@ class UserProfilePage extends StatelessWidget {
                     padding: EdgeInsets.only(left: 1.w),
                     child: Column(
                       children: [
+                        // SizedBox(
+                        //   height: 10.h,
+                        // ),
                         _buildAvatarRow(context),
                         SizedBox(height: 58.h),
                         Container(
@@ -418,11 +421,13 @@ class UserProfilePage extends StatelessWidget {
       height: 100.h,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.h),
-          border: Border.all(color: Colors.black, width: 0.2)),
-      padding: EdgeInsets.only(
-        left: 10.w,
-        right: 10.w,
-      ),
+          border: Border.all(color: MyTheme.accent_color, width: 0.7)),
+      // padding: EdgeInsets.only(
+      //   left: 10.w,
+      //   right: 10.w,
+      //   bottom: 5.h,
+      //   top: 5.h,
+      // ),
       margin: EdgeInsets.only(
         left: 15.w,
         right: 15.w,
@@ -441,17 +446,21 @@ class UserProfilePage extends StatelessWidget {
           },
           leading: Consumer<UserViewModel>(
             builder: (context, value, child) {
-              return CircleAvatar(
-                radius: 40,
-                backgroundImage: NetworkImage(value.userModel!.avatar!),
-              );
+              return value.userModel!.avatar != null
+                  ? CircleAvatar(
+                      radius: 40.r,
+                      backgroundImage: NetworkImage(value.userModel!.avatar!),
+                    )
+                  : CircleAvatar(
+                      radius: 40.r,
+                      backgroundImage: AssetImage(ImageData.circelAvatar));
             },
           ),
           title: Consumer<UserViewModel>(
             builder: (context, value, child) {
               return Text(
                 value.userModel!.firstName!,
-                style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w600),
               );
             },
           ),

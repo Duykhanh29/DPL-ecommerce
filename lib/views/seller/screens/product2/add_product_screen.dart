@@ -6,8 +6,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/category.dart';
 import 'package:dpl_ecommerce/models/product.dart';
+import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/repositories/category_repo.dart';
+import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
+import 'package:dpl_ecommerce/view_model/seller/shop_view_model.dart';
+import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/seller/screens/product/product_app.dart';
 import 'package:dpl_ecommerce/views/seller/screens/product2/product_app.dart';
 import 'package:dpl_ecommerce/views/seller/ui_elements/video_asset_widget.dart';
@@ -16,14 +20,15 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddProductScreen extends StatefulWidget {
-  final List<Product> products;
-  final Function(Product) onProductAdded;
+  // final List<Product> products;
+  // final Function(Product) onProductAdded;
 
-  AddProductScreen({required this.products, required this.onProductAdded});
+  // AddProductScreen({required this.products, required this.onProductAdded});
 
   @override
   _AddProductScreenState createState() => _AddProductScreenState();
@@ -55,6 +60,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   CategoryRepo categoryRepo = CategoryRepo();
   final _formKey = GlobalKey<FormState>();
   StorageService storageService = StorageService();
+  ProductRepo productRepo = ProductRepo();
   bool isLoading = true;
   @override
   void initState() {
@@ -71,6 +77,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserViewModel>(context);
+    final user = userProvider.currentUser;
+    final shopProvider = Provider.of<ShopViewModel>(context);
+    final shop = shopProvider.shop;
+
     return Scaffold(
       appBar: CustomAppBar(
               centerTitle: true,
@@ -494,7 +505,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
           //   }
           // },
           onPressed: () async {
-            await _addProduct(context);
+            await _addProduct(context, shop!);
           },
           child: Text(
             AppLocalizations.of(context)!.add_new_product_ucf,
@@ -773,7 +784,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     return list;
   }
 
-  Future<void> _addProduct(BuildContext context) async {
+  Future<void> _addProduct(BuildContext context, Shop shop) async {
     String name = _nameController.text;
     String priceString = _priceController.text;
     String availableQuantity1 = _availableQuantityController.text;
@@ -796,6 +807,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
         }
         // Future.delayed(const Duration(seconds: 1)).then((value) {
         Product newProduct = Product(
+          shopID: shop.id,
+          shopLogo: shop.logo,
+          shopName: shop.name,
           id: id,
           images: productImages,
           name: name,
@@ -808,7 +822,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
           createdAt: Timestamp.now(),
           updatedAt: Timestamp.now(),
           description: _descriptionController.text,
-          // reviewIDs: [],
+          reviewIDs: [],
 
           // shopLogo: ,
           // shopID: ,
@@ -816,7 +830,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
           // shopName: ,
           types: types,
         );
-        widget.onProductAdded(newProduct);
+        await productRepo.addProduct(newProduct, shop.id!);
+        // widget.onProductAdded(newProduct);
 
         // Clear text fields and image path
         _nameController.clear();

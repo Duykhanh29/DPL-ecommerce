@@ -91,15 +91,6 @@ class __CheckOutState extends State<CheckOut> {
     setState(() {});
   }
 
-  AddressInfor addressInfor = AddressInfor(
-      city: City(id: 8, name: "Tuyen Quang"),
-      country: "Viet Nam",
-      isDefaultAddress: true,
-      latitude: 123,
-      longitude: 150,
-      name: "My home",
-      district: District(id: 123, name: "Hoang Mai"));
-
   showNotification(BuildContext context) {
     ToastHelper.showDialog(
       LangText(context: context).getLocal()!.add_full_infor,
@@ -145,7 +136,7 @@ class __CheckOutState extends State<CheckOut> {
                             child: ListOrderingProductItem(
                               list: listProduct,
                             ))),
-                    _buildvoucher(context),
+                    // _buildvoucher(context),
                   ],
                 ),
               ),

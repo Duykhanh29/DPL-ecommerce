@@ -188,8 +188,12 @@ class _SearchScreenState extends State<SearchScreen> {
                         padding: EdgeInsets.symmetric(horizontal: 0.w),
                         child: _buildDealOfTheDay(
                           context,
-                          dealOfTheDayText: "recommend",
-                          viewAllText: "view all",
+                          dealOfTheDayText: LangText(context: context)
+                              .getLocal()!
+                              .recommended_ucf,
+                          viewAllText: LangText(context: context)
+                              .getLocal()!
+                              .view_more_ucf,
                         ),
                       ),
                       SizedBox(height: 16.h),
@@ -206,24 +210,31 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _buildLastSearchItem(BuildContext context,
       {required SeacrhHistory seacrhHistory, Key? key}) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
+        final list =
+            await productRepo.searchProductByName(seacrhHistory.searchKey!);
+
+        // ignore: use_build_context_synchronously
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                SearchFilterScreen(searchKey: seacrhHistory.searchKey),
+            builder: (context) => SearchFilterScreen(
+                list: list, searchKey: seacrhHistory.searchKey),
           ),
         );
       },
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 5.w),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
         child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
           // CustomImageView(
           //     imagePath: ImageData.imgIconClock, height: 20.h, width: 20.w),
           Padding(
               padding: EdgeInsets.only(left: 10.h),
               child: Text(seacrhHistory.searchKey!,
-                  style: TextStyle(color: Colors.red))),
+                  style: TextStyle(
+                      color: MyTheme.accent_color,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500))),
           Spacer(),
           CustomImageView(
             imagePath: ImageData.imgClose,
@@ -349,11 +360,17 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _buildHistorySearch(BuildContext context, List<SeacrhHistory>? list) {
     return Container(
       // height: MediaQuery.of(context).size.height * 0.15,
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.2,
-      ),
+      // constraints: BoxConstraints(
+      //   maxHeight: MediaQuery.of(context).size.height * 0.1,
+      // ),
+      // decoration: BoxDecoration(color: Colors.yellow),
       padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 20.w),
-      child: ListView.builder(
+      child: ListView.separated(
+        separatorBuilder: (context, index) => Divider(
+          color: MyTheme.app_accent_border,
+          height: 1,
+        ),
+        shrinkWrap: true,
         itemBuilder: (context, index) {
           return _buildLastSearchItem(context,
               seacrhHistory: list![index], key: UniqueKey());

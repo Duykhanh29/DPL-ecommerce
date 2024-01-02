@@ -1,12 +1,15 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/district.dart';
 import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/repositories/shop_repo.dart';
 import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:dpl_ecommerce/view_model/seller/shop_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,7 +17,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class GeneralSetting extends StatefulWidget {
-  const GeneralSetting({super.key});
+  GeneralSetting({super.key});
+  // Shop shop;
 
   @override
   State<GeneralSetting> createState() => __GeneralSettingState();
@@ -28,27 +32,27 @@ class __GeneralSettingState extends State<GeneralSetting> {
   StorageService storageService = StorageService();
 
   ShopRepo shopRepo = ShopRepo();
-  Shop shop = Shop(
-    ratingCount: 123,
-    totalProduct: 32,
-    name: "DK",
-    addressInfor: AddressInfor(
-        city: City(id: 8, name: "Tuyen Quang"),
-        country: "Viet nam",
-        isDefaultAddress: false,
-        latitude: 123.12,
-        longitude: 123,
-        name: "My address",
-        district: District(id: 123, name: "Hoang Mai")),
-    contactPhone: "0987654321",
-    id: "shopID01",
-    shopDescription:
-        "Cultivate your love for gardening with Green Thumb Nursery. We offer a variety of plants, gardening tools, and expert advice to help you create a vibrant and thriving garden.",
-    logo:
-        "https://cdn.shopify.com/shopifycloud/hatchful_web_two/bundles/4a14e7b2de7f6eaf5a6c98cb8c00b8de.png",
-    rating: 4.4,
-    shopView: 120,
-  );
+  // Shop shop = Shop(
+  //   ratingCount: 123,
+  //   totalProduct: 32,
+  //   name: "DK",
+  //   addressInfor: AddressInfor(
+  //       city: City(id: 8, name: "Tuyen Quang"),
+  //       country: "Viet nam",
+  //       isDefaultAddress: false,
+  //       latitude: 123.12,
+  //       longitude: 123,
+  //       name: "My address",
+  //       district: District(id: 123, name: "Hoang Mai")),
+  //   contactPhone: "0987654321",
+  //   id: "shopID01",
+  //   shopDescription:
+  //       "Cultivate your love for gardening with Green Thumb Nursery. We offer a variety of plants, gardening tools, and expert advice to help you create a vibrant and thriving garden.",
+  //   logo:
+  //       "https://cdn.shopify.com/shopifycloud/hatchful_web_two/bundles/4a14e7b2de7f6eaf5a6c98cb8c00b8de.png",
+  //   rating: 4.4,
+  //   shopView: 120,
+  // );
 
   File? _image;
   String? urlImage;
@@ -82,7 +86,7 @@ class __GeneralSettingState extends State<GeneralSetting> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    fetchData();
+    // fetchData();
   }
 
   @override
@@ -93,19 +97,23 @@ class __GeneralSettingState extends State<GeneralSetting> {
     super.dispose();
   }
 
-  Future<void> fetchData() async {
-    _nameController.text = shop.name ?? "";
-    _phoneController.text = shop.contactPhone ?? "";
-    _descriptionController.text = shop.shopDescription ?? "";
-    urlImage = shop.logo;
-  }
+  // Future<void> fetchData() async {
+  //   _nameController.text = widget.shop.name ?? "";
+  //   _phoneController.text = widget.shop.contactPhone ?? "";
+  //   _descriptionController.text = widget.shop.shopDescription ?? "";
+  //   urlImage = widget.shop.logo;
+  // }
 
   @override
   Widget build(BuildContext context) {
+    final shopProvider = Provider.of<ShopViewModel>(context);
+    final shop = shopProvider.shop;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('General Setting'),
-      ),
+      appBar: CustomAppBar(
+              context: context,
+              title: LangText(context: context).getLocal()!.general_setting_ucf,
+              centerTitle: true)
+          .show(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -115,14 +123,14 @@ class __GeneralSettingState extends State<GeneralSetting> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buidck(
-                    name: shop.name ?? "",
-                    hintname: "Shop name",
-                    namevalue: "Shop name",
+                    name: shop!.name ?? "",
+                    hintname: LangText(context: context).getLocal()!.shop_name,
+                    namevalue: LangText(context: context).getLocal()!.shop_name,
                     namctr: _nameController),
                 SizedBox(
                   height: 20.h,
                 ),
-                Text("Shop Logo"),
+                Text(LangText(context: context).getLocal()!.shop_logo_ucf),
                 SizedBox(
                   height: 10.h,
                 ),
@@ -135,18 +143,6 @@ class __GeneralSettingState extends State<GeneralSetting> {
                       Container(
                         height: 50.h,
                         width: MediaQuery.of(context).size.width * 0.7,
-                        //child: Center(child: Text("Choose file")),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 10.w,
-                            ),
-                            Text(
-                              "Choose file",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
                         decoration: BoxDecoration(
                           border: Border.all(
                             color: Color.fromARGB(110, 218, 218, 218),
@@ -158,17 +154,33 @@ class __GeneralSettingState extends State<GeneralSetting> {
                             left: Radius.circular(10.r),
                           ),
                         ),
+                        //child: Center(child: Text("Choose file")),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Text(
+                              LangText(context: context)
+                                  .getLocal()!
+                                  .choose_file,
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
                       ),
                       Container(
                         height: 50.h,
                         width: 75.w,
-                        child: Center(child: Text("Brower")),
                         decoration: BoxDecoration(
                           color: Color.fromARGB(110, 218, 218, 218),
                           borderRadius: BorderRadius.horizontal(
                             right: Radius.circular(10.r),
                           ),
                         ),
+                        child: Center(
+                            child: Text(
+                                LangText(context: context).getLocal()!.brower)),
                       ),
                     ],
                   ),
@@ -215,8 +227,10 @@ class __GeneralSettingState extends State<GeneralSetting> {
                 ),
                 _buidck(
                     name: shop.contactPhone ?? "",
-                    hintname: "Phone number",
-                    namevalue: "Phone number",
+                    hintname:
+                        LangText(context: context).getLocal()!.phone_number_ucf,
+                    namevalue:
+                        LangText(context: context).getLocal()!.phone_number_ucf,
                     namctr: _phoneController,
                     textInputType: TextInputType.phone),
                 SizedBox(
@@ -224,8 +238,10 @@ class __GeneralSettingState extends State<GeneralSetting> {
                 ),
                 _buidck(
                     name: shop.shopDescription ?? "",
-                    hintname: "description",
-                    namevalue: "description",
+                    hintname:
+                        LangText(context: context).getLocal()!.description_ucf,
+                    namevalue:
+                        LangText(context: context).getLocal()!.description_ucf,
                     namctr: _descriptionController,
                     maxLines: 5),
                 SizedBox(
@@ -244,15 +260,19 @@ class __GeneralSettingState extends State<GeneralSetting> {
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
               await shopRepo.updateShop(
-                  shopID: "shopID",
+                  shopID: shop.id!,
                   logo: urlImage,
                   contactPhone: _phoneController.text,
                   name: _nameController.text,
                   shopDescription: _descriptionController.text);
+              Shop? newShop = await shopRepo.getShopByID(shop.id!);
+              if (newShop != null) {
+                shopProvider.setShopInfo(newShop);
+              }
             }
           },
           child: Text(
-            'Save',
+            LangText(context: context).getLocal()!.save_ucf,
             style: TextStyle(fontSize: 18.sp),
           ),
         ),
@@ -292,7 +312,8 @@ class __GeneralSettingState extends State<GeneralSetting> {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return "Please enter " + namevalue;
+                return LangText(context: context).getLocal()!.please_enter +
+                    namevalue;
               }
               return null;
             },

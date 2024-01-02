@@ -384,17 +384,21 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           //   }
                           // }
                           if (value.voucherIDs != null) {
-                            Voucher? voucher = CommondMethods.getVoucherFromID(
-                                listVoucher!, value.voucherIDs![0]);
-                            if (voucher != null) {
-                              savingCost =
-                                  CommonCaculatedMethods.caculateSavignCost(
-                                      voucher, product!.price!);
+                            if (value.voucherIDs!.isNotEmpty) {
+                              Voucher? voucher =
+                                  CommondMethods.getVoucherFromID(
+                                      listVoucher!, value.voucherIDs![0]);
+                              if (voucher != null) {
+                                savingCost =
+                                    CommonCaculatedMethods.caculateSavignCost(
+                                        voucher, product!.price!);
+                              }
                             }
                           }
                           OrderingProduct orderingProduct = OrderingProduct(
                               deliverStatus: DeliverStatus.processing,
-                              color: product!.colors != null
+                              color: product!.colors != null &&
+                                      product!.colors!.isNotEmpty
                                   ? (value.color ?? product!.colors![0])
                                   : null,
                               date: Timestamp.now(),
@@ -403,10 +407,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               quantity: value.initialPurcharsingNumber,
                               realPrice: product!.price! - savingCost,
                               userID: userID,
-                              size: product!.sizes != null
+                              size: product!.sizes != null &&
+                                      product!.sizes!.isNotEmpty
                                   ? (value.size ?? product!.sizes![0])
                                   : null,
-                              type: product!.types != null
+                              type: product!.types != null &&
+                                      product!.types!.isNotEmpty
                                   ? (value.type ?? product!.types![0])
                                   : null,
                               voucherID: value.voucherIDs != null
@@ -1020,6 +1026,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           height: 60.h,
                           width: 60.h,
                           decoration: BoxDecoration(
+                            border: Border.all(color: MyTheme.accent_color),
                             shape: BoxShape.circle,
                             image: DecorationImage(
                                 image: imageProvider, fit: BoxFit.cover),
@@ -1032,9 +1039,20 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               height: 30.h,
                               child: const CircularProgressIndicator())),
                       errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
+                          const Center(child: Icon(Icons.error)),
                     )
-                  : Image.asset(ImageData.placeHolderImg),
+                  : Container(
+                      width: 60.h,
+                      height: 60.h,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100.r),
+                          border: Border.all(color: MyTheme.accent_color)),
+                      child: Image.asset(
+                        ImageData.placeHolderImg,
+                        width: 60.h,
+                        height: 60.h,
+                      ),
+                    ),
               Padding(
                 padding: EdgeInsets.only(left: 10.w),
                 child: Column(
@@ -1215,7 +1233,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 print("object empty");
                 return Center(
-                  child: Text("object empty"),
+                  child: Text(LangText(context: context)
+                      .getLocal()!
+                      .no_data_is_available),
                 );
               } else {
                 if (snapshot.data != null && snapshot.data!.isNotEmpty) {
@@ -1309,13 +1329,14 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             productID: product!.id,
             receiverID: seller!.id,
             senderID: usermodel!.id,
-            time: Timestamp.fromDate(DateTime.now()));
+            time: Timestamp.fromDate(DateTime.now()),
+            content: "");
 
         // dafd
 
         bool? hasConversation = await chatRepo.checkExistedChatBoxWithUsers(
             sellerID: seller!.id!, userID: usermodel.id!);
-        if (hasConversation!) {
+        if (!hasConversation!) {
           chat = Chat(
             listMsg: [],
             sellerID: seller!.id,
@@ -1618,7 +1639,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     child: Consumer<ProductDetailViewModel>(
                       builder: (context, value, child) {
                         return ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               // ProductInCartModel productInCartModel =
                               //     ProductInCartModel(
                               //         cost: product!.price!,
@@ -1638,7 +1659,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   ProductInCartModel(
                                       cost: product!.price!,
                                       quantity: value.choseNumber,
-                                      color: product!.colors != null
+                                      color: product!.colors != null &&
+                                              product!.colors!.isNotEmpty
                                           ? (value.color ?? product!.colors![0])
                                           : null,
                                       currencyID: "704",
@@ -1649,12 +1671,14 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                           ? value.voucherIDs![0]
                                           : null,
                                       userID: userModel!.id!,
-                                      size: product!.sizes != null
+                                      size: product!.sizes != null &&
+                                              product!.sizes!.isNotEmpty
                                           ? (value.size ?? product!.sizes![0])
                                           : null,
                                       createdAt:
                                           Timestamp.fromDate(DateTime.now()),
-                                      type: product!.types != null
+                                      type: product!.types != null &&
+                                              product!.types!.isNotEmpty
                                           ? (value.type ?? product!.types![0])
                                           : null);
                               cartProvider.addToCart(productInCartModel);
@@ -1669,7 +1693,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                           voucher, product!.price!);
                                 }
                               }
-                              cartRepo.addToCart(
+                              await cartRepo.addToCart(
                                   uid: userModel.id!,
                                   productInCartModel: productInCartModel,
                                   savingCost: savingCost);

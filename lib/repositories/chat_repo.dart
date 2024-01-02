@@ -14,6 +14,10 @@ class ChatRepo {
     return firestoreDatabase.getListMsgInAChatByID(id);
   }
 
+  Stream<Chat?> getChatDataByID(String id) {
+    return firestoreDatabase.getChatDataByID(id);
+  }
+
   Stream<List<Chat>?> getAllChatBySellerID(String uid) {
     return firestoreDatabase.getAllChatBySellerID(uid);
   }

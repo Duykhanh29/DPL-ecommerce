@@ -59,7 +59,13 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text("Home"),
+        title: Text(
+          LangText(context: context).getLocal()!.home_ucf,
+          style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+              color: MyTheme.accent_color),
+        ),
         actions: [
           StreamBuilder<Cart?>(
               stream: firestoreDatabase.getCartByUser(user!.id!),
@@ -89,50 +95,52 @@ class HomePage extends StatelessWidget {
                   }
                 }
               }),
+          // SizedBox(width: 15.w),
+          // Center(
+          //   child: badges.Badge(
+          //     badgeContent: Text(
+          //       "3",
+          //       style: TextStyle(fontSize: 12.sp, color: Colors.white),
+          //     ),
+          //     child: InkWell(
+          //       child: Icon(Icons.notifications_outlined,
+          //           color: Colors.white, size: 30.sp),
+          //       onTap: () {
+          //         // Navigator.of(context).push(MaterialPageRoute(
+          //         //   builder: (context) {
+          //         //     return ProductsApp(products: []);
+          //         //   },
+          //         // ));
+          //       },
+          //     ),
+          //   ),
+          // ),
           SizedBox(width: 15.w),
           Center(
-            child: badges.Badge(
-              badgeContent: Text(
-                "3",
-                style: TextStyle(fontSize: 12.sp, color: Colors.white),
+            child:
+                //  Consumer<ChatViewModel>(
+                //   builder: (context, value, child) {
+                //     return badges.Badge(
+                //       badgeContent: Text(
+                //         value.list.length.toString(),
+                //         style: TextStyle(fontSize: 12.sp, color: Colors.white),
+                //       ),
+                //       child:
+                InkWell(
+              child: Icon(
+                Icons.chat_bubble_outline,
+                size: 24.sp,
+                color: Colors.white,
               ),
-              child: InkWell(
-                child: Icon(Icons.notifications_outlined,
-                    color: Colors.white, size: 30.sp),
-                onTap: () {
-                  // Navigator.of(context).push(MaterialPageRoute(
-                  //   builder: (context) {
-                  //     return ProductsApp(products: []);
-                  //   },
-                  // ));
-                },
-              ),
-            ),
-          ),
-          SizedBox(width: 15.w),
-          Center(
-            child: Consumer<ChatViewModel>(
-              builder: (context, value, child) {
-                return badges.Badge(
-                  badgeContent: Text(
-                    value.list.length.toString(),
-                    style: TextStyle(fontSize: 12.sp, color: Colors.white),
-                  ),
-                  child: InkWell(
-                    child: Icon(
-                      Icons.chat_bubble_outline,
-                      size: 24.sp,
-                      color: Colors.white,
-                    ),
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => ChatPage(),
-                      ));
-                    },
-                  ),
-                );
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ChatPage(),
+                ));
               },
             ),
+            // );
+            //   },
+            // ),
           ),
           SizedBox(
             width: 12.w,
@@ -181,12 +189,9 @@ class HomePage extends StatelessWidget {
                                     //   width: 20.w,
                                     // ),
                                     Text(
-                                      // LangText(context: context)
-                                      //     .getLocal()!
-                                      //     .
-                                      // AppLocalizations.of(context)!
-                                      //     .search_anything,
-                                      "search_anything",
+                                      LangText(context: context)
+                                          .getLocal()!
+                                          .search_anything,
                                       style: TextStyle(
                                           color: Colors.grey, fontSize: 14.sp),
                                     ),
@@ -250,8 +255,12 @@ class HomePage extends StatelessWidget {
                                 horizontal: 10.h, vertical: 6),
                             child: _buildDealOfTheDay(
                               context,
-                              dealOfTheDayText: "deal of the day",
-                              viewAllText: "view all",
+                              dealOfTheDayText: LangText(context: context)
+                                  .getLocal()!
+                                  .deal_of_the_day,
+                              viewAllText: LangText(context: context)
+                                  .getLocal()!
+                                  .view_more_ucf,
                             ),
                           ),
                           _buildDealOfTheDayRow(context),
@@ -260,19 +269,27 @@ class HomePage extends StatelessWidget {
                             padding: EdgeInsets.symmetric(horizontal: 10.h),
                             child: _buildDealOfTheDay(
                               context,
-                              dealOfTheDayText: "msg_hot_selling_footwear",
-                              viewAllText: "lbl_view_all",
+                              dealOfTheDayText: LangText(context: context)
+                                  .getLocal()!
+                                  .top_products_ucf,
+                              viewAllText: LangText(context: context)
+                                  .getLocal()!
+                                  .view_more_ucf,
                             ),
                           ),
                           SizedBox(height: 16.h),
-                          _buildProductSmallList(context),
+                          _buildTopProductSmallList(context),
                           SizedBox(height: 25.h),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 10.h),
                             child: _buildDealOfTheDay(
                               context,
-                              dealOfTheDayText: "msg_recommended_for",
-                              viewAllText: "lbl_view_all",
+                              dealOfTheDayText: LangText(context: context)
+                                  .getLocal()!
+                                  .recommended_ucf,
+                              viewAllText: LangText(context: context)
+                                  .getLocal()!
+                                  .view_more_ucf,
                             ),
                           ),
                           SizedBox(height: 16.h),
@@ -327,7 +344,11 @@ class HomePage extends StatelessWidget {
               );
             } else {
               return Container(
-                child: Text("NO data"),
+                height: 40.h,
+                child: Center(
+                    child: Text(LangText(context: context)
+                        .getLocal()!
+                        .no_data_is_available)),
               );
             }
           }
@@ -553,11 +574,11 @@ class HomePage extends StatelessWidget {
   }
 
   /// Section Widget
-  Widget _buildProductSmallList(BuildContext context) {
+  Widget _buildTopProductSmallList(BuildContext context) {
     return SizedBox(
       height: 230.h,
-      child: StreamBuilder(
-        stream: firestoreDatabase.getListActiveProduct(),
+      child: FutureBuilder(
+        future: firestoreDatabase.getListTopActiveProduct(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(

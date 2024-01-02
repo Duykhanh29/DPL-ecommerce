@@ -11,7 +11,7 @@ class SellerInfor {
       this.shopIDs,
       this.licenseNo,
       this.taxPaper,
-      contactAddress});
+      this.contactAddress});
   factory SellerInfor.fromJson(Map<String, dynamic> json) {
     return SellerInfor(
         isVerified: json['isVerified'],

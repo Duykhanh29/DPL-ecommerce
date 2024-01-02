@@ -5,14 +5,20 @@ import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:dpl_ecommerce/view_model/seller/shop_view_model.dart';
+import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/seller/screens/voucher/voucher_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class AddCoupon extends StatefulWidget {
-  final List<Voucher> vouchers;
-  final Function(Voucher) onVoucherAdded;
-  AddCoupon({required this.vouchers, required this.onVoucherAdded});
+  // final List<Voucher> vouchers;
+  // final Function(Voucher) onVoucherAdded;
+  String shopID;
+  AddCoupon({
+    required this.shopID,
+  });
   @override
   State<AddCoupon> createState() => __AddCouponState();
 }
@@ -28,35 +34,46 @@ class __AddCouponState extends State<AddCoupon> {
   TextEditingController _amountController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String? dropdownValue = "Product";
-  String discountType = "Percent";
-  int? discountAmount;
-  int? discountPercent;
+
+  // int? discountAmount;
+  // int? discountPercent;
   Timestamp? startDate = Timestamp.fromDate(DateTime.now());
   Timestamp? expDate =
       Timestamp.fromDate(DateTime.now().add(const Duration(days: 30)));
-
+  String? dropdownValue;
+  String? discountType;
   Product? selectedProduct;
-  List<Product>? list = ProductRepo().list;
+  List<Product>? listProductOfShop;
   ProductRepo productRepo = ProductRepo();
-  List<Product>? listProduct;
   VoucherRepo voucherRepo = VoucherRepo();
-  String tempShopID = "PkHVNq0E1ZnTUyRnqG4O";
+  // String tempShopID = "PkHVNq0E1ZnTUyRnqG4O";
   bool isLoading = true;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    fetchData();
   }
 
   Future<void> fetchData() async {
-    listProduct = await productRepo.getListProductByShopID(tempShopID);
+    listProductOfShop = await productRepo.getListProductByShopID(widget.shopID);
     isLoading = false;
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserViewModel>(context);
+    final shopProvider = Provider.of<ShopViewModel>(context);
+    final user = userProvider.currentUser;
+    final shop = shopProvider.shop;
+    if (discountType == null) {
+      discountType = LangText(context: context).getLocal()!.percent;
+    }
+    if (dropdownValue == null) {
+      dropdownValue = LangText(context: context).getLocal()!.product_ucf;
+    }
+
     return Scaffold(
       appBar: CustomAppBar(
               centerTitle: true,
@@ -148,7 +165,7 @@ class __AddCouponState extends State<AddCoupon> {
                               ),
                               value: selectedProduct,
                               isExpanded: true,
-                              items: listProduct!.map((Product p) {
+                              items: listProductOfShop!.map((Product p) {
                                 return DropdownMenuItem<Product>(
                                   value: p,
                                   child: Text(p.name!),
@@ -244,12 +261,12 @@ class __AddCouponState extends State<AddCoupon> {
                 SizedBox(
                   height: 10.h,
                 ),
-                if (discountType == "Percent")
+                if (discountType == "Percent") ...{
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        LangText(context: context).getLocal()!.percent,
+                        LangText(context: context).getLocal()!.number_ucf,
                         style: TextStyle(fontSize: 20.sp),
                       ),
                       SizedBox(
@@ -286,13 +303,14 @@ class __AddCouponState extends State<AddCoupon> {
                       ),
                     ],
                   ),
+                },
 
-                if (discountType == "Amount")
+                if (discountType == "Amount") ...{
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        LangText(context: context).getLocal()!.amount_ucf,
+                        LangText(context: context).getLocal()!.number_ucf,
                         style: TextStyle(fontSize: 20.sp),
                       ),
                       SizedBox(
@@ -336,6 +354,8 @@ class __AddCouponState extends State<AddCoupon> {
                       ),
                     ],
                   ),
+                },
+
                 // _buidck(name: "Discount Amount", hintname: "Discount Amount", namevalue: "Discount Amount", namctr: TextEditingController()),
                 SizedBox(
                   height: 20.h,
@@ -404,7 +424,7 @@ class __AddCouponState extends State<AddCoupon> {
             //   //    v=Voucher(productID: selectedProduct!=null ? selectedProduct!.id!:null,expDate: expDate,discountAmount: );
             //   // }
             // }
-            await _addVoucher(context);
+            await _addVoucher(context, shop!.id!);
           },
           child: Text(
             LangText(context: context).getLocal()!.send_ucf,
@@ -432,16 +452,19 @@ class __AddCouponState extends State<AddCoupon> {
     });
   }
 
-  Future<void> _addVoucher(BuildContext context) async {
+  Future<void> _addVoucher(BuildContext context, String shopId) async {
     String name = _nameController.text;
     String? shopID;
     String? productID;
-
-    if (dropdownValue == "Product") {
+    int? discountPercent;
+    int? discountAmount;
+    if (dropdownValue == LangText(context: context).getLocal()!.product_ucf) {
       productID = selectedProduct!.id;
-    } else {
-      shopID = "shopID";
     }
+    // else {
+    //   shopID = shopId;
+    // }
+
     if (discountType == "Percent") {
       discountPercent = int.parse(_percentController.text);
     } else {
@@ -449,7 +472,8 @@ class __AddCouponState extends State<AddCoupon> {
     }
 
     if (name.isNotEmpty) {
-      if (discountType == "Percent" && _percentController.text.isNotEmpty) {
+      if (discountType == LangText(context: context).getLocal()!.percent &&
+          _percentController.text.isNotEmpty) {
         Voucher newVoucher = Voucher(
           name: name,
           discountAmount: discountAmount,
@@ -457,11 +481,12 @@ class __AddCouponState extends State<AddCoupon> {
           expDate: expDate,
           productID: productID,
           releasedDate: startDate,
-          shopID: shopID,
+          shopID: shopId,
         );
         await voucherRepo.addVoucher(newVoucher);
-        widget.onVoucherAdded(newVoucher);
-      } else if (discountType != "Percent" &&
+        // widget.onVoucherAdded(newVoucher);
+      } else if (discountType !=
+              LangText(context: context).getLocal()!.percent &&
           _amountController.text.isNotEmpty) {
         Voucher newVoucher = Voucher(
           name: name,
@@ -470,9 +495,9 @@ class __AddCouponState extends State<AddCoupon> {
           expDate: expDate,
           productID: productID,
           releasedDate: startDate,
-          shopID: shopID,
+          shopID: shopId,
         );
-        widget.onVoucherAdded(newVoucher);
+        // widget.onVoucherAdded(newVoucher);
         await voucherRepo.addVoucher(newVoucher);
       }
 
@@ -482,9 +507,6 @@ class __AddCouponState extends State<AddCoupon> {
 
       Navigator.pop(
         context,
-        MaterialPageRoute(
-          builder: (context) => VoucherApp(),
-        ),
       );
     }
   }

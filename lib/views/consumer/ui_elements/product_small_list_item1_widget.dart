@@ -39,7 +39,7 @@ class Productsmalllist1ItemWidget extends StatelessWidget {
       child: Container(
         color: Colors.amber,
         width: 148.w,
-        height: 200.h,
+        height: MediaQuery.of(context).size.width * 0.45,
         child: Padding(
           padding: EdgeInsets.only(bottom: 1.h),
           child: Column(
@@ -68,37 +68,35 @@ class Productsmalllist1ItemWidget extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          height: 16.h,
-                          width: 16.h,
-                          padding: EdgeInsets.all(2.h),
-                          decoration: AppDecoration.fillAmber.copyWith(
-                            borderRadius: BorderRadiusStyle.roundedBorder2,
-                          ),
-                          child: CustomImageView(
-                            imagePath: ImageData.imgIconBoldStar,
-                            height: 12.h,
-                            width: 12.h,
-                            alignment: Alignment.center,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 4.h),
-                          child: Text(
-                            product!.rating!.toString(),
-                            style: theme.textTheme.bodySmall,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 4.h),
-                          child: Text(
-                            product!.ratingCount!.toString(),
-                            style: CustomTextStyles.bodySmallGray600,
-                          ),
-                        ),
-                      ],
+                    Container(
+                      height: 16.h,
+                      width: 16.h,
+                      padding: EdgeInsets.all(2.h),
+                      decoration: AppDecoration.fillAmber.copyWith(
+                        borderRadius: BorderRadiusStyle.roundedBorder2,
+                      ),
+                      child: CustomImageView(
+                        imagePath: ImageData.imgIconBoldStar,
+                        height: 12.h,
+                        width: 12.h,
+                        alignment: Alignment.center,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 4.h),
+                      child: Text(
+                        product!.rating != null
+                            ? product!.rating!.toString()
+                            : "",
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 4.h),
+                      child: Text(
+                        product!.ratingCount!.toString(),
+                        style: CustomTextStyles.bodySmallGray600,
+                      ),
                     ),
                     Text(
                       product!.availableQuantity!.toString(),
@@ -170,40 +168,14 @@ class _buildVisualProduct extends StatelessWidget {
                       width: 30.h,
                       height: 30.h,
                       child: const CircularProgressIndicator())),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
+              errorWidget: (context, url, error) =>
+                  const Center(child: Icon(Icons.error)),
             ),
           ),
           Positioned(
             top: 5,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Container(
-                  //   width: 56.h,
-                  //   margin: EdgeInsets.only(bottom: 77.h),
-                  //   padding: EdgeInsets.symmetric(
-                  //     horizontal: 4.h,
-                  //     vertical: 2.h,
-                  //   ),
-                  //   decoration: AppDecoration.fillOrange.copyWith(
-                  //     borderRadius: BorderRadiusStyle.roundedBorder2,
-                  //   ),
-                  //   child: Text(
-                  //     "top_seller",
-                  //     style: CustomTextStyles.labelMediumOnPrimaryContainer,
-                  //   ),
-                  // ),
-                  SizedBox(
-                    width: 80.w,
-                  ),
-                  buildFavouriteIcon()
-                ],
-              ),
-            ),
+            right: 5,
+            child: buildFavouriteIcon(),
           )
         ],
       ),
@@ -217,7 +189,7 @@ class _buildVisualProduct extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Icon(
             Icons.favorite_border,
-            size: 20.h,
+            size: 25.h,
           );
         } else {
           if (snapshot.data != null) {
@@ -245,12 +217,12 @@ class _buildVisualProduct extends StatelessWidget {
                           ? Icons.favorite
                           : Icons.favorite_border_rounded,
                       color: MyTheme.red,
-                      size: 20.h,
+                      size: 25.h,
                     )));
           } else {
             return Icon(
               Icons.favorite_border,
-              size: 20.h,
+              size: 25.h,
               color: MyTheme.red,
             );
           }

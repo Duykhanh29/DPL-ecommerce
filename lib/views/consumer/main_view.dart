@@ -2,7 +2,7 @@ import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/cart_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/category_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/home_page.dart';
-import 'package:dpl_ecommerce/views/consumer/screens/login_screen.dart';
+import 'package:dpl_ecommerce/views/general_views/login_screen.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/order_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/order_screen.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/user_profile_page.dart';

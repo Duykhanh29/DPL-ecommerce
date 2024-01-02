@@ -13,10 +13,12 @@ import 'package:dpl_ecommerce/view_model/consumer/product_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/review_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/voucher_for_user_view_model.dart';
 import 'package:dpl_ecommerce/view_model/lang_view_model.dart';
+import 'package:dpl_ecommerce/view_model/seller/shop_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
+import 'package:dpl_ecommerce/views/admin/admin_page_view.dart';
 import 'package:dpl_ecommerce/views/consumer/main_view.dart';
 import 'package:dpl_ecommerce/views/consumer/routes/routes.dart';
-import 'package:dpl_ecommerce/views/consumer/screens/login_screen.dart';
+import 'package:dpl_ecommerce/views/general_views/login_screen.dart';
 import 'package:dpl_ecommerce/views/general_views/register_seller.dart';
 import 'package:dpl_ecommerce/views/seller/mainviewseller.dart';
 import 'package:dpl_ecommerce/views/seller/routes/routes.dart';
@@ -173,7 +175,22 @@ class _FirstPageState extends State<FirstPage> {
     //     }
     //   },
     // );
-    return user != null ? AuthorizatedPage() : LoginScreen();
+    return user != null
+        ? AuthorizatedPage()
+        : Consumer<LocaleProvider>(
+            builder: (context, value, child) => MaterialApp(
+              debugShowCheckedModeBanner: false,
+              home: LoginScreen(),
+              localizationsDelegates: const [
+                AppLocalizations.delegate, // Add this line
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: value.locale,
+            ),
+          );
   }
 }
 
@@ -197,7 +214,9 @@ class _AuthorizatedPageState extends State<AuthorizatedPage> {
       if (authProvider.userModel != null) {
         return authProvider.userModel!.role == userModel.Role.consumer
             ? const UserPageView()
-            : const SellerPageView();
+            : authProvider.userModel!.role == userModel.Role.seller
+                ? const SellerPageView()
+                : AdminPageView();
       } else {
         return Scaffold(
           body: Center(
@@ -252,6 +271,7 @@ class UserPageView extends StatelessWidget {
       ],
       child: Consumer<LocaleProvider>(
         builder: (context, value, child) => MaterialApp(
+          debugShowCheckedModeBanner: false,
           home: MainView(),
           localizationsDelegates: [
             AppLocalizations.delegate, // Add this line
@@ -284,6 +304,9 @@ class SellerPageView extends StatelessWidget {
           create: (context) => UserViewModel(authProvider),
         ),
         ChangeNotifierProvider(
+          create: (context) => ShopViewModel(authProvider.currentUser),
+        ),
+        ChangeNotifierProvider(
           create: (context) => LanguageViewModel(),
         ),
         // ChangeNotifierProvider(
@@ -307,6 +330,7 @@ class SellerPageView extends StatelessWidget {
       ],
       child: Consumer<LocaleProvider>(
         builder: (context, value, child) => MaterialApp(
+          debugShowCheckedModeBanner: false,
           home: MainViewSeller(),
           localizationsDelegates: [
             AppLocalizations.delegate, // Add this line
@@ -333,6 +357,7 @@ class TestScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(
           child: Text("Data"),

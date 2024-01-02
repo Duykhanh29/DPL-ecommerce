@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/consumer_infor.dart';
+import 'package:dpl_ecommerce/models/seller_infor.dart';
 import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -64,6 +65,22 @@ class UserFirestoreDatabase {
     final reasult =
         await _firestore.collection('users').where('id', isEqualTo: id).get();
     return reasult.docs.isNotEmpty;
+  }
+
+  Future existedUserCheckWithPhoneOrEmail(
+      {String? phone, String? email}) async {
+    final reasult = await _firestore
+        .collection('users')
+        .where('phone', isEqualTo: phone)
+        .get();
+    final result2 = await _firestore
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+    if (reasult.docs.isNotEmpty && result2.docs.isNotEmpty) {
+      return true;
+    }
+    return false;
   }
 
   Future<UserModel?> getUserModel(User user) async {
@@ -378,4 +395,13 @@ class UserFirestoreDatabase {
       print("Error: $e");
     }
   }
+
+  // seller
+  // Future<void> addSellerInfor( {required String })async{
+  //   try {
+  //     await _firestore.collection('users').
+  //   } catch (e) {
+  //     print("Error: $e");
+  //   }
+  // }
 }

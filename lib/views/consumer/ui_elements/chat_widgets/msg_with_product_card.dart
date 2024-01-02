@@ -18,13 +18,30 @@ class MsgWithProduct extends StatefulWidget {
 
 class _MsgWithProductState extends State<MsgWithProduct> {
   Product? product;
-  List<Product>? listProduct = ProductRepo().list;
+  ProductRepo productRepo = ProductRepo();
+  List<Product>? listProduct;
+  bool isLoading = true;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    product = CommondMethods.getProductByID(listProduct!, widget.productID!);
+    // product = CommondMethods.getProductByID(listProduct!, widget.productID!);
+    fetchData();
   }
+
+  Future<void> fetchData() async {
+    product = await productRepo.getProductByID(widget.productID!);
+    isLoading = false;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  // @override
+  // void dispose() {
+  //   productRepo.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -45,21 +62,25 @@ class _MsgWithProductState extends State<MsgWithProduct> {
           // ));
         }
       },
-      child: Container(
-        height: size.height * 0.1,
-        width: size.width,
-        child: Row(
-          mainAxisAlignment:
-              !widget.isShop ? MainAxisAlignment.start : MainAxisAlignment.end,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  color: Colors.teal[100],
-                  borderRadius: BorderRadius.circular(10)),
-              width: size.width * 0.55,
-              child: _buildProductCard(context),
-            )
-          ],
+      child: Padding(
+        padding: EdgeInsets.all(8.0.h),
+        child: Container(
+          height: size.height * 0.1,
+          width: size.width,
+          child: Row(
+            mainAxisAlignment: !widget.isShop
+                ? MainAxisAlignment.start
+                : MainAxisAlignment.end,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    color: Colors.teal[100],
+                    borderRadius: BorderRadius.circular(10)),
+                width: size.width * 0.55,
+                child: _buildProductCard(context),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -73,13 +94,17 @@ class _MsgWithProductState extends State<MsgWithProduct> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          SizedBox(
-            height: size.height * 0.1,
-            width: size.width * 0.1,
-            child: Image.network(product != null
-                ? product!.images![0]
-                : "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"),
-          ),
+          product != null
+              ? SizedBox(
+                  height: size.height * 0.1,
+                  width: size.width * 0.1,
+                  child: Image.network(product != null
+                      ? product!.images != null && product!.images!.isNotEmpty
+                          ? product!.images![0]
+                          : "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"
+                      : "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"),
+                )
+              : Container(),
           // CircleAvatar(
           //   radius: 50,
           //   backgroundImage: NetworkImage(product != null
@@ -90,8 +115,18 @@ class _MsgWithProductState extends State<MsgWithProduct> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Text(product!.name ?? ""),
-                Text(product!.price != null ? product!.price.toString() : "")
+                Text(product != null
+                    ? product!.name ?? ""
+                    : isLoading
+                        ? "..."
+                        : ""),
+                Text(product != null
+                    ? product!.price != null
+                        ? product!.price.toString()
+                        : ""
+                    : isLoading
+                        ? "..."
+                        : "")
               ],
             ),
           )

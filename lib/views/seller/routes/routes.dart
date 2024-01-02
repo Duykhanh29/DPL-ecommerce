@@ -44,6 +44,7 @@ class SellerRoutes {
   static const String profile = '/profile';
   static const String changeLanguagePage = '/change_language_page';
   static const String chatList = '/chat_list';
+  static const String voucherScreen = '/voucher_screen';
 //seller settings
   static const String sellerProfilePage = '/seller_profile_page';
   static const String profileSettingSellerPage = '/profile_setting_seller_page';
@@ -58,7 +59,8 @@ class SellerRoutes {
   static const String generalSetting = '/general_setting';
   static const String setting_page = '/setting_page';
   static Map<String, WidgetBuilder> routes = {
-    // productsScreen: (context) => ProductsApp(products: []),
+    productsScreen: (context) => ProductsApp(),
+    voucherScreen: (context) => VoucherApp(),
     // addProduct: (context) => AddProductScreen(
     //       products: [],
     //       onProductAdded: (p0) {},

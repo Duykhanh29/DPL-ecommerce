@@ -23,6 +23,11 @@ class OrderRepo {
     return await firestoreDatabase.getOrderByID(id);
   }
 
+  Future<void> updateRatingForProduct(
+      String orderID, String orderingProductID) async {
+    await firestoreDatabase.updateRatingForProduct(orderID, orderingProductID);
+  }
+
   Future<void> updateOrderingProductStatus(
       {required String orderID,
       required String orderingProductID,

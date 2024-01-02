@@ -7,6 +7,7 @@ import 'package:dpl_ecommerce/models/message.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/repositories/auth_repo.dart';
 import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
+import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/chat_widgets/link_msg.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/chat_widgets/msg_with_product_card.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,8 @@ import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_5.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_7.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_8.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_9.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 class MessageItemWidget extends StatelessWidget {
@@ -31,7 +34,7 @@ class MessageItemWidget extends StatelessWidget {
   Chat? chat;
   Message? message;
   bool isShop;
-  UserModel userModel = AuthRepo().user;
+  // UserModel userModel = AuthRepo().user;
   Widget _buildMsg() {
     if (message!.chatType == ChatType.image) {
       return ImageWidget(
@@ -55,13 +58,15 @@ class MessageItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserViewModel>(context);
+    final userModel = userProvider.currentUser;
     return Container(
       child: message!.productID != null
           ? MsgWithProduct(
               productID: message!.productID,
             )
           : Row(
-              mainAxisAlignment: (message!.senderID == userModel.id &&
+              mainAxisAlignment: (message!.senderID == userModel!.id ||
                       (userModel.userInfor!.sellerInfor == null ||
                           !userModel.userInfor!.sellerInfor!.shopIDs!
                               .contains(chat!.shopID)))
@@ -97,14 +102,15 @@ class MessageItemWidget extends StatelessWidget {
 class TextMsg extends StatelessWidget {
   TextMsg({super.key, required this.message, required this.chat});
   Message? message;
-  UserModel userModel = AuthRepo().user;
   Chat? chat;
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserViewModel>(context);
+    final userModel = userProvider.currentUser;
     return ChatBubble(
       clipper: ChatBubbleClipper6(
-          type: (message!.senderID == userModel.id &&
+          type: (message!.senderID == userModel!.id ||
                   (userModel.userInfor!.sellerInfor == null ||
                       !userModel.userInfor!.sellerInfor!.shopIDs!
                           .contains(chat!.shopID)))
@@ -112,6 +118,7 @@ class TextMsg extends StatelessWidget {
               : BubbleType.receiverBubble),
       backGroundColor: Colors.blue,
       child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
           constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width * 0.7,
               minHeight: MediaQuery.of(context).size.height * 0.05),
@@ -130,15 +137,16 @@ class TextMsg extends StatelessWidget {
 class ImageWidget extends StatelessWidget {
   ImageWidget({super.key, required this.message, required this.chat});
   Message? message;
-  UserModel userModel = AuthRepo().user;
   Chat? chat;
   StorageService storageService = StorageService();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final userProvider = Provider.of<UserViewModel>(context);
+    final userModel = userProvider.currentUser;
     return ChatBubble(
       clipper: ChatBubbleClipper6(
-          type: (message!.senderID == userModel.id &&
+          type: (message!.senderID == userModel!.id ||
                   (userModel.userInfor!.sellerInfor == null ||
                       !userModel.userInfor!.sellerInfor!.shopIDs!
                           .contains(chat!.shopID)))
@@ -200,7 +208,7 @@ class VideoMsg extends StatefulWidget {
 }
 
 class _VideoMsgState extends State<VideoMsg> {
-  UserModel userModel = AuthRepo().user;
+  // UserModel userModel = AuthRepo().user;
   late VideoPlayerController videoPlayerController;
   late Future<void> _initializeVideoPlayerFuture;
   bool isPlayed = false;
@@ -211,19 +219,19 @@ class _VideoMsgState extends State<VideoMsg> {
     // TODO: implement initState
     super.initState();
     try {
-      videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(
-          "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4"))
-        ..addListener(() {
-          setState(() {
-            position = videoPlayerController.value.position;
-          });
-        })
-        ..setLooping(false)
-        ..initialize().then((value) {
-          if (isPlayed) {
-            videoPlayerController.play();
-          }
-        });
+      videoPlayerController =
+          VideoPlayerController.networkUrl(Uri.parse(widget.message!.content!))
+            ..addListener(() {
+              setState(() {
+                position = videoPlayerController.value.position;
+              });
+            })
+            ..setLooping(false)
+            ..initialize().then((value) {
+              if (isPlayed) {
+                videoPlayerController.play();
+              }
+            });
     } catch (e) {
       print("Error: $e");
     }
@@ -248,9 +256,11 @@ class _VideoMsgState extends State<VideoMsg> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final userProvider = Provider.of<UserViewModel>(context);
+    final userModel = userProvider.currentUser;
     return ChatBubble(
         clipper: ChatBubbleClipper6(
-            type: (widget.message!.senderID == userModel.id &&
+            type: (widget.message!.senderID == userModel!.id ||
                     (userModel.userInfor!.sellerInfor == null ||
                         !userModel.userInfor!.sellerInfor!.shopIDs!
                             .contains(widget.chat!.shopID)))

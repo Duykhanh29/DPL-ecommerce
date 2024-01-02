@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/views/seller/screens/dashboard.dart';
 import 'package:dpl_ecommerce/views/seller/screens/product2/product_app.dart';
 import 'package:dpl_ecommerce/views/seller/screens/seller_profile.dart';
@@ -48,7 +49,7 @@ class _MainViewState extends State<MainViewSeller> {
               ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.cube_box),
-            label: "Products",
+            label: LangText(context: context).getLocal()!.products_ucf,
           ),
           // BottomNavigationBarItem(
           //   icon: Icon(CupertinoIcons.square_list),
@@ -58,7 +59,7 @@ class _MainViewState extends State<MainViewSeller> {
             icon: Icon(
               CupertinoIcons.person_alt_circle,
             ),
-            label: "Profile",
+            label: LangText(context: context).getLocal()!.profile_ucf,
           ),
         ],
         currentIndex: indexPage,

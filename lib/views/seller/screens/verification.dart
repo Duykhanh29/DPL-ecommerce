@@ -8,6 +8,7 @@ import 'package:dpl_ecommerce/models/verification_form.dart';
 import 'package:dpl_ecommerce/repositories/shop_repo.dart';
 import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:dpl_ecommerce/view_model/seller/shop_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -37,31 +38,36 @@ class __VerificationState extends State<Verification> {
   StorageService storageService = StorageService();
   String? taxPaperPath;
   String? taxPaperName;
-  Shop shop = Shop(
-    ratingCount: 123,
-    totalProduct: 32,
-    name: "DK",
-    addressInfor: AddressInfor(
-        city: City(id: 8, name: "Tuyen Quang"),
-        country: "Viet nam",
-        isDefaultAddress: false,
-        latitude: 123.12,
-        longitude: 123,
-        name: "My address",
-        district: District(id: 123, name: "Hoang Mai")),
-    contactPhone: "0987654321",
-    id: "shopID01",
-    shopDescription:
-        "Cultivate your love for gardening with Green Thumb Nursery. We offer a variety of plants, gardening tools, and expert advice to help you create a vibrant and thriving garden.",
-    logo:
-        "https://cdn.shopify.com/shopifycloud/hatchful_web_two/bundles/4a14e7b2de7f6eaf5a6c98cb8c00b8de.png",
-    rating: 4.4,
-    shopView: 120,
-  );
+  // Shop shop = Shop(
+  //   ratingCount: 123,
+  //   totalProduct: 32,
+  //   name: "DK",
+  //   addressInfor: AddressInfor(
+  //       city: City(id: 8, name: "Tuyen Quang"),
+  //       country: "Viet nam",
+  //       isDefaultAddress: false,
+  //       latitude: 123.12,
+  //       longitude: 123,
+  //       name: "My address",
+  //       district: District(id: 123, name: "Hoang Mai")),
+  //   contactPhone: "0987654321",
+  //   id: "shopID01",
+  //   shopDescription:
+  //       "Cultivate your love for gardening with Green Thumb Nursery. We offer a variety of plants, gardening tools, and expert advice to help you create a vibrant and thriving garden.",
+  //   logo:
+  //       "https://cdn.shopify.com/shopifycloud/hatchful_web_two/bundles/4a14e7b2de7f6eaf5a6c98cb8c00b8de.png",
+  //   rating: 4.4,
+  //   shopView: 120,
+  // );
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserViewModel>(context);
+    final shopProvider = Provider.of<ShopViewModel>(context);
     final user = userProvider.currentUser;
+    final shop = shopProvider.shop;
+    if (shop != null) {
+      phoneNumberController.text = shop.name ?? "";
+    }
     return Scaffold(
       appBar: CustomAppBar(
               centerTitle: true,
@@ -203,7 +209,7 @@ class __VerificationState extends State<Verification> {
         ),
       ),
       bottomNavigationBar: Container(
-        height: 40,
+        height: 40.h,
         width: MediaQuery.of(context).size.width * 0.9,
         margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 25.h),
         child: ElevatedButton(
@@ -216,7 +222,7 @@ class __VerificationState extends State<Verification> {
                   filePath: taxPaperPath!,
                   fileName: taxPaperName!,
                   rootRef: 'verifications',
-                  secondRef: shop.id,
+                  secondRef: shop!.id,
                 );
                 if (isSuccess) {
                   String url = await storageService.downloadURL(
@@ -236,13 +242,14 @@ class __VerificationState extends State<Verification> {
                       sellerID: user.id,
                       shopID: shop.id);
                   print("OKe: ${verificationForm}");
+                  await _sendVerificationForm(verificationForm);
+                  await shopRepo.updateShop(
+                      shopID: shop.id!,
+                      name: shopNameController.text,
+                      addressInfor:
+                          user.userInfor!.sellerInfor!.contactAddress!,
+                      contactPhone: phoneNumberController.text);
                 }
-                // await _sendVerificationForm(verificationForm);
-                // await shopRepo.updateShop(
-                //     shopID: "shopID",
-                //     name: shopNameController.text,
-                //     // addressInfor:
-                //     contactPhone: phoneNumberController.text);
               }
             }
           },

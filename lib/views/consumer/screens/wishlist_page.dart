@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/favourite_product.dart';
 import 'package:dpl_ecommerce/repositories/wishlist_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
@@ -19,9 +20,11 @@ class WishlistPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(LangText(context: context).getLocal()!.my_wishlist_ucf),
-      ),
+      appBar: CustomAppBar(
+              title: LangText(context: context).getLocal()!.my_wishlist_ucf,
+              centerTitle: true,
+              context: context)
+          .show(),
       body: Padding(
         padding: EdgeInsets.all(10.h),
         child: SingleChildScrollView(
@@ -44,7 +47,7 @@ class WishlistPage extends StatelessWidget {
                         crossAxisCount: 2,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
-                        mainAxisExtent: 283.h,
+                        mainAxisExtent: 220.h,
                         // childAspectRatio: 3 / 2,
                       ),
                       itemBuilder: (context, index) {

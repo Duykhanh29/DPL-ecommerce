@@ -1,6 +1,11 @@
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:dpl_ecommerce/view_model/seller/shop_view_model.dart';
 import 'package:dpl_ecommerce/views/seller/screens/shop_setting/general_setting.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class SettingSeller extends StatefulWidget {
   const SettingSeller({super.key});
@@ -12,12 +17,16 @@ class SettingSeller extends StatefulWidget {
 class __SettingSellerState extends State<SettingSeller> {
   @override
   Widget build(BuildContext context) {
+    final shopProvider = Provider.of<ShopViewModel>(context);
+    final shop = shopProvider.shop;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Shop Setting'),
-      ),
+      appBar: CustomAppBar(
+              title: LangText(context: context).getLocal()!.shop_settings_ucf,
+              centerTitle: true,
+              context: context)
+          .show(),
       body: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(10.0.h),
         child: Column(
           children: [
             GestureDetector(
@@ -28,17 +37,20 @@ class __SettingSellerState extends State<SettingSeller> {
                       ),
                     ),
                 child: _buildsetting(
-                    namest: 'General Setting', iconst: Icons.settings)),
+                    namest: LangText(context: context)
+                        .getLocal()!
+                        .general_setting_ucf,
+                    iconst: Icons.settings)),
             SizedBox(
-              height: 10,
+              height: 10.h,
             ),
-            _buildsetting(
-                namest: 'Banner Setting', iconst: CupertinoIcons.wrench),
+            // _buildsetting(
+            //     namest: 'Banner Setting', iconst: CupertinoIcons.wrench),
             SizedBox(
-              height: 10,
+              height: 10.h,
             ),
-            _buildsetting(
-                namest: 'Social media link', iconst: CupertinoIcons.link),
+            // _buildsetting(
+            //     namest: 'Social media link', iconst: CupertinoIcons.link),
           ],
         ),
       ),
@@ -50,7 +62,8 @@ class __SettingSellerState extends State<SettingSeller> {
     required IconData iconst,
   }) =>
       Container(
-        height: 80,
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+        height: 80.h,
         decoration: BoxDecoration(
           color: Colors.blue,
           borderRadius: BorderRadius.circular(8),
@@ -60,7 +73,7 @@ class __SettingSellerState extends State<SettingSeller> {
           children: [
             Row(children: [
               SizedBox(
-                width: 10,
+                width: 10.h,
               ),
               Icon(
                 iconst,
@@ -68,12 +81,12 @@ class __SettingSellerState extends State<SettingSeller> {
                 size: 40,
               ),
               SizedBox(
-                width: 10,
+                width: 10.h,
               ),
               Text(
                 namest,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   color: Colors.white,
                 ),
               )
@@ -81,7 +94,7 @@ class __SettingSellerState extends State<SettingSeller> {
             Icon(
               CupertinoIcons.chevron_compact_right,
               color: Colors.white,
-              size: 40,
+              size: 40.h,
             ),
           ],
         ),

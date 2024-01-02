@@ -2,6 +2,8 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/repositories/order_repo.dart';
+import 'package:dpl_ecommerce/repositories/review_repo.dart';
 import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:flutter/material.dart';
@@ -19,10 +21,14 @@ import 'package:file_picker/file_picker.dart';
 
 class RatingScreen extends StatefulWidget {
   String productID;
-  RatingScreen({
-    Key? key,
-    required this.productID,
-  }) : super(key: key);
+  String orderID;
+  String orderingProductID;
+  RatingScreen(
+      {Key? key,
+      required this.productID,
+      required this.orderID,
+      required this.orderingProductID})
+      : super(key: key);
   @override
   _RatingState createState() => _RatingState();
 }
@@ -30,6 +36,7 @@ class RatingScreen extends StatefulWidget {
 class _RatingState extends State<RatingScreen> {
   double rating = 3.0;
   ProductRepo productRepo = ProductRepo();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +64,10 @@ class _RatingState extends State<RatingScreen> {
             SizedBox(
               height: 30.h,
             ),
-            ImageUploadSection(productID: widget.productID),
+            ImageUploadSection(
+                productID: widget.productID,
+                orderID: widget.orderID,
+                orderingProductID: widget.orderingProductID),
           ],
         ),
       ),
@@ -138,16 +148,22 @@ class CommentSection extends StatelessWidget {
 
 class ImageUploadSection extends StatefulWidget {
   final String productID;
-  const ImageUploadSection({
-    Key? key,
-    required this.productID,
-  }) : super(key: key);
+  String orderID;
+  String orderingProductID;
+  ImageUploadSection(
+      {Key? key,
+      required this.productID,
+      required this.orderID,
+      required this.orderingProductID})
+      : super(key: key);
   @override
   _ImageUploadSectionState createState() => _ImageUploadSectionState();
 }
 
 class _ImageUploadSectionState extends State<ImageUploadSection> {
-  ProductRepo productRepo = ProductRepo();
+  // ProductRepo productRepo = ProductRepo();
+  ReviewRepo reviewRepo = ReviewRepo();
+  OrderRepo orderRepo = OrderRepo();
 
   File? _file;
   String? filePath;
@@ -274,7 +290,9 @@ class _ImageUploadSectionState extends State<ImageUploadSection> {
                   userID: user!.id!,
                   urlMedia: url,
                   userAvatar: user.avatar);
-              await productRepo.addNewReview(review);
+              await reviewRepo.addNewReview(review);
+              await orderRepo.updateRatingForProduct(
+                  widget.orderID, widget.orderingProductID);
               // Navigator.of(context).pushNamedAndRemoveUntil(newRouteName, (route) => false);
               Navigator.of(context).pop();
             }

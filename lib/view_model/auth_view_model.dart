@@ -1,13 +1,27 @@
+import 'dart:async';
+
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/user_firestore_data.dart';
+import 'package:dpl_ecommerce/helpers/toast_helper.dart';
+import 'package:dpl_ecommerce/models/address_infor.dart';
+import 'package:dpl_ecommerce/models/city.dart';
+import 'package:dpl_ecommerce/models/consumer_infor.dart';
+import 'package:dpl_ecommerce/models/district.dart';
+import 'package:dpl_ecommerce/models/seller_infor.dart';
+import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/models/user.dart';
+import 'package:dpl_ecommerce/models/ward.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthViewModel extends ChangeNotifier {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
+  Timer? timer;
   User? user;
   FirestoreDatabase firestoreDatabase = FirestoreDatabase();
   UserFirestoreDatabase userFirestoreDatabase = UserFirestoreDatabase();
@@ -19,7 +33,7 @@ class AuthViewModel extends ChangeNotifier {
     if (user != null) {
       fetchUser();
     }
-    notifyListeners();
+    // notifyListeners();
   }
   Future<void> fetchUser() async {
     try {
@@ -30,7 +44,7 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-  Future signInWIthGoogle() async {
+  Future signInWithGoogle() async {
     try {
       UserCredential? userCredential;
       if (kIsWeb) {
@@ -61,11 +75,134 @@ class AuthViewModel extends ChangeNotifier {
           userModel = await userFirestoreDatabase
               .getUserModel1(userCredential.user!.uid);
         } else {
-          userModel =
-              await userFirestoreDatabase.getUserModel(userCredential.user!);
+          // userModel =
+          //     await userFirestoreDatabase.getUserModel(userCredential.user!);
+          userModel = UserModel(
+              avatar: userCredential.user!.photoURL!,
+              email: userCredential.user!.email,
+              firstName: userCredential.user!.displayName,
+              role: Role.consumer,
+              userInfor: UserInfor(
+                  consumerInfor: ConsumerInfor(
+                addressInfors: [],
+                raking: Raking.bronze,
+                rewardPoints: 100,
+              )));
           await userFirestoreDatabase.addUser(userModel!);
         }
         notifyListeners();
+      }
+    } catch (e) {
+      print("The error is here: $e");
+    }
+  }
+
+  Future signInWithEmailAndPass(
+      {required String email, required String password}) async {
+    try {
+      UserCredential result = await auth.signInWithEmailAndPassword(
+          email: email, password: password);
+
+      if (result == null) {
+      } else {
+        userModel = await userFirestoreDatabase.getUserModel1(result.user!.uid);
+      }
+      notifyListeners();
+    } catch (e) {
+      print("The error is here: $e");
+    }
+  }
+
+  Future<void> registerForSellerByEmaillAndPass(
+      {required String email,
+      required String pass,
+      required String firstName,
+      required City city,
+      required District disctrict,
+      required Ward ward,
+      required String country,
+      required String number,
+      required String shopName,
+      required BuildContext context}) async {
+    try {
+      UserCredential result = await auth.createUserWithEmailAndPassword(
+          email: email, password: pass);
+
+      if (result == null) {
+        print("Account created failed");
+      } else {
+        var isExist = await userFirestoreDatabase
+            .existedUserCheckWithPhoneOrEmail(email: email);
+        if (isExist) {
+          print("Exist");
+          // userModel = await userFirestoreDatabase
+          //     .getUserModel1(result.user!.uid);
+        } else {
+          // bool isEmailVerified = auth.currentUser!.emailVerified;
+          // if (!isEmailVerified) {
+          //   // sendVerificationEmail();
+          //   final user = auth.currentUser!;
+          //   user.sendEmailVerification();
+          //   timer = Timer.periodic(Duration(seconds: 3), (timer) async {
+          //     await auth.currentUser!.reload();
+          //     bool isEmailVerified = auth.currentUser!.emailVerified;
+          //     notifyListeners();
+          //     if (isEmailVerified) {
+          //       timer.cancel();
+
+          Shop shop = Shop(
+            name: shopName,
+            addressInfor: AddressInfor(
+                city: city,
+                country: country,
+                district: disctrict,
+                number: number,
+                ward: ward,
+                isDefaultAddress: true),
+          );
+          AddressInfor add = AddressInfor(
+              city: city,
+              country: country,
+              district: disctrict,
+              number: number,
+              ward: ward,
+              isDefaultAddress: true);
+          UserModel user = UserModel(
+            id: result.user!.uid,
+            email: email,
+            firstName: firstName,
+            role: Role.seller,
+            avatar: result.user!.photoURL,
+            userInfor: UserInfor(
+              sellerInfor: SellerInfor(
+                shopIDs: [shop.id!],
+                contactAddress: add,
+                isVerified: false,
+              ),
+            ),
+          );
+          await firestoreDatabase.addShop(shop);
+          await userFirestoreDatabase.addUser(user);
+          userModel = user;
+          //   }
+          // });
+          // }
+          // await userFirestoreDatabase.
+        }
+        notifyListeners();
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        ToastHelper.showDialog(
+            LangText(context: context)
+                .getLocal()!
+                .password_must_contain_at_least_6_characters,
+            gravity: ToastGravity.BOTTOM);
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(content: Text('Password Provided is too weak')));
+      } else if (e.code == 'email-already-in-use') {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Email Provided already Exists')));
       }
     } catch (e) {
       print("The error is here: $e");
@@ -76,8 +213,11 @@ class AuthViewModel extends ChangeNotifier {
     try {
       await _googleSignIn.signOut();
       await auth.signOut();
+      userModel = null;
+      notifyListeners();
+      print("AUh: ${auth.currentUser}");
     } catch (e) {
-      print(e);
+      print("The error is here: $e");
     }
   }
 
@@ -110,6 +250,15 @@ class AuthViewModel extends ChangeNotifier {
         },
         codeAutoRetrievalTimeout: (String verificationId) {},
       );
+    }
+  }
+
+  Future sendVerificationEmail() async {
+    try {
+      final use = auth.currentUser;
+      await user!.sendEmailVerification();
+    } catch (e) {
+      print("The error is here: $e");
     }
   }
 }

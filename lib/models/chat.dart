@@ -43,7 +43,8 @@ class Chat {
                 .map((e) => Message.fromJson(e))
                 .toList(),
         sellerID: json['sellerID'],
-        lastChatType: json['lastChatType'],
+        lastChatType: ChatType.values.firstWhere((element) =>
+            element.toString().split(".").last == json['lastChatType']),
         lastMessage: json['lastMessage']);
   }
   Map<String, dynamic> toJson() => {
@@ -57,6 +58,6 @@ class Chat {
         'userName': userName,
         'sellerID': sellerID,
         'lastMessage': lastMessage,
-        'lastChatType': lastChatType
+        'lastChatType': lastChatType.toString().split(".").last
       };
 }

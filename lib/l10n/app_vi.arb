@@ -681,5 +681,18 @@
     "received_address":"Địa chỉ nhận",
     "total_product_ucf":"Tổng sản phẩm",
     "type_ucf":"Loại",
-    "size_ucf":"Kích thước"
+    "size_ucf":"Kích thước",
+    "welcome_to_DPL":"Chào mừng đến với DPL Ecommerce",
+    "sign_in_to_continue":"Đăng nhập để tiếp tục",
+    "login_with_google":"Đăng nhập Google",
+    "login_as_seller":"Đăng nhập với tư cách người bán",
+    "login_as_admin":"Đăng nhập với tư cách người quản trị",
+    "please_enter_valid_email":"Hãy nhập email hợp lệ",
+    "product_detail_ucf":"Chi tiết sản phẩm",
+    "a_image_is_send":"Một hình ảnh đã được gửi",
+    "a_video_is_send":"Một video đã được gửi",
+    "a_link_is_send":"Một đường dẫn đã được gửi",
+    "gallery_ucf":"Thư viện",
+    "total_revenue_ucf":"Tổng doanh thu",
+    "deal_of_the_day":"Ưu đãi ngày hôm nay"
 }

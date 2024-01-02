@@ -11,6 +11,7 @@ import 'package:dpl_ecommerce/models/payment_type.dart';
 import 'package:dpl_ecommerce/repositories/deliver_service_repo.dart';
 import 'package:dpl_ecommerce/repositories/order_repo.dart';
 import 'package:dpl_ecommerce/repositories/payment_repo.dart';
+import 'package:dpl_ecommerce/repositories/review_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
@@ -26,13 +27,21 @@ import 'package:timeline_list/timeline_model.dart';
 import 'package:timeline_list/timeline.dart';
 //import 'dart:html';
 
-class OrderingProductDetailScreen extends StatelessWidget {
+class OrderingProductDetailScreen extends StatefulWidget {
   OrderingProductDetailScreen(
       {Key? key, required this.order, required this.orderID})
       : super(key: key);
   // String orderID;
   final OrderingProduct order;
   final String orderID;
+
+  @override
+  State<OrderingProductDetailScreen> createState() =>
+      _OrderingProductDetailScreenState();
+}
+
+class _OrderingProductDetailScreenState
+    extends State<OrderingProductDetailScreen> {
   String buildText(BuildContext context, int index) {
     if (index == 1) {
       return LangText(context: context)
@@ -50,16 +59,33 @@ class OrderingProductDetailScreen extends StatelessWidget {
 
   OrderRepo orderRepo = OrderRepo();
 
+  ReviewRepo reviewRepo = ReviewRepo();
+  bool isLoading = true;
+  bool isReviewed = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    isReviewed = await reviewRepo.isReviewedByUserAndOrderingProduct(
+        orderingProductID: widget.order.id!, orderID: widget.orderID);
+    isLoading = false;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     int? status;
-    if (order.deliverStatus == DeliverStatus.processing) {
+    if (widget.order.deliverStatus == DeliverStatus.processing) {
       status = 1;
-    } else if (order.deliverStatus == DeliverStatus.confirmed) {
+    } else if (widget.order.deliverStatus == DeliverStatus.confirmed) {
       status = 2;
-    } else if (order.deliverStatus == DeliverStatus.delivering) {
+    } else if (widget.order.deliverStatus == DeliverStatus.delivering) {
       status = 3;
-    } else if (order.deliverStatus == DeliverStatus.delivered) {
+    } else if (widget.order.deliverStatus == DeliverStatus.delivered) {
       status = 4;
     }
     return SafeArea(
@@ -117,8 +143,8 @@ class OrderingProductDetailScreen extends StatelessWidget {
                               SizedBox(height: 10.h),
                             ])),
                     OrderingProductItem(
-                      orderingProduct: order,
-                      orderID: orderID,
+                      orderingProduct: widget.order,
+                      orderID: widget.orderID,
                     ),
                     SizedBox(
                       height: 15.h,
@@ -131,8 +157,17 @@ class OrderingProductDetailScreen extends StatelessWidget {
                       ),
                     ),
                     buildTrackTime(context, status!),
+
                     if (status == 3) buildConfirmButton(context),
-                    if (status == 4) buildRateButton(context)
+                    if (status != 4) Container(),
+                    isLoading
+                        ? Container()
+                        : !isReviewed
+                            ? (status == 4)
+                                ? buildRateButton(context)
+                                : Container()
+                            : Container()
+                    // if (status == 4)
                   ],
                 ),
               ),
@@ -145,8 +180,8 @@ class OrderingProductDetailScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         await orderRepo.updateOrderingProductStatus(
-            orderID: orderID,
-            orderingProductID: order.id!,
+            orderID: widget.orderID,
+            orderingProductID: widget.order.id!,
             status: DeliverStatus.delivered);
         Navigator.of(context).pop();
       },
@@ -175,7 +210,10 @@ class OrderingProductDetailScreen extends StatelessWidget {
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => RatingScreen(productID: order.productID!),
+          builder: (context) => RatingScreen(
+              productID: widget.order.productID!,
+              orderID: widget.orderID,
+              orderingProductID: widget.order.id!),
         ),
       ),
       child: Center(

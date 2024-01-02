@@ -58,16 +58,18 @@ class ProfileSettingSellerScreen extends StatelessWidget {
                                 appBar: AppBar(
                                   leading: CustomArrayBackWidget(),
                                   actions: [
-                                    IconButton(
-                                        onPressed: () async {
-                                          await storageService
-                                              .downloadAndSaveImage(
-                                                  value.userModel!.avatar!);
-                                        },
-                                        icon: Icon(
-                                          Icons.download_outlined,
-                                          size: 20.h,
-                                        ))
+                                    value.userModel!.avatar != null
+                                        ? IconButton(
+                                            onPressed: () async {
+                                              await storageService
+                                                  .downloadAndSaveImage(
+                                                      value.userModel!.avatar!);
+                                            },
+                                            icon: Icon(
+                                              Icons.download_outlined,
+                                              size: 20.h,
+                                            ))
+                                        : Container()
                                   ],
                                 ),
                                 body: CustomPhotoView(
@@ -76,11 +78,17 @@ class ProfileSettingSellerScreen extends StatelessWidget {
                             },
                           ));
                         },
-                        child: CircleAvatar(
-                          radius: 60.r,
-                          backgroundImage:
-                              NetworkImage(value.userModel!.avatar!),
-                        ),
+                        child: value.userModel!.avatar != null
+                            ? CircleAvatar(
+                                radius: 60.r,
+                                backgroundImage:
+                                    NetworkImage(value.userModel!.avatar!),
+                              )
+                            : CircleAvatar(
+                                radius: 60.r,
+                                backgroundImage:
+                                    AssetImage(ImageData.circelAvatar),
+                              ),
                       );
                     }),
                     InkWell(
@@ -92,18 +100,18 @@ class ProfileSettingSellerScreen extends StatelessWidget {
                         if (result != null) {
                           final path = result.files.single.path;
                           final fileName = result.files.single.name;
-                          String type = 'images';
+                          // String type = 'images';
                           bool isSuccess = await storageService.uploadFile(
                             filePath: path!,
                             fileName: fileName,
-                            secondRef: user!.id!,
+                            secondRef: user.id!,
                             rootRef: 'avatars',
                           );
                           if (isSuccess) {
                             String url = await storageService.downloadURL(
-                              filePath: path!,
+                              filePath: path,
                               fileName: fileName,
-                              secondRef: user!.id!,
+                              secondRef: user.id!,
                               rootRef: 'avatars',
                             );
                             await userRepo.updateAvatar(
@@ -267,6 +275,7 @@ class _BuildFormState extends State<BuildForm> {
                       }
                       return null;
                     },
+                    readOnly: true,
                     keyboardType: TextInputType.emailAddress,
                     controller: value.emailEditTextController,
                     decoration: InputDecoration(
@@ -361,7 +370,7 @@ class _BuildFormState extends State<BuildForm> {
               child: sellerInfor.taxPaper != null
                   ? CachedNetworkImage(
                       placeholder: (context, url) =>
-                          Image.asset("assets/placeholder.png"),
+                          Image.asset(ImageData.circelAvatar),
                       errorWidget: (context, url, error) => Icon(
                         Icons.error,
                         size: 28.h,
@@ -371,7 +380,7 @@ class _BuildFormState extends State<BuildForm> {
                       fit: BoxFit.fill,
                     )
                   : Image.asset(
-                      'assets/placeholder.png',
+                      ImageData.circelAvatar,
                       fit: BoxFit.fill,
                     )),
         ],

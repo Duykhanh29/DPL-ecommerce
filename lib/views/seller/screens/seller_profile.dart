@@ -263,10 +263,10 @@ class SellerProfilePage extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.h),
           border: Border.all(color: Colors.black, width: 0.2)),
-      padding: EdgeInsets.only(
-        left: 10.w,
-        right: 10.w,
-      ),
+      // padding: EdgeInsets.only(
+      //   left: 5.w,
+      //   right: 5.w,
+      // ),
       margin: EdgeInsets.only(
         left: 15.w,
         right: 15.w,
@@ -283,19 +283,24 @@ class SellerProfilePage extends StatelessWidget {
               },
             ));
           },
-          leading: Consumer<UserViewModel>(
+          leading: Consumer<AuthViewModel>(
             builder: (context, value, child) {
-              return CircleAvatar(
-                radius: 40.r,
-                backgroundImage: NetworkImage(value.userModel!.avatar!),
-              );
+              return value.userModel!.avatar != null
+                  ? CircleAvatar(
+                      radius: 40.r,
+                      backgroundImage: NetworkImage(value.userModel!.avatar!),
+                    )
+                  : CircleAvatar(
+                      radius: 40.r,
+                      backgroundImage: AssetImage(ImageData.circelAvatar),
+                    );
             },
           ),
           title: Consumer<UserViewModel>(
             builder: (context, value, child) {
               return Text(
                 value.userModel!.firstName!,
-                style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w600),
               );
             },
           ),
