@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/const/app_decoration.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_search_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
@@ -101,16 +102,11 @@ class _SearchScreenState extends State<SearchScreen> {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          backgroundColor: Colors.blue,
-          title: Text(
-            // "search_anything",
-            LangText(context: context).getLocal()!.search_anything,
-            textAlign: TextAlign.center,
-          ),
-
-          //leading: Icon(Icons.menu),
-        ),
+        appBar: CustomAppBar(
+                title: LangText(context: context).getLocal()!.search_ucf,
+                centerTitle: true,
+                context: context)
+            .show(),
         body: Padding(
           padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
           child: SizedBox(
@@ -191,9 +187,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           dealOfTheDayText: LangText(context: context)
                               .getLocal()!
                               .recommended_ucf,
-                          viewAllText: LangText(context: context)
-                              .getLocal()!
-                              .view_more_ucf,
+                          viewAllText: "",
                         ),
                       ),
                       SizedBox(height: 16.h),

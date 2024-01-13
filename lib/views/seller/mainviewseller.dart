@@ -1,5 +1,6 @@
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/views/seller/screens/dashboard.dart';
+import 'package:dpl_ecommerce/views/seller/screens/order/order_page.dart';
 import 'package:dpl_ecommerce/views/seller/screens/product2/product_app.dart';
 import 'package:dpl_ecommerce/views/seller/screens/seller_profile.dart';
 import 'package:dpl_ecommerce/views/seller/screens/voucher/voucher_app.dart';
@@ -18,6 +19,7 @@ class _MainViewState extends State<MainViewSeller> {
   List<Widget> pages = [
     Dashboard(),
     ProductsApp(),
+    OrderShopPage(),
     SellerProfilePage(),
   ];
   int indexPage = 0;
@@ -43,20 +45,20 @@ class _MainViewState extends State<MainViewSeller> {
         backgroundColor: Color.fromARGB(255, 98, 170, 212),
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-              icon: Icon(Icons.dashboard_outlined),
+              icon: const Icon(Icons.dashboard_outlined),
               label: AppLocalizations.of(context)!.dashboard_ucf
               //     .search_anything,,
               ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.cube_box),
+            icon: const Icon(CupertinoIcons.cube_box),
             label: LangText(context: context).getLocal()!.products_ucf,
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(CupertinoIcons.square_list),
-          //   label: "Order",
-          // ),
           BottomNavigationBarItem(
-            icon: Icon(
+            icon: const Icon(CupertinoIcons.square_list),
+            label: LangText(context: context).getLocal()!.orders_ucf,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(
               CupertinoIcons.person_alt_circle,
             ),
             label: LangText(context: context).getLocal()!.profile_ucf,
@@ -65,7 +67,7 @@ class _MainViewState extends State<MainViewSeller> {
         currentIndex: indexPage,
         iconSize: 25,
         selectedFontSize: 8,
-        selectedItemColor: Colors.blue.shade400,
+        // selectedItemColor: Colors.blue.shade400,
       ),
       body: IndexedStack(
         index: indexPage,

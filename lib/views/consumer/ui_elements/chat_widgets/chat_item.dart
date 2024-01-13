@@ -71,10 +71,10 @@ class ChatItem extends StatelessWidget {
                 if (snapshot.data != null) {
                   final chat = snapshot.data;
                   final url;
-                  if (chat!.id == chat!.userID) {
-                    url = chat.shopLogo!;
+                  if (user!.id == chat!.userID) {
+                    url = chat.shopLogo;
                   } else {
-                    url = chat.userAvatar!;
+                    url = chat.userAvatar;
                   }
                   return ListTile(
                       onTap: () {

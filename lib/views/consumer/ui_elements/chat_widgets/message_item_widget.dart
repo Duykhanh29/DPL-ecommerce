@@ -66,10 +66,12 @@ class MessageItemWidget extends StatelessWidget {
               productID: message!.productID,
             )
           : Row(
-              mainAxisAlignment: (message!.senderID == userModel!.id ||
-                      (userModel.userInfor!.sellerInfor == null ||
-                          !userModel.userInfor!.sellerInfor!.shopIDs!
-                              .contains(chat!.shopID)))
+              mainAxisAlignment: (message!.senderID == userModel!.id
+                  // ||
+                  //         (userModel.userInfor!.sellerInfor == null ||
+                  //             !userModel.userInfor!.sellerInfor!.shopIDs!
+                  //                 .contains(chat!.shopID))
+                  )
                   ? MainAxisAlignment.end
                   : MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -110,10 +112,12 @@ class TextMsg extends StatelessWidget {
     final userModel = userProvider.currentUser;
     return ChatBubble(
       clipper: ChatBubbleClipper6(
-          type: (message!.senderID == userModel!.id ||
-                  (userModel.userInfor!.sellerInfor == null ||
-                      !userModel.userInfor!.sellerInfor!.shopIDs!
-                          .contains(chat!.shopID)))
+          type: (message!.senderID == userModel!.id
+              //  ||
+              //         (userModel.userInfor!.sellerInfor == null ||
+              //             !userModel.userInfor!.sellerInfor!.shopIDs!
+              //                 .contains(chat!.shopID))
+              )
               ? BubbleType.sendBubble
               : BubbleType.receiverBubble),
       backGroundColor: Colors.blue,
@@ -146,10 +150,12 @@ class ImageWidget extends StatelessWidget {
     final userModel = userProvider.currentUser;
     return ChatBubble(
       clipper: ChatBubbleClipper6(
-          type: (message!.senderID == userModel!.id ||
-                  (userModel.userInfor!.sellerInfor == null ||
-                      !userModel.userInfor!.sellerInfor!.shopIDs!
-                          .contains(chat!.shopID)))
+          type: (message!.senderID == userModel!.id
+              //  ||
+              //         (userModel.userInfor!.sellerInfor == null ||
+              //             !userModel.userInfor!.sellerInfor!.shopIDs!
+              //                 .contains(chat!.shopID))
+              )
               ? BubbleType.sendBubble
               : BubbleType.receiverBubble),
       backGroundColor: Colors.white,
@@ -169,8 +175,8 @@ class ImageWidget extends StatelessWidget {
                         actions: [
                           IconButton(
                               onPressed: () async {
-                                await storageService
-                                    .downloadAndSaveImage(message!.content!);
+                                await storageService.downloadAndSaveImage(
+                                    message!.content!, context);
                               },
                               icon: Icon(Icons.download_outlined))
                         ],
@@ -260,10 +266,12 @@ class _VideoMsgState extends State<VideoMsg> {
     final userModel = userProvider.currentUser;
     return ChatBubble(
         clipper: ChatBubbleClipper6(
-            type: (widget.message!.senderID == userModel!.id ||
-                    (userModel.userInfor!.sellerInfor == null ||
-                        !userModel.userInfor!.sellerInfor!.shopIDs!
-                            .contains(widget.chat!.shopID)))
+            type: (widget.message!.senderID == userModel!.id
+                // ||
+                //         (userModel.userInfor!.sellerInfor == null ||
+                //             !userModel.userInfor!.sellerInfor!.shopIDs!
+                //                 .contains(widget.chat!.shopID))
+                )
                 ? BubbleType.sendBubble
                 : BubbleType.receiverBubble),
         backGroundColor: Colors.white,

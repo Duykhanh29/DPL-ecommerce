@@ -5,12 +5,20 @@ import 'package:dpl_ecommerce/models/voucher_for_user.dart';
 
 class VoucherForUserRepo {
   FirestoreDatabase firestoreDatabase = FirestoreDatabase();
-  Stream<VoucherForUser> getVoucherForUser(String uid) async* {
-    firestoreDatabase.getListVoucherForUser(uid);
+  Stream<VoucherForUser?> getVoucherForUser(String uid) {
+    return firestoreDatabase.getListVoucherForUser(uid);
+  }
+
+  Future<VoucherForUser?> getVoucher(String uid) async {
+    return await firestoreDatabase.getVoucherUser(uid);
   }
 
   Future<void> addVoucherForUser(VoucherForUser voucherForUser) async {
     await firestoreDatabase.addVoucherForUser(voucherForUser);
+  }
+
+  Stream<bool> isCollectedVoucher(String uid, String voucherID) {
+    return firestoreDatabase.isCollectedVoucher(uid: uid, voucherID: voucherID);
   }
 
   Future<void> updateVoucherForUser(

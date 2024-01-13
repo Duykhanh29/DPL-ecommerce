@@ -84,6 +84,7 @@ class __ChangeAddressState extends State<ChangeAddress> {
                                           " | " +
                                           listAddress![index].number! ??
                                       "",
+                                  maxLines: 3,
                                   style: TextStyle(
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w500,
@@ -93,6 +94,7 @@ class __ChangeAddressState extends State<ChangeAddress> {
                                 height: 8.h,
                               ),
                               Text(listAddress![index].city!.name!,
+                                  maxLines: 3,
                                   style: TextStyle(
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w500,
@@ -101,10 +103,18 @@ class __ChangeAddressState extends State<ChangeAddress> {
                               SizedBox(
                                 height: 8.h,
                               ),
-                              Text(
-                                  listAddress![index].district!.name! +
-                                      " - " +
-                                      listAddress![index].ward!.name!,
+                              Text(listAddress![index].district!.name!,
+                                  maxLines: 3,
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color(0xFF777777),
+                                  )),
+                              SizedBox(
+                                height: 8.h,
+                              ),
+                              Text(listAddress![index].ward!.name!,
+                                  maxLines: 3,
                                   style: TextStyle(
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w500,

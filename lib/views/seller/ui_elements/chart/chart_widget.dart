@@ -1,24 +1,26 @@
 import 'package:dpl_ecommerce/models/daily_revenue.dart';
+import 'package:dpl_ecommerce/repositories/revenue_repo.dart';
 import 'package:dpl_ecommerce/repositories/shop_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class MChart extends StatefulWidget {
-  const MChart({super.key});
-
+  MChart({super.key, required this.shopID});
+  String shopID;
   @override
   State<MChart> createState() => _MChartState();
 }
 
 class _MChartState extends State<MChart> {
-  List<DailyRevenue> chartList = [];
+  List<DailyRevenue>? chartList;
+  RevenueRepo revenueRepo = RevenueRepo();
 
   List<ChartSeries> _createSampleData() {
-    final data = List.generate(chartList.length, (index) {
+    final data = List.generate(chartList!.length, (index) {
       return OrdinalSales(
-          DateFormat('dd/MM/yyyy').format(chartList[index].date!),
-          int.parse(chartList[index].revenue!.round().toString())
+          DateFormat('dd/MM/yyyy').format(chartList![index].date!),
+          int.parse(chartList![index].revenue!.round().toString())
           // 56
           );
     });
@@ -50,16 +52,21 @@ class _MChartState extends State<MChart> {
     ];
   }
 
-  getChart() async {
-    var response = await ShopRepo().listRevenue;
-    chartList.addAll(response);
-    setState(() {});
-  }
+  // getChart() async {
+  //   var response = await ShopRepo().listRevenue;
+  //   chartList.addAll(response);
+  //   setState(() {});
+  // }
 
   @override
   void initState() {
-    getChart();
+    // getChart();
     super.initState();
+    fetchData(); // oke nha
+  }
+
+  Future<void> fetchData() async {
+    chartList = await revenueRepo.getListDailyRevenueByShop(widget.shopID);
   }
 
   @override

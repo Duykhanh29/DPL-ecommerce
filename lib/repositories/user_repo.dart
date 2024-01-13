@@ -17,6 +17,14 @@ class UserRepo {
     return _userFirestoreDatabase.getAllAddressInfors(uid);
   }
 
+  Stream<AddressInfor?> getAddressInfoForSeller(String uid) {
+    return _userFirestoreDatabase.getAddressInfoForSeller(uid);
+  }
+
+  Future<AddressInfor?> getAddressForSeller(String uid) async {
+    return _userFirestoreDatabase.getAddressForSeller(uid);
+  }
+
   Future<List<AddressInfor>?> getListAddressInfor(String uid) async {
     return await _userFirestoreDatabase.getListAddressInfor(uid);
   }
@@ -28,6 +36,11 @@ class UserRepo {
   Future<void> updateAddress(
       AddressInfor addressInfor, UserModel userModel) async {
     await _userFirestoreDatabase.updateAddressInfor(addressInfor, userModel);
+  }
+
+  Future<void> updateAddressForSeller(
+      AddressInfor addressInfor, String uid) async {
+    await _userFirestoreDatabase.updateAddressForSeller(addressInfor, uid);
   }
 
   Future<void> deleteAddress(String id, UserModel userModel) async {

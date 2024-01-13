@@ -1,7 +1,9 @@
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:dpl_ecommerce/view_model/seller/shop_view_model.dart';
 import 'package:dpl_ecommerce/views/seller/ui_elements/chart/chart_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class ChartContainer extends StatelessWidget {
   const ChartContainer({super.key});
@@ -49,9 +51,19 @@ class ChartContainer extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(top: 18.h),
               child: SizedBox(
-                  height: 190.h,
-                  width: MediaQuery.of(context).size.width,
-                  child: const MChart()),
+                height: 190.h,
+                width: MediaQuery.of(context).size.width,
+                child: Consumer<ShopViewModel>(
+                  builder: (context, value, child) {
+                    if (value.shop != null) {
+                      return MChart(
+                        shopID: value.shop!.id!,
+                      );
+                    }
+                    return Container();
+                  },
+                ),
+              ),
             ),
           ],
           // )

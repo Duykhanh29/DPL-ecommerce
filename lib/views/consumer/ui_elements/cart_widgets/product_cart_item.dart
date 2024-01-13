@@ -45,9 +45,9 @@ class _ProductCartItemState extends State<ProductCartItem> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    if (mounted) {
-      fetchData();
-    }
+    // if (mounted) {
+    fetchData();
+    // }
   }
 
   @override
@@ -58,17 +58,15 @@ class _ProductCartItemState extends State<ProductCartItem> {
   Future<void> fetchData() async {
     if (widget.productInCartModel!.voucherID != null) {
       voucher = await voucherRepo
-          .getVoucherByID(widget.productInCartModel!.voucherID!)
-          .then((value) {
-        setState(() {
-          isLoading = false;
-        });
-      });
+          .getVoucherByID(widget.productInCartModel!.voucherID!);
+      isLoading = false;
     } else {
-      setState(() {
-        isLoading = false;
-      });
+      isLoading = false;
     }
+    if (mounted) {
+      setState(() {});
+    }
+
     // product =
     //     await productRepo.getProductByID(widget.productInCartModel!.productID!);
     // setState(() {
@@ -310,20 +308,23 @@ class _ProductCartItemState extends State<ProductCartItem> {
                 widget.productInCartModel!.size != null ||
                 widget.productInCartModel!.type != null) ...{
               Container(
-                  width: MediaQuery.of(context).size.width * 0.6,
+                  width: MediaQuery.of(context).size.width * 0.8,
                   // color: Colors.amberAccent,
                   padding: EdgeInsets.all(3.h),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       if (widget.productInCartModel!.color != null) ...{
-                        Text(widget.productInCartModel!.color!)
+                        Text(
+                            "${LangText(context: context).getLocal()!.color_ucf}: ${widget.productInCartModel!.color!}")
                       },
                       if (widget.productInCartModel!.size != null) ...{
-                        Text(widget.productInCartModel!.size!)
+                        Text(
+                            "${LangText(context: context).getLocal()!.size_ucf}: ${widget.productInCartModel!.size!}")
                       },
                       if (widget.productInCartModel!.type != null) ...{
-                        Text(widget.productInCartModel!.type!)
+                        Text(
+                            "${LangText(context: context).getLocal()!.type_ucf}: ${widget.productInCartModel!.type!}")
                       },
                     ],
                   )),

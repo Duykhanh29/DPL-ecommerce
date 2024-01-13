@@ -7,9 +7,11 @@ import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/deliver_service.dart';
 import 'package:dpl_ecommerce/models/district.dart';
 import 'package:dpl_ecommerce/models/order_model.dart' as orderModel;
+import 'package:dpl_ecommerce/models/order_shop.dart';
 import 'package:dpl_ecommerce/models/ordering_product.dart';
 import 'package:dpl_ecommerce/models/payment_type.dart';
 import 'package:dpl_ecommerce/models/product.dart';
+import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/cart_repo.dart';
 import 'package:dpl_ecommerce/repositories/deliver_service_repo.dart';
 import 'package:dpl_ecommerce/repositories/order_repo.dart';
@@ -45,6 +47,7 @@ class __CheckOutState extends State<CheckOut> {
 
   UserRepo userRepo = UserRepo();
   OrderRepo orderRepo = OrderRepo();
+  ProductRepo productRepo = ProductRepo();
   // AddressInfor? addressInfor;
   // AddressInfor? defaultAddress;
   bool isLoading = true;
@@ -279,6 +282,30 @@ class __CheckOutState extends State<CheckOut> {
                                   userID: user!.id,
                                   time: Timestamp.now());
                               await orderRepo.addAnOrder(newOrder);
+                              for (var element in listProduct) {
+                                final product = await productRepo
+                                    .getProductByID(element.productID!);
+
+                                OrderShop orderShop = OrderShop(
+                                    color: element.color,
+                                    deliverServiceID: selectedService!.id,
+                                    deliverStatus: DeliverStatus.processing,
+                                    orderCode: order.id,
+                                    orderDate: Timestamp.now(),
+                                    orderingProductID: element.id,
+                                    paymentStatus: PaymentStatus.unpaid,
+                                    productID: element.productID,
+                                    quatity: element.quantity!,
+                                    shopID: product!.shopID,
+                                    singlePrice: element.price,
+                                    size: element.size,
+                                    type: element.type,
+                                    totalPrice: element.realPrice);
+                                print(
+                                    "Hehehrerererer: shopID:: ${orderShop.shopID} and id: ${orderShop.id!}");
+                                await orderRepo.addOrderShop(orderShop);
+                              }
+
                               if (checkoutProvider.listProductInCartID !=
                                   null) {
                                 for (var element
@@ -458,6 +485,7 @@ class ListOrderingProductItem extends StatefulWidget {
 class _ListOrderingProductItemState extends State<ListOrderingProductItem> {
   ProductRepo productRepo = ProductRepo();
   List<Product>? list = [];
+  Voucher? voucher;
   bool isLoading = true;
   Future<void> fetchData() async {
     for (var element in widget.list!) {
@@ -514,13 +542,23 @@ class _ListOrderingProductItemState extends State<ListOrderingProductItem> {
                           SizedBox(
                             height: 43.h,
                           ),
-                          Text(list![index].price.toString(),
+                          // list![index].voucherID != null
+                          //     ?
+                          Text(widget.list![index].realPrice.toString(),
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 //fontFamily = FontFamily(Font(R.font.svn - gilroy)),
                                 fontWeight: FontWeight.w500,
                                 color: const Color(0xFFEE4D2C),
                               )),
+                          // : Text(list![index].price.toString(),
+                          //     style: TextStyle(
+                          //       fontSize: 16.sp,
+                          //       //fontFamily = FontFamily(Font(R.font.svn - gilroy)),
+                          //       fontWeight: FontWeight.w500,
+                          //       color: const Color(0xFFEE4D2C),
+                          //     )
+                          // ),
                           SizedBox(
                             height: 16.h,
                           ),

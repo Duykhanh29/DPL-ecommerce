@@ -37,7 +37,10 @@ class Productsmalllist1ItemWidget extends StatelessWidget {
         ));
       },
       child: Container(
-        color: Colors.amber,
+        // color: Colors.amber,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.r),
+            color: MyTheme.background),
         width: 148.w,
         height: MediaQuery.of(context).size.width * 0.45,
         child: Padding(
@@ -68,35 +71,33 @@ class Productsmalllist1ItemWidget extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      height: 16.h,
-                      width: 16.h,
-                      padding: EdgeInsets.all(2.h),
-                      decoration: AppDecoration.fillAmber.copyWith(
-                        borderRadius: BorderRadiusStyle.roundedBorder2,
-                      ),
-                      child: CustomImageView(
-                        imagePath: ImageData.imgIconBoldStar,
-                        height: 12.h,
-                        width: 12.h,
-                        alignment: Alignment.center,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 4.h),
-                      child: Text(
-                        product!.rating != null
-                            ? product!.rating!.toString()
-                            : "",
-                        style: theme.textTheme.bodySmall,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 4.h),
-                      child: Text(
-                        product!.ratingCount!.toString(),
-                        style: CustomTextStyles.bodySmallGray600,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 16.h,
+                          width: 16.h,
+                          padding: EdgeInsets.all(2.h),
+                          decoration: AppDecoration.fillAmber.copyWith(
+                            borderRadius: BorderRadiusStyle.roundedBorder2,
+                          ),
+                          child: CustomImageView(
+                            imagePath: ImageData.imgIconBoldStar,
+                            height: 12.h,
+                            width: 12.h,
+                            alignment: Alignment.center,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 4.h),
+                          child: Text(
+                            product!.rating != null
+                                ? "${product!.rating!}(${product!.ratingCount})"
+                                : "0",
+                            style: theme.textTheme.bodySmall,
+                          ),
+                        ),
+                      ],
                     ),
                     Text(
                       product!.availableQuantity!.toString(),

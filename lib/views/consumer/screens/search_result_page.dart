@@ -198,8 +198,10 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                               padding: EdgeInsets.symmetric(horizontal: 10.h),
                               child: _buildDealOfTheDay(
                                 context,
-                                dealOfTheDayText: "result",
-                                viewAllText: "lbl_view_all",
+                                dealOfTheDayText: LangText(context: context)
+                                    .getLocal()!
+                                    .results_ucf,
+                                viewAllText: "",
                               ),
                             ),
                             //SizedBox(height: 16.h),

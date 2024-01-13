@@ -20,6 +20,7 @@ import 'package:dpl_ecommerce/repositories/shop_repo.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/common/common_methods.dart';
+import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
@@ -29,6 +30,7 @@ import 'package:dpl_ecommerce/views/consumer/ui_elements/voucher_widgets/list_vo
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_item_widget1.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/detail_seller_profile.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -36,8 +38,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 
 class ShopProfile extends StatefulWidget {
-  ShopProfile({required this.shop});
-  Shop? shop;
+  ShopProfile({required this.shopID});
+  // Shop? shop;
+  String shopID;
   @override
   _ShopProfileState createState() => _ShopProfileState();
 }
@@ -52,6 +55,7 @@ class _ShopProfileState extends State<ShopProfile>
   List<Category>? listCategory;
   List<Voucher>? listVoucher;
   bool isLoading = true;
+  Shop? shop;
   // repos
   VoucherRepo voucherRepo = VoucherRepo();
   CategoryRepo categoryRepo = CategoryRepo();
@@ -59,7 +63,6 @@ class _ShopProfileState extends State<ShopProfile>
   ShopRepo shopRepo = ShopRepo();
   UserRepo userRepo = UserRepo();
   ChatRepo chatRepo = ChatRepo();
-
   // UserModel userModel = AuthRepo().user;
   // List<Chat> listChat = ChatRepo().list;
 
@@ -78,12 +81,29 @@ class _ShopProfileState extends State<ShopProfile>
   }
 
   Future<void> fetchData() async {
-    listProduct = await shopRepo.getListProductByShopID(widget.shop!.id!);
-    listVoucher = await voucherRepo.getListVoucherByShop(widget.shop!.id!);
-    listCategory = await categoryRepo.getListCategory();
+    shop = await shopRepo.getShopByID(widget.shopID);
+    if (shop != null) {
+      listProduct = await shopRepo.getListProductByShopID(shop!.id!);
+      listVoucher = await voucherRepo.getListVoucherByShop(shop!.id!);
+      listCategory = await categoryRepo.getListCategory();
+    }
+
     setState(() {
       isLoading = false;
     });
+  }
+
+  void reset() {
+    shop = null;
+    listProduct = [];
+    listVoucher = [];
+    listCategory = [];
+    setState(() {});
+  }
+
+  Future<void> onRefresh() async {
+    reset();
+    await fetchData();
   }
 
   @override
@@ -112,398 +132,513 @@ class _ShopProfileState extends State<ShopProfile>
               context: context,
               title: AppLocalizations.of(context)!.shop_profile)
           .show(),
-      body: Padding(
-        padding: EdgeInsets.all(8.0.h),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.all(8.0.h),
-                  child: Column(children: [
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ProfileSeller(
-                                shop: widget.shop!,
-                              ),
+      body: RefreshIndicator(
+        onRefresh: onRefresh,
+        child: Padding(
+          padding: EdgeInsets.all(8.0.h),
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0.h),
+                    child: Column(children: [
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              if (shop != null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProfileSeller(
+                                      shop: shop!,
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            child: shop != null
+                                ? CircleAvatar(
+                                    radius: 35.r,
+                                    backgroundImage: NetworkImage(shop!.logo!),
+                                  )
+                                : CircleAvatar(
+                                    radius: 35.r,
+                                    backgroundImage:
+                                        AssetImage(ImageData.circelAvatar),
+                                  ),
+                          ),
+                          SizedBox(
+                            width: 12.w,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              if (shop != null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ProfileSeller(shop: shop!),
+                                  ),
+                                );
+                              }
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  shop != null ? shop!.name! : "...",
+                                  style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.star,
+                                      color: Color.fromARGB(255, 230, 207, 6),
+                                    ),
+                                    SizedBox(
+                                      width: 5.w,
+                                    ),
+                                    Text(shop != null
+                                        ? shop!.rating != null
+                                            ? shop!.rating.toString()
+                                            : ""
+                                        : "..."),
+                                    SizedBox(
+                                      width: 5.w,
+                                    ),
+                                    // Text("|"),
+                                    // SizedBox(
+                                    //   width: 5,
+                                    // ),
+                                    //Text("900k followers")
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                          child: CircleAvatar(
-                            radius: 35.r,
-                            backgroundImage: NetworkImage(widget.shop!.logo!),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 12.w,
-                        ),
-                        GestureDetector(
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ProfileSeller(shop: widget.shop!),
-                            ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          const Spacer(),
+                          Column(
                             children: [
-                              Text(
-                                widget.shop!.name!,
-                                style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold),
+                              Center(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 16.w, vertical: 8.h),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5.r),
+                                    ),
+                                  ),
+                                  onPressed: () async {
+                                    List<UserModel>? lisUser =
+                                        await userRepo.getListUser();
+                                    Future.delayed(const Duration(seconds: 5));
+                                    UserModel? seller =
+                                        CommondMethods.getUserModelByShopID(
+                                            shop!.id!, lisUser!);
+
+                                    Chat? chat;
+                                    // // TODO: Add button press logic
+                                    bool? hasConversation = await chatRepo
+                                        .checkExistedChatBoxWithUsers(
+                                            sellerID: seller!.id!,
+                                            userID: currentUser!.id!);
+                                    if (hasConversation!) {
+                                      chat = await chatRepo.getChatWithUsers(
+                                          userID: currentUser.id!,
+                                          sellerID: seller.id!);
+                                      // chatProvider.addNewChat(chat);
+                                    } else {
+                                      // chat =
+                                      //     CommondMethods.getChatByuserAndSeller(
+                                      //         seller.id!,
+                                      //         currentUser.id!,
+                                      //         chatProvider.list);
+                                      chat = Chat(
+                                        listMsg: [],
+                                        sellerID: seller.id,
+                                        shopID: shop!.id,
+                                        shopLogo: shop!.logo,
+                                        shopName: shop!.name,
+                                        userAvatar: currentUser.avatar,
+                                        userID: currentUser.id,
+                                        userName: currentUser.firstName,
+                                      );
+                                      chatProvider.addNewChat(chat);
+                                      await chatRepo.addNewChat(chat);
+                                    }
+
+                                    // ignore: use_build_context_synchronously
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) {
+                                        return ChattingPage(
+                                            chat: chat,
+                                            isNew: !hasConversation);
+                                      },
+                                    ));
+                                  },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.chat,
+                                        color: Colors.white,
+                                      ),
+                                      SizedBox(width: 8.w),
+                                      Text(
+                                        AppLocalizations.of(context)!.chat_ucf,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16.sp,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.star,
-                                    color: Color.fromARGB(255, 230, 207, 6),
+                              Center(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 16.w, vertical: 8.h),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5.r),
+                                    ),
                                   ),
-                                  SizedBox(
-                                    width: 5.w,
+                                  onPressed: () async {
+                                    // List<UserModel>? lisUser =
+                                    //     await userRepo.getListUser();
+                                    // Future.delayed(const Duration(seconds: 5));
+                                    // UserModel? seller =
+                                    //     CommondMethods.getUserModelByShopID(
+                                    //         widget.shop!.id!, lisUser!);
+
+                                    // Chat? chat;
+                                    // // // TODO: Add button press logic
+                                    // bool? hasConversation = await chatRepo
+                                    //     .checkExistedChatBoxWithUsers(
+                                    //         sellerID: seller!.id!,
+                                    //         userID: currentUser!.id!);
+                                    // if (hasConversation!) {
+                                    //   chat = await chatRepo.getChatWithUsers(
+                                    //       userID: currentUser.id!,
+                                    //       sellerID: seller.id!);
+                                    //   // chatProvider.addNewChat(chat);
+                                    // } else {
+                                    //   // chat =
+                                    //   //     CommondMethods.getChatByuserAndSeller(
+                                    //   //         seller.id!,
+                                    //   //         currentUser.id!,
+                                    //   //         chatProvider.list);
+                                    //   chat = Chat(
+                                    //     listMsg: [],
+                                    //     sellerID: seller.id,
+                                    //     shopID: widget.shop!.id,
+                                    //     shopLogo: widget.shop!.logo,
+                                    //     shopName: widget.shop!.name,
+                                    //     userAvatar: currentUser.avatar,
+                                    //     userID: currentUser.id,
+                                    //     userName: currentUser.firstName,
+                                    //   );
+                                    //   chatProvider.addNewChat(chat);
+                                    //   await chatRepo.addNewChat(chat);
+                                    // }
+
+                                    // // ignore: use_build_context_synchronously
+                                    // Navigator.of(context).push(MaterialPageRoute(
+                                    //   builder: (context) {
+                                    //     return ChattingPage(
+                                    //         chat: chat, isNew: !hasConversation);
+                                    //   },
+                                    // ));
+                                  },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        CupertinoIcons.star,
+                                        color: Colors.white,
+                                      ),
+                                      SizedBox(width: 8.w),
+                                      Text(
+                                        AppLocalizations.of(context)!.rate_ucf,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16.sp,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  Text(widget.shop!.rating != null
-                                      ? widget.shop!.rating.toString()
-                                      : ""),
-                                  SizedBox(
-                                    width: 5.w,
-                                  ),
-                                  // Text("|"),
-                                  // SizedBox(
-                                  //   width: 5,
-                                  // ),
-                                  //Text("900k followers")
-                                ],
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                        const Spacer(),
-                        Column(
-                          children: [
-                            Center(
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16.w, vertical: 8.h),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.r),
-                                  ),
-                                ),
-                                onPressed: () async {
-                                  List<UserModel>? lisUser =
-                                      await userRepo.getListUser();
-                                  Future.delayed(const Duration(seconds: 5));
-                                  UserModel? seller =
-                                      CommondMethods.getUserModelByShopID(
-                                          widget.shop!.id!, lisUser!);
+                          SizedBox(
+                            width: 10.w,
+                          )
+                        ],
+                      ),
+                      TabBar(
+                          controller: _tabController,
+                          labelColor: Colors.blue,
+                          unselectedLabelColor: Colors.black,
+                          isScrollable: true,
+                          indicator: UnderlineTabIndicator(
+                              borderSide: BorderSide(
+                                width: 3.w,
+                                color: Colors.blue,
+                              ),
+                              insets: EdgeInsets.symmetric(horizontal: 16.w)),
+                          labelPadding: EdgeInsets.symmetric(horizontal: 20.w),
+                          labelStyle: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w500),
+                          tabs: [
+                            Tab(text: AppLocalizations.of(context)!.shop_ucf),
+                            Tab(
+                                text:
+                                    AppLocalizations.of(context)!.products_ucf),
+                            Tab(
+                                text: AppLocalizations.of(context)!
+                                    .product_category),
+                            //Tab(text: "Live"),
+                          ]),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: [
+                          Container(
+                            //color: Colors.pink,
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0.h),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  if (listVoucher != null && !isLoading) ...{
+                                    ListVoucherWidget(list: listVoucher!),
+                                  },
 
-                                  Chat? chat;
-                                  // // TODO: Add button press logic
-                                  bool? hasConversation = await chatRepo
-                                      .checkExistedChatBoxWithUsers(
-                                          sellerID: seller!.id!,
-                                          userID: currentUser!.id!);
-                                  if (hasConversation!) {
-                                    chat = await chatRepo.getChatWithUsers(
-                                        userID: currentUser.id!,
-                                        sellerID: seller.id!);
-                                    // chatProvider.addNewChat(chat);
-                                  } else {
-                                    // chat =
-                                    //     CommondMethods.getChatByuserAndSeller(
-                                    //         seller.id!,
-                                    //         currentUser.id!,
-                                    //         chatProvider.list);
-                                    chat = Chat(
-                                      listMsg: [],
-                                      sellerID: seller.id,
-                                      shopID: widget.shop!.id,
-                                      shopLogo: widget.shop!.logo,
-                                      shopName: widget.shop!.name,
-                                      userAvatar: currentUser.avatar,
-                                      userID: currentUser.id,
-                                      userName: currentUser.firstName,
-                                    );
-                                    chatProvider.addNewChat(chat);
-                                    await chatRepo.addNewChat(chat);
-                                  }
-
-                                  // ignore: use_build_context_synchronously
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) {
-                                      return ChattingPage(
-                                          chat: chat, isNew: !hasConversation);
-                                    },
-                                  ));
-                                },
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.chat,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(width: 8.w),
-                                    Text(
-                                      AppLocalizations.of(context)!.chat_ucf,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16.sp,
+                                  if (listProduct != null && !isLoading) ...{
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 10.h, vertical: 6),
+                                      child: _buildDealOfTheDay(
+                                        context,
+                                        dealOfTheDayText:
+                                            AppLocalizations.of(context)!
+                                                .featured_products_ucf,
+                                        viewAllText: listProduct!.length > 2
+                                            ? AppLocalizations.of(context)!
+                                                .view_more_ucf
+                                            : "",
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          width: 10.w,
-                        )
-                      ],
-                    ),
-                    TabBar(
-                        controller: _tabController,
-                        labelColor: Colors.blue,
-                        unselectedLabelColor: Colors.black,
-                        isScrollable: true,
-                        indicator: UnderlineTabIndicator(
-                            borderSide: BorderSide(
-                              width: 3.w,
-                              color: Colors.blue,
-                            ),
-                            insets: EdgeInsets.symmetric(horizontal: 16.w)),
-                        labelPadding: EdgeInsets.symmetric(horizontal: 20.w),
-                        labelStyle: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w500),
-                        tabs: [
-                          Tab(text: AppLocalizations.of(context)!.shop_ucf),
-                          Tab(text: AppLocalizations.of(context)!.products_ucf),
-                          Tab(
-                              text: AppLocalizations.of(context)!
-                                  .product_category),
-                          //Tab(text: "Live"),
-                        ]),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: [
-                        Container(
-                          //color: Colors.pink,
-                          child: Padding(
-                            padding: EdgeInsets.all(8.0.h),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                if (listVoucher != null && !isLoading) ...{
-                                  ListVoucherWidget(list: listVoucher!),
-                                },
+                                    shop != null
+                                        ? _buildDealOfTheDayRow(
+                                            context, listProduct!)
+                                        : Container(),
+                                  },
 
-                                if (listProduct != null && !isLoading) ...{
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 10.h, vertical: 6),
-                                    child: _buildDealOfTheDay(
-                                      context,
-                                      dealOfTheDayText:
-                                          AppLocalizations.of(context)!
-                                              .featured_products_ucf,
-                                      viewAllText: listProduct!.length > 2
-                                          ? AppLocalizations.of(context)!
-                                              .view_more_ucf
-                                          : "",
-                                    ),
-                                  ),
-                                  _buildDealOfTheDayRow(context, listProduct!),
-                                },
-
-                                SizedBox(height: 26.h),
-                                Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.9,
-                                      padding: EdgeInsets.all(5.h),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10.r),
-                                          color: Color.fromARGB(
-                                              255, 212, 253, 255)),
+                                  SizedBox(height: 26.h),
+                                  Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.9,
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 5.w, vertical: 10.h),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10.r),
+                                            color: const Color.fromARGB(
+                                                255, 212, 253, 255)),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 10.w),
+                                              child: Text(
+                                                shop != null
+                                                    ? shop!.name!
+                                                    : "...",
+                                                style: TextStyle(
+                                                    fontSize: 20.sp,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 5.h,
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 10.w),
+                                              child: Text(
+                                                shop != null
+                                                    ? shop!.shopDescription!
+                                                    : "...",
+                                                overflow: TextOverflow.clip,
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                    fontSize: 15.sp,
+                                                    fontWeight:
+                                                        FontWeight.w300),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 5.sp,
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 10.w),
+                                              child: Text(
+                                                shop != null
+                                                    ? shop!.contactPhone!
+                                                    : "...",
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                    fontSize: 18.sp,
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )),
+                                  if (listProduct != null && !isLoading) ...{
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          bottom: 5.h, left: 10.w),
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
                                         children: [
                                           Padding(
-                                            padding:
-                                                EdgeInsets.only(left: 10.w),
-                                            child: Text(
-                                              widget.shop!.name!,
-                                              style: TextStyle(
-                                                  fontSize: 20.sp,
-                                                  fontWeight: FontWeight.bold),
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 10.h,
+                                            ),
+                                            //padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                            child: _buildDealOfTheDay(
+                                              context,
+                                              dealOfTheDayText:
+                                                  AppLocalizations.of(context)!
+                                                      .recommended_ucf,
+                                              viewAllText: "",
                                             ),
                                           ),
-                                          SizedBox(
-                                            height: 5.h,
-                                          ),
-                                          Padding(
-                                            padding:
-                                                EdgeInsets.only(left: 10.w),
-                                            child: Text(
-                                              widget.shop!.shopDescription!,
-                                              overflow: TextOverflow.clip,
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                  fontSize: 15.sp,
-                                                  fontWeight: FontWeight.w300),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 5.sp,
-                                          ),
-                                          Padding(
-                                            padding:
-                                                EdgeInsets.only(left: 10.w),
-                                            child: Text(
-                                              widget.shop!.contactPhone!,
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                  fontSize: 18.sp,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
-                                          ),
+                                          _buildProductSmallList1(
+                                              context, listProduct!),
                                         ],
                                       ),
-                                    )),
-                                if (listProduct != null && !isLoading) ...{
+                                    ),
+                                  },
+
+                                  //SizedBox(height: 16.v),
+                                ],
+                              ),
+                            ),
+
+                            //color: Colors.white,
+                          ),
+                          Container(
+                            //color: Colors.red,
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: 5.h, left: 10.w),
+                              child: Column(
+                                children: [
                                   Padding(
-                                    padding: EdgeInsets.only(
-                                        bottom: 5.h, left: 10.w),
-                                    child: Column(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 10.h,
-                                          ),
-                                          //padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                          child: _buildDealOfTheDay(
-                                            context,
-                                            dealOfTheDayText:
-                                                AppLocalizations.of(context)!
-                                                    .recommended_ucf,
-                                            viewAllText: "",
-                                          ),
-                                        ),
-                                        _buildProductSmallList1(
-                                            context, listProduct!),
-                                      ],
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 10.h,
+                                    ),
+                                    //padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                    child: _buildDealOfTheDay(
+                                      context,
+                                      dealOfTheDayText: "",
+                                      viewAllText: "",
                                     ),
                                   ),
-                                },
-
-                                //SizedBox(height: 16.v),
-                              ],
+                                  if (listProduct != null && !isLoading) ...{
+                                    _buildProductSmallList1(
+                                        context, listProduct!),
+                                  } else ...{
+                                    Container()
+                                  }
+                                ],
+                              ),
                             ),
                           ),
-
-                          //color: Colors.white,
-                        ),
-                        Container(
-                          //color: Colors.red,
-                          child: Padding(
-                            padding: EdgeInsets.only(bottom: 5.h, left: 10.w),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 10.h,
-                                  ),
-                                  //padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                  child: _buildDealOfTheDay(
-                                    context,
-                                    dealOfTheDayText: "",
-                                    viewAllText: "",
-                                  ),
-                                ),
-                                if (listProduct != null && !isLoading) ...{
-                                  _buildProductSmallList1(
-                                      context, listProduct!),
-                                } else ...{
-                                  Container()
-                                }
-                              ],
-                            ),
-                          ),
-                        ),
-                        Container(
-                          //color: Colors.red,
-                          child: !isLoading
-                              ? listCategory != null
-                                  ? Column(
-                                      children: listCategory!.map((category) {
-                                        return ListTile(
-                                          onTap: () {
-                                            Navigator.of(context)
-                                                .push(MaterialPageRoute(
-                                              builder: (context) {
-                                                return CategoryDetail(
-                                                  categoryID: category.id!,
-                                                  shopID: widget.shop!.id,
+                          Container(
+                            //color: Colors.red,
+                            child: !isLoading
+                                ? listCategory != null
+                                    ? Column(
+                                        children: listCategory!.map((category) {
+                                          return ListTile(
+                                            onTap: () {
+                                              if (shop != null) {
+                                                Navigator.of(context)
+                                                    .push(MaterialPageRoute(
+                                                  builder: (context) {
+                                                    return CategoryDetail(
+                                                      categoryID: category.id!,
+                                                      shopID: shop!.id,
+                                                    );
+                                                  },
+                                                ));
+                                              }
+                                            },
+                                            leading: CachedNetworkImage(
+                                              imageUrl: category.logo!,
+                                              imageBuilder:
+                                                  (context, imageProvider) {
+                                                return Container(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.08,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.1,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                        image: imageProvider),
+                                                  ),
                                                 );
                                               },
-                                            ));
-                                          },
-                                          leading: CachedNetworkImage(
-                                            imageUrl: category.logo!,
-                                            imageBuilder:
-                                                (context, imageProvider) {
-                                              return Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.08,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.1,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                      image: imageProvider),
-                                                ),
-                                              );
-                                            },
-                                            placeholder: (context, url) =>
-                                                const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
+                                              placeholder: (context, url) =>
+                                                  const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
                                             ),
-                                          ),
-                                          title: Text(category.name!),
-                                        );
-                                      }).toList(),
-                                    )
-                                  : Center(
-                                      child: Text(AppLocalizations.of(context)!
-                                          .no_category),
-                                    )
-                              : const Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                        ),
-                      ][_tabController.index],
-                    ),
-                  ]),
+                                            title: Text(category.name!),
+                                          );
+                                        }).toList(),
+                                      )
+                                    : Center(
+                                        child: Text(
+                                            AppLocalizations.of(context)!
+                                                .no_category),
+                                      )
+                                : const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                          ),
+                        ][_tabController.index],
+                      ),
+                    ]),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

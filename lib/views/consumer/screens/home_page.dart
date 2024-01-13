@@ -9,6 +9,7 @@ import 'package:dpl_ecommerce/data_sources/firestore_data_source/product_firesto
 import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:dpl_ecommerce/models/cart.dart';
 import 'package:dpl_ecommerce/models/category.dart';
+import 'package:dpl_ecommerce/models/consumer_infor.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/repositories/category_repo.dart';
@@ -22,8 +23,10 @@ import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/category_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/chat_page.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/ranking_screen.dart';
 
 import 'package:dpl_ecommerce/views/consumer/screens/search_page.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/voucher_screen.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_item_widget1.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item_widget.dart';
@@ -35,6 +38,7 @@ import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -207,6 +211,7 @@ class HomePage extends StatelessWidget {
                               ),
                             ),
                           ),
+
                           SizedBox(height: 18.h),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 10.h),
@@ -230,9 +235,111 @@ class HomePage extends StatelessWidget {
                           ),
                           // SizedBox(height: 15.h),
                           _buildCategoryList(context),
-                          SizedBox(height: 20.h),
-                          _buildPromotionBanner(context),
-                          SizedBox(height: 8.h),
+                          // SizedBox(height: 20.h),
+                          // _buildPromotionBanner(context),
+                          SizedBox(height: 18.h),
+                          Container(
+                            padding: EdgeInsets.symmetric(vertical: 5.h),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: MyTheme.accent_color, width: 0.2),
+                                color: MyTheme.golden_shadow,
+                                borderRadius: BorderRadius.circular(5.r)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) => VoucherScreen(),
+                                    ));
+                                  },
+                                  child: Container(
+                                    height: 40.h,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.48,
+                                    // decoration: BoxDecoration(
+                                    //     border: Border.all(
+                                    //         color: MyTheme.accent_color,
+                                    //         width: 0.2),
+                                    //     // color: MyTheme.golden_shadow,
+                                    //     borderRadius:
+                                    //         BorderRadius.circular(10.r)),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10.w, vertical: 5.h),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Icon(
+                                          Icons.card_giftcard_rounded,
+                                          size: 20.h,
+                                        ),
+                                        // SizedBox(
+                                        //   width: 5.w,
+                                        // ),
+                                        Text(LangText(context: context)
+                                            .getLocal()!
+                                            .vouchers_ucf)
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  height: 40.h,
+                                  width: 0.2.w,
+                                  color: MyTheme.black,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) => RankUser(),
+                                    ));
+                                  },
+                                  child: Container(
+                                    height: 40.h,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.48,
+                                    // constraints: BoxConstraints(
+                                    //     maxHeight: 40.h),
+                                    // decoration: BoxDecoration(
+                                    //     border: Border.all(
+                                    //         color: MyTheme.accent_color,
+                                    //         width: 0.2),
+                                    //     color: MyTheme.golden_shadow,
+                                    //     borderRadius:
+                                    //         BorderRadius.circular(10.r)),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10.w, vertical: 5.h),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        SvgPicture.asset(
+                                          "assets/images/ranking-star-solid.svg",
+                                          height: 30,
+                                          width: 30,
+                                        ),
+                                        // SizedBox(
+                                        //   width: 5.w,
+                                        // ),
+                                        Text(LangText(context: context)
+                                            .getLocal()!
+                                            .raking_ucf)
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          // SizedBox(height: 8.h),
                           SizedBox(
                             height: 6.h,
                             child: AnimatedSmoothIndicator(
@@ -258,9 +365,7 @@ class HomePage extends StatelessWidget {
                               dealOfTheDayText: LangText(context: context)
                                   .getLocal()!
                                   .deal_of_the_day,
-                              viewAllText: LangText(context: context)
-                                  .getLocal()!
-                                  .view_more_ucf,
+                              viewAllText: "",
                             ),
                           ),
                           _buildDealOfTheDayRow(context),
@@ -272,9 +377,7 @@ class HomePage extends StatelessWidget {
                               dealOfTheDayText: LangText(context: context)
                                   .getLocal()!
                                   .top_products_ucf,
-                              viewAllText: LangText(context: context)
-                                  .getLocal()!
-                                  .view_more_ucf,
+                              viewAllText: "",
                             ),
                           ),
                           SizedBox(height: 16.h),

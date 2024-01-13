@@ -16,6 +16,14 @@ class VoucherRepo {
     return firestoreDatabase.getAllVoucherByShop(shopID);
   }
 
+  Stream<List<Voucher>?> getAllVoucherByAdmin() {
+    return firestoreDatabase.getAllVoucherByAdmin();
+  }
+
+  Future<List<Voucher>?> getListVoucherByAdmin() async {
+    return await firestoreDatabase.getListVoucherByAdmin();
+  }
+
   Future<List<Voucher>?> getListVoucherByShop(String shopID) async {
     List<Voucher>? result =
         await firestoreDatabase.getListVoucherByShop(shopID);

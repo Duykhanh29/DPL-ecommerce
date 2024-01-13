@@ -1,8 +1,11 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/models/address_infor.dart';
+import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:dpl_ecommerce/view_model/address_view_model.dart';
 import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
 // import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
@@ -12,6 +15,7 @@ import 'package:dpl_ecommerce/views/consumer/screens/favorite_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/profile_setting_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/user_list_voucher.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/wishlist_page.dart';
+import 'package:dpl_ecommerce/views/general_views/login_screen.dart';
 import 'package:dpl_ecommerce/views/seller/screens/address_seller_screen.dart';
 import 'package:dpl_ecommerce/views/seller/screens/seller_setting_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,18 +23,120 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SellerProfilePage extends StatelessWidget {
-  const SellerProfilePage({Key? key})
+  SellerProfilePage({Key? key})
       : super(
           key: key,
         );
+  UserRepo userRepo = UserRepo();
+  onPressLogout(context, AuthViewModel authProvider) async {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              contentPadding: EdgeInsets.only(
+                  top: 16.h, left: 2.w, right: 2.w, bottom: 12.h),
+              content: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                child: Text(
+                  AppLocalizations.of(context)!.are_you_sure_to_logout,
+                  maxLines: 3,
+                  style: TextStyle(color: MyTheme.font_grey, fontSize: 14.sp),
+                ),
+              ),
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(_);
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        padding: EdgeInsets.all(10.h),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey,
+                              offset: Offset(0.0, 1.0), //(x,y)
+                              blurRadius: 6.0,
+                            ),
+                          ],
+                          /*border: Border(
+                  top: BorderSide(color: MyTheme.light_grey,width: 1.0),
+                )*/
+                        ),
+                        child: Center(
+                          child: Text(
+                            AppLocalizations.of(context)!.cancel_ucf,
+                            style: TextStyle(color: MyTheme.medium_grey),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        // savePref();
+                        // AuthHelper().clearUserData();
+                        Navigator.pop(_);
+                        await authProvider.signOut();
+
+                        // Navigator.of(context, rootNavigator: true)
+                        //     .pushAndRemoveUntil(
+                        //   MaterialPageRoute(
+                        //     builder: (context) {
+                        //       // return NavigationScreen();
+                        //       return LoginScreen();
+                        //     },
+                        //   ),
+                        //   (route) => true,
+                        // );
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        padding: EdgeInsets.all(10.h),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.red,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey,
+                              offset: Offset(0.0, 1.0), //(x,y)
+                              blurRadius: 6.0,
+                            ),
+                          ],
+                          /*border: Border(
+                  top: BorderSide(color: MyTheme.light_grey,width: 1.0),
+                )*/
+                        ),
+                        child: Center(
+                          child: Text(
+                            AppLocalizations.of(context)!.confirm_ucf,
+                            style: TextStyle(color: MyTheme.white),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ));
+  }
 
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthViewModel>(context);
     final size = MediaQuery.of(context).size;
     final user = authProvider.currentUser;
+    final addressProvider = Provider.of<AddressViewModel>(context);
     return SafeArea(
       child: Scaffold(
         body: SizedBox(
@@ -63,7 +169,11 @@ class SellerProfilePage extends StatelessWidget {
                             children: [
                               // SizedBox(height: 24),
                               ListTile(
-                                onTap: () {
+                                onTap: () async {
+                                  AddressInfor? address = await userRepo
+                                      .getAddressForSeller(user!.id!);
+                                  addressProvider
+                                      .setListAddressInfor([address!]);
                                   // go to address page
                                   Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => AddressSellerScreen(),
@@ -201,8 +311,8 @@ class SellerProfilePage extends StatelessWidget {
                               ),
                               ListTile(
                                   onTap: () async {
-                                    // go to Languages page
-                                    await authProvider.signOut();
+                                    // await authProvider.signOut();
+                                    await onPressLogout(context, authProvider);
                                   },
                                   leading: Icon(
                                     Icons.logout_rounded,
@@ -227,9 +337,7 @@ class SellerProfilePage extends StatelessWidget {
                                     width: size.width * 0.08,
                                     height: size.width * 0.08,
                                     child: InkWell(
-                                      onTap: () {
-                                        // go to Languages page
-                                      },
+                                      onTap: () {},
                                       child: Center(
                                         child: Icon(Icons.navigate_next,
                                             size: 20.h,
@@ -262,7 +370,7 @@ class SellerProfilePage extends StatelessWidget {
       height: 100.h,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.h),
-          border: Border.all(color: Colors.black, width: 0.2)),
+          border: Border.all(color: MyTheme.accent_color, width: 0.7)),
       // padding: EdgeInsets.only(
       //   left: 5.w,
       //   right: 5.w,

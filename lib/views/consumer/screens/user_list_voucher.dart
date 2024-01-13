@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/models/voucher_for_user.dart';
@@ -69,10 +70,15 @@ class _UserListVoucherState extends State<UserListVoucher> {
     // getListVoucher(voucherForUsreProvider.voucherForUser!);
 
     return Scaffold(
-      appBar: AppBar(
-        leading: CustomArrayBackWidget(),
-        title: Text(LangText(context: context).getLocal()!.my_vouchers),
-      ),
+      appBar: CustomAppBar(
+              title: LangText(context: context).getLocal()!.my_vouchers,
+              context: context,
+              centerTitle: true)
+          .show(),
+      //  AppBar(
+      //   leading: CustomArrayBackWidget(),
+      //   title: Text(),
+      // ),
       body:
           //  RefreshIndicator(
           //   onRefresh: () async {

@@ -9,6 +9,7 @@ import 'package:dpl_ecommerce/utils/common/common_methods.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/seller/shop_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
+import 'package:dpl_ecommerce/views/admin/screens/voucher/voucher_admin.dart';
 import 'package:dpl_ecommerce/views/seller/screens/voucher/voucher_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -66,7 +67,7 @@ class _AddProductScreenState extends State<EditVoucher> {
     setState(() {});
   }
 
-  String? dropdownValue;
+  // String? dropdownValue;
   String? discountType;
   int? discountAmount;
   int? discountPercent;
@@ -95,11 +96,11 @@ class _AddProductScreenState extends State<EditVoucher> {
     ;
     String typeValue;
     String discountTypeValue;
-    if (dropdownValue == "Product") {
-      typeValue = LangText(context: context).getLocal()!.product_ucf;
-    } else {
-      typeValue = LangText(context: context).getLocal()!.shop_ucf;
-    }
+    // if (dropdownValue == "Product") {
+    //   typeValue = LangText(context: context).getLocal()!.product_ucf;
+    // } else {
+    //   typeValue = LangText(context: context).getLocal()!.shop_ucf;
+    // }
     if (discountType == "Percent") {
       discountTypeValue = LangText(context: context).getLocal()!.discount_ucf;
     } else {
@@ -150,56 +151,56 @@ class _AddProductScreenState extends State<EditVoucher> {
                 SizedBox(
                   height: 20.h,
                 ),
-                Text(LangText(context: context).getLocal()!.voucher_ucf),
-                DropdownButton(
-                  value: typeValue ?? "",
-                  onChanged: ((String? newvalue) {
-                    setState(() {
-                      // dropdownValue = newvalue!;
-                    });
-                  }),
-                  items: [
-                    DropdownMenuItem(
-                      value: typeValue ?? "",
-                      child: Text(typeValue ?? ""),
-                    ),
-                  ],
+                Text(LangText(context: context).getLocal()!.product_ucf),
+                // DropdownButton(
+                //   value: typeValue ?? "",
+                //   onChanged: ((String? newvalue) {
+                //     setState(() {
+                //       // dropdownValue = newvalue!;
+                //     });
+                //   }),
+                //   items: [
+                //     DropdownMenuItem(
+                //       value: typeValue ?? "",
+                //       child: Text(typeValue ?? ""),
+                //     ),
+                //   ],
+                //   isExpanded: true,
+                // ),
+                // if (dropdownValue == "Product")
+                //   Column(
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: <Widget>[
+                //       Text(LangText(context: context)
+                //           .getLocal()!
+                //           .select_category),
+                DropdownButton<Product>(
+                  value: selectedProduct,
                   isExpanded: true,
+                  items: [
+                    DropdownMenuItem<Product>(
+                      value: selectedProduct,
+                      child: Text(selectedProduct != null
+                          ? selectedProduct!.name!
+                          : ""),
+                    )
+                  ],
+                  onChanged: (newValue) {
+                    setState(() {
+                      // selectedProduct = newValue!;
+                      // Reset selected product when category changes
+                    });
+                  },
                 ),
-                if (dropdownValue == "Product")
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(LangText(context: context)
-                          .getLocal()!
-                          .select_category),
-                      DropdownButton<Product>(
-                        value: selectedProduct,
-                        isExpanded: true,
-                        items: [
-                          DropdownMenuItem<Product>(
-                            value: selectedProduct,
-                            child: Text(selectedProduct != null
-                                ? selectedProduct!.name!
-                                : ""),
-                          )
-                        ],
-                        onChanged: (newValue) {
-                          setState(() {
-                            // selectedProduct = newValue!;
-                            // Reset selected product when category changes
-                          });
-                        },
-                      ),
-                      // Hiển thị danh sách sản phẩm ở đây
-                      // Ví dụ: ListView.builder(...)
-                    ],
-                  ),
+                //       // Hiển thị danh sách sản phẩm ở đây
+                //       // Ví dụ: ListView.builder(...)
+                //     ],
+                //   ),
                 // Hiển thị dòng "hello" khi chọn "Shop"
                 // if (dropdownValue == "Shop") Text("hello"),
 
                 DropdownButton(
-                  value: discountTypeValue ?? "",
+                  value: discountTypeValue,
                   onChanged: ((String? newvalue) {
                     setState(() {
                       //dropdownValue1 = newvalue!;
@@ -207,8 +208,8 @@ class _AddProductScreenState extends State<EditVoucher> {
                   }),
                   items: [
                     DropdownMenuItem(
-                      value: discountTypeValue ?? "",
-                      child: Text(discountTypeValue ?? ""),
+                      value: discountTypeValue,
+                      child: Text(discountTypeValue),
                     ),
                   ],
                   isExpanded: true,
@@ -318,21 +319,24 @@ class _AddProductScreenState extends State<EditVoucher> {
       }
       Voucher updatedVoucher = Voucher(
         id: widget.voucher.id,
+        isAdmin: true,
         name: name,
         expDate: expDate,
         releasedDate: startDate,
         discountAmount: newDiscountAmount,
         discountPercent: newDiscountPercent,
-        productID: selectedProduct != null ? selectedProduct!.id! : null,
-        shopID: shop.id,
       );
 
       // widget.onVoucherUpdated(updatedVoucher);j
       await voucherRepo.editVoucher(
           id: widget.voucher.id!, voucher: updatedVoucher);
+      // ignore: use_build_context_synchronously
       Navigator.pop(
         context,
-        MaterialPageRoute(builder: (context) => VoucherApp()),
+        MaterialPageRoute(
+            builder: (context) => const VoucherAdmin(
+                // shopID: shop.id!,
+                )),
       );
       // Close the EditProductScreen after updating
     }

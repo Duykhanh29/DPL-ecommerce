@@ -163,7 +163,7 @@ class Dashboard extends StatelessWidget {
                       onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const VoucherApp(),
+                              builder: (context) => VoucherApp(),
                             ),
                           ),
                       child: _buildicon(
@@ -171,19 +171,19 @@ class Dashboard extends StatelessWidget {
                               .getLocal()!
                               .vouchers_ucf,
                           icon: CupertinoIcons.ticket_fill)),
-                  const Spacer(),
-                  GestureDetector(
-                      onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const PayHistory(),
-                            ),
-                          ),
-                      child: _buildicon(
-                          name: LangText(context: context)
-                              .getLocal()!
-                              .payment_history_ucf,
-                          icon: Icons.history)),
+                  // const Spacer(),
+                  // GestureDetector(
+                  //     onTap: () => Navigator.push(
+                  //           context,
+                  //           MaterialPageRoute(
+                  //             builder: (context) => const PayHistory(),
+                  //           ),
+                  //         ),
+                  //     child: _buildicon(
+                  //         name: LangText(context: context)
+                  //             .getLocal()!
+                  //             .payment_history_ucf,
+                  //         icon: Icons.history)),
                   const Spacer(),
                   GestureDetector(
                       onTap: () => Navigator.push(
@@ -288,7 +288,14 @@ class Dashboard extends StatelessWidget {
                   //         borderSide: BorderSide.none),
                   //   ),
                   // ),
-                  ChartContainer(),
+                  // Consumer<ShopViewModel>(
+                  //   builder: (context, value, child) {
+                  //     if (value.shop != null) {
+                  //       return ChartContainer();
+                  //     }
+                  //     return Container();
+                  //   },
+                  // ),
                   SizedBox(
                     height: 10.h,
                   ),
@@ -373,92 +380,15 @@ class Dashboard extends StatelessWidget {
                   SizedBox(
                     height: 5.h,
                   ),
-                  // ListView.builder(
-                  //     shrinkWrap: true,
-                  //     itemCount: products!.length,
-                  //     itemBuilder: (BuildContext context, int index) {
-                  //       return Padding(
-                  //         padding: EdgeInsets.fromLTRB(0, 5.h, 0, 5.h),
-                  //         child: GestureDetector(
-                  //           onTap: () {
-                  //             // Navigator.of(context).push(MaterialPageRoute(
-                  //             //   builder: (context) {
-                  //             //     return EditProductScreen(
-                  //             //         product: product,
-                  //             //         onProductUpdated: onProductUpdated,
-                  //             //         products: products);
-                  //             //   },
-                  //             // ));
-                  //           },
-                  //           child: Container(
-                  //             //height: 120.h,
-                  //             width: 340.w,
-                  //             decoration: BoxDecoration(
-                  //               color: Colors.white,
-                  //               borderRadius: BorderRadius.circular(10.r),
-                  //               boxShadow: const [
-                  //                 BoxShadow(
-                  //                     color: Colors.grey,
-                  //                     blurRadius: 10,
-                  //                     spreadRadius: 0,
-                  //                     offset: Offset(0, 0)),
-                  //               ],
-                  //             ),
-                  //             child: Material(
-                  //               //color: Colors.blue,
-                  //               borderRadius: BorderRadius.circular(8.r),
-                  //               clipBehavior: Clip.antiAliasWithSaveLayer,
-                  //               child: Row(
-                  //                 mainAxisSize: MainAxisSize.min,
-                  //                 children: [
-                  //                   Image.network(
-                  //                     products![0]!.images![0],
-                  //                     height: 80.h,
-                  //                     width: 80.w,
-                  //                     fit: BoxFit.cover,
-                  //                   ),
-                  //                   SizedBox(
-                  //                     width: 15.w,
-                  //                   ),
-                  //                   Container(
-                  //                     height: 100.h,
-                  //                     child: Column(
-                  //                       crossAxisAlignment:
-                  //                           CrossAxisAlignment.start,
-                  //                       children: [
-                  //                         SizedBox(
-                  //                           height: 10.h,
-                  //                         ),
-                  //                         Text(
-                  //                           products![index].name!,
-                  //                           style: TextStyle(fontSize: 16.sp),
-                  //                         ),
-                  //                         Text(
-                  //                           products![index].types.toString(),
-                  //                           style: TextStyle(
-                  //                             fontSize: 16.sp,
-                  //                             color: Colors.grey,
-                  //                           ),
-                  //                         ),
-                  //                         SizedBox(
-                  //                           height: 10.h,
-                  //                         ),
-                  //                         Text(
-                  //                           products![index].price.toString(),
-                  //                           style: TextStyle(
-                  //                               fontSize: 16.sp,
-                  //                               fontWeight: FontWeight.bold),
-                  //                         ),
-                  //                       ],
-                  //                     ),
-                  //                   ),
-                  //                 ],
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       );
-                  //     }),
+                  Consumer<ShopViewModel>(
+                    builder: (context, value, child) {
+                      if (value.shop != null) {
+                        return ListTopProductOfShop(shopID: value.shop!.id!);
+                      }
+                      return Container();
+                    },
+                  ),
+
                   // // Expanded(
                   //   child: ListView.builder(
                   //     itemCount: 4,
@@ -619,4 +549,133 @@ class Dashboard extends StatelessWidget {
           ],
         ),
       );
+}
+
+class ListTopProductOfShop extends StatefulWidget {
+  ListTopProductOfShop({super.key, required this.shopID});
+  String shopID;
+
+  @override
+  State<ListTopProductOfShop> createState() => _ListTopProductOfShopState();
+}
+
+class _ListTopProductOfShopState extends State<ListTopProductOfShop> {
+  ProductRepo productRepo = ProductRepo();
+  List<Product>? list;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    list = await productRepo.getListTopProductByShop(widget.shopID);
+    isLoading = false;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return isLoading
+        ? Container()
+        : list == null || list!.isEmpty
+            ? Container(
+                height: 40.h,
+                child: Center(
+                  child: Text(LangText(context: context)
+                      .getLocal()!
+                      .no_data_is_available),
+                ),
+              )
+            : ListView.builder(
+                shrinkWrap: true,
+                itemCount: list!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: EdgeInsets.fromLTRB(0, 5.h, 0, 5.h),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) {
+                            return EditProductScreen(
+                              product: list![index],
+                            );
+                          },
+                        ));
+                      },
+                      child: Container(
+                        //height: 120.h,
+                        width: 340.w,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10.r),
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Colors.grey,
+                                blurRadius: 10,
+                                spreadRadius: 0,
+                                offset: Offset(0, 0)),
+                          ],
+                        ),
+                        child: Material(
+                          //color: Colors.blue,
+                          borderRadius: BorderRadius.circular(8.r),
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image.network(
+                                list![0]!.images![0],
+                                height: 80.h,
+                                width: 80.w,
+                                fit: BoxFit.cover,
+                              ),
+                              SizedBox(
+                                width: 15.w,
+                              ),
+                              Container(
+                                height: 100.h,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      height: 10.h,
+                                    ),
+                                    Text(
+                                      list![index].name!,
+                                      style: TextStyle(fontSize: 16.sp),
+                                    ),
+                                    Text(
+                                      list![index].types.toString(),
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10.h,
+                                    ),
+                                    Text(
+                                      list![index].price.toString(),
+                                      style: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                });
+    // ;
+  }
 }

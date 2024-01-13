@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/helpers/date_helper.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
@@ -23,7 +24,11 @@ class UserVoucherItem extends StatelessWidget {
         // ),
         child: SKSTicketView(
           // backgroundColor: Colors.,
-          contentBackgroundColor: Colors.orangeAccent.shade100,
+          contentBackgroundColor:
+              voucher!.expDate!.compareTo(Timestamp.fromDate(DateTime.now())) >
+                      0
+                  ? Colors.orangeAccent.shade100
+                  : Colors.grey.shade300,
           // backgroundPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
           // contentPadding: EdgeInsets.symmetric(horizontal: 0),
           drawArc: true,

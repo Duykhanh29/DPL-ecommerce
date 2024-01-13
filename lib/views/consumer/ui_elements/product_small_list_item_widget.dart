@@ -39,47 +39,55 @@ class ProductsmalllistItemWidget extends StatelessWidget {
           builder: (context) => ProductDetailsPage(id: product!.id!),
         ));
       },
-      child: SizedBox(
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.r),
+            color: MyTheme.background,
+            border: Border.all(color: MyTheme.accent_color)),
         width: 170.h,
         child: Padding(
           padding: EdgeInsets.only(bottom: 1.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 150.h,
-                height: 120.h,
-                padding: EdgeInsets.all(4.h),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadiusStyle.roundedBorder2,
-                  image: DecorationImage(
-                    image: NetworkImage(
-                      product!.images![0],
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 2.w),
+                child: Container(
+                  width: 162.h,
+                  height: 130.h,
+                  padding: EdgeInsets.all(4.h),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadiusStyle.roundedBorder2,
+                    image: DecorationImage(
+                      image: NetworkImage(
+                        product!.images![0],
+                      ),
+                      fit: BoxFit.cover,
                     ),
-                    fit: BoxFit.cover,
                   ),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 56.h,
-                      margin: EdgeInsets.only(bottom: 77.h),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 4.h,
-                        vertical: 2.h,
-                      ),
-                      decoration: AppDecoration.fillOrange.copyWith(
-                        borderRadius: BorderRadiusStyle.roundedBorder2,
-                      ),
-                      child: Text(
-                        "top_seller",
-                        style: CustomTextStyles.labelMediumOnPrimaryContainer,
-                      ),
-                    ),
-                    buildFavouriteIcon(context)
-                  ],
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      // Container(
+                      //   width: 56.h,
+                      //   margin: EdgeInsets.only(bottom: 77.h),
+                      //   padding: EdgeInsets.symmetric(
+                      //     horizontal: 4.h,
+                      //     vertical: 2.h,
+                      //   ),
+                      //   decoration: AppDecoration.fillOrange.copyWith(
+                      //     borderRadius: BorderRadiusStyle.roundedBorder2,
+                      //   ),
+                      //   child: Text(
+                      //     "top_seller",
+                      //     style: CustomTextStyles.labelMediumOnPrimaryContainer,
+                      //   ),
+                      // ),
+                      buildFavouriteIcon(context)
+                    ],
+                  ),
                 ),
               ),
               SizedBox(height: 8.h),
@@ -100,34 +108,34 @@ class ProductsmalllistItemWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 8, right: 8),
                 child: Row(
                   children: [
-                    Container(
-                      height: 16.h,
-                      width: 16.h,
-                      padding: EdgeInsets.all(2.h),
-                      decoration: AppDecoration.fillAmber.copyWith(
-                        borderRadius: BorderRadiusStyle.roundedBorder2,
-                      ),
-                      child: CustomImageView(
-                        imagePath: ImageData.imgIconBoldStar,
-                        height: 12.h,
-                        width: 12.h,
-                        alignment: Alignment.center,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 4.h),
-                      child: Text(
-                        "lbl_4_8",
-                        style: theme.textTheme.bodySmall,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 4.h),
-                      child: Text(
-                        "lbl_692",
-                        style: CustomTextStyles.bodySmallGray600,
-                      ),
-                    ),
+                    //       Container(
+                    //         height: 16.h,
+                    //         width: 16.h,
+                    //         padding: EdgeInsets.all(2.h),
+                    //         decoration: AppDecoration.fillAmber.copyWith(
+                    //           borderRadius: BorderRadiusStyle.roundedBorder2,
+                    //         ),
+                    //         child: CustomImageView(
+                    //           imagePath: ImageData.imgIconBoldStar,
+                    //           height: 12.h,
+                    //           width: 12.h,
+                    //           alignment: Alignment.center,
+                    //         ),
+                    //       ),
+                    //       Padding(
+                    //         padding: EdgeInsets.only(left: 4.h),
+                    //         child: Text(
+                    //           "lbl_4_8",
+                    //           style: theme.textTheme.bodySmall,
+                    //         ),
+                    //       ),
+                    //       Padding(
+                    //         padding: EdgeInsets.only(left: 4.h),
+                    //         child: Text(
+                    //           "lbl_692",
+                    //           style: CustomTextStyles.bodySmallGray600,
+                    //         ),
+                    //       ),
                   ],
                 ),
               ),

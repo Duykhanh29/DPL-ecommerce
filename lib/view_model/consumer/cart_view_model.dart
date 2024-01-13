@@ -19,6 +19,7 @@ class CartViewModel extends ChangeNotifier {
   List<Voucher>? listVoucher;
   void setListVoucher(List<Voucher> list) {
     listVoucher = list;
+    // notifyListeners();
   }
 
   List<ProductInCartModel> list = [];
@@ -45,7 +46,9 @@ class CartViewModel extends ChangeNotifier {
       if (product.voucherID != null) {
         Voucher? voucher =
             CommondMethods.getVoucherFromID(listVoucher!, product.voucherID!);
-        if (voucher != null) {
+        if (voucher != null &&
+            voucher.expDate!.compareTo(Timestamp.fromDate(DateTime.now())) >
+                0) {
           if (voucher.discountAmount != null) {
             cost -= voucher.discountAmount!;
             savingPrice += voucher.discountAmount!;
@@ -155,7 +158,9 @@ class CartViewModel extends ChangeNotifier {
       if (element.voucherID != null) {
         Voucher? voucher =
             CommondMethods.getVoucherFromID(listVoucher!, element.voucherID!);
-        if (voucher != null) {
+        if (voucher != null &&
+            voucher.expDate!.compareTo(Timestamp.fromDate(DateTime.now())) >
+                0) {
           if (voucher.discountAmount != null) {
             cost -= voucher.discountAmount!;
             savingPrice += voucher.discountAmount!;
@@ -164,6 +169,8 @@ class CartViewModel extends ChangeNotifier {
             int savingPrice = (cost * percent).toInt();
             cost -= savingPrice;
           }
+        } else {
+          print("Im oke");
         }
       }
       cost = cost * element.quantity;

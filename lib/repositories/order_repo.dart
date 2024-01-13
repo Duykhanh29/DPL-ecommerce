@@ -3,6 +3,7 @@ import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/district.dart';
 import 'package:dpl_ecommerce/models/order_model.dart';
+import 'package:dpl_ecommerce/models/order_shop.dart';
 import 'package:dpl_ecommerce/models/ordering_product.dart';
 
 class OrderRepo {
@@ -36,9 +37,33 @@ class OrderRepo {
         orderID: orderID, orderingProductID: orderingProductID, status: status);
   }
 
+  Future<void> confirmOrder(String id) async {
+    await firestoreDatabase.confirmOrder(id);
+  }
+
   Future<List<OrderingProduct>?> getListOrderingProductByOrder(
       String orderID) async {
     return await firestoreDatabase.getListOrderingProductByOrder(orderID);
+  }
+
+  // for shop
+
+  Future<void> addOrderShop(OrderShop orderShop) async {
+    await firestoreDatabase.addOrderShop(orderShop);
+  }
+
+  Future<List<OrderShop>?> getListOrderByShop(String shopID) async {
+    return await firestoreDatabase.getListOrderByShop(shopID);
+  }
+
+  Future<OrderShop?> getOrderShopByID(String id) async {
+    return await firestoreDatabase.getOrderShopByID(id);
+  }
+
+  Future<void> updatePaymentStatusForOrderShop(
+      String orderShopID, PaymentStatus paymentStatus) async {
+    await firestoreDatabase.updatePaymentStatusForOrderShop(
+        orderShopID, paymentStatus);
   }
 
   final listorder = List.generate(

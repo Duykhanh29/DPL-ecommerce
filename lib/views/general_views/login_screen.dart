@@ -53,6 +53,7 @@ class LoginScreen extends StatelessWidget {
               SizedBox(height: 30.h),
               Text(
                 LangText(context: context).getLocal()!.welcome_to_DPL,
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 24.sp,
                     color: MyTheme.accent_color,

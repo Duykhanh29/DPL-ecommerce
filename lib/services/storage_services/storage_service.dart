@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:dpl_ecommerce/helpers/toast_helper.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -114,7 +117,8 @@ class StorageService {
   }
 
   // download image without refer to location
-  Future<void> downloadAndSaveImage(String imageUrl) async {
+  Future<void> downloadAndSaveImage(
+      String imageUrl, BuildContext context) async {
     final response = await http.get(Uri.parse(imageUrl));
     final documentDirectory = await getApplicationDocumentsDirectory();
     final file = File('${documentDirectory.path}/image.jpg');
@@ -130,10 +134,22 @@ class StorageService {
       // );
       if (galleryPath != null) {
         print('Ảnh đã được lưu: $galleryPath');
+        ToastHelper.showDialog(
+            LangText(context: context).getLocal()!.download_successfully,
+            gravity: ToastGravity.BOTTOM,
+            duration: Toast.LENGTH_LONG);
       } else {
         print('Lỗi khi download ảnh');
+        ToastHelper.showDialog(
+            LangText(context: context).getLocal()!.failed_to_download,
+            gravity: ToastGravity.BOTTOM,
+            duration: Toast.LENGTH_LONG);
       }
     } catch (error) {
+      ToastHelper.showDialog(
+          "${LangText(context: context).getLocal()!.failed_to_download}: $error",
+          gravity: ToastGravity.BOTTOM,
+          duration: Toast.LENGTH_LONG);
       // Xử lý lỗi tại đây
       print("Error saving image: $error");
       // Get.snackbar(

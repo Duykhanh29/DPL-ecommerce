@@ -79,7 +79,7 @@ class SellerRoutes {
     paymentHistory: (context) => PayHistory(),
     vouchersPage: (context) => VoucherApp(),
     productsPage: (context) => ProductsApp(),
-    generalSetting: (context) => GeneralSetting(),
+    // generalSetting: (context) => GeneralSetting(),
     setting_page: (context) => SettingSeller()
   };
 }

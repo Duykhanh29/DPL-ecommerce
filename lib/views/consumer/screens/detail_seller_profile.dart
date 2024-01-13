@@ -67,8 +67,8 @@ class _CategoryScreenState extends State<ProfileSeller> {
                         actions: [
                           IconButton(
                               onPressed: () async {
-                                await storageService
-                                    .downloadAndSaveImage(widget.shop.logo!);
+                                await storageService.downloadAndSaveImage(
+                                    widget.shop.logo!, context);
                               },
                               icon: Icon(Icons.download_outlined))
                         ],

@@ -1,26 +1,27 @@
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
 import 'package:dpl_ecommerce/models/user.dart';
+import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/models/voucher_for_user.dart';
 import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
 import 'package:flutter/material.dart';
 
 class VoucherForUserViewModel extends ChangeNotifier {
-  FirestoreDatabase firestoreDatabase = FirestoreDatabase();
+  // FirestoreDatabase firestoreDatabase = FirestoreDatabase();
 
-  AuthViewModel? _authViewModel;
-  UserModel? userModel;
-  VoucherForUser? voucherForUser;
-  Stream<void> _voucherForUser() async* {
-    if (userModel != null) {
-      firestoreDatabase.getListVoucherForUser(userModel!.id!);
-      notifyListeners();
-    }
-  }
+  // AuthViewModel? _authViewModel;
+  // UserModel? userModel;
+  // VoucherForUser? voucherForUser;
+  // Stream<void> _voucherForUser() async* {
+  //   if (userModel != null) {
+  //     firestoreDatabase.getListVoucherForUser(userModel!.id!);
+  //     notifyListeners();
+  //   }
+  // }
 
-  VoucherForUserViewModel(this._authViewModel) {
-    userModel = _authViewModel!.currentUser; // _auth null here
-    _voucherForUser();
-  }
+  // VoucherForUserViewModel(this._authViewModel) {
+  //   userModel = _authViewModel!.currentUser; // _auth null here
+  //   _voucherForUser();
+  // }
 
   // final VoucherForUser voucherForUser =
   //     VoucherForUser(userID: "userID01", vouchers: [
@@ -37,17 +38,28 @@ class VoucherForUserViewModel extends ChangeNotifier {
   //   "voucher11",
   //   "voucher12"
   // ]);
-  void addVoucherForUser(String voucherID) {
-    if (!voucherForUser!.vouchers!.contains(voucherID)) {
-      voucherForUser!.vouchers!.add(voucherID);
-      notifyListeners();
-    }
+  List<Voucher> list = [];
+  void setList(List<Voucher> listVocuher) {
+    list = listVocuher;
+    notifyListeners();
   }
 
-  bool isSaved(String voucherID) {
-    if (voucherForUser!.vouchers!.contains(voucherID)) {
-      return true;
-    }
-    return false;
+  void addNewVoucher(Voucher voucher) {
+    list.add(voucher);
+    notifyListeners();
   }
+
+  // void addVoucherForUser(String voucherID) {
+  //   if (!voucherForUser!.vouchers!.contains(voucherID)) {
+  //     voucherForUser!.vouchers!.add(voucherID);
+  //     notifyListeners();
+  //   }
+  // }
+
+  // bool isSaved(String voucherID) {
+  //   if (voucherForUser!.vouchers!.contains(voucherID)) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 }

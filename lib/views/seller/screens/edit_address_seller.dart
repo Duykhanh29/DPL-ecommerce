@@ -142,7 +142,7 @@ class _EditAddressSellerState extends State<EditAddressSeller> {
         name: name,
         number: homeNumber,
         ward: _selected_ward);
-    await userRepo.updateAddress(addressInfor, user);
+    await userRepo.updateAddressForSeller(addressInfor, user.id!);
   }
 
   void onPressRegFail() {
@@ -182,7 +182,7 @@ class _EditAddressSellerState extends State<EditAddressSeller> {
     _wardController.text = widget.addressInfor.ward!.name!;
     _countryController.text = widget.addressInfor.country ?? "";
     _homeNumberController.text = widget.addressInfor.number ?? "";
-    _nameController.text = widget.addressInfor.name!;
+    _nameController.text = widget.addressInfor.name ?? "";
     setState(() {});
   }
 

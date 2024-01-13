@@ -129,6 +129,18 @@ class CommondMethods {
         result.add(voucher);
       }
     }
+    return result;
+  }
+
+  static String? getVoucherForUserByProduct(
+      VoucherForUser voucher, List<Voucher> list) {
+    for (var voucherID in voucher.vouchers!) {
+      for (var voucher in list) {
+        if (voucherID == voucher.id) {
+          return voucherID;
+        }
+      }
+    }
   }
 
   // category

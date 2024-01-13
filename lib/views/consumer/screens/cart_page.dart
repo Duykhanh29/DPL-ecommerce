@@ -13,11 +13,13 @@ import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/cart.dart';
 import 'package:dpl_ecommerce/models/order_model.dart' as orderModel;
 import 'package:dpl_ecommerce/models/ordering_product.dart';
+import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/product_in_cart_model.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/cart_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_in_cart_repo.dart';
+import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/common/common_methods.dart';
@@ -143,16 +145,26 @@ class _CartPageState extends State<CartPage> {
                       List<String> listProductInCartID = [];
                       for (var element in provider.list) {
                         listProductInCartID.add(element.id!);
+                        String productID = element.productID!;
+                        Product? product =
+                            await ProductRepo().getProductByID(productID);
+                        if (product!.availableQuantity! < element.quantity) {
+                          break;
+                        }
                         int realCost = element.cost;
                         if (element.voucherID != null) {
                           Voucher? voucher = await voucherRepo
                               .getVoucherByID(element.voucherID!);
-                          if (voucher != null) {
+                          if (voucher != null &&
+                              voucher.expDate!.compareTo(
+                                      Timestamp.fromDate(DateTime.now())) >
+                                  0) {
                             if (voucher.discountAmount != null) {
                               realCost = realCost - voucher.discountAmount!;
                             } else {
                               realCost = realCost -
-                                  (realCost * voucher.discountPercent!).toInt();
+                                  (realCost * voucher.discountPercent! / 100)
+                                      .toInt();
                             }
                           }
                         }
@@ -241,7 +253,7 @@ class _CartPageState extends State<CartPage> {
           Consumer<CartViewModel>(
             builder: (context, value, child) => _buildShipping(
               context,
-              shippingLabel: LangText(context: context).getLocal()!.save_ucf,
+              shippingLabel: LangText(context: context).getLocal()!.saving_ucf,
               priceLabel: "${provider.savingCost}",
             ),
           ),

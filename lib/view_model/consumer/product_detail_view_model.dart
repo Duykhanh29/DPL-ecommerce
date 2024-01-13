@@ -7,10 +7,10 @@ class ProductDetailViewModel extends ChangeNotifier {
   String? type;
   String? size;
   List<String>? voucherIDs;
-  // void addNewVoucher(String voucherID) {
-  //   voucherIDs!.add(voucherID);
-  //   notifyListeners();
-  // }
+  void addNewVoucher(String voucherID) {
+    voucherIDs!.add(voucherID);
+    notifyListeners();
+  }
 
   void reset() {
     choseNumber = 1;

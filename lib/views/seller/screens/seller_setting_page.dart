@@ -8,6 +8,7 @@ import 'package:dpl_ecommerce/customs/custom_photo_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_form_field.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/models/seller_infor.dart';
+import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
@@ -40,101 +41,110 @@ class ProfileSettingSellerScreen extends StatelessWidget {
             .show(),
         body: Padding(
           padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 5.h),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              SizedBox(
-                height: 100.h,
-                width: 100.w,
-                child: Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    Consumer<UserViewModel>(builder: (context, value, child) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) {
-                              return Scaffold(
-                                appBar: AppBar(
-                                  leading: CustomArrayBackWidget(),
-                                  actions: [
-                                    value.userModel!.avatar != null
-                                        ? IconButton(
-                                            onPressed: () async {
-                                              await storageService
-                                                  .downloadAndSaveImage(
-                                                      value.userModel!.avatar!);
-                                            },
-                                            icon: Icon(
-                                              Icons.download_outlined,
-                                              size: 20.h,
-                                            ))
-                                        : Container()
-                                  ],
+          child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                SizedBox(
+                  height: 40.h,
+                ),
+                SizedBox(
+                  height: 100.h,
+                  width: 100.w,
+                  child: Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      Consumer<UserViewModel>(builder: (context, value, child) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) {
+                                return Scaffold(
+                                  appBar: AppBar(
+                                    leading: CustomArrayBackWidget(),
+                                    actions: [
+                                      value.userModel!.avatar != null
+                                          ? IconButton(
+                                              onPressed: () async {
+                                                await storageService
+                                                    .downloadAndSaveImage(
+                                                        value
+                                                            .userModel!.avatar!,
+                                                        context);
+                                              },
+                                              icon: Icon(
+                                                Icons.download_outlined,
+                                                size: 20.h,
+                                              ))
+                                          : Container()
+                                    ],
+                                  ),
+                                  body: CustomPhotoView(
+                                      urlImage: value.userModel!.avatar),
+                                );
+                              },
+                            ));
+                          },
+                          child: value.userModel!.avatar != null
+                              ? CircleAvatar(
+                                  radius: 60.r,
+                                  backgroundImage:
+                                      NetworkImage(value.userModel!.avatar!),
+                                )
+                              : CircleAvatar(
+                                  radius: 60.r,
+                                  backgroundImage:
+                                      AssetImage(ImageData.circelAvatar),
                                 ),
-                                body: CustomPhotoView(
-                                    urlImage: value.userModel!.avatar),
-                              );
-                            },
-                          ));
-                        },
-                        child: value.userModel!.avatar != null
-                            ? CircleAvatar(
-                                radius: 60.r,
-                                backgroundImage:
-                                    NetworkImage(value.userModel!.avatar!),
-                              )
-                            : CircleAvatar(
-                                radius: 60.r,
-                                backgroundImage:
-                                    AssetImage(ImageData.circelAvatar),
-                              ),
-                      );
-                    }),
-                    InkWell(
-                      onTap: () async {
-                        final result = await FilePicker.platform.pickFiles(
-                            allowMultiple: false,
-                            type: FileType.custom,
-                            allowedExtensions: ['png', 'jpg']);
-                        if (result != null) {
-                          final path = result.files.single.path;
-                          final fileName = result.files.single.name;
-                          // String type = 'images';
-                          bool isSuccess = await storageService.uploadFile(
-                            filePath: path!,
-                            fileName: fileName,
-                            secondRef: user.id!,
-                            rootRef: 'avatars',
-                          );
-                          if (isSuccess) {
-                            String url = await storageService.downloadURL(
-                              filePath: path,
+                        );
+                      }),
+                      InkWell(
+                        onTap: () async {
+                          final result = await FilePicker.platform.pickFiles(
+                              allowMultiple: false,
+                              type: FileType.custom,
+                              allowedExtensions: ['png', 'jpg']);
+                          if (result != null) {
+                            final path = result.files.single.path;
+                            final fileName = result.files.single.name;
+                            // String type = 'images';
+                            bool isSuccess = await storageService.uploadFile(
+                              filePath: path!,
                               fileName: fileName,
                               secondRef: user.id!,
                               rootRef: 'avatars',
                             );
-                            await userRepo.updateAvatar(
-                                uid: user.id!, avatar: url);
+                            if (isSuccess) {
+                              String url = await storageService.downloadURL(
+                                filePath: path,
+                                fileName: fileName,
+                                secondRef: user.id!,
+                                rootRef: 'avatars',
+                              );
+                              await userRepo.updateAvatar(
+                                  uid: user.id!, avatar: url);
+                              userProvider.updateAvatar(url);
+                            }
                           }
-                        }
-                      },
-                      child: Container(
-                        decoration: const BoxDecoration(
-                            shape: BoxShape.circle, color: Colors.blueAccent),
-                        padding: EdgeInsets.all(2.h),
-                        child: Icon(
-                          Icons.edit,
-                          size: 20.h,
+                        },
+                        child: Container(
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle, color: Colors.blueAccent),
+                          padding: EdgeInsets.all(2.h),
+                          child: Icon(
+                            Icons.edit,
+                            size: 20.h,
+                          ),
                         ),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 90.h),
-              BuildForm(),
-            ],
+                SizedBox(height: 90.h),
+                BuildForm(),
+              ],
+            ),
           ),
         ),
       ),
@@ -151,7 +161,7 @@ class BuildForm extends StatefulWidget {
 
 class _BuildFormState extends State<BuildForm> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  UserRepo userRepo = UserRepo();
   // @override
   // void initState() {
   //   // TODO: implement initState
@@ -308,30 +318,39 @@ class _BuildFormState extends State<BuildForm> {
   /// Section Widget
   Widget _buildSaveChangeButton(
       BuildContext context, UserViewModel userProvider) {
+    final userProvider = Provider.of<UserViewModel>(context, listen: false);
+    print("Check test");
+    final user = userProvider.currentUser;
     final size = MediaQuery.of(context).size;
     return Container(
       height: size.height * 0.06,
       // decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
       width: size.width * 0.9,
-      padding: EdgeInsets.only(
-        right: 10.w,
-        left: 10.w,
-      ),
+      // padding: EdgeInsets.only(
+      //   right: 10.w,
+      //   left: 10.w,
+      // ),
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
           var isValid = _formKey.currentState!.validate();
           if (isValid) {
-            print("New email: ${userProvider.emailEditTextController!.text}");
-            print(
-                "New firstName: ${userProvider.firstNameEditTextController!.text}");
-            print(
-                "New lastName: ${userProvider.lastNameEditTextController!.text}");
-            print("New phone: ${userProvider.phoneEditTextController!.text}");
+            // print("New email: ${userProvider.emailEditTextController!.text}");
+            // print(
+            //     "New firstName: ${userProvider.firstNameEditTextController!.text}");
+            // print(
+            //     "New lastName: ${userProvider.lastNameEditTextController!.text}");
+            // print("New phone: ${userProvider.phoneEditTextController!.text}");
             userProvider.updateInfor(
-                email: userProvider.emailEditTextController!.text,
-                firstName: userProvider.firstNameEditTextController!.text,
-                lastName: userProvider.lastNameEditTextController!.text,
-                phone: userProvider.phoneEditTextController!.text);
+                email: userProvider.emailEditTextController.text,
+                firstName: userProvider.firstNameEditTextController.text,
+                lastName: userProvider.lastNameEditTextController.text,
+                phone: userProvider.phoneEditTextController.text);
+            //     UserModel userModel=UserModel(avatar: );
+            await userRepo.updateUserInfor(
+                userModel: user!,
+                email: userProvider.emailEditTextController.text,
+                name: userProvider.firstNameEditTextController.text,
+                phone: userProvider.phoneEditTextController.text);
             Navigator.of(context).pop();
           } else {
             print("object");
@@ -348,7 +367,7 @@ class _BuildFormState extends State<BuildForm> {
   Widget buildTaxPaper(BuildContext context, SellerInfor sellerInfor) {
     return Container(
       // height: MediaQuery.of(context).size.height * 0.24,
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+      padding: EdgeInsets.symmetric(vertical: 5.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -361,7 +380,7 @@ class _BuildFormState extends State<BuildForm> {
                     fontSize: 14.sp)),
           ),
           Container(
-              height: MediaQuery.of(context).size.height * 0.21,
+              height: MediaQuery.of(context).size.height * 0.24,
               width: MediaQuery.of(context).size.width * 0.9,
               // padding: EdgeInsets.symmetric(horizontal: 1),
               decoration: BoxDecoration(
@@ -380,8 +399,8 @@ class _BuildFormState extends State<BuildForm> {
                       fit: BoxFit.fill,
                     )
                   : Image.asset(
-                      ImageData.circelAvatar,
-                      fit: BoxFit.fill,
+                      ImageData.placeHolder,
+                      fit: BoxFit.contain,
                     )),
         ],
       ),

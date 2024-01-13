@@ -1,7 +1,9 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_elevate_button.dart';
+import 'package:dpl_ecommerce/helpers/date_helper.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/voucher_for_user_repo.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/consumer/voucher_for_user_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:flutter/material.dart';
@@ -73,11 +75,13 @@ class TicketData extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "${voucher!.discountPercent!} %",
+                voucher!.discountPercent != null
+                    ? "${voucher!.discountPercent!} %"
+                    : "${voucher!.discountAmount} VND",
                 style: theme.textTheme.bodyMedium,
               ),
               Text(
-                voucher!.expDate.toString(),
+                DateHelper.convertCommonDateTime(voucher!.expDate!),
                 style: theme.textTheme.bodySmall,
               )
             ],
@@ -87,36 +91,101 @@ class TicketData extends StatelessWidget {
         const SizedBox(
           width: 25,
         ),
-        Consumer<VoucherForUserViewModel>(
-          builder: (context, value, child) {
-            return Container(
-              width: MediaQuery.of(context).size.width * 0.15,
-              padding: const EdgeInsets.only(right: 8),
-              child: !value.isSaved(voucher!.id!)
-                  ? CustomElevatedButton(
+        StreamBuilder(
+          stream:
+              voucherForUserRepo.isCollectedVoucher(user!.id!, voucher!.id!),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Container();
+            } else {
+              if (snapshot.hasData) {
+                if (snapshot.data != null) {
+                  final isExist = snapshot.data;
+                  if (!isExist! || isExist == null) {
+                    return Container(
+                        width: MediaQuery.of(context).size.width * 0.15,
+                        padding: const EdgeInsets.only(right: 8),
+                        child: CustomElevatedButton(
+                          buttonStyle: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.redAccent)),
+                          text: LangText(context: context).getLocal()!.save_ucf,
+                          onPressed: () async {
+                            await voucherForUserRepo.updateVoucherForUser(
+                                userID: user.id!, voucherID: voucher!.id!);
+                            voucherForUserProvider.addNewVoucher(voucher!);
+                          },
+                        ));
+                  } else {
+                    return Container();
+                  }
+                } else {
+                  return Container(
+                      width: MediaQuery.of(context).size.width * 0.15,
+                      padding: const EdgeInsets.only(right: 8),
+                      child: CustomElevatedButton(
+                        buttonStyle: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Colors.redAccent)),
+                        text: LangText(context: context).getLocal()!.save_ucf,
+                        onPressed: () async {
+                          await voucherForUserRepo.updateVoucherForUser(
+                              userID: user.id!, voucherID: voucher!.id!);
+                          voucherForUserProvider.addNewVoucher(voucher!);
+                        },
+                      ));
+                  ;
+                }
+              } else {
+                return Container(
+                    width: MediaQuery.of(context).size.width * 0.15,
+                    padding: const EdgeInsets.only(right: 8),
+                    child: CustomElevatedButton(
                       buttonStyle: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
                               Colors.redAccent)),
-                      text: "Save",
-                      // width: MediaQuery.of(context).size.width * 0.02,
-                      // height: MediaQuery.of(context).size.height * 0.03,
+                      text: LangText(context: context).getLocal()!.save_ucf,
                       onPressed: () async {
-                        // save
-                        if (!value.isSaved(voucher!.id!)) {
-                          await voucherForUserRepo.updateVoucherForUser(
-                              userID: user!.id!, voucherID: voucher!.id!);
-                          voucherForUserProvider
-                              .addVoucherForUser(voucher!.id!);
-                        }
+                        await voucherForUserRepo.updateVoucherForUser(
+                            userID: user.id!, voucherID: voucher!.id!);
+                        voucherForUserProvider.addNewVoucher(voucher!);
                       },
-                    )
-                  : const SizedBox(
-                      height: 1,
-                      width: 1,
-                    ),
-            );
+                    ));
+              }
+            }
+            // return Container();
           },
-        )
+        ),
+        // Consumer<VoucherForUserViewModel>(
+        //   builder: (context, value, child) {
+        //     return Container(
+        //       width: MediaQuery.of(context).size.width * 0.15,
+        //       padding: const EdgeInsets.only(right: 8),
+        //       child: !value.isSaved(voucher!.id!)
+        //           ? CustomElevatedButton(
+        //               buttonStyle: ButtonStyle(
+        //                   backgroundColor: MaterialStateProperty.all<Color>(
+        //                       Colors.redAccent)),
+        //               text: LangText(context: context).getLocal()!.save_ucf,
+        //               // width: MediaQuery.of(context).size.width * 0.02,
+        //               // height: MediaQuery.of(context).size.height * 0.03,
+        //               onPressed: () async {
+        //                 // save
+        //                 if (!value.isSaved(voucher!.id!)) {
+        //                   await voucherForUserRepo.updateVoucherForUser(
+        //                       userID: user!.id!, voucherID: voucher!.id!);
+        //                   voucherForUserProvider
+        //                       .addVoucherForUser(voucher!.id!);   i am here
+        //                 }
+        //               },
+        //             )
+        //           : const SizedBox(
+        //               height: 1,
+        //               width: 1,
+        //             ),
+        //     );
+        //   },
+        // )
       ],
     );
   }

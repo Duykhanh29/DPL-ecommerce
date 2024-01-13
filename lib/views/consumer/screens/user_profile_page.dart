@@ -13,13 +13,16 @@ import 'package:dpl_ecommerce/views/consumer/screens/address_screen.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/change_language_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/favorite_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/profile_setting_page.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/ranking_screen.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/user_list_voucher.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/voucher_screen.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/wishlist_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UserProfilePage extends StatelessWidget {
   UserProfilePage({Key? key})
@@ -27,6 +30,105 @@ class UserProfilePage extends StatelessWidget {
           key: key,
         );
   UserRepo userRepo = UserRepo();
+  onPressLogout(context, AuthViewModel authProvider) async {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              contentPadding: EdgeInsets.only(
+                  top: 16.h, left: 2.w, right: 2.w, bottom: 12.h),
+              content: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                child: Text(
+                  AppLocalizations.of(context)!.are_you_sure_to_logout,
+                  maxLines: 3,
+                  style: TextStyle(color: MyTheme.font_grey, fontSize: 14.sp),
+                ),
+              ),
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(_);
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        padding: EdgeInsets.all(10.h),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey,
+                              offset: Offset(0.0, 1.0), //(x,y)
+                              blurRadius: 6.0,
+                            ),
+                          ],
+                          /*border: Border(
+                  top: BorderSide(color: MyTheme.light_grey,width: 1.0),
+                )*/
+                        ),
+                        child: Center(
+                          child: Text(
+                            AppLocalizations.of(context)!.cancel_ucf,
+                            style: TextStyle(color: MyTheme.medium_grey),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        // savePref();
+                        // AuthHelper().clearUserData();
+                        Navigator.pop(_);
+                        await authProvider.signOut();
+                        // Navigator.of(context, rootNavigator: true)
+                        //     .pushAndRemoveUntil(
+                        //   MaterialPageRoute(
+                        //     builder: (context) {
+                        //       // return NavigationScreen();
+                        //       return LoginScreen();
+                        //     },
+                        //   ),
+                        //   (route) => true,
+                        // );
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        padding: EdgeInsets.all(10.h),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.red,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey,
+                              offset: Offset(0.0, 1.0), //(x,y)
+                              blurRadius: 6.0,
+                            ),
+                          ],
+                          /*border: Border(
+                  top: BorderSide(color: MyTheme.light_grey,width: 1.0),
+                )*/
+                        ),
+                        child: Center(
+                          child: Text(
+                            AppLocalizations.of(context)!.confirm_ucf,
+                            style: TextStyle(color: MyTheme.white),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthViewModel>(context);
@@ -283,6 +385,10 @@ class UserProfilePage extends StatelessWidget {
                               ListTile(
                                   onTap: () {
                                     // go to raking page
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) => RankUser(),
+                                    ));
                                   },
                                   leading: SvgPicture.asset(
                                     "assets/images/ranking-star-solid.svg",
@@ -306,7 +412,11 @@ class UserProfilePage extends StatelessWidget {
                                     height: size.width * 0.08,
                                     child: InkWell(
                                       onTap: () {
-                                        // go to Languages page
+                                        // go to raking page
+                                        Navigator.of(context)
+                                            .push(MaterialPageRoute(
+                                          builder: (context) => RankUser(),
+                                        ));
                                       },
                                       child: Center(
                                         child: Icon(
@@ -320,9 +430,7 @@ class UserProfilePage extends StatelessWidget {
                                 height: 5.h,
                               ),
                               ListTile(
-                                  onTap: () {
-                                    // go to Languages page
-                                  },
+                                  onTap: () {},
                                   leading: Icon(
                                     Icons.star,
                                     size: 20.h,
@@ -344,7 +452,7 @@ class UserProfilePage extends StatelessWidget {
                                     height: size.width * 0.08,
                                     child: InkWell(
                                       onTap: () {
-                                        // go to Languages page
+                                        //
                                       },
                                       child: Center(
                                         child: Icon(
@@ -359,8 +467,7 @@ class UserProfilePage extends StatelessWidget {
                               ),
                               ListTile(
                                   onTap: () async {
-                                    // go to Languages page
-                                    await authProvider.signOut();
+                                    await onPressLogout(context, authProvider);
                                   },
                                   leading: Icon(
                                     Icons.logout_rounded,
@@ -386,9 +493,7 @@ class UserProfilePage extends StatelessWidget {
                                     width: size.width * 0.08,
                                     height: size.width * 0.08,
                                     child: InkWell(
-                                      onTap: () {
-                                        // go to Languages page
-                                      },
+                                      onTap: () {},
                                       child: Center(
                                         child: Icon(Icons.navigate_next,
                                             size: 20.h,

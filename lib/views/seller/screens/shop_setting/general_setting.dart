@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/city.dart';
@@ -17,8 +18,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class GeneralSetting extends StatefulWidget {
-  GeneralSetting({super.key});
-  // Shop shop;
+  GeneralSetting({super.key, required this.shopID});
+  String shopID;
 
   @override
   State<GeneralSetting> createState() => __GeneralSettingState();
@@ -53,40 +54,73 @@ class __GeneralSettingState extends State<GeneralSetting> {
   //   rating: 4.4,
   //   shopView: 120,
   // );
+  Shop? shop;
+  bool isLoading = true;
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  void reset() {
+    _nameController.clear();
+    _phoneController.clear();
+    _descriptionController.clear();
+    _image = null;
+    urlImage = null;
+    pickedFile = null;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> onRefresh() async {
+    reset();
+    await fetchData();
+  }
+
+  Future<void> fetchData() async {
+    shop = await shopRepo.getShopByID(widget.shopID);
+    isLoading = false;
+    _nameController.text = shop!.name ?? "";
+    _phoneController.text = shop!.contactPhone ?? "";
+    _descriptionController.text = shop!.shopDescription ?? "";
+    urlImage = shop!.logo;
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   File? _image;
   String? urlImage;
-  Future getImage(String shopID) async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+  XFile? pickedFile;
+  Future<void> pickImage() async {
+    pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      }
-    });
+    // setState(() {
+    if (pickedFile != null) {
+      _image = File(pickedFile!.path);
+    }
+    // });
+    setState(() {});
+  }
+
+  Future getImage(String shopID) async {
     bool isSuccess = await storageService.uploadFile(
       filePath: pickedFile!.path,
-      fileName: pickedFile.name,
+      fileName: pickedFile!.name,
       rootRef: 'shopLogos',
       secondRef: shopID,
     );
     if (isSuccess) {
       urlImage = await storageService.downloadURL(
-        filePath: pickedFile.path,
-        fileName: pickedFile.name,
+        filePath: pickedFile!.path,
+        fileName: pickedFile!.name,
         rootRef: 'shopLogos',
         secondRef: shopID,
       );
       setState(() {});
     }
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // fetchData();
   }
 
   @override
@@ -107,7 +141,8 @@ class __GeneralSettingState extends State<GeneralSetting> {
   @override
   Widget build(BuildContext context) {
     final shopProvider = Provider.of<ShopViewModel>(context);
-    final shop = shopProvider.shop;
+    // final shop = shopProvider.shop;
+
     return Scaffold(
       appBar: CustomAppBar(
               context: context,
@@ -115,142 +150,178 @@ class __GeneralSettingState extends State<GeneralSetting> {
               centerTitle: true)
           .show(),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buidck(
-                    name: shop!.name ?? "",
-                    hintname: LangText(context: context).getLocal()!.shop_name,
-                    namevalue: LangText(context: context).getLocal()!.shop_name,
-                    namctr: _nameController),
-                SizedBox(
-                  height: 20.h,
-                ),
-                Text(LangText(context: context).getLocal()!.shop_logo_ucf),
-                SizedBox(
-                  height: 10.h,
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    await getImage(shop.id!);
-                  },
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 50.h,
-                        width: MediaQuery.of(context).size.width * 0.7,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Color.fromARGB(110, 218, 218, 218),
-                            width: 2,
-                          ),
-                          color: Colors.white10,
-                          //color: Color.fromARGB(110, 218, 218, 218),
-                          borderRadius: BorderRadius.horizontal(
-                            left: Radius.circular(10.r),
-                          ),
-                        ),
-                        //child: Center(child: Text("Choose file")),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 10.w,
-                            ),
-                            Text(
-                              LangText(context: context)
+        child: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : shop == null
+                ? Container()
+                : Padding(
+                    padding: EdgeInsets.all(15.h),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buidck(
+                              name: LangText(context: context)
                                   .getLocal()!
-                                  .choose_file,
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        height: 50.h,
-                        width: 75.w,
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(110, 218, 218, 218),
-                          borderRadius: BorderRadius.horizontal(
-                            right: Radius.circular(10.r),
+                                  .shop_name,
+                              hintname: LangText(context: context)
+                                  .getLocal()!
+                                  .shop_name,
+                              namevalue: LangText(context: context)
+                                  .getLocal()!
+                                  .shop_name,
+                              namctr: _nameController),
+                          SizedBox(
+                            height: 20.h,
                           ),
-                        ),
-                        child: Center(
-                            child: Text(
-                                LangText(context: context).getLocal()!.brower)),
+                          Text(LangText(context: context)
+                              .getLocal()!
+                              .shop_logo_ucf),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              // await getImage(shop!.id!);
+                              await pickImage();
+                            },
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 50.h,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.7,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Color.fromARGB(110, 218, 218, 218),
+                                      width: 2,
+                                    ),
+                                    color: Colors.white10,
+                                    //color: Color.fromARGB(110, 218, 218, 218),
+                                    borderRadius: BorderRadius.horizontal(
+                                      left: Radius.circular(10.r),
+                                    ),
+                                  ),
+                                  //child: Center(child: Text("Choose file")),
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 10.w,
+                                      ),
+                                      Text(
+                                        LangText(context: context)
+                                            .getLocal()!
+                                            .choose_file,
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  height: 50.h,
+                                  width: 75.w,
+                                  decoration: BoxDecoration(
+                                    color: Color.fromARGB(110, 218, 218, 218),
+                                    borderRadius: BorderRadius.horizontal(
+                                      right: Radius.circular(10.r),
+                                    ),
+                                  ),
+                                  child: Center(
+                                      child: Text(LangText(context: context)
+                                          .getLocal()!
+                                          .brower)),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          (_image == null
+                              ? urlImage != null
+                                  ? CachedNetworkImage(
+                                      imageUrl: urlImage!,
+                                      imageBuilder: (context, imageProvider) {
+                                        return Container(
+                                          height: 90.h,
+                                          width: 90.h,
+                                          padding: EdgeInsets.all(2.h),
+                                          decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                  image: imageProvider)),
+                                        );
+                                      },
+                                      placeholder: (context, url) => Center(
+                                          child: SizedBox(
+                                              width: 30.h,
+                                              height: 30.h,
+                                              child:
+                                                  const CircularProgressIndicator())),
+                                      errorWidget: (context, url, error) =>
+                                          Container(
+                                              alignment: Alignment.centerLeft,
+                                              height: 90.h,
+                                              width: 90.h,
+                                              decoration: BoxDecoration(
+                                                  // shape: BoxShape.circle,
+                                                  color: MyTheme.green_light),
+                                              child: Center(
+                                                child: Icon(
+                                                  Icons.error,
+                                                  size: 30.h,
+                                                ),
+                                              )),
+                                    )
+                                  : const Icon(
+                                      Icons.add_a_photo_outlined,
+                                      size: 80,
+                                      color: Colors.black38,
+                                    )
+                              : Image.file(
+                                  _image!,
+                                  height: 90.h,
+                                  width: 90.h,
+                                )),
+                          SizedBox(
+                            height: 20.h,
+                          ),
+                          _buidck(
+                              name: LangText(context: context)
+                                  .getLocal()!
+                                  .phone_number_ucf,
+                              hintname: LangText(context: context)
+                                  .getLocal()!
+                                  .phone_number_ucf,
+                              namevalue: LangText(context: context)
+                                  .getLocal()!
+                                  .phone_number_ucf,
+                              namctr: _phoneController,
+                              textInputType: TextInputType.phone),
+                          SizedBox(
+                            height: 20.h,
+                          ),
+                          _buidck(
+                              name: LangText(context: context)
+                                  .getLocal()!
+                                  .description_ucf,
+                              hintname: LangText(context: context)
+                                  .getLocal()!
+                                  .description_ucf,
+                              namevalue: LangText(context: context)
+                                  .getLocal()!
+                                  .description_ucf,
+                              namctr: _descriptionController,
+                              maxLines: 5),
+                          SizedBox(
+                            height: 20.h,
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 10.h,
-                ),
-                urlImage != null
-                    ? CachedNetworkImage(
-                        imageUrl: urlImage!,
-                        imageBuilder: (context, imageProvider) {
-                          return Container(
-                            height: 90.h,
-                            width: 90.h,
-                            padding: EdgeInsets.all(2.h),
-                            decoration: BoxDecoration(
-                                image: DecorationImage(image: imageProvider)),
-                          );
-                        },
-                        placeholder: (context, url) => Center(
-                            child: SizedBox(
-                                width: 30.h,
-                                height: 30.h,
-                                child: const CircularProgressIndicator())),
-                        errorWidget: (context, url, error) => Center(
-                            child: Icon(
-                          Icons.error,
-                          size: 10.h,
-                        )),
-                      )
-                    : (_image == null
-                        ? const Icon(
-                            Icons.add_a_photo_outlined,
-                            size: 80,
-                            color: Colors.black38,
-                          )
-                        : Image.file(
-                            _image!,
-                            height: 90.h,
-                            width: 90.h,
-                          )),
-                SizedBox(
-                  height: 20.h,
-                ),
-                _buidck(
-                    name: shop.contactPhone ?? "",
-                    hintname:
-                        LangText(context: context).getLocal()!.phone_number_ucf,
-                    namevalue:
-                        LangText(context: context).getLocal()!.phone_number_ucf,
-                    namctr: _phoneController,
-                    textInputType: TextInputType.phone),
-                SizedBox(
-                  height: 20.h,
-                ),
-                _buidck(
-                    name: shop.shopDescription ?? "",
-                    hintname:
-                        LangText(context: context).getLocal()!.description_ucf,
-                    namevalue:
-                        LangText(context: context).getLocal()!.description_ucf,
-                    namctr: _descriptionController,
-                    maxLines: 5),
-                SizedBox(
-                  height: 20.h,
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
       bottomNavigationBar: Container(
         height: 40.h,
@@ -259,16 +330,18 @@ class __GeneralSettingState extends State<GeneralSetting> {
         child: ElevatedButton(
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
+              await getImage(shop!.id!);
               await shopRepo.updateShop(
-                  shopID: shop.id!,
+                  shopID: shop!.id!,
                   logo: urlImage,
                   contactPhone: _phoneController.text,
                   name: _nameController.text,
                   shopDescription: _descriptionController.text);
-              Shop? newShop = await shopRepo.getShopByID(shop.id!);
+              Shop? newShop = await shopRepo.getShopByID(shop!.id!);
               if (newShop != null) {
                 shopProvider.setShopInfo(newShop);
               }
+              await onRefresh();
             }
           },
           child: Text(
@@ -291,7 +364,7 @@ class __GeneralSettingState extends State<GeneralSetting> {
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Text(name),
+          Text(name),
           SizedBox(
             height: 10.h,
           ),

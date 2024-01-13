@@ -28,7 +28,7 @@ class SliderItemWidget extends StatelessWidget {
               ),
               body: CustomPhotoView(
                 function: () async {
-                  await storageService.downloadAndSaveImage(urlImage!);
+                  await storageService.downloadAndSaveImage(urlImage!, context);
                 },
                 height: MediaQuery.of(context).size.height * 0.9,
                 width: MediaQuery.of(context).size.width * 0.9,

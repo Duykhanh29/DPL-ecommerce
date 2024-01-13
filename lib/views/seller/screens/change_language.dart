@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/app_config.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/models/language.dart';
 import 'package:dpl_ecommerce/repositories/language_repo.dart';
@@ -8,14 +9,46 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LanguagePageSellerSide extends StatelessWidget {
+class LanguagePageSellerSide extends StatefulWidget {
   LanguagePageSellerSide({super.key});
+
+  @override
+  State<LanguagePageSellerSide> createState() => _LanguagePageSellerSideState();
+}
+
+class _LanguagePageSellerSideState extends State<LanguagePageSellerSide> {
+  int index = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    String savedLanguage =
+        _prefs.getString('app_language') ?? AppConfig.defaultLanguage;
+    if (savedLanguage == 'vi') {
+      index = 1;
+    }
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   // List<Language> list = LanguageRepo().list;
   @override
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageViewModel>(context);
     final listLanguage = languageProvider.list;
+    final locale = Provider.of<LocaleProvider>(context);
+    if (index == 1) {
+      locale.setLocale(listLanguage[1].code!);
+      languageProvider.changeLanguage(index);
+    }
     return Scaffold(
       appBar: AppBar(
         leading: CustomArrayBackWidget(),

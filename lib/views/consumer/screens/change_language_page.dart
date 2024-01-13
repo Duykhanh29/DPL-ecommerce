@@ -10,9 +10,36 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LanguagePage extends StatelessWidget {
+class LanguagePage extends StatefulWidget {
   LanguagePage({super.key});
+
+  @override
+  State<LanguagePage> createState() => _LanguagePageState();
+}
+
+class _LanguagePageState extends State<LanguagePage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchData();
+  }
+
+  int currentIndex = 0;
+
+  Future<void> fetchData() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? laguageCode = preferences.getString('app_language');
+    if (laguageCode == null || laguageCode == 'en') {
+      currentIndex = 0;
+    } else {
+      currentIndex = 1;
+    }
+    setState(() {});
+  }
+
   // List<Language> list = LanguageRepo().list;
   @override
   Widget build(BuildContext context) {
@@ -29,9 +56,9 @@ class LanguagePage extends StatelessWidget {
           child: ListView.builder(
             itemBuilder: (context, index) {
               return LanguageItem(
-                language: listLanguage[index],
-                index: index,
-              );
+                  language: listLanguage[index],
+                  index: index,
+                  currentIndex: currentIndex);
             },
             itemCount: listLanguage.length,
           )),
@@ -40,17 +67,22 @@ class LanguagePage extends StatelessWidget {
 }
 
 class LanguageItem extends StatelessWidget {
-  LanguageItem({super.key, required this.language, required this.index});
+  LanguageItem(
+      {super.key,
+      required this.language,
+      required this.index,
+      required this.currentIndex});
   Language language;
   int index;
+  int currentIndex;
   @override
   Widget build(BuildContext context) {
     final locale = Provider.of<LocaleProvider>(context);
     final languageProvider = Provider.of<LanguageViewModel>(context);
     return ListTile(
-      onTap: () {
+      onTap: () async {
         languageProvider.changeLanguage(index);
-        locale.setLocale(language.code!);
+        await locale.setLocale(language.code!);
       },
       leading: Container(
         height: 60.h,
@@ -61,7 +93,7 @@ class LanguageItem extends StatelessWidget {
       title: Text(language.name!),
       trailing: Consumer<LanguageViewModel>(
         builder: (context, value, child) {
-          return value.currentLanguage.id == language.id
+          return currentIndex == index
               ? buildCheckContainer(true)
               : buildCheckContainer(false);
         },

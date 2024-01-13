@@ -39,6 +39,7 @@ import 'firebase_options.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,6 +61,7 @@ void main() async {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
@@ -251,7 +253,7 @@ class UserPageView extends StatelessWidget {
           create: (context) => ProductDetailViewModel(),
         ),
         ChangeNotifierProvider(
-          create: (context) => VoucherForUserViewModel(authProvider),
+          create: (context) => VoucherForUserViewModel(),
         ),
         ChangeNotifierProvider(
           create: (context) => ChatViewModel(),
@@ -308,6 +310,9 @@ class SellerPageView extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => LanguageViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => AddressViewModel(),
         ),
         // ChangeNotifierProvider(
         //   create: (context) => CartViewModel(),

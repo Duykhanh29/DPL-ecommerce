@@ -13,7 +13,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class VoucherApp extends StatefulWidget {
-  const VoucherApp({super.key});
+  VoucherApp({
+    super.key,
+  });
 
   @override
   State<VoucherApp> createState() => __VoucherAppState();
@@ -38,10 +40,10 @@ class __VoucherAppState extends State<VoucherApp> {
     super.initState();
   }
 
-  String tempShopID = "PkHVNq0E1ZnTUyRnqG4O";
-  Future<void> fetchData() async {
-    listVoucher = await voucherRepo.getListVoucherByShop(tempShopID);
-  }
+  // String tempShopID = "PkHVNq0E1ZnTUyRnqG4O";
+  // Future<void> fetchData() async {
+  //   listVoucher = await voucherRepo.getListVoucherByShop(widget.shopID);
+  // }
 
   showDialog() {
     ToastHelper.showDialog(

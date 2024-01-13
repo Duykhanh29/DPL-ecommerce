@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/cart_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/category_page.dart';
@@ -51,24 +52,24 @@ class _MainViewState extends State<MainView> {
         unselectedItemColor: Colors.black26,
         useLegacyColorScheme: false,
         backgroundColor: Color.fromARGB(255, 98, 170, 212),
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
+            icon: const Icon(Icons.home),
+            label: LangText(context: context).getLocal()!.home_ucf,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.category_sharp),
-            label: "Category",
+            icon: const Icon(Icons.category_sharp),
+            label: LangText(context: context).getLocal()!.categories_ucf,
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.cart),
-            label: "Order",
+            icon: const Icon(CupertinoIcons.cart),
+            label: LangText(context: context).getLocal()!.orders_ucf,
           ),
           BottomNavigationBarItem(
-            icon: Icon(
+            icon: const Icon(
               CupertinoIcons.person_alt_circle,
             ),
-            label: "Profile",
+            label: LangText(context: context).getLocal()!.profile_ucf,
           ),
         ],
         currentIndex: indexPage,

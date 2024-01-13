@@ -28,6 +28,12 @@ class ShopRepo {
         verificationForm: verificationForm);
   }
 
+  Future<void> updateRatingCountForShop(
+      {required String shopID, required double rating}) async {
+    await _shopFirestoreDB.updateRatingCountForShop(
+        shopID: shopID, rating: rating);
+  }
+
   Future<void> updateShop(
       {required String shopID,
       String? name,

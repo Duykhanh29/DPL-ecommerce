@@ -17,6 +17,7 @@ import 'package:dpl_ecommerce/customs/custom_text_form_field.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
 import 'package:dpl_ecommerce/helpers/show_modal_bottom_sheet.dart';
+import 'package:dpl_ecommerce/helpers/toast_helper.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/chat.dart';
 import 'package:dpl_ecommerce/models/favourite_product.dart';
@@ -29,6 +30,7 @@ import 'package:dpl_ecommerce/models/review.dart';
 import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
+import 'package:dpl_ecommerce/models/voucher_for_user.dart';
 import 'package:dpl_ecommerce/repositories/auth_repo.dart';
 import 'package:dpl_ecommerce/repositories/cart_repo.dart';
 import 'package:dpl_ecommerce/repositories/chat_repo.dart';
@@ -37,6 +39,7 @@ import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/repositories/review_repo.dart';
 import 'package:dpl_ecommerce/repositories/shop_repo.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
+import 'package:dpl_ecommerce/repositories/voucher_for_user_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/repositories/wishlist_repo.dart';
 import 'package:dpl_ecommerce/utils/common/common_caculated_methods.dart';
@@ -71,6 +74,7 @@ import 'package:dpl_ecommerce/views/consumer/screens/shop_profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -102,6 +106,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   List<Product>? listRelatedProduct;
   List<Product>? allProduct;
   Product? product;
+  VoucherForUser? voucherForUser;
   // repos
   ProductRepo productRepo = ProductRepo();
   VoucherRepo voucherRepo = VoucherRepo();
@@ -109,6 +114,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   UserRepo userRepo = UserRepo();
   CartRepo cartRepo = CartRepo();
   ChatRepo chatRepo = ChatRepo();
+  VoucherForUserRepo voucherForUserRepo = VoucherForUserRepo();
+  Future<void> getVoucherForUser(String uid) async {
+    voucherForUser = await voucherForUserRepo.getVoucher(uid);
+  }
 
   Shop? shop;
   UserModel? seller;
@@ -178,12 +187,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       isLoadingShopProduct = false;
       // });
     }
-    listVoucher =
-        await voucherRepo.getListVoucherByProduct(product!.id!).then((value) {
-      // setState(() {
-      isLoadingVoucher = false;
-      // });
-    });
+    listVoucher = await voucherRepo.getListVoucherByProduct(product!.id!);
+    // setState(() {
+    isLoadingVoucher = false;
 
     listRelatedProduct = await productRepo
         .getListRelatedProduct(product!.categoryID!)
@@ -373,6 +379,24 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   builder: (context, value, child) {
                     return ElevatedButton(
                         onPressed: () async {
+                          if (value.initialPurcharsingNumber >
+                              product!.availableQuantity!) {
+                            ToastHelper.showDialog(
+                                LangText(context: context)!
+                                    .getLocal()!
+                                    .exceed_current_inventory,
+                                gravity: ToastGravity.CENTER);
+
+                            Navigator.of(context).pop();
+                            return;
+                          }
+                          await getVoucherForUser(userID);
+                          String? voucherID;
+                          if (voucherForUser != null) {
+                            voucherID =
+                                CommondMethods.getVoucherForUserByProduct(
+                                    voucherForUser!, listVoucher!);
+                          }
                           int savingCost = 0;
                           // if (value.voucherIDs != null) {
                           //   Voucher? voucher = CommondMethods.getVoucherFromID(
@@ -383,16 +407,13 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           //             voucher, product!.price!);
                           //   }
                           // }
-                          if (value.voucherIDs != null) {
-                            if (value.voucherIDs!.isNotEmpty) {
-                              Voucher? voucher =
-                                  CommondMethods.getVoucherFromID(
-                                      listVoucher!, value.voucherIDs![0]);
-                              if (voucher != null) {
-                                savingCost =
-                                    CommonCaculatedMethods.caculateSavignCost(
-                                        voucher, product!.price!);
-                              }
+                          if (voucherID != null) {
+                            Voucher? voucher = CommondMethods.getVoucherFromID(
+                                listVoucher!, voucherID);
+                            if (voucher != null) {
+                              savingCost =
+                                  CommonCaculatedMethods.caculateSavignCost(
+                                      voucher, product!.price!);
                             }
                           }
                           OrderingProduct orderingProduct = OrderingProduct(
@@ -415,9 +436,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                       product!.types!.isNotEmpty
                                   ? (value.type ?? product!.types![0])
                                   : null,
-                              voucherID: value.voucherIDs != null
-                                  ? value.voucherIDs![0]
-                                  : null);
+                              voucherID: voucherID);
                           orderModel.Order order = orderModel.Order(
                             orderingProductsID: [orderingProduct],
                             totalProduct: 1,
@@ -575,7 +594,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               padding: EdgeInsets.only(left: 16.h),
                               child: Row(
                                 children: [
-                                  _buildButton(context),
+                                  // _buildButton(context),
                                   Padding(
                                     padding: EdgeInsets.only(
                                       left: 8.h,
@@ -593,7 +612,23 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           )
                         },
                         SizedBox(height: 10.h),
-                        _buildProductPrices(),
+                        // _buildProductPrices(),
+                        Padding(
+                          padding: EdgeInsets.only(left: 16.h),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                product != null
+                                    ? "${product!.price!} VND"
+                                    : "...",
+                                style: theme.textTheme.bodyLarge!.copyWith(
+                                    // decoration: TextDecoration.lineThrough,c
+                                    color: MyTheme.orange900),
+                              ),
+                            ],
+                          ),
+                        ),
                         SizedBox(height: 18.h),
 
                         if (product!.sizes != null) ...{
@@ -1083,14 +1118,15 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               //     child: Text("See shop"))
               CustomOutlinedButton(
                 text: LangText(context: context).getLocal()!.see_shop,
-                width: 90.w,
+                width: 120.w,
+                // margin: EdgeInsets.symmetric(horizontal: 5.w),
                 height: 40.h,
                 onPressed: () async {
                   // go to shop profile
                   await shopRepo.updateShopView(shop.id!);
                   // ignore: use_build_context_synchronously
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ShopProfile(shop: shop),
+                    builder: (context) => ShopProfile(shopID: shop.id!),
                   ));
                 },
               ),
@@ -1227,8 +1263,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             decoration: AppDecoration.fillOnPrimaryContainer,
             child: Divider(),
           ),
-          StreamBuilder<List<Review>?>(
-            stream: firestoreDatabase.getAllReviewByProduct(product!.id!),
+          FutureBuilder<List<Review>?>(
+            future: reviewRepo.getListReviewByProduct(product.id!),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 print("object empty");
@@ -1241,7 +1277,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 if (snapshot.data != null && snapshot.data!.isNotEmpty) {
                   List<Review>? list = snapshot.data;
                   return Container(
-                    height: 80.h,
+                    // height: 80.h,
                     child: Column(
                       children: [
                         ReviewViewWidget(review: list!.last),
@@ -1249,7 +1285,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           _buildViewAllReviews(context,
                               viewAllReviewsText:
                                   "${LangText(context: context).getLocal()!.view_more_ucf} ${product.reviewIDs!.length}",
-                              list: list!)
+                              list: list)
                         },
                       ],
                     ),
@@ -1640,21 +1676,25 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       builder: (context, value, child) {
                         return ElevatedButton(
                             onPressed: () async {
-                              // ProductInCartModel productInCartModel =
-                              //     ProductInCartModel(
-                              //         cost: product!.price!,
-                              //         quantity: value.choseNumber,
-                              //         color: value.color,
-                              //         currencyID: "currencyID01",
-                              //         productID: product!.id,
-                              //         productImage: product!.images![0],
-                              //         productName: product!.name!,
-                              //         voucherID: "voucherID01",
-                              //         userID: "userID01",
-                              //         size: value.size,
-                              //         createdAt:
-                              //             Timestamp.fromDate(DateTime.now()),
-                              //         type: value.type);
+                              if (value.choseNumber >
+                                  product!.availableQuantity!) {
+                                ToastHelper.showDialog(
+                                    LangText(context: context)!
+                                        .getLocal()!
+                                        .exceed_current_inventory,
+                                    gravity: ToastGravity.CENTER);
+
+                                Navigator.of(context).pop();
+                                return;
+                              }
+                              await getVoucherForUser(userModel!.id!);
+                              String? voucherID;
+                              if (voucherForUser != null) {
+                                voucherID =
+                                    CommondMethods.getVoucherForUserByProduct(
+                                        voucherForUser!, listVoucher!);
+                              }
+
                               ProductInCartModel productInCartModel =
                                   ProductInCartModel(
                                       cost: product!.price!,
@@ -1667,9 +1707,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                       productID: product!.id,
                                       productImage: product!.images![0],
                                       productName: product!.name!,
-                                      voucherID: value.voucherIDs != null
-                                          ? value.voucherIDs![0]
-                                          : null,
+                                      voucherID: voucherID,
                                       userID: userModel!.id!,
                                       size: product!.sizes != null &&
                                               product!.sizes!.isNotEmpty
@@ -1683,10 +1721,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                           : null);
                               cartProvider.addToCart(productInCartModel);
                               int savingCost = 0;
-                              if (value.voucherIDs != null) {
+                              if (voucherID != null) {
                                 Voucher? voucher =
                                     CommondMethods.getVoucherFromID(
-                                        listVoucher!, value.voucherIDs![0]);
+                                        listVoucher!, voucherID);
                                 if (voucher != null) {
                                   savingCost =
                                       CommonCaculatedMethods.caculateSavignCost(
@@ -1794,6 +1832,45 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           _buildAddToCart(context),
           _buildBuyNow(context),
         ],
+      ),
+    );
+  }
+
+  Widget buildPriceRow(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: EdgeInsets.only(left: 16.h),
+        child: Row(
+          children: [
+            Text(
+              product != null ? product!.price!.toString() : "...",
+              style: theme.textTheme.titleSmall,
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                left: 4.h,
+                top: 3.h,
+              ),
+              child: Text(
+                "400000VND",
+                style: theme.textTheme.labelMedium!.copyWith(
+                  decoration: TextDecoration.lineThrough,
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                left: 4.h,
+                top: 3.h,
+              ),
+              child: Text(
+                "15% off",
+                style: CustomTextStyles.labelMediumOrange900,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

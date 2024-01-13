@@ -77,7 +77,7 @@ class _FlashDealListState extends State<FlashDealList> {
                           IconButton(
                               onPressed: () async {
                                 await storageService.downloadAndSaveImage(
-                                    widget.flashSale!.coverImage!);
+                                    widget.flashSale!.coverImage!, context);
                               },
                               icon: Icon(Icons.download_outlined))
                         ],

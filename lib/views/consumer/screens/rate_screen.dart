@@ -2,8 +2,11 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/models/product.dart';
+import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/repositories/order_repo.dart';
 import 'package:dpl_ecommerce/repositories/review_repo.dart';
+import 'package:dpl_ecommerce/repositories/shop_repo.dart';
 import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:flutter/material.dart';
@@ -124,18 +127,22 @@ class CommentSection extends StatelessWidget {
               color: Colors.black12, borderRadius: BorderRadius.circular(14)),
           child: Consumer<ReviewViewModel>(
             builder: (context, provider, child) {
-              return TextFormField(
-                controller: provider.reviewTextEditingController,
-                decoration: InputDecoration(
-                  hintText: LangText(context: context)
-                      .getLocal()!
-                      .write_about_this_product,
-                  hintStyle: TextStyle(color: Colors.black87, fontSize: 16.sp),
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 15.w),
+                child: TextFormField(
+                  controller: provider.reviewTextEditingController,
+                  decoration: InputDecoration(
+                    hintText: LangText(context: context)
+                        .getLocal()!
+                        .write_about_this_product,
+                    hintStyle:
+                        TextStyle(color: Colors.black87, fontSize: 16.sp),
+                  ),
+                  maxLines: 4,
+                  onChanged: (value) {
+                    provider.onTextChanged(value);
+                  },
                 ),
-                maxLines: 4,
-                onChanged: (value) {
-                  provider.onTextChanged(value);
-                },
               );
             },
           ),
@@ -164,7 +171,10 @@ class _ImageUploadSectionState extends State<ImageUploadSection> {
   // ProductRepo productRepo = ProductRepo();
   ReviewRepo reviewRepo = ReviewRepo();
   OrderRepo orderRepo = OrderRepo();
-
+  ShopRepo shopRepo = ShopRepo();
+  ProductRepo productRepo = ProductRepo();
+  Shop? shop;
+  Product? product;
   File? _file;
   String? filePath;
   String? fileName;
@@ -207,6 +217,24 @@ class _ImageUploadSectionState extends State<ImageUploadSection> {
       }
     } else {
       print('Không có tệp nào được chọn.');
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    product = await productRepo.getProductByID(widget.productID);
+    if (product != null) {
+      shop = await shopRepo.getShopByID(product!.shopID!);
+    }
+    if (mounted) {
+      setState(() {});
     }
   }
 
@@ -289,10 +317,16 @@ class _ImageUploadSectionState extends State<ImageUploadSection> {
                   time: Timestamp.now(),
                   userID: user!.id!,
                   urlMedia: url,
+                  userName: user.firstName,
                   userAvatar: user.avatar);
               await reviewRepo.addNewReview(review);
               await orderRepo.updateRatingForProduct(
                   widget.orderID, widget.orderingProductID);
+              if (shop != null) {
+                await shopRepo.updateRatingCountForShop(
+                    shopID: shop!.id!, rating: reviewProvider.rating);
+              }
+
               // Navigator.of(context).pushNamedAndRemoveUntil(newRouteName, (route) => false);
               Navigator.of(context).pop();
             }

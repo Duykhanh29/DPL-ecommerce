@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_null_aware_operators
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
@@ -9,6 +11,7 @@ class Review {
   String? userID;
   double? rating;
   String? userAvatar;
+  String? userName;
   String? text;
   Timestamp? time;
   ResourseType? resourseType;
@@ -22,7 +25,8 @@ class Review {
       this.time,
       this.userAvatar,
       this.userID,
-      this.urlMedia}) {
+      this.urlMedia,
+      this.userName}) {
     id ??= Uuid().v4();
   }
   factory Review.fromJson(Map<String, dynamic> json) {
@@ -36,17 +40,21 @@ class Review {
         text: json['text'],
         userAvatar: json['userAvatar'],
         userID: json['userID'],
-        time: (json['time'] as Timestamp?));
+        time: (json['time'] as Timestamp?),
+        userName: json['userName']);
   }
   Map<String, dynamic> toJson() => {
         'productID': productID,
         'rating': rating,
-        'resourseType': resourseType.toString().split(".").last,
+        'resourseType': resourseType != null
+            ? resourseType.toString().split(".").last
+            : null,
         'id': id,
         'text': text,
         'userAvatar': userAvatar,
         'userID': userID,
         'time': time,
-        'urlMedia': urlMedia
+        'urlMedia': urlMedia,
+        'userName': userName
       };
 }

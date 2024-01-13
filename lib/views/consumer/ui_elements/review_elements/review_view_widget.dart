@@ -12,15 +12,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class ReviewViewWidget extends StatelessWidget {
+class ReviewViewWidget extends StatefulWidget {
   ReviewViewWidget({super.key, required this.review});
   Review? review;
+
+  @override
+  State<ReviewViewWidget> createState() => _ReviewViewWidgetState();
+}
+
+class _ReviewViewWidgetState extends State<ReviewViewWidget> {
   StorageService storageService = StorageService();
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Container(
-      margin: EdgeInsets.all(3.h),
+      // margin: EdgeInsets.all(3.h),
       decoration:
           BoxDecoration(border: Border.all(color: Colors.black12, width: 1)),
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
@@ -37,7 +44,7 @@ class ReviewViewWidget extends StatelessWidget {
                 width: 10.w,
               ),
               CachedNetworkImage(
-                imageUrl: review!.userAvatar!,
+                imageUrl: widget.review!.userAvatar!,
                 imageBuilder: (context, imageProvider) {
                   return Container(
                     height: size.height * 0.1,
@@ -63,9 +70,9 @@ class ReviewViewWidget extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("User name"),
+                      Text(widget.review!.userName ?? "user name"),
                       CustomRatingBar(
-                        initialRating: 2.5,
+                        initialRating: widget.review!.rating!,
                       ),
                     ],
                   ),
@@ -78,16 +85,16 @@ class ReviewViewWidget extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(left: 20.w),
             child: Text(
-              review!.text!,
+              widget.review!.text!,
               overflow: TextOverflow.ellipsis,
               maxLines: 12,
               style: CustomTextStyles.titleSmallMedium,
             ),
           ),
           SizedBox(height: 15.h),
-          if (review!.resourseType == ResourseType.image) ...{
+          if (widget.review!.resourseType == ResourseType.image) ...{
             CustomImageView(
-              imagePath: review!.urlMedia,
+              imagePath: widget.review!.urlMedia,
               height: MediaQuery.of(context).size.height * 0.15,
               width: MediaQuery.of(context).size.width * 0.35,
               margin: EdgeInsets.only(left: 10.w),
@@ -100,23 +107,24 @@ class ReviewViewWidget extends StatelessWidget {
                       ),
                       body: CustomPhotoView(
                         function: () async {
-                          await storageService
-                              .downloadAndSaveImage(review!.urlMedia!);
+                          await storageService.downloadAndSaveImage(
+                              widget.review!.urlMedia!, context);
                         },
                         height: MediaQuery.of(context).size.height * 0.9,
                         width: MediaQuery.of(context).size.width * 0.9,
-                        urlImage: review!.urlMedia,
+                        urlImage: widget.review!.urlMedia,
                       ),
                     );
                   },
                 ));
               },
             ),
-          } else ...{
+          } else if (widget.review!.resourseType == ResourseType.video) ...{
             VideoItemWidget(
-                videoUrl: review!
+                videoUrl: widget.review!
                     .urlMedia) // custom video ==> if tap go to video item widget
-          }
+          } else
+            ...{}
         ],
       ),
     );

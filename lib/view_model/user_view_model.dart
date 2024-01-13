@@ -125,5 +125,10 @@ class UserViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateAvatar(String newAvatar) {
+    userModel!.avatar = newAvatar;
+    notifyListeners();
+  }
+
   void removeAddress(AddressInfor addressInfor) {}
 }

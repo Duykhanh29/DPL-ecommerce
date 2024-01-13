@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:camera/camera.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
@@ -38,6 +41,10 @@ class __VerificationState extends State<Verification> {
   StorageService storageService = StorageService();
   String? taxPaperPath;
   String? taxPaperName;
+
+  File? _image;
+  String? urlImage;
+  XFile? pickedFile;
   // Shop shop = Shop(
   //   ratingCount: 123,
   //   totalProduct: 32,
@@ -66,8 +73,11 @@ class __VerificationState extends State<Verification> {
     final user = userProvider.currentUser;
     final shop = shopProvider.shop;
     if (shop != null) {
-      phoneNumberController.text = shop.name ?? "";
+      phoneNumberController.text = shop.contactPhone ?? "";
+      // lisenceController.text=shop.
+      shopNameController.text = shop.name ?? "";
     }
+
     return Scaffold(
       appBar: CustomAppBar(
               centerTitle: true,
@@ -87,6 +97,7 @@ class __VerificationState extends State<Verification> {
                   height: 20.h,
                 ),
                 _buidck(
+                    readOnly: true,
                     textInputType: TextInputType.text,
                     name: "",
                     hintname: LangText(context: context).getLocal()!.shop_name,
@@ -118,6 +129,7 @@ class __VerificationState extends State<Verification> {
                   height: 20.h,
                 ),
                 _buidck(
+                    readOnly: true,
                     textInputType: TextInputType.phone,
                     name: "",
                     hintname:
@@ -143,6 +155,7 @@ class __VerificationState extends State<Verification> {
                         print("No file selected");
                       } else {
                         setState(() {
+                          _image = File(result!.files.single.path!);
                           taxPaperPath = result?.files.single.path;
                           taxPaperName = result?.files.single.name;
                           print(result?.files.single.name);
@@ -203,6 +216,13 @@ class __VerificationState extends State<Verification> {
                     ),
                   ),
                 ),
+                _image != null
+                    ? Image.file(
+                        _image!,
+                        height: 90.h,
+                        width: 90.h,
+                      )
+                    : Container()
               ],
             ),
           ),
@@ -267,7 +287,8 @@ class __VerificationState extends State<Verification> {
           required String hintname,
           required String namevalue,
           required TextEditingController namctr,
-          required TextInputType textInputType}) =>
+          required TextInputType textInputType,
+          bool readOnly = false}) =>
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -276,6 +297,7 @@ class __VerificationState extends State<Verification> {
             height: 10.h,
           ),
           TextFormField(
+            readOnly: readOnly,
             controller: namctr,
             keyboardType: textInputType,
             decoration: InputDecoration(

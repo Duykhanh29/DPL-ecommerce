@@ -267,4 +267,5 @@ class MyTheme {
   static Color? green_light = Colors.green[200];
 
   static Color btn_checkout = Colors.blue;
+  static Color get orange900 => Color(0XFFEA580C);
 }

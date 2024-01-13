@@ -19,8 +19,7 @@ class CommonCaculatedMethods {
     if (voucher.discountAmount != null) {
       savingCost = voucher.discountAmount!;
     } else {
-      savingCost =
-          (price) - ((price) * (voucher.discountPercent! / 100)).toInt();
+      savingCost = ((price) * (voucher.discountPercent! / 100)).toInt();
     }
     return savingCost;
   }

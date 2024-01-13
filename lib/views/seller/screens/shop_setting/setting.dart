@@ -33,7 +33,7 @@ class __SettingSellerState extends State<SettingSeller> {
                 onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => GeneralSetting(),
+                        builder: (context) => GeneralSetting(shopID: shop!.id!),
                       ),
                     ),
                 child: _buildsetting(

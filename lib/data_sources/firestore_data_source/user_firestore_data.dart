@@ -216,6 +216,51 @@ class UserFirestoreDatabase {
     }
   }
 
+  Stream<AddressInfor?> getAddressInfoForSeller(String uid) async* {
+    try {
+      final ref = _firestore.collection('users').doc(uid).snapshots();
+      final StreamController<AddressInfor> streamController =
+          StreamController<AddressInfor>();
+      final StreamSubscription streamSubscription = ref.listen((event) {
+        if (event.exists) {
+          final userData = event.data();
+          final userInfor = userData!['userInfor'];
+          final sellerInfor = userInfor['sellerInfor'];
+          final addressInfo =
+              AddressInfor.fromJson(sellerInfor['contactAddress']);
+          streamController.sink.add(addressInfo);
+        } else {
+          streamController.close();
+        }
+      });
+      streamController.onCancel = () {
+        streamSubscription.cancel();
+        streamController.close();
+      };
+      yield* streamController.stream;
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  Future<AddressInfor?> getAddressForSeller(String uid) async {
+    try {
+      final ref = await _firestore.collection('users').doc(uid).get();
+      if (ref.exists) {
+        final data = ref.data();
+        final userInfor = data!['userInfor'];
+        final sellerInfor = userInfor['sellerInfor'];
+        final addressInfo =
+            AddressInfor.fromJson(sellerInfor['contactAddress']);
+        return addressInfo;
+      } else {
+        print("Empty");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
   Future<void> addAddress(
       AddressInfor addressInfor, UserModel userModel) async {
     try {
@@ -278,6 +323,25 @@ class UserFirestoreDatabase {
             await userDoc.update(userModel.toJson());
           }
         }
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  Future<void> updateAddressForSeller(
+      AddressInfor addressInfor, String uid) async {
+    try {
+      final userDoc = _firestore.collection('users').doc(uid);
+      final snapshot = await userDoc.get();
+      if (snapshot.exists) {
+        var dataUser = snapshot.data() as Map<String, dynamic>;
+        UserModel user = UserModel.fromJson(dataUser);
+
+        user.userInfor!.sellerInfor!.contactAddress = addressInfor;
+        await userDoc.update(user.toJson());
+      } else {
+        print("EMPTY");
       }
     } catch (e) {
       print("Error: $e");
