@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
-import 'package:dpl_ecommerce/view_model/seller/shop_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/seller/screens/voucher/voucher_app.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +36,7 @@ class __AddVoucherState extends State<AddVoucher> {
   // int? discountPercent;
   Timestamp? startDate = Timestamp.fromDate(DateTime.now());
   Timestamp? expDate =
-      Timestamp.fromDate(DateTime.now().add(const Duration(days: 30)));
+      Timestamp.fromDate(DateTime.now().add(const Duration(days: 2)));
   String? dropdownValue;
   String? discountType;
   Product? selectedProduct;
@@ -53,11 +53,11 @@ class __AddVoucherState extends State<AddVoucher> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserViewModel>(context);
-    final shopProvider = Provider.of<ShopViewModel>(context);
     final user = userProvider.currentUser;
-    final shop = shopProvider.shop;
-    discountType ??= LangText(context: context).getLocal()!.percent;
 
+    if (discountType == null) {
+      discountType = "Percent";
+    }
     return Scaffold(
       appBar: CustomAppBar(
               centerTitle: true,
@@ -283,6 +283,9 @@ class __AddVoucherState extends State<AddVoucher> {
                   children: [
                     Expanded(
                       child: ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                MyTheme.accent_color)),
                         onPressed: pickDateRange,
                         child: Text(
                             '${startDate!.toDate().day}/${startDate!.toDate().month}/${startDate!.toDate().year}'),
@@ -293,6 +296,9 @@ class __AddVoucherState extends State<AddVoucher> {
                     ),
                     Expanded(
                       child: ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                MyTheme.accent_color)),
                         onPressed: pickDateRange,
                         child: Text(
                             '${expDate!.toDate().day}/${expDate!.toDate().month}/${expDate!.toDate().year}'),
@@ -310,17 +316,10 @@ class __AddVoucherState extends State<AddVoucher> {
         width: MediaQuery.of(context).size.width * 0.9,
         margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 25.h),
         child: ElevatedButton(
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(MyTheme.accent_color)),
           onPressed: () async {
-            // if (_formKey.currentState!.validate()) {
-            //   // If the form is valid, perform your action
-            //   // e.g., submit the form or perform some other logic
-            //   // You can access the validated text using _controller.text
-            //   Voucher v;
-            //   // if(dropdownValue=="product"){
-            //   //    v=Voucher(productID: selectedProduct!=null ? selectedProduct!.id!:null,expDate: expDate,discountAmount: );
-            //   // }
-            // }
-            await _addVoucher(context, shop!.id!);
+            await _addVoucher(context);
           },
           child: Text(
             LangText(context: context).getLocal()!.send_ucf,
@@ -348,7 +347,7 @@ class __AddVoucherState extends State<AddVoucher> {
     });
   }
 
-  Future<void> _addVoucher(BuildContext context, String shopId) async {
+  Future<void> _addVoucher(BuildContext context) async {
     String name = _nameController.text;
 
     int? discountPercent;
@@ -365,6 +364,7 @@ class __AddVoucherState extends State<AddVoucher> {
     }
 
     if (name.isNotEmpty) {
+      print("Name not empty");
       if (discountType == LangText(context: context).getLocal()!.percent &&
           _percentController.text.isNotEmpty) {
         Voucher newVoucher = Voucher(

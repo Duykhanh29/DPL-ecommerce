@@ -39,7 +39,7 @@ class CartViewModel extends ChangeNotifier {
   void calculateCostInCart() {
     int totalCost = 0;
     int savingCost = 0;
-    for (var product in cart!.productInCarts!) {
+    for (var product in cart!.productInCarts) {
       totalCost += product.cost;
       int cost = product.cost;
       int savingPrice = 0;
@@ -69,12 +69,12 @@ class CartViewModel extends ChangeNotifier {
   }
 
   void addToCart(ProductInCartModel product) {
-    cart!.productInCarts!.add(product);
+    cart!.productInCarts.add(product);
     notifyListeners();
   }
 
   void deleteFromCart(ProductInCartModel product) {
-    cart!.productInCarts!.removeWhere((element) => element.id == product.id);
+    cart!.productInCarts.removeWhere((element) => element.id == product.id);
     calculateCostInCart();
     calculateCosts();
     if (list.isNotEmpty) {
@@ -86,7 +86,7 @@ class CartViewModel extends ChangeNotifier {
 
   void updateNumber(int newQuantity, String productInCartID) {
     if (newQuantity > 0) {
-      for (var product in cart!.productInCarts!) {
+      for (var product in cart!.productInCarts) {
         if (productInCartID == product.id) {
           product.quantity = newQuantity;
         }
@@ -98,7 +98,7 @@ class CartViewModel extends ChangeNotifier {
   }
 
   void updateSize(String newSize, String productInCartID) {
-    for (var product in cart!.productInCarts!) {
+    for (var product in cart!.productInCarts) {
       if (productInCartID == product.id) {
         product.size = newSize;
       }
@@ -108,7 +108,7 @@ class CartViewModel extends ChangeNotifier {
   }
 
   void updateType(String newType, String productInCartID) {
-    for (var product in cart!.productInCarts!) {
+    for (var product in cart!.productInCarts) {
       if (productInCartID == product.id) {
         product.type = newType;
       }
@@ -118,7 +118,7 @@ class CartViewModel extends ChangeNotifier {
   }
 
   void updateColor(String newColor, String productInCartID) {
-    for (var product in cart!.productInCarts!) {
+    for (var product in cart!.productInCarts) {
       if (productInCartID == product.id) {
         product.color = newColor;
       }
@@ -129,7 +129,7 @@ class CartViewModel extends ChangeNotifier {
 
   void updateProductInCart(
       ProductInCartModel productInCartModel, String productInCartID) {
-    for (var product in cart!.productInCarts!) {
+    for (var product in cart!.productInCarts) {
       if (productInCartID == product.id) {
         product = productInCartModel;
       }
@@ -142,7 +142,7 @@ class CartViewModel extends ChangeNotifier {
 
   void checkProduct(ProductInCartModel productInCartModel) {
     list.add(productInCartModel);
-    if (list.length == cart!.productInCarts!.length) {
+    if (list.length == cart!.productInCarts.length) {
       isCheckedALl = true;
     }
     calculateCosts();
@@ -189,7 +189,7 @@ class CartViewModel extends ChangeNotifier {
   void toggleCheckAll() {
     isCheckedALl = !isCheckedALl;
     if (isCheckedALl) {
-      list = List.from(cart!.productInCarts!);
+      list = List.from(cart!.productInCarts);
     } else {
       list = [];
     }

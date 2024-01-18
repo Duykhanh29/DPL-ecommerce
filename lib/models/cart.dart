@@ -2,21 +2,19 @@ import 'package:dpl_ecommerce/models/product_in_cart_model.dart';
 
 class Cart {
   String? userID;
-  List<ProductInCartModel>? productInCarts;
+  List<ProductInCartModel> productInCarts;
   int totalCost;
   int savingCost;
   Cart(
-      {this.productInCarts,
+      {this.productInCarts = const [],
       this.savingCost = 0,
       this.totalCost = 0,
       this.userID});
   factory Cart.fromJson(Map<String, dynamic> json) {
     return Cart(
-        productInCarts: (json['productInCarts']) != null
-            ? (json['productInCarts'] as List<dynamic>)
-                .map((e) => ProductInCartModel.fromJson(e))
-                .toList()
-            : null,
+        productInCarts: (json['productInCarts'] as List<dynamic>)
+            .map((e) => ProductInCartModel.fromJson(e))
+            .toList(),
         savingCost: json['savingCost'],
         totalCost: json['totalCost'],
         userID: json['userID']);

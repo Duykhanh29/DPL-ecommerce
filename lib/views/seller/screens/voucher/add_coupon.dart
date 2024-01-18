@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
@@ -39,7 +40,7 @@ class __AddCouponState extends State<AddCoupon> {
   // int? discountPercent;
   Timestamp? startDate = Timestamp.fromDate(DateTime.now());
   Timestamp? expDate =
-      Timestamp.fromDate(DateTime.now().add(const Duration(days: 30)));
+      Timestamp.fromDate(DateTime.now().add(const Duration(days: 2)));
   String? dropdownValue;
   String? discountType;
   Product? selectedProduct;
@@ -68,10 +69,10 @@ class __AddCouponState extends State<AddCoupon> {
     final user = userProvider.currentUser;
     final shop = shopProvider.shop;
     if (discountType == null) {
-      discountType = LangText(context: context).getLocal()!.percent;
+      discountType = "Percent";
     }
     if (dropdownValue == null) {
-      dropdownValue = LangText(context: context).getLocal()!.product_ucf;
+      dropdownValue = "Product";
     }
 
     return Scaffold(
@@ -387,6 +388,9 @@ class __AddCouponState extends State<AddCoupon> {
                   children: [
                     Expanded(
                       child: ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                MyTheme.accent_color)),
                         onPressed: pickDateRange,
                         child: Text(
                             '${startDate!.toDate().day}/${startDate!.toDate().month}/${startDate!.toDate().year}'),
@@ -397,6 +401,9 @@ class __AddCouponState extends State<AddCoupon> {
                     ),
                     Expanded(
                       child: ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                MyTheme.accent_color)),
                         onPressed: pickDateRange,
                         child: Text(
                             '${expDate!.toDate().day}/${expDate!.toDate().month}/${expDate!.toDate().year}'),
@@ -414,6 +421,8 @@ class __AddCouponState extends State<AddCoupon> {
         width: MediaQuery.of(context).size.width * 0.9,
         margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 25.h),
         child: ElevatedButton(
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(MyTheme.accent_color)),
           onPressed: () async {
             // if (_formKey.currentState!.validate()) {
             //   // If the form is valid, perform your action

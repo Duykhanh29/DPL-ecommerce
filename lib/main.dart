@@ -3,6 +3,7 @@ import 'package:dpl_ecommerce/lang_config.dart';
 import 'package:dpl_ecommerce/models/user.dart' as userModel;
 import 'package:dpl_ecommerce/models/voucher_for_user.dart';
 import 'package:dpl_ecommerce/view_model/address_view_model.dart';
+import 'package:dpl_ecommerce/view_model/admin/manage_seller_view_model.dart';
 import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
@@ -15,11 +16,13 @@ import 'package:dpl_ecommerce/view_model/consumer/voucher_for_user_view_model.da
 import 'package:dpl_ecommerce/view_model/lang_view_model.dart';
 import 'package:dpl_ecommerce/view_model/seller/shop_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
-import 'package:dpl_ecommerce/views/admin/admin_page_view.dart';
+import 'package:dpl_ecommerce/views/admin/admin_main_view.dart';
+import 'package:dpl_ecommerce/views/admin/routes/admin_routes.dart';
 import 'package:dpl_ecommerce/views/consumer/main_view.dart';
 import 'package:dpl_ecommerce/views/consumer/routes/routes.dart';
 import 'package:dpl_ecommerce/views/general_views/login_screen.dart';
 import 'package:dpl_ecommerce/views/general_views/register_seller.dart';
+import 'package:dpl_ecommerce/views/general_views/splash_screen.dart';
 import 'package:dpl_ecommerce/views/seller/mainviewseller.dart';
 import 'package:dpl_ecommerce/views/seller/routes/routes.dart';
 import 'package:flutter/foundation.dart';
@@ -139,12 +142,19 @@ class FirstPage extends StatefulWidget {
 
 class _FirstPageState extends State<FirstPage> {
   auth.User? user;
+  bool isLoading = true;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     // super.initState();
     // final authProvider = Provider.of<AuthViewModel>(context);
+    Future.delayed(const Duration(seconds: 5)).whenComplete(() {
+      setState(() {
+        isLoading = false;
+      });
+    });
+
     auth.FirebaseAuth.instance.authStateChanges().listen((event) {
       setState(() {
         user = event;
@@ -177,22 +187,46 @@ class _FirstPageState extends State<FirstPage> {
     //     }
     //   },
     // );
-    return user != null
-        ? AuthorizatedPage()
-        : Consumer<LocaleProvider>(
-            builder: (context, value, child) => MaterialApp(
-              debugShowCheckedModeBanner: false,
-              home: LoginScreen(),
-              localizationsDelegates: const [
-                AppLocalizations.delegate, // Add this line
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: AppLocalizations.supportedLocales,
-              locale: value.locale,
-            ),
-          );
+    return isLoading
+        ? SplashScreen()
+        : user != null
+            ? AuthorizatedPage()
+            : Consumer<LocaleProvider>(
+                builder: (context, value, child) => MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  home: LoginScreen(),
+                  localizationsDelegates: const [
+                    AppLocalizations.delegate, // Add this line
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  supportedLocales: AppLocalizations.supportedLocales,
+                  locale: value.locale,
+                ),
+              );
+  }
+}
+
+class StartLogin extends StatelessWidget {
+  const StartLogin({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<LocaleProvider>(
+      builder: (context, value, child) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: LoginScreen(),
+        localizationsDelegates: const [
+          AppLocalizations.delegate, // Add this line
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: value.locale,
+      ),
+    );
   }
 }
 
@@ -222,7 +256,7 @@ class _AuthorizatedPageState extends State<AuthorizatedPage> {
       } else {
         return Scaffold(
           body: Center(
-            child: Text("Waiting ..."),
+            child: Text(""),
           ),
         );
       }
@@ -352,6 +386,47 @@ class SellerPageView extends StatelessWidget {
       // initialRoute: ConsumerRoutes.mainView,
       // routes: ConsumerRoutes.routes,
       // ),
+    );
+  }
+}
+
+class AdminPageView extends StatelessWidget {
+  const AdminPageView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthViewModel>(context);
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => UserViewModel(authProvider),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => LanguageViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => AddressViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ManageSellerViewModel(),
+        )
+      ],
+      child: Consumer<LocaleProvider>(
+        builder: (context, value, child) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: AdminMainView(),
+          localizationsDelegates: [
+            AppLocalizations.delegate, // Add this line
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: value.locale,
+          initialRoute: AdminRoutes.mainView,
+          routes: AdminRoutes.routes,
+        ),
+      ),
     );
   }
 }

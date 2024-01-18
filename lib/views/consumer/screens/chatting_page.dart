@@ -31,7 +31,7 @@ class ChattingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final chatProvider = Provider.of<ChatViewModel>(context);
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(
               centerTitle: true,
               context: context,

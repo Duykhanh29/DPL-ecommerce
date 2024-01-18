@@ -39,7 +39,7 @@ class VerificationForm {
         'sellerID': sellerID,
         'taxPaper': taxPaper,
         'licenseNo': licenseNo,
-        'contactAddress': contactAddress,
+        'contactAddress': contactAddress!.toJson(),
         'shopName': shopName,
         'phoneNumber': phoneNumber,
         'homeNumber': homeNumber,

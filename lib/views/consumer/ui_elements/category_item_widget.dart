@@ -4,6 +4,7 @@ import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/models/category.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/category_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -19,6 +20,12 @@ class CategoryItemWidget extends StatelessWidget {
     return InkWell(
       onTap: () {
         // go to this category page
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CategoryDetail(categoryID: category!.id!),
+          ),
+        );
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 5.h),

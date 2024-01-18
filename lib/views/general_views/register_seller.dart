@@ -586,6 +586,9 @@ class _RegistrationState extends State<Registration> {
                         //     color: MyTheme.app_accent_border, width: 1),
                         borderRadius: BorderRadius.all(Radius.circular(12.r))),
                     child: ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                MyTheme.accent_color)),
                         onPressed: () {
                           if (isChecked) {
                             onPressReg(authProvider, context);
@@ -615,7 +618,9 @@ class _RegistrationState extends State<Registration> {
                           Navigator.of(context).pop();
                         },
                         child: Text(
-                            LangText(context: context).getLocal()!.login_ucf)),
+                          LangText(context: context).getLocal()!.login_ucf,
+                          style: TextStyle(color: MyTheme.accent_color),
+                        )),
                   ),
                 ],
               ),

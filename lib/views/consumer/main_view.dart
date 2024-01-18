@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/cart_page.dart';
@@ -49,33 +50,35 @@ class _MainViewState extends State<MainView> {
             indexPage = value;
           });
         },
-        unselectedItemColor: Colors.black26,
+        unselectedItemColor: MyTheme.black,
         useLegacyColorScheme: false,
-        backgroundColor: Color.fromARGB(255, 98, 170, 212),
+        // backgroundColor: Color.fromARGB(255, 98, 170, 212),
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: const Icon(Icons.home),
+            icon: Icon(
+              Icons.home,
+              color: MyTheme.accent_color,
+            ),
             label: LangText(context: context).getLocal()!.home_ucf,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.category_sharp),
+            icon: Icon(Icons.category_sharp, color: MyTheme.accent_color),
             label: LangText(context: context).getLocal()!.categories_ucf,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(CupertinoIcons.cart),
+            icon: Icon(CupertinoIcons.cart, color: MyTheme.accent_color),
             label: LangText(context: context).getLocal()!.orders_ucf,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(
-              CupertinoIcons.person_alt_circle,
-            ),
+            icon: Icon(CupertinoIcons.person_alt_circle,
+                color: MyTheme.accent_color),
             label: LangText(context: context).getLocal()!.profile_ucf,
           ),
         ],
         currentIndex: indexPage,
         iconSize: 25,
         selectedFontSize: 8,
-        selectedItemColor: Colors.blue.shade400,
+        selectedItemColor: MyTheme.accent_color,
       ),
       body: IndexedStack(
         index: indexPage,

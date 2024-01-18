@@ -44,7 +44,7 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-  Future signInWithGoogle() async {
+  Future signInWithGoogle(BuildContext context) async {
     try {
       UserCredential? userCredential;
       if (kIsWeb) {
@@ -78,6 +78,7 @@ class AuthViewModel extends ChangeNotifier {
           // userModel =
           //     await userFirestoreDatabase.getUserModel(userCredential.user!);
           userModel = UserModel(
+              id: userCredential.user!.uid,
               avatar: userCredential.user!.photoURL!,
               email: userCredential.user!.email,
               firstName: userCredential.user!.displayName,
@@ -93,12 +94,17 @@ class AuthViewModel extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
+      ToastHelper.showDialog(
+          "${LangText(context: context).getLocal()!.an_error_has_occurred}: $e",
+          gravity: ToastGravity.BOTTOM);
       print("The error is here: $e");
     }
   }
 
   Future signInWithEmailAndPass(
-      {required String email, required String password}) async {
+      {required String email,
+      required String password,
+      required BuildContext context}) async {
     try {
       UserCredential result = await auth.signInWithEmailAndPassword(
           email: email, password: password);
@@ -109,10 +115,34 @@ class AuthViewModel extends ChangeNotifier {
       }
       notifyListeners();
     } catch (e) {
+      ToastHelper.showDialog(
+          "${LangText(context: context).getLocal()!.an_error_has_occurred}: $e",
+          gravity: ToastGravity.BOTTOM);
       print("The error is here: $e");
     }
   }
+  // Future<void> registerForCustomerByEMailAndPass({required String email, required String pass,
+  //     required String firstName,required BuildContext context})async{
+  //       try {
+  //          UserCredential result = await auth.createUserWithEmailAndPassword(
+  //         email: email, password: pass);
 
+  //       }on FirebaseAuthException catch (e) {
+  //     if (e.code == 'weak-password') {
+  //       ToastHelper.showDialog(
+  //           LangText(context: context)
+  //               .getLocal()!
+  //               .password_must_contain_at_least_6_characters,
+  //           gravity: ToastGravity.BOTTOM);
+  //       // ScaffoldMessenger.of(context).showSnackBar(
+  //       //     SnackBar(content: Text('Password Provided is too weak')));
+  //     } else if (e.code == 'email-already-in-use') {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //           SnackBar(content: Text('Email Provided already Exists')));
+  //     } catch (e) {
+
+  //       }
+  //     }
   Future<void> registerForSellerByEmaillAndPass(
       {required String email,
       required String pass,
@@ -201,10 +231,16 @@ class AuthViewModel extends ChangeNotifier {
         // ScaffoldMessenger.of(context).showSnackBar(
         //     SnackBar(content: Text('Password Provided is too weak')));
       } else if (e.code == 'email-already-in-use') {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Email Provided already Exists')));
+        ToastHelper.showDialog(
+            LangText(context: context)
+                .getLocal()!
+                .email_provided_already_exists,
+            gravity: ToastGravity.BOTTOM);
       }
     } catch (e) {
+      ToastHelper.showDialog(
+          "${LangText(context: context).getLocal()!.an_error_has_occurred}: $e",
+          gravity: ToastGravity.BOTTOM);
       print("The error is here: $e");
     }
   }

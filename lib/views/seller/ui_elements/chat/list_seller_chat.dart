@@ -8,9 +8,16 @@ import 'package:dpl_ecommerce/views/seller/ui_elements/chat/chat_seller_item.dar
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ListSellerChat extends StatelessWidget {
+class ListSellerChat extends StatefulWidget {
   ListSellerChat({super.key});
+
+  @override
+  State<ListSellerChat> createState() => _ListSellerChatState();
+}
+
+class _ListSellerChatState extends State<ListSellerChat> {
   ChatRepo chatRepo = ChatRepo();
+
   @override
   Widget build(BuildContext context) {
     final chatProvider = Provider.of<ChatViewModel>(context, listen: true);

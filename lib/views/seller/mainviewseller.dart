@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/views/seller/screens/dashboard.dart';
 import 'package:dpl_ecommerce/views/seller/screens/order/order_page.dart';
@@ -40,26 +41,36 @@ class _MainViewState extends State<MainViewSeller> {
             indexPage = value;
           });
         },
-        unselectedItemColor: Colors.black26,
+        unselectedItemColor: MyTheme.black,
         useLegacyColorScheme: false,
-        backgroundColor: Color.fromARGB(255, 98, 170, 212),
+        // backgroundColor: Color.fromARGB(255, 98, 170, 212),
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-              icon: const Icon(Icons.dashboard_outlined),
+              icon: Icon(
+                Icons.dashboard_outlined,
+                color: MyTheme.accent_color,
+              ),
               label: AppLocalizations.of(context)!.dashboard_ucf
               //     .search_anything,,
               ),
           BottomNavigationBarItem(
-            icon: const Icon(CupertinoIcons.cube_box),
+            icon: Icon(
+              CupertinoIcons.cube_box,
+              color: MyTheme.accent_color,
+            ),
             label: LangText(context: context).getLocal()!.products_ucf,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(CupertinoIcons.square_list),
+            icon: Icon(
+              CupertinoIcons.square_list,
+              color: MyTheme.accent_color,
+            ),
             label: LangText(context: context).getLocal()!.orders_ucf,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(
+            icon: Icon(
               CupertinoIcons.person_alt_circle,
+              color: MyTheme.accent_color,
             ),
             label: LangText(context: context).getLocal()!.profile_ucf,
           ),
@@ -67,7 +78,7 @@ class _MainViewState extends State<MainViewSeller> {
         currentIndex: indexPage,
         iconSize: 25,
         selectedFontSize: 8,
-        // selectedItemColor: Colors.blue.shade400,
+        selectedItemColor: MyTheme.accent_color,
       ),
       body: IndexedStack(
         index: indexPage,

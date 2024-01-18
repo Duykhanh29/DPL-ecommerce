@@ -173,13 +173,16 @@ class UserProfilePage extends StatelessWidget {
                                 onTap: () async {
                                   AddressInfor? addressInfor = await userRepo
                                       .getDefaultAddress(user!.id!);
-                                  addressProvider
-                                      .setDefaultAddress(addressInfor!);
-                                  addressProvider
-                                      .setOrderingAddress(addressInfor);
-                                  List<AddressInfor>? list = await userRepo
-                                      .getListAddressInfor(user!.id!);
-                                  addressProvider.setListAddressInfor(list!);
+                                  if (addressInfor != null) {
+                                    addressProvider
+                                        .setDefaultAddress(addressInfor!);
+                                    addressProvider
+                                        .setOrderingAddress(addressInfor);
+                                    List<AddressInfor>? list = await userRepo
+                                        .getListAddressInfor(user!.id!);
+                                    addressProvider.setListAddressInfor(list!);
+                                  } else {}
+
                                   // go to address page
                                   Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => AddressScreen(),

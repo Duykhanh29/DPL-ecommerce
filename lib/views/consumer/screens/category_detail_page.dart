@@ -60,7 +60,7 @@ class _RatingState extends State<CategoryDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: MyTheme.accent_color,
         title: Text(
           LangText(context: context).getLocal()!.product_category,
           textAlign: TextAlign.center,

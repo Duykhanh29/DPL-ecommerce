@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/repositories/order_repo.dart';
@@ -44,7 +45,7 @@ class _RatingState extends State<RatingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: MyTheme.accent_color,
         title: Text(
           LangText(context: context).getLocal()!.rate_product,
           textAlign: TextAlign.center,
@@ -273,7 +274,8 @@ class _ImageUploadSectionState extends State<ImageUploadSection> {
             await getMedia(user!.id!);
           },
           decoration: BoxDecoration(
-              color: Colors.blue, borderRadius: BorderRadius.circular(15.r)),
+              color: MyTheme.accent_color,
+              borderRadius: BorderRadius.circular(15.r)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -332,7 +334,8 @@ class _ImageUploadSectionState extends State<ImageUploadSection> {
             }
           },
           decoration: BoxDecoration(
-              color: Colors.blue, borderRadius: BorderRadius.circular(15.r)),
+              color: MyTheme.accent_color,
+              borderRadius: BorderRadius.circular(15.r)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

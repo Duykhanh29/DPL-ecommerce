@@ -32,6 +32,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/models/order_model.dart' as orderModel;
 
+enum TypeOfTotalProduct { increase, decrease }
+
 class FirestoreDatabase {
   FirestoreDatabase();
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -47,7 +49,8 @@ class FirestoreDatabase {
           .collection('products')
           .doc(product.id)
           .set(product.toJson());
-      await updateTotalProductForShop(shopID: shopID);
+      await updateTotalProductForShop(
+          shopID: shopID, type: TypeOfTotalProduct.increase);
     } catch (e) {
       print("An error occured: $e");
     }
@@ -105,53 +108,54 @@ class FirestoreDatabase {
           for (var data in event.docs) {
             // final dataHere = data.data();
             //  Product p = Product.fromJson({'id': data.id, ...data.data()});
-            Product product = Product(
-              id: data.id,
-              availableQuantity: data.data()['availableQuantity'],
-              categoryID: data.data()['categoryID'],
-              description: data.data()['description'],
-              colors: data.data()['colors'] != null
-                  ? (data.data()['colors'] as List<dynamic>)
-                      .map((e) => e.toString())
-                      .toList()
-                  : null,
-              createdAt: data.data()['createdAt'],
-              images: data.data()['images'] != null
-                  ? (data.data()['images'] as List<dynamic>)
-                      .map((e) => e.toString())
-                      .toList()
-                  : null,
-              name: data.data()['name'],
-              price: data.data()['price'],
-              purchasingCount: data.data()['purchasingCount'],
-              rating: data.data()['rating'],
-              ratingCount: data.data()['ratingCount'],
-              reviewIDs: data.data()['reviewIDs'] != null
-                  ? (data.data()['reviewIDs'] as List<dynamic>)
-                      .map((e) => e.toString())
-                      .toList()
-                  : null,
-              shopID: data.data()['shopID'],
-              shopLogo: data.data()['shopLogo'],
-              shopName: data.data()['shopName'],
-              sizes: data.data()['sizes'] != null
-                  ? (data.data()['sizes'] as List<dynamic>)
-                      .map((e) => e.toString())
-                      .toList()
-                  : null,
-              types: data.data()['types'] != null
-                  ? (data.data()['types'] as List<dynamic>)
-                      .map((e) => e.toString())
-                      .toList()
-                  : null,
-              updatedAt: data.data()['updatedAt'],
-              videos: data.data()['videos'] != null
-                  ? (data.data()['videos'] as List<dynamic>)
-                      .map((e) => e.toString())
-                      .toList()
-                  : null,
-              voucherID: data.data()['voucherID'],
-            );
+            Product product = Product.fromJson(data.data());
+            // Product product = Product(
+            //   id: data.id,
+            //   availableQuantity: data.data()['availableQuantity'],
+            //   categoryID: data.data()['categoryID'],
+            //   description: data.data()['description'],
+            //   colors: data.data()['colors'] != null
+            //       ? (data.data()['colors'] as List<dynamic>)
+            //           .map((e) => e.toString())
+            //           .toList()
+            //       : null,
+            //   createdAt: data.data()['createdAt'],
+            //   images: data.data()['images'] != null
+            //       ? (data.data()['images'] as List<dynamic>)
+            //           .map((e) => e.toString())
+            //           .toList()
+            //       : null,
+            //   name: data.data()['name'],
+            //   price: data.data()['price'],
+            //   purchasingCount: data.data()['purchasingCount'],
+            //   rating: data.data()['rating'],
+            //   ratingCount: data.data()['ratingCount'],
+            //   reviewIDs: data.data()['reviewIDs'] != null
+            //       ? (data.data()['reviewIDs'] as List<dynamic>)
+            //           .map((e) => e.toString())
+            //           .toList()
+            //       : null,
+            //   shopID: data.data()['shopID'],
+            //   shopLogo: data.data()['shopLogo'],
+            //   shopName: data.data()['shopName'],
+            //   sizes: data.data()['sizes'] != null
+            //       ? (data.data()['sizes'] as List<dynamic>)
+            //           .map((e) => e.toString())
+            //           .toList()
+            //       : null,
+            //   types: data.data()['types'] != null
+            //       ? (data.data()['types'] as List<dynamic>)
+            //           .map((e) => e.toString())
+            //           .toList()
+            //       : null,
+            //   updatedAt: data.data()['updatedAt'],
+            //   videos: data.data()['videos'] != null
+            //       ? (data.data()['videos'] as List<dynamic>)
+            //           .map((e) => e.toString())
+            //           .toList()
+            //       : null,
+            //   voucherID: data.data()['voucherID'],
+            // );
             list.add(product);
           }
           list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
@@ -210,53 +214,54 @@ class FirestoreDatabase {
           for (var data in event.docs) {
             // final dataHere = data.data();
             //  Product p = Product.fromJson({'id': data.id, ...data.data()});
-            Product product = Product(
-              id: data.id,
-              availableQuantity: data.data()['availableQuantity'],
-              categoryID: data.data()['categoryID'],
-              description: data.data()['description'],
-              colors: data.data()['colors'] != null
-                  ? (data.data()['colors'] as List<dynamic>)
-                      .map((e) => e.toString())
-                      .toList()
-                  : null,
-              createdAt: data.data()['createdAt'],
-              images: data.data()['images'] != null
-                  ? (data.data()['images'] as List<dynamic>)
-                      .map((e) => e.toString())
-                      .toList()
-                  : null,
-              name: data.data()['name'],
-              price: data.data()['price'],
-              purchasingCount: data.data()['purchasingCount'],
-              rating: data.data()['rating'],
-              ratingCount: data.data()['ratingCount'],
-              reviewIDs: data.data()['reviewIDs'] != null
-                  ? (data.data()['reviewIDs'] as List<dynamic>)
-                      .map((e) => e.toString())
-                      .toList()
-                  : null,
-              shopID: data.data()['shopID'],
-              shopLogo: data.data()['shopLogo'],
-              shopName: data.data()['shopName'],
-              sizes: data.data()['sizes'] != null
-                  ? (data.data()['sizes'] as List<dynamic>)
-                      .map((e) => e.toString())
-                      .toList()
-                  : null,
-              types: data.data()['types'] != null
-                  ? (data.data()['types'] as List<dynamic>)
-                      .map((e) => e.toString())
-                      .toList()
-                  : null,
-              updatedAt: data.data()['updatedAt'],
-              videos: data.data()['videos'] != null
-                  ? (data.data()['videos'] as List<dynamic>)
-                      .map((e) => e.toString())
-                      .toList()
-                  : null,
-              voucherID: data.data()['voucherID'],
-            );
+            Product product = Product.fromJson(data.data());
+            // Product product = Product(
+            //   id: data.id,
+            //   availableQuantity: data.data()['availableQuantity'],
+            //   categoryID: data.data()['categoryID'],
+            //   description: data.data()['description'],
+            //   colors: data.data()['colors'] != null
+            //       ? (data.data()['colors'] as List<dynamic>)
+            //           .map((e) => e.toString())
+            //           .toList()
+            //       : null,
+            //   createdAt: data.data()['createdAt'],
+            //   images: data.data()['images'] != null
+            //       ? (data.data()['images'] as List<dynamic>)
+            //           .map((e) => e.toString())
+            //           .toList()
+            //       : null,
+            //   name: data.data()['name'],
+            //   price: data.data()['price'],
+            //   purchasingCount: data.data()['purchasingCount'],
+            //   rating: data.data()['rating'],
+            //   ratingCount: data.data()['ratingCount'],
+            //   reviewIDs: data.data()['reviewIDs'] != null
+            //       ? (data.data()['reviewIDs'] as List<dynamic>)
+            //           .map((e) => e.toString())
+            //           .toList()
+            //       : null,
+            //   shopID: data.data()['shopID'],
+            //   shopLogo: data.data()['shopLogo'],
+            //   shopName: data.data()['shopName'],
+            //   sizes: data.data()['sizes'] != null
+            //       ? (data.data()['sizes'] as List<dynamic>)
+            //           .map((e) => e.toString())
+            //           .toList()
+            //       : null,
+            //   types: data.data()['types'] != null
+            //       ? (data.data()['types'] as List<dynamic>)
+            //           .map((e) => e.toString())
+            //           .toList()
+            //       : null,
+            //   updatedAt: data.data()['updatedAt'],
+            //   videos: data.data()['videos'] != null
+            //       ? (data.data()['videos'] as List<dynamic>)
+            //           .map((e) => e.toString())
+            //           .toList()
+            //       : null,
+            //   voucherID: data.data()['voucherID'],
+            // );
             list.add(product);
           }
           list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
@@ -281,53 +286,54 @@ class FirestoreDatabase {
       final productSnapshot =
           await _firestore.collection('products').doc(id).get();
       if (productSnapshot.exists) {
-        Product product = Product(
-          id: productSnapshot.id,
-          availableQuantity: productSnapshot.data()!['availableQuantity'],
-          categoryID: productSnapshot.data()!['categoryID'],
-          description: productSnapshot.data()!['description'],
-          colors: productSnapshot.data()!['colors'] != null
-              ? (productSnapshot.data()!['colors'] as List<dynamic>)
-                  .map((e) => e.toString())
-                  .toList()
-              : null,
-          createdAt: productSnapshot.data()!['createdAt'],
-          images: productSnapshot.data()!['images'] != null
-              ? (productSnapshot.data()!['images'] as List<dynamic>)
-                  .map((e) => e.toString())
-                  .toList()
-              : null,
-          name: productSnapshot.data()!['name'],
-          price: productSnapshot.data()!['price'],
-          purchasingCount: productSnapshot.data()!['purchasingCount'],
-          rating: productSnapshot.data()!['rating'],
-          ratingCount: productSnapshot.data()!['ratingCount'],
-          reviewIDs: productSnapshot.data()!['reviewIDs'] != null
-              ? (productSnapshot.data()!['reviewIDs'] as List<dynamic>)
-                  .map((e) => e.toString())
-                  .toList()
-              : null,
-          shopID: productSnapshot.data()!['shopID'],
-          shopLogo: productSnapshot.data()!['shopLogo'],
-          shopName: productSnapshot.data()!['shopName'],
-          sizes: productSnapshot.data()!['sizes'] != null
-              ? (productSnapshot.data()!['sizes'] as List<dynamic>)
-                  .map((e) => e.toString())
-                  .toList()
-              : null,
-          types: productSnapshot.data()!['types'] != null
-              ? (productSnapshot.data()!['types'] as List<dynamic>)
-                  .map((e) => e.toString())
-                  .toList()
-              : null,
-          updatedAt: productSnapshot.data()!['updatedAt'],
-          videos: productSnapshot.data()!['videos'] != null
-              ? (productSnapshot.data()!['videos'] as List<dynamic>)
-                  .map((e) => e.toString())
-                  .toList()
-              : null,
-          voucherID: productSnapshot.data()!['voucherID'],
-        );
+        Product product = Product.fromJson(productSnapshot.data()!);
+        // Product product = Product(
+        //   id: productSnapshot.id,
+        //   availableQuantity: productSnapshot.data()!['availableQuantity'],
+        //   categoryID: productSnapshot.data()!['categoryID'],
+        //   description: productSnapshot.data()!['description'],
+        //   colors: productSnapshot.data()!['colors'] != null
+        //       ? (productSnapshot.data()!['colors'] as List<dynamic>)
+        //           .map((e) => e.toString())
+        //           .toList()
+        //       : null,
+        //   createdAt: productSnapshot.data()!['createdAt'],
+        //   images: productSnapshot.data()!['images'] != null
+        //       ? (productSnapshot.data()!['images'] as List<dynamic>)
+        //           .map((e) => e.toString())
+        //           .toList()
+        //       : null,
+        //   name: productSnapshot.data()!['name'],
+        //   price: productSnapshot.data()!['price'],
+        //   purchasingCount: productSnapshot.data()!['purchasingCount'],
+        //   rating: productSnapshot.data()!['rating'],
+        //   ratingCount: productSnapshot.data()!['ratingCount'],
+        //   reviewIDs: productSnapshot.data()!['reviewIDs'] != null
+        //       ? (productSnapshot.data()!['reviewIDs'] as List<dynamic>)
+        //           .map((e) => e.toString())
+        //           .toList()
+        //       : null,
+        //   shopID: productSnapshot.data()!['shopID'],
+        //   shopLogo: productSnapshot.data()!['shopLogo'],
+        //   shopName: productSnapshot.data()!['shopName'],
+        //   sizes: productSnapshot.data()!['sizes'] != null
+        //       ? (productSnapshot.data()!['sizes'] as List<dynamic>)
+        //           .map((e) => e.toString())
+        //           .toList()
+        //       : null,
+        //   types: productSnapshot.data()!['types'] != null
+        //       ? (productSnapshot.data()!['types'] as List<dynamic>)
+        //           .map((e) => e.toString())
+        //           .toList()
+        //       : null,
+        //   updatedAt: productSnapshot.data()!['updatedAt'],
+        //   videos: productSnapshot.data()!['videos'] != null
+        //       ? (productSnapshot.data()!['videos'] as List<dynamic>)
+        //           .map((e) => e.toString())
+        //           .toList()
+        //       : null,
+        //   voucherID: productSnapshot.data()!['voucherID'],
+        // );
         return product;
       } else {
         print("Not exists");
@@ -618,9 +624,12 @@ class FirestoreDatabase {
     }
   }
 
-  Future<void> deleteProduct(String productID) async {
+  Future<void> deleteProduct(
+      {required String productID, required String shopID}) async {
     try {
       await _firestore.collection('products').doc(productID).delete();
+      updateTotalProductForShop(
+          shopID: shopID, type: TypeOfTotalProduct.decrease);
     } catch (e) {
       print("An error occurred: $e");
     }
@@ -636,6 +645,7 @@ class FirestoreDatabase {
     List<String>? images,
     List<String>? videos,
     String? description,
+    String? name,
   }) async {
     try {
       final doc = _firestore.collection('products').doc(productID);
@@ -668,6 +678,10 @@ class FirestoreDatabase {
         if (cost != null) {
           product.price = cost;
         }
+        if (name != null) {
+          product.name = name;
+        }
+        product.updatedAt = Timestamp.now();
         await doc.update(product.toJson());
       } else {
         print("Not exists");
@@ -705,53 +719,54 @@ class FirestoreDatabase {
           .where('shopID', isEqualTo: shopID)
           .get();
       for (var data in snapshot.docs) {
-        Product product = Product(
-          id: data.id,
-          availableQuantity: data.data()['availableQuantity'],
-          categoryID: data.data()['categoryID'],
-          description: data.data()['description'],
-          colors: data.data()['colors'] != null
-              ? (data.data()['colors'] as List<dynamic>)
-                  .map((e) => e.toString())
-                  .toList()
-              : null,
-          createdAt: data.data()['createdAt'],
-          images: data.data()['images'] != null
-              ? (data.data()['images'] as List<dynamic>)
-                  .map((e) => e.toString())
-                  .toList()
-              : null,
-          name: data.data()['name'],
-          price: data.data()['price'],
-          purchasingCount: data.data()['purchasingCount'],
-          rating: data.data()['rating'],
-          ratingCount: data.data()['ratingCount'],
-          reviewIDs: data.data()['reviewIDs'] != null
-              ? (data.data()['reviewIDs'] as List<dynamic>)
-                  .map((e) => e.toString())
-                  .toList()
-              : null,
-          shopID: data.data()['shopID'],
-          shopLogo: data.data()['shopLogo'],
-          shopName: data.data()['shopName'],
-          sizes: data.data()['sizes'] != null
-              ? (data.data()['sizes'] as List<dynamic>)
-                  .map((e) => e.toString())
-                  .toList()
-              : null,
-          types: data.data()['types'] != null
-              ? (data.data()['types'] as List<dynamic>)
-                  .map((e) => e.toString())
-                  .toList()
-              : null,
-          updatedAt: data.data()['updatedAt'],
-          videos: data.data()['videos'] != null
-              ? (data.data()['videos'] as List<dynamic>)
-                  .map((e) => e.toString())
-                  .toList()
-              : null,
-          voucherID: data.data()['voucherID'],
-        );
+        Product product = Product.fromJson(data.data());
+        // Product product = Product(
+        //   id: data.id,
+        //   availableQuantity: data.data()['availableQuantity'],
+        //   categoryID: data.data()['categoryID'],
+        //   description: data.data()['description'],
+        //   colors: data.data()['colors'] != null
+        //       ? (data.data()['colors'] as List<dynamic>)
+        //           .map((e) => e.toString())
+        //           .toList()
+        //       : null,
+        //   createdAt: data.data()['createdAt'],
+        //   images: data.data()['images'] != null
+        //       ? (data.data()['images'] as List<dynamic>)
+        //           .map((e) => e.toString())
+        //           .toList()
+        //       : null,
+        //   name: data.data()['name'],
+        //   price: data.data()['price'],
+        //   purchasingCount: data.data()['purchasingCount'],
+        //   rating: data.data()['rating'],
+        //   ratingCount: data.data()['ratingCount'],
+        //   reviewIDs: data.data()['reviewIDs'] != null
+        //       ? (data.data()['reviewIDs'] as List<dynamic>)
+        //           .map((e) => e.toString())
+        //           .toList()
+        //       : null,
+        //   shopID: data.data()['shopID'],
+        //   shopLogo: data.data()['shopLogo'],
+        //   shopName: data.data()['shopName'],
+        //   sizes: data.data()['sizes'] != null
+        //       ? (data.data()['sizes'] as List<dynamic>)
+        //           .map((e) => e.toString())
+        //           .toList()
+        //       : null,
+        //   types: data.data()['types'] != null
+        //       ? (data.data()['types'] as List<dynamic>)
+        //           .map((e) => e.toString())
+        //           .toList()
+        //       : null,
+        //   updatedAt: data.data()['updatedAt'],
+        //   videos: data.data()['videos'] != null
+        //       ? (data.data()['videos'] as List<dynamic>)
+        //           .map((e) => e.toString())
+        //           .toList()
+        //       : null,
+        //   voucherID: data.data()['voucherID'],
+        // );
         list.add(product);
       }
       list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
@@ -771,53 +786,54 @@ class FirestoreDatabase {
           .get();
       if (snapshot.docs.isNotEmpty) {
         for (var data in snapshot.docs) {
-          Product product = Product(
-            id: data.id,
-            availableQuantity: data.data()['availableQuantity'],
-            categoryID: data.data()['categoryID'],
-            description: data.data()['description'],
-            colors: data.data()['colors'] != null
-                ? (data.data()['colors'] as List<dynamic>)
-                    .map((e) => e.toString())
-                    .toList()
-                : null,
-            createdAt: data.data()['createdAt'],
-            images: data.data()['images'] != null
-                ? (data.data()['images'] as List<dynamic>)
-                    .map((e) => e.toString())
-                    .toList()
-                : null,
-            name: data.data()['name'],
-            price: data.data()['price'],
-            purchasingCount: data.data()['purchasingCount'],
-            rating: data.data()['rating'],
-            ratingCount: data.data()['ratingCount'],
-            reviewIDs: data.data()['reviewIDs'] != null
-                ? (data.data()['reviewIDs'] as List<dynamic>)
-                    .map((e) => e.toString())
-                    .toList()
-                : null,
-            shopID: data.data()['shopID'],
-            shopLogo: data.data()['shopLogo'],
-            shopName: data.data()['shopName'],
-            sizes: data.data()['sizes'] != null
-                ? (data.data()['sizes'] as List<dynamic>)
-                    .map((e) => e.toString())
-                    .toList()
-                : null,
-            types: data.data()['types'] != null
-                ? (data.data()['types'] as List<dynamic>)
-                    .map((e) => e.toString())
-                    .toList()
-                : null,
-            updatedAt: data.data()['updatedAt'],
-            videos: data.data()['videos'] != null
-                ? (data.data()['videos'] as List<dynamic>)
-                    .map((e) => e.toString())
-                    .toList()
-                : null,
-            voucherID: data.data()['voucherID'],
-          );
+          Product product = Product.fromJson(data.data());
+          // Product(
+          //   id: data.id,
+          //   availableQuantity: data.data()['availableQuantity'],
+          //   categoryID: data.data()['categoryID'],
+          //   description: data.data()['description'],
+          //   colors: data.data()['colors'] != null
+          //       ? (data.data()['colors'] as List<dynamic>)
+          //           .map((e) => e.toString())
+          //           .toList()
+          //       : null,
+          //   createdAt: data.data()['createdAt'],
+          //   images: data.data()['images'] != null
+          //       ? (data.data()['images'] as List<dynamic>)
+          //           .map((e) => e.toString())
+          //           .toList()
+          //       : null,
+          //   name: data.data()['name'],
+          //   price: data.data()['price'],
+          //   purchasingCount: data.data()['purchasingCount'],
+          //   rating: data.data()['rating'],
+          //   ratingCount: data.data()['ratingCount'],
+          //   reviewIDs: data.data()['reviewIDs'] != null
+          //       ? (data.data()['reviewIDs'] as List<dynamic>)
+          //           .map((e) => e.toString())
+          //           .toList()
+          //       : null,
+          //   shopID: data.data()['shopID'],
+          //   shopLogo: data.data()['shopLogo'],
+          //   shopName: data.data()['shopName'],
+          //   sizes: data.data()['sizes'] != null
+          //       ? (data.data()['sizes'] as List<dynamic>)
+          //           .map((e) => e.toString())
+          //           .toList()
+          //       : null,
+          //   types: data.data()['types'] != null
+          //       ? (data.data()['types'] as List<dynamic>)
+          //           .map((e) => e.toString())
+          //           .toList()
+          //       : null,
+          //   updatedAt: data.data()['updatedAt'],
+          //   videos: data.data()['videos'] != null
+          //       ? (data.data()['videos'] as List<dynamic>)
+          //           .map((e) => e.toString())
+          //           .toList()
+          //       : null,
+          //   voucherID: data.data()['voucherID'],
+          // );
           list.add(product);
         }
         list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
@@ -883,13 +899,43 @@ class FirestoreDatabase {
     }
   }
 
+  Future<void> updateLegalInfo(
+      {required String sellerID,
+      required String taxPaper,
+      required String lienceseNo,
+      required String phone}) async {
+    try {
+      final userDoc = _firestore.collection('users').doc(sellerID);
+      final ref = await userDoc.get();
+      if (ref.exists) {
+        final data = ref.data();
+        UserModel seller = UserModel.fromJson(data!);
+        seller.userInfor!.sellerInfor!.licenseNo = lienceseNo;
+        seller.userInfor!.sellerInfor!.taxPaper = taxPaper;
+        if (seller.phone != null) {
+          seller.phone = phone;
+        }
+        await userDoc.update(seller.toJson());
+      } else {
+        print("Not exist");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
   Future<void> sendVerificationForm(
       {required VerificationForm verificationForm}) async {
     try {
-      _firestore
-          .collection('verrificationForms')
+      await _firestore
+          .collection('verificationForms')
           .doc(verificationForm.shopID)
           .set(verificationForm.toJson());
+      await updateLegalInfo(
+          sellerID: verificationForm.sellerID!,
+          lienceseNo: verificationForm.licenseNo!,
+          taxPaper: verificationForm.taxPaper!,
+          phone: verificationForm.phoneNumber!);
     } catch (e) {
       print("An error occured: $e");
     }
@@ -913,15 +959,20 @@ class FirestoreDatabase {
     }
   }
 
-  Future<void> updateTotalProductForShop({required String shopID}) async {
+  Future<void> updateTotalProductForShop(
+      {required String shopID, required TypeOfTotalProduct type}) async {
     try {
       final shopDoc = _firestore.collection('shops').doc(shopID);
       final snapshot = await shopDoc.get();
       if (snapshot.exists) {
         final shopData = snapshot.data();
         Shop shop = Shop.fromJson(shopData!);
+        if (type == TypeOfTotalProduct.increase) {
+          shop.totalProduct++;
+        } else {
+          shop.totalProduct--;
+        }
 
-        shop.totalProduct++;
         await shopDoc.update(shop.toJson());
       }
     } catch (e) {
@@ -1052,20 +1103,21 @@ class FirestoreDatabase {
       QuerySnapshot<Map<String, dynamic>> ref =
           await _firestore.collection('shops').get();
       for (var data in ref.docs) {
-        Shop shop = Shop(
-          id: data.id,
-          logo: data.data()['logo'],
-          name: data.data()['name'],
-          addressInfor: AddressInfor.fromJson(data.data()['addressInfor']),
-          contactPhone: data.data()['contactPhone'],
-          rating: (data.data()['rating'] as double),
-          ratingCount: data.data()['ratingCount'],
-          shopDescription: data.data()['shopDescription'],
-          shopView: data.data()['shopView'],
-          totalProduct: data.data()['totalProduct'],
-          totalRevenue: data['totalRevenue'],
-          totalOrder: data['totalOrder'],
-        );
+        Shop shop = Shop.fromJson(data.data());
+        // Shop(
+        //   id: data.id,
+        //   logo: data.data()['logo'],
+        //   name: data.data()['name'],
+        //   addressInfor: AddressInfor.fromJson(data.data()['addressInfor']),
+        //   contactPhone: data.data()['contactPhone'],
+        //   rating: (data.data()['rating'] as double),
+        //   ratingCount: data.data()['ratingCount'],
+        //   shopDescription: data.data()['shopDescription'],
+        //   shopView: data.data()['shopView'],
+        //   totalProduct: data.data()['totalProduct'],
+        //   totalRevenue: data['totalRevenue'],
+        //   totalOrder: data['totalOrder'],
+        // );
         list.add(shop);
       }
       return list;
@@ -1325,28 +1377,30 @@ class FirestoreDatabase {
         List<Chat>? list = [];
         if (event.docs.isNotEmpty) {
           for (var data in event.docs) {
-            Chat c = Chat(
-                id: data.data()['id'],
-                lastChatType: ChatType.values.firstWhere((element) =>
-                    element.toString().split(".").last ==
-                    data.data()['lastChatType']),
-                lastMessage: data.data()['lastMessage'],
-                listMsg: data.data()['listMsg'] != null
-                    ? (data.data()['listMsg'] as List)
-                        .map((e) => Message.fromJson(e))
-                        .toList()
-                    : null,
-                sellerID: data.data()['sellerID'],
-                shopID: data.data()['shopID'],
-                shopLogo: data.data()['shopLogo'],
-                shopName: data.data()['shopName'],
-                userAvatar: data.data()['userAvatar'],
-                userID: data.data()['userID'],
-                userName: data.data()['userName']);
+            Chat c = Chat.fromJson(data.data());
+            // Chat(
+            //     id: data.data()['id'],
+            //     lastChatType: ChatType.values.firstWhere((element) =>
+            //         element.toString().split(".").last ==
+            //         data.data()['lastChatType']),
+            //     lastMessage: data.data()['lastMessage'],
+            //     listMsg: data.data()['listMsg'] != null
+            //         ? (data.data()['listMsg'] as List)
+            //             .map((e) => Message.fromJson(e))
+            //             .toList()
+            //         : null,
+            //     sellerID: data.data()['sellerID'],
+            //     shopID: data.data()['shopID'],
+            //     shopLogo: data.data()['shopLogo'],
+            //     shopName: data.data()['shopName'],
+            //     userAvatar: data.data()['userAvatar'],
+            //     userID: data.data()['userID'],
+            //     userName: data.data()['userName']);
             list.add(c);
           }
         } else {
           print("Empty");
+          streamController.close();
         }
         streamController.sink.add(list);
       });
@@ -1412,25 +1466,26 @@ class FirestoreDatabase {
         if (event.exists) {
           // final data = event.data()!['listMsg'] as List<dynamic>;
           // list = data.map((e) => Message.fromJson(e)).toList();
-          Chat c = Chat(
-            id: event.data()!['id'],
-            lastChatType: ChatType.values.firstWhere((element) =>
-                element.toString().split(".").last ==
-                event.data()!['lastChatType']),
-            lastMessage: event.data()!['lastMessage'],
-            listMsg: event.data()!['listMsg'] != null
-                ? (event.data()!['listMsg'] as List)
-                    .map((e) => Message.fromJson(e))
-                    .toList()
-                : null,
-            sellerID: event.data()!['sellerID'],
-            shopID: event.data()!['shopID'],
-            shopLogo: event.data()!['shopLogo'],
-            shopName: event.data()!['shopName'],
-            userAvatar: event.data()!['userAvatar'],
-            userID: event.data()!['userID'],
-            userName: event.data()!['userName'],
-          );
+          Chat c = Chat.fromJson(event.data()!);
+          // Chat(
+          //   id: event.data()!['id'],
+          //   lastChatType: ChatType.values.firstWhere((element) =>
+          //       element.toString().split(".").last ==
+          //       event.data()!['lastChatType']),
+          //   lastMessage: event.data()!['lastMessage'],
+          //   listMsg: event.data()!['listMsg'] != null
+          //       ? (event.data()!['listMsg'] as List)
+          //           .map((e) => Message.fromJson(e))
+          //           .toList()
+          //       : null,
+          //   sellerID: event.data()!['sellerID'],
+          //   shopID: event.data()!['shopID'],
+          //   shopLogo: event.data()!['shopLogo'],
+          //   shopName: event.data()!['shopName'],
+          //   userAvatar: event.data()!['userAvatar'],
+          //   userID: event.data()!['userID'],
+          //   userName: event.data()!['userName'],
+          // );
           // list.add(c);
           streamController.sink.add(c);
         } else {
@@ -1451,24 +1506,25 @@ class FirestoreDatabase {
     try {
       final ref = await _firestore.collection('chats').doc(id).get();
       if (ref.exists) {
-        Chat c = Chat(
-            id: ref.data()!['id'],
-            lastChatType: ChatType.values.firstWhere((element) =>
-                element.toString().split(".").last ==
-                ref.data()!['lastChatType']),
-            lastMessage: ref.data()!['lastMessage'],
-            listMsg: ref.data()!['listMsg'] != null
-                ? (ref.data()!['listMsg'] as List)
-                    .map((e) => Message.fromJson(e))
-                    .toList()
-                : null,
-            sellerID: ref.data()!['sellerID'],
-            shopID: ref.data()!['shopID'],
-            shopLogo: ref.data()!['shopLogo'],
-            shopName: ref.data()!['shopName'],
-            userAvatar: ref.data()!['userAvatar'],
-            userID: ref.data()!['userID'],
-            userName: ref.data()!['userName']);
+        Chat c = Chat.fromJson(ref.data()!);
+        // Chat(
+        //     id: ref.data()!['id'],
+        //     lastChatType: ChatType.values.firstWhere((element) =>
+        //         element.toString().split(".").last ==
+        //         ref.data()!['lastChatType']),
+        //     lastMessage: ref.data()!['lastMessage'],
+        //     listMsg: ref.data()!['listMsg'] != null
+        //         ? (ref.data()!['listMsg'] as List)
+        //             .map((e) => Message.fromJson(e))
+        //             .toList()
+        //         : null,
+        //     sellerID: ref.data()!['sellerID'],
+        //     shopID: ref.data()!['shopID'],
+        //     shopLogo: ref.data()!['shopLogo'],
+        //     shopName: ref.data()!['shopName'],
+        //     userAvatar: ref.data()!['userAvatar'],
+        //     userID: ref.data()!['userID'],
+        //     userName: ref.data()!['userName']);
         return c;
       } else {
         print("Not exists");
@@ -1487,24 +1543,25 @@ class FirestoreDatabase {
           .where('userID', isEqualTo: userID)
           .get();
       if (ref.docs.isNotEmpty) {
-        Chat c = Chat(
-            id: ref.docs[0].data()['id'],
-            lastChatType: ChatType.values.firstWhere((element) =>
-                element.toString().split(".").last ==
-                ref.docs[0].data()['lastChatType']),
-            lastMessage: ref.docs[0].data()['lastMessage'],
-            listMsg: ref.docs[0].data()['listMsg'] != null
-                ? (ref.docs[0].data()['listMsg'] as List)
-                    .map((e) => Message.fromJson(e))
-                    .toList()
-                : null,
-            sellerID: ref.docs[0].data()['sellerID'],
-            shopID: ref.docs[0].data()['shopID'],
-            shopLogo: ref.docs[0].data()['shopLogo'],
-            shopName: ref.docs[0].data()['shopName'],
-            userAvatar: ref.docs[0].data()['userAvatar'],
-            userID: ref.docs[0].data()['userID'],
-            userName: ref.docs[0].data()['userName']);
+        Chat c = Chat.fromJson(ref.docs[0].data());
+        // Chat(
+        //     id: ref.docs[0].data()['id'],
+        //     lastChatType: ChatType.values.firstWhere((element) =>
+        //         element.toString().split(".").last ==
+        //         ref.docs[0].data()['lastChatType']),
+        //     lastMessage: ref.docs[0].data()['lastMessage'],
+        //     listMsg: ref.docs[0].data()['listMsg'] != null
+        //         ? (ref.docs[0].data()['listMsg'] as List)
+        //             .map((e) => Message.fromJson(e))
+        //             .toList()
+        //         : null,
+        //     sellerID: ref.docs[0].data()['sellerID'],
+        //     shopID: ref.docs[0].data()['shopID'],
+        //     shopLogo: ref.docs[0].data()['shopLogo'],
+        //     shopName: ref.docs[0].data()['shopName'],
+        //     userAvatar: ref.docs[0].data()['userAvatar'],
+        //     userID: ref.docs[0].data()['userID'],
+        //     userName: ref.docs[0].data()['userName']);
         return c;
       } else {
         print("Not exists");
@@ -1523,24 +1580,28 @@ class FirestoreDatabase {
           .where('userID', isEqualTo: userID)
           .get();
       if (ref.docs.isNotEmpty) {
-        Chat c = Chat(
-            id: ref.docs[0].data()['id'],
-            lastChatType: ChatType.values.firstWhere((element) =>
-                element.toString().split(".").last ==
-                ref.docs[0].data()['lastChatType']),
-            lastMessage: ref.docs[0].data()['lastMessage'],
-            listMsg: ref.docs[0].data()['listMsg'] != null
-                ? (ref.docs[0].data()['listMsg'] as List)
-                    .map((e) => Message.fromJson(e))
-                    .toList()
-                : null,
-            sellerID: ref.docs[0].data()['sellerID'],
-            shopID: ref.docs[0].data()['shopID'],
-            shopLogo: ref.docs[0].data()['shopLogo'],
-            shopName: ref.docs[0].data()['shopName'],
-            userAvatar: ref.docs[0].data()['userAvatar'],
-            userID: ref.docs[0].data()['userID'],
-            userName: ref.docs[0].data()['userName']);
+        final data = ref.docs[0].data();
+        Chat c = Chat.fromJson(data);
+        // Chat(
+        //     id: ref.docs[0].data()['id'],
+        //     lastChatType: ref.docs[0].data()['lastChatType'] != null
+        //         ? ChatType.values.firstWhere((element) =>
+        //             element.toString().split(".").last ==
+        //             ref.docs[0].data()['lastChatType'])
+        //         : null,
+        //     lastMessage: ref.docs[0].data()['lastMessage'],
+        //     listMsg: ref.docs[0].data()['listMsg'] != null
+        //         ? (ref.docs[0].data()['listMsg'] as List)
+        //             .map((e) => Message.fromJson(e))
+        //             .toList()
+        //         : null,
+        //     sellerID: ref.docs[0].data()['sellerID'],
+        //     shopID: ref.docs[0].data()['shopID'],
+        //     shopLogo: ref.docs[0].data()['shopLogo'],
+        //     shopName: ref.docs[0].data()['shopName'],
+        //     userAvatar: ref.docs[0].data()['userAvatar'],
+        //     userID: ref.docs[0].data()['userID'],
+        //     userName: ref.docs[0].data()['userName']);
         return c;
       } else {
         print("Not exists");
@@ -1629,30 +1690,35 @@ class FirestoreDatabase {
       final StreamSubscription streamSubscription = ref.listen((event) {
         List<Chat>? list = [];
         if (event.docs.isNotEmpty) {
+          print("Chat lenght: ${event.docs.length}");
           for (var data in event.docs) {
-            Chat c = Chat(
-                id: data.data()['id'],
-                lastChatType: ChatType.values.firstWhere((element) =>
-                    element.toString().split(".").last ==
-                    data.data()['lastChatType']),
-                lastMessage: data.data()['lastMessage'],
-                listMsg: data.data()['listMsg'] != null
-                    ? (data.data()['listMsg'] as List)
-                        .map((e) => Message.fromJson(e))
-                        .toList()
-                    : null,
-                sellerID: data.data()['sellerID'],
-                shopID: data.data()['shopID'],
-                shopLogo: data.data()['shopLogo'],
-                shopName: data.data()['shopName'],
-                userAvatar: data.data()['userAvatar'],
-                userID: data.data()['userID'],
-                userName: data.data()['userName']);
+            print("data dot data: ${data.data()}");
+            Chat c = Chat.fromJson(data.data());
+            //  Chat(
+            //     id: data.data()['id'],
+            //     lastChatType: ChatType.values.firstWhere((element) =>
+            //         element.toString().split(".").last ==
+            //         data.data()['lastChatType']),
+            //     lastMessage: data.data()['lastMessage'],
+            //     listMsg: data.data()['listMsg'] != null
+            //         ? (data.data()['listMsg'] as List)
+            //             .map((e) => Message.fromJson(e))
+            //             .toList()
+            //         : null,
+            //     sellerID: data.data()['sellerID'],
+            //     shopID: data.data()['shopID'],
+            //     shopLogo: data.data()['shopLogo'],
+            //     shopName: data.data()['shopName'],
+            //     userAvatar: data.data()['userAvatar'],
+            //     userID: data.data()['userID'],
+            //     userName: data.data()['userName']);
             list.add(c);
           }
         } else {
           print("Empty");
+          streamController.close();
         }
+
         streamController.sink.add(list);
       });
       streamController.onCancel = () {
@@ -1711,17 +1777,23 @@ class FirestoreDatabase {
       final voucherDoc = _firestore.collection('vouchers').doc(id);
       final ref = await voucherDoc.get();
       if (ref.exists) {
-        Voucher voucherInstance = Voucher(
-            id: ref.data()![id],
-            discountAmount: voucher.discountAmount,
-            discountPercent: voucher.discountPercent,
-            expDate: voucher.expDate,
-            name: voucher.name,
-            productID: voucher.productID,
-            releasedDate: voucher.releasedDate,
-            shopID: voucher.shopID,
-            isAdmin: voucher.isAdmin);
-        await voucherDoc.update(voucherInstance.toJson());
+        Voucher voucherInstance = Voucher.fromJson(ref.data()!);
+        // Voucher(
+        //     id: ref.data()![id],
+        //     discountAmount: voucher.discountAmount,
+        //     discountPercent: voucher.discountPercent,
+        //     expDate: voucher.expDate,
+        //     name: voucher.name,
+        //     productID: voucher.productID,
+        //     releasedDate: voucher.releasedDate,
+        //     shopID: voucher.shopID,
+        //     isAdmin: voucher.isAdmin);
+        // voucherInstance.discountAmount = voucher.discountAmount;
+        // voucherInstance.discountPercent = voucher.discountPercent;
+        // voucherInstance.expDate = voucher.expDate;
+        // voucherInstance.releasedDate = voucher.releasedDate;
+        // vou
+        await voucherDoc.update(voucher.toJson());
       } else {
         print("Not exists");
       }
@@ -1790,16 +1862,17 @@ class FirestoreDatabase {
         list.clear();
         for (var data in event.docs) {
           final voucherData = data.data();
-          Voucher voucherInstance = Voucher(
-              id: data.data()['id'],
-              discountAmount: data.data()['discountAmount'],
-              discountPercent: data.data()['discountPercent'],
-              expDate: data.data()['expDate'],
-              name: data.data()['name'],
-              productID: data.data()['productID'],
-              releasedDate: data.data()['releasedDate'],
-              shopID: data.data()['shopID'],
-              isAdmin: data.data()['isAdmin']);
+          Voucher voucherInstance = Voucher.fromJson(data.data());
+          // Voucher(
+          //     id: data.data()['id'],
+          //     discountAmount: data.data()['discountAmount'],
+          //     discountPercent: data.data()['discountPercent'],
+          //     expDate: data.data()['expDate'],
+          //     name: data.data()['name'],
+          //     productID: data.data()['productID'],
+          //     releasedDate: data.data()['releasedDate'],
+          //     shopID: data.data()['shopID'],
+          //     isAdmin: data.data()['isAdmin']);
           list.add(voucherInstance);
         }
         streamController.sink.add(list);
@@ -1826,16 +1899,17 @@ class FirestoreDatabase {
         list.clear();
         for (var data in event.docs) {
           final voucherData = data.data();
-          Voucher voucherInstance = Voucher(
-              id: data.data()['id'],
-              discountAmount: data.data()['discountAmount'],
-              discountPercent: data.data()['discountPercent'],
-              expDate: data.data()['expDate'],
-              name: data.data()['name'],
-              productID: data.data()['productID'],
-              releasedDate: data.data()['releasedDate'],
-              shopID: data.data()['shopID'],
-              isAdmin: data.data()['isAdmin']);
+          Voucher voucherInstance = Voucher.fromJson(data.data());
+          // Voucher(
+          //     id: data.data()['id'],
+          //     discountAmount: data.data()['discountAmount'],
+          //     discountPercent: data.data()['discountPercent'],
+          //     expDate: data.data()['expDate'],
+          //     name: data.data()['name'],
+          //     productID: data.data()['productID'],
+          //     releasedDate: data.data()['releasedDate'],
+          //     shopID: data.data()['shopID'],
+          //     isAdmin: data.data()['isAdmin']);
           list.add(voucherInstance);
         }
         streamController.sink.add(list);
@@ -1856,14 +1930,18 @@ class FirestoreDatabase {
       final snapshot = await _firestore
           .collection('vouchers')
           // .where('expDate', isGreaterThan: Timestamp.now())
-          .where('idAdmin', isEqualTo: true)
+          .where('isAdmin', isEqualTo: true)
           .get();
-      for (var data in snapshot.docs) {
-        final voucherData = data.data();
-        Voucher voucher = Voucher.fromJson({'id': data.id, ...data.data()});
-        list.add(voucher);
+      if (snapshot.docs.isNotEmpty) {
+        for (var data in snapshot.docs) {
+          final voucherData = data.data();
+          Voucher voucher = Voucher.fromJson({'id': data.id, ...data.data()});
+          list.add(voucher);
+        }
+        return list;
+      } else {
+        print("EMPTY");
       }
-      return list;
     } catch (e) {
       print("An error occured: $e");
     }
@@ -2106,21 +2184,22 @@ class FirestoreDatabase {
       if (snapshot.docs.isNotEmpty) {
         List<Review>? list = [];
         for (var data in snapshot.docs) {
-          Review review = Review(
-              id: data.id,
-              productID: data.data()['productID'],
-              rating: data.data()['rating'],
-              resourseType: data.data()['resourseType'] != null
-                  ? ResourseType.values.firstWhere((element) =>
-                      element.toString().split(".").last ==
-                      data.data()['resourseType'])
-                  : null,
-              text: data.data()['text'],
-              time: data.data()['time'],
-              urlMedia: data.data()['urlMedia'],
-              userAvatar: data.data()['userAvatar'],
-              userID: data.data()['userID'],
-              userName: data.data()['userName']);
+          Review review = Review.fromJson(data.data());
+          // Review(
+          //     id: data.id,
+          //     productID: data.data()['productID'],
+          //     rating: data.data()['rating'],
+          //     resourseType: data.data()['resourseType'] != null
+          //         ? ResourseType.values.firstWhere((element) =>
+          //             element.toString().split(".").last ==
+          //             data.data()['resourseType'])
+          //         : null,
+          //     text: data.data()['text'],
+          //     time: data.data()['time'],
+          //     urlMedia: data.data()['urlMedia'],
+          //     userAvatar: data.data()['userAvatar'],
+          //     userID: data.data()['userID'],
+          //     userName: data.data()['userName']);
           list.add(review);
         }
         return list;
@@ -2145,21 +2224,22 @@ class FirestoreDatabase {
         List<Review>? list = [];
         if (event.docs.isNotEmpty) {
           for (var data in event.docs) {
-            Review review = Review(
-                id: data.id,
-                productID: data.data()['productID'],
-                rating: data.data()['rating'],
-                resourseType: data.data()['resourseType'] != null
-                    ? ResourseType.values.firstWhere((element) =>
-                        element.toString().split(".").last ==
-                        data.data()['resourseType'])
-                    : null,
-                text: data.data()['text'],
-                time: data.data()['time'],
-                urlMedia: data.data()['urlMedia'],
-                userAvatar: data.data()['userAvatar'],
-                userID: data.data()['userID'],
-                userName: data.data()['userName']);
+            Review review = Review.fromJson(data.data());
+            // Review review = Review(
+            //     id: data.id,
+            //     productID: data.data()['productID'],
+            //     rating: data.data()['rating'],
+            //     resourseType: data.data()['resourseType'] != null
+            //         ? ResourseType.values.firstWhere((element) =>
+            //             element.toString().split(".").last ==
+            //             data.data()['resourseType'])
+            //         : null,
+            //     text: data.data()['text'],
+            //     time: data.data()['time'],
+            //     urlMedia: data.data()['urlMedia'],
+            //     userAvatar: data.data()['userAvatar'],
+            //     userID: data.data()['userID'],
+            //     userName: data.data()['userName']);
             list.add(review);
           }
         } else {
@@ -2228,12 +2308,13 @@ class FirestoreDatabase {
       if (snapshot.docs.isNotEmpty) {
         for (var data in snapshot.docs) {
           final productData = data.data();
-          final product = FavouriteProduct(
-            createdAt: productData['createdAt'],
-            id: data.id,
-            productID: productData['productID'],
-            userID: productData['userID'],
-          );
+          FavouriteProduct product = FavouriteProduct.fromJson(productData);
+          // FavouriteProduct(
+          //   createdAt: productData['createdAt'],
+          //   id: data.id,
+          //   productID: productData['productID'],
+          //   userID: productData['userID'],
+          // );
           list.add(product);
         }
         return list;
@@ -2373,28 +2454,29 @@ class FirestoreDatabase {
       if (snapshot.docs.isNotEmpty) {
         List<orderModel.Order>? list = [];
         for (var element in snapshot.docs) {
-          orderModel.Order order = orderModel.Order(
-              deliverServiceID: element.data()['deliverServiceID'],
-              // deliverStatus: element.data()['deliverStatus'],
-              id: element.data()['id'],
-              isCancelled: element.data()['isCancelled'],
-              orderingProductsID: element.data()['orderingProductsID'] != null
-                  ? (element.data()['orderingProductsID'] as List<dynamic>)
-                      .map((e) {
-                      OrderingProduct o = OrderingProduct.fromJson(e);
-                      print("Nothing: ${o.quantity}");
-                      return o;
-                    }).toList()
-                  : null,
-              paymentTypeID: element.data()['paymentTypeID'],
-              receivedAddress:
-                  AddressInfor.fromJson(element.data()['receivedAddress']),
-              shippingCost: element.data()['shippingCost'] ?? 0,
-              totalCost: element.data()['totalCost'],
-              userID: element.data()['userID'],
-              voucherDiscountID: element.data()['voucherDiscountID'],
-              totalProduct: element.data()['totalProduct'],
-              time: (element.data()['time'] as Timestamp));
+          orderModel.Order order = orderModel.Order.fromJson(element.data());
+          // orderModel.Order(
+          //     deliverServiceID: element.data()['deliverServiceID'],
+          //     // deliverStatus: element.data()['deliverStatus'],
+          //     id: element.data()['id'],
+          //     isCancelled: element.data()['isCancelled'],
+          //     orderingProductsID: element.data()['orderingProductsID'] != null
+          //         ? (element.data()['orderingProductsID'] as List<dynamic>)
+          //             .map((e) {
+          //             OrderingProduct o = OrderingProduct.fromJson(e);
+          //             print("Nothing: ${o.quantity}");
+          //             return o;
+          //           }).toList()
+          //         : null,
+          //     paymentTypeID: element.data()['paymentTypeID'],
+          //     receivedAddress:
+          //         AddressInfor.fromJson(element.data()['receivedAddress']),
+          //     shippingCost: element.data()['shippingCost'] ?? 0,
+          //     totalCost: element.data()['totalCost'],
+          //     userID: element.data()['userID'],
+          //     voucherDiscountID: element.data()['voucherDiscountID'],
+          //     totalProduct: element.data()['totalProduct'],
+          //     time: (element.data()['time'] as Timestamp));
           List<OrderingProduct>? listO =
               element.data()['orderingProductsID'] != null
                   ? (element.data()['orderingProductsID'] as List)
@@ -2447,25 +2529,26 @@ class FirestoreDatabase {
         List<orderModel.Order>? list = [];
         if (event.docs.isNotEmpty) {
           for (var element in event.docs) {
-            orderModel.Order order = orderModel.Order(
-                deliverServiceID: element.data()['deliverServiceID'],
-                // deliverStatus: element.data()['deliverStatus'],
-                id: element.data()['id'],
-                isCancelled: element.data()['isCancelled'],
-                orderingProductsID: element.data()['orderingProductsID'] != null
-                    ? (element.data()['orderingProductsID'] as List)
-                        .map((e) => OrderingProduct.fromJson(e))
-                        .toList()
-                    : null,
-                paymentTypeID: element.data()['paymentTypeID'],
-                receivedAddress:
-                    AddressInfor.fromJson(element.data()['receivedAddress']),
-                shippingCost: element.data()['shippingCost'] ?? 0,
-                totalCost: element.data()['totalCost'],
-                userID: element.data()['userID'],
-                voucherDiscountID: element.data()['voucherDiscountID'],
-                totalProduct: element.data()['totalProduct'],
-                time: (element.data()['time'] as Timestamp));
+            orderModel.Order order = orderModel.Order.fromJson(element.data());
+            // orderModel.Order(
+            //     deliverServiceID: element.data()['deliverServiceID'],
+            //     // deliverStatus: element.data()['deliverStatus'],
+            //     id: element.data()['id'],
+            //     isCancelled: element.data()['isCancelled'],
+            //     orderingProductsID: element.data()['orderingProductsID'] != null
+            //         ? (element.data()['orderingProductsID'] as List)
+            //             .map((e) => OrderingProduct.fromJson(e))
+            //             .toList()
+            //         : null,
+            //     paymentTypeID: element.data()['paymentTypeID'],
+            //     receivedAddress:
+            //         AddressInfor.fromJson(element.data()['receivedAddress']),
+            //     shippingCost: element.data()['shippingCost'] ?? 0,
+            //     totalCost: element.data()['totalCost'],
+            //     userID: element.data()['userID'],
+            //     voucherDiscountID: element.data()['voucherDiscountID'],
+            //     totalProduct: element.data()['totalProduct'],
+            //     time: (element.data()['time'] as Timestamp));
             list.add(order);
           }
           list.sort((a, b) => b.time!.compareTo(a.time!));
@@ -2548,19 +2631,20 @@ class FirestoreDatabase {
             }
           }
         }
-        orderModel.Order order = orderModel.Order(
-            deliverServiceID: data!['deliverServiceID'],
-            id: data['id'],
-            isCancelled: data['isCancelled'],
-            orderingProductsID: listProduct,
-            paymentTypeID: data['paymentTypeID'],
-            receivedAddress: AddressInfor.fromJson(data['receivedAddress']),
-            shippingCost: data['shippingCost'],
-            totalCost: data['totalCost'],
-            totalProduct: data['totalProduct'],
-            userID: data['userID'],
-            voucherDiscountID: data['voucherDiscountID'],
-            time: (data['time'] as Timestamp));
+        orderModel.Order order = orderModel.Order.fromJson(data);
+        // orderModel.Order(
+        //     deliverServiceID: data!['deliverServiceID'],
+        //     id: data['id'],
+        //     isCancelled: data['isCancelled'],
+        //     orderingProductsID: listProduct,
+        //     paymentTypeID: data['paymentTypeID'],
+        //     receivedAddress: AddressInfor.fromJson(data['receivedAddress']),
+        //     shippingCost: data['shippingCost'],
+        //     totalCost: data['totalCost'],
+        //     totalProduct: data['totalProduct'],
+        //     userID: data['userID'],
+        //     voucherDiscountID: data['voucherDiscountID'],
+        //     time: (data['time'] as Timestamp));
         await doc.update(order.toJson());
       } else {
         print("NOt exists");
@@ -2655,6 +2739,7 @@ class FirestoreDatabase {
           OrderShop orderShop = OrderShop.fromJson(data);
           list.add(orderShop);
         }
+        list.sort((a, b) => b.orderDate!.compareTo(a.orderDate!));
         return list;
       } else {
         print("EMPTy");
@@ -2693,7 +2778,7 @@ class FirestoreDatabase {
           await orderShopDoc.update(newData);
           await updateTotalOrderForShop(shopID: orderShop.id!);
           await updateTotalRevenueForShop(
-              shopID: orderShop.id!, revenue: orderShop.totalPrice!);
+              shopID: orderShop.shopID!, revenue: orderShop.totalPrice!);
         } else {
           print("Data is null");
         }
@@ -2804,6 +2889,25 @@ class FirestoreDatabase {
         .set(category.toJson());
   }
 
+  Future<void> editCategory(
+      {required String id, String? logo, String? name}) async {
+    try {
+      final cateDoc = _firestore.collection('categories').doc(id);
+      final ref = await cateDoc.get();
+      if (ref.exists) {
+        final data = ref.data();
+        Category category = Category.fromJson(data!);
+        category.logo = logo ?? category.logo;
+        category.name = name ?? category.name;
+        await cateDoc.update(category.toJson());
+      } else {
+        print("Not exist");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
   Future<List<Category>> getListCategory() async {
     List<Category> result = [];
     final snapshot = await _firestore.collection('categories').get();
@@ -2856,14 +2960,15 @@ class FirestoreDatabase {
         List<FlashSale>? list = [];
         for (var flashSaleData in ref.docs) {
           final data = flashSaleData.data();
-          FlashSale flashSale = FlashSale(
-            coverImage: data['coverImage'],
-            discountPercent: data['discountPercent'],
-            expDate: data['expDate'],
-            id: data['id'],
-            name: data['name'],
-            releasedDate: data['releasedDate'],
-          );
+          FlashSale flashSale = FlashSale.fromJson(data);
+          // FlashSale(
+          //   coverImage: data['coverImage'],
+          //   discountPercent: data['discountPercent'],
+          //   expDate: data['expDate'],
+          //   id: data['id'],
+          //   name: data['name'],
+          //   releasedDate: data['releasedDate'],
+          // );
           list.add(flashSale);
         }
         return list;
@@ -2885,14 +2990,15 @@ class FirestoreDatabase {
         List<FlashSale>? list = [];
         for (var flashSaleData in ref.docs) {
           final data = flashSaleData.data();
-          FlashSale flashSale = FlashSale(
-            coverImage: data['coverImage'],
-            discountPercent: data['discountPercent'],
-            expDate: data['expDate'],
-            id: data['id'],
-            name: data['name'],
-            releasedDate: data['releasedDate'],
-          );
+          FlashSale flashSale = FlashSale.fromJson(data);
+          // FlashSale flashSale = FlashSale(
+          //   coverImage: data['coverImage'],
+          //   discountPercent: data['discountPercent'],
+          //   expDate: data['expDate'],
+          //   id: data['id'],
+          //   name: data['name'],
+          //   releasedDate: data['releasedDate'],
+          // );
           list.add(flashSale);
         }
         return list;
@@ -2916,14 +3022,15 @@ class FirestoreDatabase {
 
           for (var flashSaleData in event.docs) {
             final data = flashSaleData.data();
-            FlashSale flashSale = FlashSale(
-              coverImage: data['coverImage'],
-              discountPercent: data['discountPercent'],
-              expDate: data['expDate'],
-              id: data['id'],
-              name: data['name'],
-              releasedDate: data['releasedDate'],
-            );
+            // FlashSale flashSale = FlashSale(
+            //   coverImage: data['coverImage'],
+            //   discountPercent: data['discountPercent'],
+            //   expDate: data['expDate'],
+            //   id: data['id'],
+            //   name: data['name'],
+            //   releasedDate: data['releasedDate'],
+            // );
+            FlashSale flashSale = FlashSale.fromJson(data);
             list.add(flashSale);
           }
         } else {
@@ -2956,14 +3063,15 @@ class FirestoreDatabase {
 
           for (var flashSaleData in event.docs) {
             final data = flashSaleData.data();
-            FlashSale flashSale = FlashSale(
-              coverImage: data['coverImage'],
-              discountPercent: data['discountPercent'],
-              expDate: data['expDate'],
-              id: data['id'],
-              name: data['name'],
-              releasedDate: data['releasedDate'],
-            );
+            // FlashSale flashSale = FlashSale(
+            //   coverImage: data['coverImage'],
+            //   discountPercent: data['discountPercent'],
+            //   expDate: data['expDate'],
+            //   id: data['id'],
+            //   name: data['name'],
+            //   releasedDate: data['releasedDate'],
+            // );
+            FlashSale flashSale = FlashSale.fromJson(data);
             list.add(flashSale);
           }
         } else {
@@ -2994,8 +3102,127 @@ class FirestoreDatabase {
     }
   }
 
-  Future<void> confirmSellerRequest(VerificationForm verificationForm) async {}
-  Future<void> denySellerRequest(VerificationForm verificationForm) async {}
+  Future<VerificationForm?> getVerificationFormByID(String id) async {
+    try {
+      final ref =
+          await _firestore.collection('verificationForms').doc(id).get();
+      if (ref.exists) {
+        final data = ref.data();
+        VerificationForm verificationForm = VerificationForm.fromJson(data!);
+        return verificationForm;
+      } else {
+        print("Not exists");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<List<UserModel>?> getListUnVerifiedSeller() async {
+    try {
+      final ref = await _firestore.collection('users').get();
+      if (ref.docs.isNotEmpty) {
+        List<UserModel> list = [];
+        for (var element in ref.docs) {
+          final data = element.data();
+          UserModel user = UserModel.fromJson(data);
+          if (user.userInfor!.sellerInfor != null) {
+            if (!user.userInfor!.sellerInfor!.isVerified!) {
+              bool? isExist = await isVerificatioinFormExist(
+                  user.userInfor!.sellerInfor!.shopIDs![0]);
+              if (isExist != null) {
+                if (isExist) {
+                  list.add(user);
+                }
+              }
+            }
+          }
+        }
+        return list;
+      } else {
+        print("EMPTY");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<bool?> isVerificatioinFormExist(String id) async {
+    try {
+      final ref =
+          await _firestore.collection('verificationForms').doc(id).get();
+      return ref.exists;
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<List<UserModel>?> getListVerifiedSeller() async {
+    try {
+      final ref = await _firestore.collection('users').get();
+      if (ref.docs.isNotEmpty) {
+        List<UserModel> list = [];
+        for (var element in ref.docs) {
+          final data = element.data();
+          UserModel user = UserModel.fromJson(data);
+          if (user.userInfor!.sellerInfor != null) {
+            if (user.userInfor!.sellerInfor!.isVerified!) {
+              bool? isExist = await isVerificatioinFormExist(
+                  user.userInfor!.sellerInfor!.shopIDs![0]);
+              if (isExist != null) {
+                if (isExist) {
+                  list.add(user);
+                }
+              }
+            }
+          }
+        }
+        return list;
+      } else {
+        print("EMPTY");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<List<VerificationForm>?> getListVerificationForm() async {
+    try {
+      final ref = await _firestore.collection('verrificationForms').get();
+      if (ref.docs.isNotEmpty) {
+        List<VerificationForm> list = [];
+        for (var element in ref.docs) {
+          final data = element.data();
+          VerificationForm verificationForm = VerificationForm.fromJson(data);
+          list.add(verificationForm);
+        }
+        return list;
+      } else {
+        print("EMpty");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<void> confirmSellerRequest(VerificationForm verificationForm) async {
+    try {
+      final userDoc =
+          _firestore.collection('users').doc(verificationForm.sellerID);
+      final ref = await userDoc.get();
+      if (ref.exists) {
+        final data = ref.data();
+        UserModel user = UserModel.fromJson(data!);
+        user.userInfor!.sellerInfor!.isVerified = true;
+        await userDoc.update(user.toJson());
+      } else {
+        print("NOT exists");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
   Future<int?> getTotalUser() async {
     try {
       final ref = await _firestore.collection('users').get();
@@ -3018,9 +3245,11 @@ class FirestoreDatabase {
               ? UserInfor.fromJson(data['userInfor'])
               : null;
           if (userInfor != null) {
-            var role = data['role'] ?? null;
-            if (role == Role.consumer.toString() ||
-                role == Role.mixedUser.toString()) {
+            var role = Role.values.firstWhere(
+              (element) => element.toString().split(".").last == data['role'],
+              orElse: () => Role.admin,
+            );
+            if (role == Role.consumer || role == Role.mixedUser) {
               result++;
             }
           } else {
@@ -3047,9 +3276,11 @@ class FirestoreDatabase {
               ? UserInfor.fromJson(data['userInfor'])
               : null;
           if (userInfor != null) {
-            var role = data['role'] ?? null;
-            if (role == Role.seller.toString() ||
-                role == Role.mixedUser.toString()) {
+            var role = Role.values.firstWhere(
+              (element) => element.toString().split(".").last == data['role'],
+              orElse: () => Role.admin,
+            );
+            if (role == Role.seller || role == Role.mixedUser) {
               result++;
             }
           } else {
@@ -3076,8 +3307,11 @@ class FirestoreDatabase {
               ? UserInfor.fromJson(data['userInfor'])
               : null;
           if (userInfor != null) {
-            var role = data['role'] ?? null;
-            if (role == Role.seller.toString()) {
+            var role = Role.values.firstWhere(
+              (element) => element.toString().split(".").last == data['role'],
+              orElse: () => Role.admin,
+            );
+            if (role == Role.seller) {
               result++;
             }
           } else {
@@ -3104,8 +3338,11 @@ class FirestoreDatabase {
               ? UserInfor.fromJson(data['userInfor'])
               : null;
           if (userInfor != null) {
-            var role = data['role'] ?? null;
-            if (role == Role.consumer.toString()) {
+            var role = Role.values.firstWhere(
+              (element) => element.toString().split(".").last == data['role'],
+              orElse: () => Role.admin,
+            );
+            if (role == Role.consumer) {
               result++;
             }
           } else {
@@ -3172,6 +3409,26 @@ class FirestoreDatabase {
     }
   }
 
+  Future<void> editDeliveryService(
+      {required String id, String? name, String? logo}) async {
+    try {
+      final deliverServiceDoc =
+          _firestore.collection('deliverservices').doc(id);
+      final ref = await deliverServiceDoc.get();
+      if (ref.exists) {
+        final data = ref.data();
+        DeliverService deliverService = DeliverService.fromJson(data!);
+        deliverService.logo = logo ?? deliverService.logo;
+        deliverService.name = name ?? deliverService.name;
+        await deliverServiceDoc.update(deliverService.toJson());
+      } else {
+        print("Not exist");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
   // payment sections
   Future<PaymentType?> getPaymentByID(String id) async {
     try {
@@ -3220,9 +3477,18 @@ class FirestoreDatabase {
     }
   }
 
+  Future<int?> getTotalProduct() async {
+    try {
+      final ref = await _firestore.collection('products').get();
+      return ref.size;
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
   Future<int?> getTotalDeliveryService() async {
     try {
-      final ref = await _firestore.collection('deliveryServices').get();
+      final ref = await _firestore.collection('deliverservices').get();
       return ref.size;
     } catch (e) {
       print("An error occured: $e");

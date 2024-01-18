@@ -12,10 +12,13 @@ import 'package:dpl_ecommerce/models/ordering_product.dart';
 
 class OrderingProductItem extends StatefulWidget {
   OrderingProductItem(
-      {super.key, required this.orderingProduct, required this.orderID});
+      {super.key,
+      required this.orderingProduct,
+      required this.orderID,
+      this.isDetail = false});
   OrderingProduct orderingProduct;
   final String orderID;
-
+  bool isDetail;
   @override
   State<OrderingProductItem> createState() => _OrderingProductItemState();
 }
@@ -52,10 +55,12 @@ class _OrderingProductItemState extends State<OrderingProductItem> {
     return GestureDetector(
       onTap: () {
         // go to detail
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => OrderingProductDetailScreen(
-              order: widget.orderingProduct, orderID: widget.orderID),
-        ));
+        if (!widget.isDetail) {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => OrderingProductDetailScreen(
+                order: widget.orderingProduct, orderID: widget.orderID),
+          ));
+        }
       },
       child: Container(
         padding: EdgeInsets.all(2.h),
@@ -147,79 +152,83 @@ class _OrderingProductItemState extends State<OrderingProductItem> {
               height: 10.h,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 10.w,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          LangText(context: context).getLocal()!.price_ucf,
-                          style:
-                              TextStyle(fontSize: 18.sp, color: Colors.black38),
-                        ),
-                        Text(
-                          LangText(context: context).getLocal()!.quantity_ucf,
-                          style:
-                              TextStyle(fontSize: 18.sp, color: Colors.black38),
-                        ),
-                        if (voucher != null)
+                Container(
+                  // decoration: BoxDecoration(color: Colors.red),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 10.w,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Text(
-                            "${LangText(context: context).getLocal()!.discount_ucf} ",
+                            LangText(context: context).getLocal()!.price_ucf,
                             style: TextStyle(
                                 fontSize: 18.sp, color: Colors.black38),
                           ),
-                        Text(
-                          LangText(context: context)
-                              .getLocal()!
-                              .total_amount_ucf,
-                          style:
-                              TextStyle(fontSize: 18.sp, color: Colors.black38),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Row(
-                  //crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    //SizedBox(width: 10,),
-
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        // Text(
-                        //   "${widget.orderingProduct.quantity!} VND",
-                        //   style:
-                        //       TextStyle(fontSize: 18.sp, color: Colors.black38),
-                        // ),
-                        Text(
-                          widget.orderingProduct.price.toString(),
-                          style: TextStyle(fontSize: 20.sp),
-                        ),
-                        Text(
-                          widget.orderingProduct.quantity.toString(),
-                          style: TextStyle(fontSize: 20.sp),
-                        ),
-                        if (voucher != null)
                           Text(
-                            widget.orderingProduct.voucherID.toString(),
-                            style: TextStyle(fontSize: 20.sp),
+                            LangText(context: context).getLocal()!.quantity_ucf,
+                            style: TextStyle(
+                                fontSize: 18.sp, color: Colors.black38),
                           ),
-                        Text(
-                          "${widget.orderingProduct.realPrice!} VND",
-                          style: TextStyle(fontSize: 18.sp),
+                          if (voucher != null)
+                            Text(
+                              "${LangText(context: context).getLocal()!.discount_ucf} ",
+                              style: TextStyle(
+                                  fontSize: 18.sp, color: Colors.black38),
+                            ),
+                          Text(
+                            LangText(context: context)
+                                .getLocal()!
+                                .total_amount_ucf,
+                            style: TextStyle(
+                                fontSize: 18.sp, color: Colors.black38),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 5.w),
+                  // decoration: BoxDecoration(color: Colors.yellow),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Text(
+                      //   "${widget.orderingProduct.quantity!} VND",
+                      //   style:
+                      //       TextStyle(fontSize: 18.sp, color: Colors.black38),
+                      // ),
+                      Text(
+                        "${widget.orderingProduct.price}  VND",
+                        style: TextStyle(fontSize: 17.sp, color: MyTheme.black),
+                      ),
+                      Text(
+                        widget.orderingProduct.quantity.toString(),
+                        style: TextStyle(fontSize: 17.sp, color: MyTheme.black),
+                      ),
+                      if (voucher != null)
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 5.w),
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: Text(
+                            widget.orderingProduct.voucherID.toString(),
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 17.sp, color: MyTheme.black),
+                          ),
                         ),
-                      ],
-                    ),
-                    SizedBox(
-                      width: 10.w,
-                    ),
-                  ],
+                      Text(
+                        "${widget.orderingProduct.realPrice!} VND",
+                        style: TextStyle(fontSize: 17.sp, color: MyTheme.black),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             )

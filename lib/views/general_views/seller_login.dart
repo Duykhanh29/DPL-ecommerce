@@ -74,7 +74,7 @@ class _SellerLoginState extends State<SellerLogin> {
       return;
     }
     await authViewModel.signInWithEmailAndPass(
-        email: email, password: password);
+        email: email, password: password, context: context);
   }
 
   @override

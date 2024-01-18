@@ -8,6 +8,7 @@ import 'package:dpl_ecommerce/helpers/validators.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
+import 'package:dpl_ecommerce/views/general_views/admin_login.dart';
 import 'package:dpl_ecommerce/views/general_views/register_seller.dart';
 import 'package:dpl_ecommerce/views/general_views/seller_login.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,7 @@ class LoginScreen extends StatelessWidget {
             right: 16.h,
           ),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               SizedBox(
                 height: 50.h,
@@ -59,40 +61,42 @@ class LoginScreen extends StatelessWidget {
                     color: MyTheme.accent_color,
                     fontWeight: FontWeight.w800),
               ),
-              SizedBox(height: 10.h),
-              Text(
-                LangText(context: context).getLocal()!.sign_in_to_continue,
-                style: TextStyle(
-                    fontSize: 18.sp,
-                    color: MyTheme.accent_color_shadow,
-                    fontWeight: FontWeight.w400),
-              ),
-              SizedBox(height: 50.h),
+              // SizedBox(height: 10.h),
+              // Text(
+              //   LangText(context: context).getLocal()!.sign_in_to_continue,
+              //   style: TextStyle(
+              //       fontSize: 18.sp,
+              //       color: MyTheme.accent_color_shadow,
+              //       fontWeight: FontWeight.w400),
+              // ),
+              SizedBox(height: 80.h),
               // _buildEmail(context),
               // SizedBox(height: 8.h),
               // _buildPassword(context),
-              SizedBox(height: 16.h),
-              _buildSignIn(context),
-              SizedBox(height: 20.h),
-              _buildOrLine(context),
-              SizedBox(height: 16.h),
+              // SizedBox(height: 16.h),
+              // _buildSignIn(context),
+              // SizedBox(height: 20.h),s
+
+              // SizedBox(height: 10.h),
+              // Padding(padding: EdgeInsets.symmetric(vertical: 10.h)),
               _buildLoginWithGoogle(context),
               // SizedBox(height: 8.h),
               // _buildLoginWithFacebook(context),
-              SizedBox(height: 17.h),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    LangText(context: context)
-                        .getLocal()!
-                        .login_screen_forgot_password,
-                    style: TextStyle(fontSize: 12.sp, color: Colors.black),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 80.h),
+              _buildOrLine(context),
+              // Align(
+              //   alignment: Alignment.centerRight,
+              //   child: TextButton(
+              //     onPressed: () {},
+              //     child: Text(
+              //       LangText(context: context)
+              //           .getLocal()!
+              //           .login_screen_forgot_password,
+              //       style: TextStyle(fontSize: 12.sp, color: Colors.black),
+              //     ),
+              //   ),
+              // ),
+              SizedBox(height: 30.h),
               buildLoginAsSeller(context),
               SizedBox(
                 height: 15.h,
@@ -116,7 +120,7 @@ class LoginScreen extends StatelessWidget {
               //   ),
               //   textAlign: TextAlign.left,
               // ),
-              SizedBox(height: 5.h),
+              SizedBox(height: 100.h),
             ],
           ),
         ),
@@ -135,11 +139,12 @@ class LoginScreen extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 5.h),
         decoration: BoxDecoration(
-            border: Border.all(color: MyTheme.accent_color),
+            color: MyTheme.accent_color,
+            border: Border.all(color: MyTheme.white),
             borderRadius: BorderRadius.circular(10.r)),
         child: Text(
           LangText(context: context).getLocal()!.login_as_seller,
-          style: TextStyle(fontSize: 12.sp, color: Colors.black),
+          style: TextStyle(fontSize: 12.sp, color: Colors.white),
         ),
       ),
     );
@@ -149,17 +154,18 @@ class LoginScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => Registration(),
+          builder: (context) => AdminLogin(),
         ));
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 5.h),
         decoration: BoxDecoration(
-            border: Border.all(color: MyTheme.accent_color),
+            color: MyTheme.accent_color,
+            border: Border.all(color: MyTheme.white),
             borderRadius: BorderRadius.circular(10.r)),
         child: Text(
           LangText(context: context).getLocal()!.login_as_admin,
-          style: TextStyle(fontSize: 12.sp, color: Colors.black),
+          style: TextStyle(fontSize: 12.sp, color: Colors.white),
         ),
       ),
     );
@@ -249,56 +255,100 @@ class LoginScreen extends StatelessWidget {
 
   /// Section Widget
   Widget _buildOrLine(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(
-            top: 10.h,
-            bottom: 9.h,
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(
+              top: 10.h,
+              bottom: 9.h,
+            ),
+            child: SizedBox(
+              width: 160.h,
+              child: Divider(
+                color: MyTheme.accent_color,
+                height: 0.4,
+              ),
+            ),
           ),
-          child: SizedBox(
-            width: 160.h,
-            child: Divider(),
+          Text(
+            LangText(context: context).getLocal()!.or,
           ),
-        ),
-        Text(
-          LangText(context: context).getLocal()!.or,
-        ),
-        Padding(
-          padding: EdgeInsets.only(
-            top: 10.h,
-            bottom: 9.h,
+          Padding(
+            padding: EdgeInsets.only(
+              top: 10.h,
+              bottom: 9.h,
+            ),
+            child: SizedBox(
+              width: 160.h,
+              child: Divider(
+                color: MyTheme.accent_color,
+                height: 0.4,
+              ),
+            ),
           ),
-          child: SizedBox(
-            width: 160.h,
-            child: Divider(),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   /// Section Widget
   Widget _buildLoginWithGoogle(BuildContext context) {
     final authProvider = Provider.of<AuthViewModel>(context);
-    return Container(
-      height: 50.h,
-      width: ScreenUtil().screenWidth * 0.9,
-      child: OutlinedButton.icon(
-        onPressed: () async {
-          await authProvider.signInWithGoogle();
-        },
-        icon: Image.asset(
-          ImageData.googleLogo,
-          height: 10.h,
-          width: 10.h,
-        ),
-        label: Text(LangText(context: context).getLocal()!.login_with_google),
-        style: ButtonStyle(
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.r)))),
-      ),
+
+    return GestureDetector(
+      onTap: () async {
+        await authProvider.signInWithGoogle(context);
+      },
+      child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.r),
+              border: Border.all(
+                color: MyTheme.white,
+                width: 0.6,
+              ),
+              color: MyTheme.accent_color),
+          height: 50.h,
+          padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 5.w),
+          width: ScreenUtil().screenWidth * 0.9,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Image.asset(
+                ImageData.googleLogo,
+                height: 20.h,
+                width: 20.h,
+              ),
+              Text(
+                LangText(context: context).getLocal()!.login_with_google,
+                style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w500,
+                    color: MyTheme.white),
+              ),
+            ],
+          )
+          //  OutlinedButton.icon(
+          //   onPressed: () async {
+          //     await authProvider.signInWithGoogle();
+          //   },
+          //   icon: Image.asset(
+          //     ImageData.googleLogo,
+          //     height: 10.h,
+          //     width: 10.h,
+          //   ),
+          //   label: Text(LangText(context: context).getLocal()!.login_with_google),
+          //   style: ButtonStyle(
+          //     shape: MaterialStateProperty.all(
+          //       RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(10.r),
+          //           side: BorderSide(color: MyTheme.accent_color, width: 2)),
+          //     ),
+          //   ),
+          // ),
+          ),
     );
   }
 

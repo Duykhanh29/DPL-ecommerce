@@ -99,104 +99,102 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserViewModel>(context);
     final user = userProvider.currentUser;
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: CustomAppBar(
-                title: LangText(context: context).getLocal()!.search_ucf,
-                centerTitle: true,
-                context: context)
-            .show(),
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
-          child: SizedBox(
-              width: double.maxFinite,
-              child: ListView(children: [
-                SizedBox(height: 25.h),
-                Padding(
-                  padding: EdgeInsets.only(left: 24.h, right: 25.h),
-                  child: CustomSearchView(
-                    suffix: searchController.text != "" &&
-                            searchController.text != null
-                        ? InkWell(
-                            onTap: () {
-                              setState(() {
-                                searchController.text = "";
-                              });
-                            },
-                            child: const Icon(Icons.close),
-                          )
-                        : null,
-                    textInputAction: TextInputAction.search,
-                    onChanged: (p0) {
-                      // await productRepo.searchProductByName(p0);
-                    },
-                    onFieldSubmitted: (p0) async {
-                      final list = await productRepo.searchProductByName(p0);
-                      await searchHistoryRepo.insertSearchKey(
-                          uid: user!.id!, searchKey: p0);
-                      // ignore: use_build_context_synchronously
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SearchFilterScreen(
-                              list: list, searchKey: searchController.text),
-                        ),
-                      );
-                    },
-                    controller: searchController,
-                    hintText:
-                        LangText(context: context).getLocal()!.search_anything,
-                    prefix: Padding(
-                        padding: EdgeInsets.all(7.h),
-                        child: Icon(
-                          Icons.search,
-                          size: 25.h,
-                        )),
-                  ),
-                ),
-                SizedBox(height: 20.h),
-                !isLoading && listSearchHistory != null
-                    ? Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                            padding: EdgeInsets.only(left: 20.w),
-                            child: Text(
-                                LangText(context: context)
-                                    .getLocal()!
-                                    .recent_search,
-                                style: theme.textTheme.titleSmall)))
-                    : Container(),
-                SizedBox(height: 20.h),
-                searchController.text.isEmpty
-                    ? (isLoading
-                        ? Container()
-                        : listSearchHistory != null
-                            ? _buildHistorySearch(context, listSearchHistory!)
-                            : Container())
-                    : _buildSearch(context),
-                SizedBox(height: 25.h),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 5.h, left: 20.w),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 0.w),
-                        child: _buildDealOfTheDay(
-                          context,
-                          dealOfTheDayText: LangText(context: context)
-                              .getLocal()!
-                              .recommended_ucf,
-                          viewAllText: "",
-                        ),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: CustomAppBar(
+              title: LangText(context: context).getLocal()!.search_ucf,
+              centerTitle: true,
+              context: context)
+          .show(),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
+        child: SizedBox(
+            width: double.maxFinite,
+            child: ListView(children: [
+              SizedBox(height: 25.h),
+              Padding(
+                padding: EdgeInsets.only(left: 24.h, right: 25.h),
+                child: CustomSearchView(
+                  suffix: searchController.text != "" &&
+                          searchController.text != null
+                      ? InkWell(
+                          onTap: () {
+                            setState(() {
+                              searchController.text = "";
+                            });
+                          },
+                          child: const Icon(Icons.close),
+                        )
+                      : null,
+                  textInputAction: TextInputAction.search,
+                  onChanged: (p0) {
+                    // await productRepo.searchProductByName(p0);
+                  },
+                  onFieldSubmitted: (p0) async {
+                    final list = await productRepo.searchProductByName(p0);
+                    await searchHistoryRepo.insertSearchKey(
+                        uid: user!.id!, searchKey: p0);
+                    // ignore: use_build_context_synchronously
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SearchFilterScreen(
+                            list: list, searchKey: searchController.text),
                       ),
-                      SizedBox(height: 16.h),
-                      _buildProductSmallList1(context, product!),
-                    ],
-                  ),
+                    );
+                  },
+                  controller: searchController,
+                  hintText:
+                      LangText(context: context).getLocal()!.search_anything,
+                  prefix: Padding(
+                      padding: EdgeInsets.all(7.h),
+                      child: Icon(
+                        Icons.search,
+                        size: 25.h,
+                      )),
                 ),
-              ])),
-        ),
+              ),
+              SizedBox(height: 20.h),
+              !isLoading && listSearchHistory != null
+                  ? Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                          padding: EdgeInsets.only(left: 20.w),
+                          child: Text(
+                              LangText(context: context)
+                                  .getLocal()!
+                                  .recent_search,
+                              style: theme.textTheme.titleSmall)))
+                  : Container(),
+              SizedBox(height: 20.h),
+              searchController.text.isEmpty
+                  ? (isLoading
+                      ? Container()
+                      : listSearchHistory != null
+                          ? _buildHistorySearch(context, listSearchHistory!)
+                          : Container())
+                  : _buildSearch(context),
+              SizedBox(height: 25.h),
+              Padding(
+                padding: EdgeInsets.only(bottom: 5.h, left: 20.w),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 0.w),
+                      child: _buildDealOfTheDay(
+                        context,
+                        dealOfTheDayText: LangText(context: context)
+                            .getLocal()!
+                            .recommended_ucf,
+                        viewAllText: "",
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+                    _buildProductSmallList1(context, product!),
+                  ],
+                ),
+              ),
+            ])),
       ),
     );
   }

@@ -63,12 +63,11 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        backgroundColor: MyTheme.accent_color,
         title: Text(
           LangText(context: context).getLocal()!.home_ucf,
           style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.bold,
-              color: MyTheme.accent_color),
+              fontSize: 17, fontWeight: FontWeight.bold, color: MyTheme.white),
         ),
         actions: [
           StreamBuilder<Cart?>(
@@ -87,8 +86,11 @@ class HomePage extends StatelessWidget {
                     cartProvider.setCart(cart!);
                     return Consumer<CartViewModel>(
                         builder: (context, value, child) {
-                      return CustomBadgeCart(
-                          number: value.cart!.productInCarts!.length);
+                      if (value.cart!.productInCarts != null) {
+                        return CustomBadgeCart(
+                            number: value.cart!.productInCarts!.length);
+                      }
+                      return CustomBadgeCart(number: 0);
                     });
                   } else {
                     print("Data is null");

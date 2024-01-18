@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/district.dart';
@@ -58,6 +59,7 @@ class Dashboard extends StatelessWidget {
     final shop = shopProvider.shop;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: MyTheme.accent_color,
         title: Text(LangText(context: context).getLocal()!.dashboard_ucf),
         centerTitle: true,
         leadingWidth: 0,
@@ -136,9 +138,13 @@ class Dashboard extends StatelessWidget {
             SizedBox(
               height: 10.h,
             ),
+            buildViewWidget(context),
+            SizedBox(
+              height: 10.h,
+            ),
             Container(
               height: 80.h,
-              color: const Color.fromRGBO(33, 150, 243, 1),
+              decoration: BoxDecoration(color: MyTheme.accent_color),
               child: Row(
                 //crossAxisAlignment: CrossAxisAlignment.center,
                 //mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -272,10 +278,10 @@ class Dashboard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(LangText(context: context).getLocal()!.sales_stat_ucf),
-                  SizedBox(
-                    height: 10.h,
-                  ),
+                  // Text(LangText(context: context).getLocal()!.sales_stat_ucf),
+                  // SizedBox(
+                  //   height: 10.h,
+                  // ),
                   // TextFormField(
                   //   maxLines: 4,
                   //   decoration: InputDecoration(
@@ -296,9 +302,9 @@ class Dashboard extends StatelessWidget {
                   //     return Container();
                   //   },
                   // ),
-                  SizedBox(
-                    height: 10.h,
-                  ),
+                  // SizedBox(
+                  //   height: 10.h,
+                  // ),
 
                   Text(LangText(context: context)
                       .getLocal()!
@@ -412,6 +418,42 @@ class Dashboard extends StatelessWidget {
     );
   }
 
+  Widget buildViewWidget(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(color: MyTheme.accent_color),
+      width: MediaQuery.of(context).size.width,
+      // height: 60.h,
+
+      padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 15.w),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(LangText(context: context).getLocal()!.view_number_ucf,
+              style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w500,
+                  color: MyTheme.white)),
+          Consumer<ShopViewModel>(
+            builder: (context, value, child) {
+              if (value.shop != null) {
+                return Text(
+                  value.shop!.shopView.toString(),
+                  style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w500,
+                      color: MyTheme.white),
+                );
+              } else {
+                return Container();
+              }
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   Widget _buiditeam(
           {required String lable,
           required String value,
@@ -422,7 +464,8 @@ class Dashboard extends StatelessWidget {
         height: 70.h,
         width: MediaQuery.of(context).size.width * 0.44,
         decoration: BoxDecoration(
-            color: Colors.blue, borderRadius: BorderRadius.circular(10)),
+            color: MyTheme.accent_color,
+            borderRadius: BorderRadius.circular(10)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

@@ -3,6 +3,7 @@ import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:dpl_ecommerce/views/admin/screens/voucher/edit_voucher_admin..dart';
 import 'package:dpl_ecommerce/views/seller/screens/voucher/edit_voucher..dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,33 +29,55 @@ class __DisplayVoucherState extends State<DisplayVoucher> {
   List<Voucher>? listVoucher;
   FirestoreDatabase firestoreDatabase = FirestoreDatabase();
   @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    listVoucher = await voucherRepo.getListVoucherByAdmin();
+    isLoading = false;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> onRefressh() async {
+    reset();
+    await fetchData();
+  }
+
+  reset() {
+    listVoucher = null;
+    isLoading = true;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    onRefressh();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: voucherRepo.getAllVoucherByAdmin(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else {
-          if (snapshot.hasData) {
-            if (snapshot.data != null) {
-              final list = snapshot.data;
-              return buildListVoucher(context, list!);
-            } else {
-              Center(
-                child: Text(LangText(context: context)
-                    .getLocal()!
-                    .no_data_is_available),
-              );
-            }
-          }
-        }
-        return Center(
-          child:
-              Text(LangText(context: context).getLocal()!.no_data_is_available),
-        );
-      },
+    print("second time");
+    return RefreshIndicator(
+      onRefresh: onRefressh,
+      child: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : listVoucher != null && listVoucher!.isNotEmpty
+              ? buildListVoucher(context, listVoucher!)
+              : Center(
+                  child: Text(LangText(context: context)
+                      .getLocal()!
+                      .no_data_is_available),
+                ),
     );
   }
 
@@ -66,8 +89,7 @@ class __DisplayVoucherState extends State<DisplayVoucher> {
           final voucher = list![index];
           return GestureDetector(
             onTap: () {
-              print("object");
-              _navigateToEditVoucherScreen(context, voucher);
+              _navigateToEditVoucherScreen(context, voucher.id!);
             },
             child: Column(
               children: [
@@ -163,7 +185,8 @@ class __DisplayVoucherState extends State<DisplayVoucher> {
                               size: 15.h,
                             ),
                             onPressed: () {
-                              _navigateToEditVoucherScreen(context, voucher);
+                              _navigateToEditVoucherScreen(
+                                  context, voucher.id!);
                             },
                           ),
                           // Center(
@@ -184,6 +207,7 @@ class __DisplayVoucherState extends State<DisplayVoucher> {
                             color: Colors.redAccent,
                             onPressed: () async {
                               await voucherRepo.deleteVoucherByID(voucher.id!);
+                              await onRefressh();
                             },
                           ),
                         ],
@@ -207,16 +231,18 @@ class __DisplayVoucherState extends State<DisplayVoucher> {
   }
 
   void _navigateToEditVoucherScreen(
-      BuildContext context, Voucher voucher) async {
+      BuildContext context, String voucherID) async {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditVoucher(
-          voucher: voucher,
+        builder: (context) => EditAdminVoucher(
+          voucherID: voucherID,
           // onVoucherUpdated: widget.onVoucherUpdated,
           // vouchers: [],
         ),
       ),
-    );
+    ).whenComplete(() async {
+      await onRefressh();
+    });
   }
 }

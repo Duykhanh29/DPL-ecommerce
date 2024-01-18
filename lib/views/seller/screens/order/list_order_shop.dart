@@ -160,7 +160,7 @@ class _ListOrderShopState extends State<ListOrderShop> {
                     items: buildDropdownPaymentStatusItemsForUpdate(context),
                     onChanged: (value) async {
                       await orderRepo.updatePaymentStatusForOrderShop(
-                          listOrder![index].shopID!, paymentStatus);
+                          listOrder![index].id!, value!);
                       await onRefresh();
                     },
                   ),

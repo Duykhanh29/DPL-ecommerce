@@ -121,6 +121,7 @@ dependencies:
   syncfusion_flutter_core: ^22.2.9
   syncfusion_flutter_charts: ^22.2.9
 
+  flutter_slidable: ^3.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

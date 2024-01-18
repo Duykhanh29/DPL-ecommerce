@@ -93,6 +93,7 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
     final user = userProvider.currentUser;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: MyTheme.accent_color,
         title: Row(
           children: [
             //Icon(Icons.search),

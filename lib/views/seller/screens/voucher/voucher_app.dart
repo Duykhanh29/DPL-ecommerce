@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/helpers/toast_helper.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
@@ -79,6 +80,7 @@ class __VoucherAppState extends State<VoucherApp> {
         }
       }),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: MyTheme.accent_color,
         onPressed: () {
           if (!user!.userInfor!.sellerInfor!.isVerified!) {
             showDialog();

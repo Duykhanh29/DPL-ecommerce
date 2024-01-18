@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/models/chat.dart';
 import 'package:dpl_ecommerce/repositories/chat_repo.dart';
@@ -13,6 +14,8 @@ class ChatPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: MyTheme.accent_color,
         leading: CustomArrayBackWidget(),
         title: Text(AppLocalizations.of(context)!.chat_list),
       ),

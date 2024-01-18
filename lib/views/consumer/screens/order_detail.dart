@@ -29,76 +29,73 @@ class OrderDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          //backgroundColor: appTheme.gray5001,
-          appBar: CustomAppBar(
-                  backgroundColor: MyTheme.accent_color,
-                  title:
-                      LangText(context: context).getLocal()!.order_details_ucf,
-                  context: context,
-                  centerTitle: true)
-              .show(),
-          //  AppBar(
-          //   backgroundColor: Colors.blue,
-          //   title: Text(
-          //    ,
-          //     textAlign: TextAlign.center,
-          //   ),
-          //   centerTitle: true,
+    return Scaffold(
+        //backgroundColor: appTheme.gray5001,
+        appBar: CustomAppBar(
+                backgroundColor: MyTheme.accent_color,
+                title: LangText(context: context).getLocal()!.order_details_ucf,
+                context: context,
+                centerTitle: true)
+            .show(),
+        //  AppBar(
+        //   backgroundColor: Colors.blue,
+        //   title: Text(
+        //    ,
+        //     textAlign: TextAlign.center,
+        //   ),
+        //   centerTitle: true,
 
-          //   //leading: Icon(Icons.menu),
-          // ),
-          body: Padding(
-            padding: EdgeInsets.only(bottom: 8.h, top: 1.h),
-            child: Container(
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                // alignment: Alignment.topCenter,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: DetailBody(
-                      list: order.orderingProductsID!,
-                      deliverServiceID: order.deliverServiceID!,
-                      order: order,
-                    ),
+        //   //leading: Icon(Icons.menu),
+        // ),
+        body: Padding(
+          padding: EdgeInsets.only(bottom: 8.h, top: 1.h),
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              // alignment: Alignment.topCenter,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: DetailBody(
+                    list: order.orderingProductsID!,
+                    deliverServiceID: order.deliverServiceID!,
+                    order: order,
                   ),
-                  // GestureDetector(
-                  //   // onTap: () => Navigator.push(
-                  //   //   context,
-                  //   //   MaterialPageRoute(
-                  //   //     builder: (context) =>
-                  //   //         RatingScreen(productID: orderingProduct.productID!),
-                  //   //   ),
-                  //   // ),
-                  //   child: Container(
-                  //     alignment: Alignment.bottomCenter,
-                  //     decoration: BoxDecoration(
-                  //         color: MyTheme.accent_color,
-                  //         borderRadius: BorderRadius.circular(8.r)),
-                  //     width: MediaQuery.of(context).size.width * 0.9,
-                  //     height: MediaQuery.of(context).size.height * 0.06,
-                  //     child: Center(
-                  //       child: Text(
-                  //         LangText(context: context).getLocal()!.rate_ucf,
-                  //         textAlign: TextAlign.center,
-                  //         style:
-                  //             TextStyle(fontSize: 16.sp, color: Colors.white),
-                  //       ),
-                  //     ),
+                ),
+                // GestureDetector(
+                //   // onTap: () => Navigator.push(
+                //   //   context,
+                //   //   MaterialPageRoute(
+                //   //     builder: (context) =>
+                //   //         RatingScreen(productID: orderingProduct.productID!),
+                //   //   ),
+                //   // ),
+                //   child: Container(
+                //     alignment: Alignment.bottomCenter,
+                //     decoration: BoxDecoration(
+                //         color: MyTheme.accent_color,
+                //         borderRadius: BorderRadius.circular(8.r)),
+                //     width: MediaQuery.of(context).size.width * 0.9,
+                //     height: MediaQuery.of(context).size.height * 0.06,
+                //     child: Center(
+                //       child: Text(
+                //         LangText(context: context).getLocal()!.rate_ucf,
+                //         textAlign: TextAlign.center,
+                //         style:
+                //             TextStyle(fontSize: 16.sp, color: Colors.white),
+                //       ),
+                //     ),
 
-                  //     // text: "Details",
-                  //     // buttonTextStyle: TextStyle(color: Colors.white),
+                //     // text: "Details",
+                //     // buttonTextStyle: TextStyle(color: Colors.white),
 
-                  //     // onPressed: () => OrderDetailScreen(),
-                  //   ),
-                  // ),
-                ],
-              ),
+                //     // onPressed: () => OrderDetailScreen(),
+                //   ),
+                // ),
+              ],
             ),
-          )),
-    );
+          ),
+        ));
   }
 }
 

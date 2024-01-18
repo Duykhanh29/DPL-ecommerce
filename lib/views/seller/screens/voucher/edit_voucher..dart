@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/shop.dart';
@@ -174,24 +175,26 @@ class _AddProductScreenState extends State<EditVoucher> {
                 //       Text(LangText(context: context)
                 //           .getLocal()!
                 //           .select_category),
-                DropdownButton<Product>(
-                  value: selectedProduct,
-                  isExpanded: true,
-                  items: [
-                    DropdownMenuItem<Product>(
-                      value: selectedProduct,
-                      child: Text(selectedProduct != null
-                          ? selectedProduct!.name!
-                          : ""),
-                    )
-                  ],
-                  onChanged: (newValue) {
-                    setState(() {
-                      // selectedProduct = newValue!;
-                      // Reset selected product when category changes
-                    });
-                  },
-                ),
+                selectedProduct != null
+                    ? DropdownButton<Product>(
+                        value: selectedProduct,
+                        isExpanded: true,
+                        items: [
+                          DropdownMenuItem<Product>(
+                            value: selectedProduct,
+                            child: Text(selectedProduct != null
+                                ? selectedProduct!.name!
+                                : ""),
+                          )
+                        ],
+                        onChanged: (newValue) {
+                          setState(() {
+                            // selectedProduct = newValue!;
+                            // Reset selected product when category changes
+                          });
+                        },
+                      )
+                    : Container(),
                 //       // Hiển thị danh sách sản phẩm ở đây
                 //       // Ví dụ: ListView.builder(...)
                 //     ],
@@ -261,6 +264,9 @@ class _AddProductScreenState extends State<EditVoucher> {
                   children: [
                     Expanded(
                       child: ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                MyTheme.accent_color)),
                         onPressed: pickDateRange,
                         child: Text(startDate != null
                             ? '${startDate!.toDate().day}/${startDate!.toDate().month}/${startDate!.toDate().year}'
@@ -272,6 +278,9 @@ class _AddProductScreenState extends State<EditVoucher> {
                     ),
                     Expanded(
                       child: ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                MyTheme.accent_color)),
                         onPressed: pickDateRange,
                         child: Text(expDate != null
                             ? '${expDate!.toDate().day}/${expDate!.toDate().month}/${expDate!.toDate().year}'
@@ -291,6 +300,8 @@ class _AddProductScreenState extends State<EditVoucher> {
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(15.r)),
         margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 25.h),
         child: ElevatedButton(
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(MyTheme.accent_color)),
           onPressed: () async {
             await _updateVoucher(shop!);
           },
@@ -319,12 +330,13 @@ class _AddProductScreenState extends State<EditVoucher> {
       }
       Voucher updatedVoucher = Voucher(
         id: widget.voucher.id,
-        isAdmin: true,
         name: name,
         expDate: expDate,
         releasedDate: startDate,
         discountAmount: newDiscountAmount,
         discountPercent: newDiscountPercent,
+        productID: selectedProduct != null ? selectedProduct!.id! : null,
+        shopID: shop.id,
       );
 
       // widget.onVoucherUpdated(updatedVoucher);j
@@ -334,7 +346,7 @@ class _AddProductScreenState extends State<EditVoucher> {
       Navigator.pop(
         context,
         MaterialPageRoute(
-            builder: (context) => const VoucherAdmin(
+            builder: (context) => VoucherApp(
                 // shopID: shop.id!,
                 )),
       );

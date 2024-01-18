@@ -4,11 +4,11 @@ import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:flutter/material.dart';
 
 class AddressViewModel extends ChangeNotifier {
-  List<AddressInfor>? listAddress;
+  List<AddressInfor> listAddress = [];
   AddressInfor? defaultAddress;
   AddressInfor? orderingAddress;
   void setListAddressInfor(List<AddressInfor>? list) {
-    listAddress = list;
+    listAddress = list!;
     notifyListeners();
   }
 
@@ -29,7 +29,7 @@ class AddressViewModel extends ChangeNotifier {
   }
 
   void delete(String id) {
-    listAddress!.removeWhere((element) => element.id! == id);
+    listAddress.removeWhere((element) => element.id! == id);
     notifyListeners();
   }
 
@@ -39,7 +39,7 @@ class AddressViewModel extends ChangeNotifier {
   }
 
   void updateAddress(AddressInfor addressInfor) {
-    for (var element in listAddress!) {
+    for (var element in listAddress) {
       if (element.id == addressInfor.id) {
         element = addressInfor;
       }

@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/chat.dart';
 import 'package:dpl_ecommerce/repositories/chat_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
@@ -16,9 +17,11 @@ class __ChatListState extends State<ChatList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(LangText(context: context).getLocal()!.chat_list),
-      ),
+      appBar: CustomAppBar(
+              title: LangText(context: context).getLocal()!.chat_list,
+              context: context,
+              centerTitle: true)
+          .show(),
       body: ListSellerChat(),
     );
   }

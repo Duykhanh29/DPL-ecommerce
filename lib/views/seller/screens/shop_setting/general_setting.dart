@@ -328,6 +328,8 @@ class __GeneralSettingState extends State<GeneralSetting> {
         width: MediaQuery.of(context).size.width * 0.9,
         margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 25.h),
         child: ElevatedButton(
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(MyTheme.accent_color)),
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
               await getImage(shop!.id!);

@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
@@ -28,7 +29,7 @@ class _FilterPageState extends State<FilterPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: MyTheme.accent_color,
         title: Text(
           LangText(context: context).getLocal()!.filter_ucf,
           textAlign: TextAlign.center,
@@ -43,6 +44,9 @@ class _FilterPageState extends State<FilterPage> {
             width: double.infinity,
             margin: EdgeInsets.all(16.h),
             child: ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all(MyTheme.accent_color)),
               onPressed: () async {
                 // Xử lý khi nút Apply được nhấn
                 final list = await productRepo.filterMixedConditions(

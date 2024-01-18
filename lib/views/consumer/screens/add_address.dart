@@ -646,6 +646,7 @@ class _AddAddressState extends State<AddAddress> {
               ),
               Spacer(),
               Container(
+                width: MediaQuery.of(context).size.width * 0.9,
                 padding: EdgeInsets.all(10.h),
                 child: ElevatedButton(
                   onPressed: () async {

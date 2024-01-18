@@ -47,8 +47,10 @@ class ProductRepo {
   }
 
   // delete method
-  Future<void> deleteProduct({required String productID}) async {
-    await productFirestoreDatabase.deleteProduct(productID);
+  Future<void> deleteProduct(
+      {required String productID, required String shopID}) async {
+    await productFirestoreDatabase.deleteProduct(
+        productID: productID, shopID: shopID);
   }
 
   Future<void> updateProduct({
@@ -61,6 +63,7 @@ class ProductRepo {
     List<String>? images,
     List<String>? videos,
     String? description,
+    String? name,
   }) async {
     await productFirestoreDatabase.updateProduct(
       productID: productID,
@@ -72,6 +75,7 @@ class ProductRepo {
       sizes: sizes,
       types: types,
       videos: videos,
+      name: name,
     );
   }
 

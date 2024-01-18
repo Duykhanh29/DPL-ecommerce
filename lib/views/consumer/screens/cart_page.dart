@@ -9,6 +9,7 @@ import 'package:dpl_ecommerce/customs/custom_button_style.dart';
 import 'package:dpl_ecommerce/customs/custom_elevate_button.dart';
 import 'package:dpl_ecommerce/customs/custom_text_form_field.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/helpers/toast_helper.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/cart.dart';
 import 'package:dpl_ecommerce/models/order_model.dart' as orderModel;
@@ -33,6 +34,7 @@ import 'package:dpl_ecommerce/views/consumer/ui_elements/cart_widgets/product_ca
 import 'package:dpl_ecommerce/views/consumer/screens/product_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 // ignore_for_file: must_be_immutable
@@ -128,9 +130,27 @@ class _CartPageState extends State<CartPage> {
                         shape: MaterialStateProperty.all(RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.r)))),
                     onPressed: () async {
+                      if (provider.list.isEmpty) {
+                        ToastHelper.showDialog(
+                            LangText(context: context)
+                                .getLocal()!
+                                .please_choose_at_least_one_product,
+                            gravity: ToastGravity.CENTER,
+                            duration: Toast.LENGTH_SHORT);
+                        return;
+                      }
                       // set address
                       AddressInfor? addressInfor =
                           await userRepo.getDefaultAddress(user!.id!);
+                      if (addressInfor == null) {
+                        ToastHelper.showDialog(
+                            LangText(context: context)
+                                .getLocal()!
+                                .please_enter_your_address_first,
+                            gravity: ToastGravity.CENTER,
+                            duration: Toast.LENGTH_SHORT);
+                        return;
+                      }
                       addressProvider.setDefaultAddress(addressInfor!);
                       addressProvider.setOrderingAddress(addressInfor);
                       List<AddressInfor>? list =

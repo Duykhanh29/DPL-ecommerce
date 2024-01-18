@@ -12,6 +12,16 @@ class CategoryRepo {
     return await firestoreDatabase.getCategoryByID(id);
   }
 
+  // admin persmission
+  Future<void> addCategory(Category category) async {
+    await firestoreDatabase.addCategory(category);
+  }
+
+  Future<void> editCategory(
+      {required String id, String? logo, String? name}) async {
+    await firestoreDatabase.editCategory(id: id, logo: logo, name: name);
+  }
+
   Future<void> deleteCategory(String id) async {
     await firestoreDatabase.deleteCategory(id);
   }

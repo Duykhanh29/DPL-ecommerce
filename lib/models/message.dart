@@ -26,8 +26,10 @@ class Message {
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
       content: json['content'],
-      chatType: ChatType.values.firstWhere(
-          (element) => element.toString().split(".").last == json['chatType']),
+      chatType: json['chatType'] != null
+          ? ChatType.values.firstWhere((element) =>
+              element.toString().split(".").last == json['chatType'])
+          : null,
       id: json['id'],
       senderID: (json['senderID']),
       productID: json['productID'],
@@ -38,7 +40,9 @@ class Message {
   }
   Map<String, dynamic> toJson() => {
         'content': content,
-        'chatType': chatType.toString().split(".").last,
+        // ignore: prefer_null_aware_operators
+        'chatType':
+            chatType != null ? chatType.toString().split(".").last : null,
         'receiverID': receiverID,
         'id': id,
         'productID': productID,

@@ -1,4 +1,5 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
@@ -9,27 +10,21 @@ import 'package:dpl_ecommerce/view_model/address_view_model.dart';
 import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
 // import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
-import 'package:dpl_ecommerce/views/consumer/screens/address_screen.dart';
+import 'package:dpl_ecommerce/views/admin/screens/admin_setting_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/change_language_page.dart';
-import 'package:dpl_ecommerce/views/consumer/screens/favorite_page.dart';
-import 'package:dpl_ecommerce/views/consumer/screens/profile_setting_page.dart';
-import 'package:dpl_ecommerce/views/consumer/screens/user_list_voucher.dart';
-import 'package:dpl_ecommerce/views/consumer/screens/wishlist_page.dart';
-import 'package:dpl_ecommerce/views/general_views/login_screen.dart';
-import 'package:dpl_ecommerce/views/seller/screens/address_seller_screen.dart';
-import 'package:dpl_ecommerce/views/seller/screens/seller_setting_page.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AdminProfilePage extends StatelessWidget {
-  AdminProfilePage({Key? key})
+  AdminProfilePage({Key? key, this.isDrawer = false})
       : super(
           key: key,
         );
+  bool isDrawer;
   UserRepo userRepo = UserRepo();
   onPressLogout(context, AuthViewModel authProvider) async {
     showDialog(
@@ -52,7 +47,7 @@ class AdminProfilePage extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        Navigator.of(context, rootNavigator: true).pop();
+                        Navigator.pop(_);
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.3,
@@ -86,7 +81,7 @@ class AdminProfilePage extends StatelessWidget {
                       onTap: () async {
                         // savePref();
                         // AuthHelper().clearUserData();
-
+                        Navigator.pop(_);
                         await authProvider.signOut();
                         // Navigator.of(context, rootNavigator: true)
                         //     .pushAndRemoveUntil(
@@ -142,7 +137,10 @@ class AdminProfilePage extends StatelessWidget {
           width: double.maxFinite,
           child: Column(
             children: [
-              SizedBox(height: 61.h),
+              isDrawer
+                  ? Positioned(
+                      left: 10.w, top: 10.h, child: CustomArrayBackWidget())
+                  : SizedBox(height: 61.h),
               Expanded(
                 child: SingleChildScrollView(
                   child: Padding(
@@ -167,54 +165,54 @@ class AdminProfilePage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               // SizedBox(height: 24),
-                              ListTile(
-                                onTap: () async {
-                                  AddressInfor? address = await userRepo
-                                      .getAddressForSeller(user!.id!);
-                                  addressProvider
-                                      .setListAddressInfor([address!]);
-                                  // go to address page
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => AddressSellerScreen(),
-                                  ));
-                                },
-                                leading: Icon(
-                                  Icons.location_on,
-                                  size: 20.h,
-                                ),
-                                title: Padding(
-                                  padding: EdgeInsets.only(
-                                    left: 10.w,
-                                    bottom: 3.h,
-                                  ),
-                                  child: Text(
-                                    LangText(context: context)
-                                        .getLocal()!
-                                        .address_ucf,
-                                    style: CustomTextStyles.labelLargeGray600,
-                                  ),
-                                ),
-                                trailing: SizedBox(
-                                  width: size.width * 0.08,
-                                  height: size.width * 0.08,
-                                  child: InkWell(
-                                    onTap: () {
-                                      // go to address page
-                                      Navigator.of(context)
-                                          .push(MaterialPageRoute(
-                                        builder: (context) =>
-                                            AddressSellerScreen(),
-                                      ));
-                                    },
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.navigate_next,
-                                        size: 20.h,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              // ListTile(
+                              //   onTap: () async {
+                              //     AddressInfor? address = await userRepo
+                              //         .getAddressForSeller(user!.id!);
+                              //     addressProvider
+                              //         .setListAddressInfor([address!]);
+                              //     // go to address page
+                              //     Navigator.of(context).push(MaterialPageRoute(
+                              //       builder: (context) => AddressSellerScreen(),
+                              //     ));
+                              //   },
+                              //   leading: Icon(
+                              //     Icons.location_on,
+                              //     size: 20.h,
+                              //   ),
+                              //   title: Padding(
+                              //     padding: EdgeInsets.only(
+                              //       left: 10.w,
+                              //       bottom: 3.h,
+                              //     ),
+                              //     child: Text(
+                              //       LangText(context: context)
+                              //           .getLocal()!
+                              //           .address_ucf,
+                              //       style: CustomTextStyles.labelLargeGray600,
+                              //     ),
+                              //   ),
+                              //   trailing: SizedBox(
+                              //     width: size.width * 0.08,
+                              //     height: size.width * 0.08,
+                              //     child: InkWell(
+                              //       onTap: () {
+                              //         // go to address page
+                              //         Navigator.of(context)
+                              //             .push(MaterialPageRoute(
+                              //           builder: (context) =>
+                              //               AddressSellerScreen(),
+                              //         ));
+                              //       },
+                              //       child: Center(
+                              //         child: Icon(
+                              //           Icons.navigate_next,
+                              //           size: 20.h,
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
 
                               Divider(
                                 height: 5.h,
@@ -386,7 +384,7 @@ class AdminProfilePage extends StatelessWidget {
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) {
                 userProvider.initialize();
-                return ProfileSettingSellerScreen();
+                return AdminSettingProfilePage();
               },
             ));
           },

@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class AdminInfor {
-  DateTime? adminCreatedAt;
+  Timestamp? adminCreatedAt;
   AdminInfor({this.adminCreatedAt});
   factory AdminInfor.fromJson(Map<String, dynamic> json) {
     return AdminInfor(
-      adminCreatedAt: json['adminCreatedAt'],
+      adminCreatedAt: (json['adminCreatedAt'] as Timestamp?),
     );
   }
   Map<String, dynamic> toJson() => {

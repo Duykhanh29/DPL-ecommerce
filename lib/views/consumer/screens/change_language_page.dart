@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/models/language.dart';
@@ -40,6 +41,12 @@ class _LanguagePageState extends State<LanguagePage> {
     setState(() {});
   }
 
+  void updateCurrentIndex(int newIndex) {
+    setState(() {
+      currentIndex = newIndex;
+    });
+  }
+
   // List<Language> list = LanguageRepo().list;
   @override
   Widget build(BuildContext context) {
@@ -53,12 +60,17 @@ class _LanguagePageState extends State<LanguagePage> {
           .show(),
       body: Padding(
           padding: EdgeInsets.all(5.h),
-          child: ListView.builder(
+          child: ListView.separated(
+            separatorBuilder: (context, index) => SizedBox(
+              height: 5.h,
+            ),
             itemBuilder: (context, index) {
               return LanguageItem(
-                  language: listLanguage[index],
-                  index: index,
-                  currentIndex: currentIndex);
+                language: listLanguage[index],
+                index: index,
+                currentIndex: currentIndex,
+                onCallBack: updateCurrentIndex,
+              );
             },
             itemCount: listLanguage.length,
           )),
@@ -71,18 +83,28 @@ class LanguageItem extends StatelessWidget {
       {super.key,
       required this.language,
       required this.index,
-      required this.currentIndex});
+      required this.currentIndex,
+      this.onCallBack});
   Language language;
   int index;
   int currentIndex;
+  Function? onCallBack;
   @override
   Widget build(BuildContext context) {
     final locale = Provider.of<LocaleProvider>(context);
     final languageProvider = Provider.of<LanguageViewModel>(context);
     return ListTile(
+      shape: RoundedRectangleBorder(
+        // Định nghĩa border
+        borderRadius: BorderRadius.circular(8.0), // Độ cong của border
+        side: BorderSide(
+            color: MyTheme.accent_color,
+            width: 0.5), // Màu và độ dày của border
+      ),
       onTap: () async {
         languageProvider.changeLanguage(index);
         await locale.setLocale(language.code!);
+        onCallBack!(index);
       },
       leading: Container(
         height: 60.h,

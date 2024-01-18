@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/seller/shop_view_model.dart';
@@ -65,7 +66,7 @@ class __SettingSellerState extends State<SettingSeller> {
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
         height: 80.h,
         decoration: BoxDecoration(
-          color: Colors.blue,
+          color: MyTheme.accent_color,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(

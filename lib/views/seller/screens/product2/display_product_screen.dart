@@ -3,13 +3,16 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:dpl_ecommerce/view_model/seller/shop_view_model.dart';
 import 'package:dpl_ecommerce/views/seller/screens/product2/edit_product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class DisplayProductsScreen extends StatefulWidget {
   // final List<Product> products;
@@ -109,6 +112,8 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
   }
 
   Widget buildListProduct(BuildContext context, List<Product>? list) {
+    final shopProvider = Provider.of<ShopViewModel>(context);
+    final shop = shopProvider.shop;
     return ListView.builder(
       itemCount: list!.length,
       padding: EdgeInsets.all(20.h),
@@ -209,22 +214,27 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          _navigateToEditProductScreen(product);
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 2.w, vertical: 2.h),
-                          width: 80.w,
-                          height: 40.h,
-                          decoration: BoxDecoration(
-                              //color: Colors.white,
-                              border: Border.all(
-                                color: Color.fromARGB(35, 0, 0, 0),
-                                width: 1,
-                              ),
-                              borderRadius: BorderRadius.circular(5.r)),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 2.w, vertical: 2.h),
+                        width: 80.w,
+                        height: 40.h,
+
+                        // decoration: BoxDecoration(
+
+                        //     //color: Colors.white,
+                        //     border: Border.all(
+                        //       color: Color.fromARGB(35, 0, 0, 0),
+                        //       width: 1,
+                        //     ),
+                        //     borderRadius: BorderRadius.circular(5.r)),
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(MyTheme.white)),
+                          onPressed: () {
+                            _navigateToEditProductScreen(product);
+                          },
                           child: Center(
                               child: Text(
                             LangText(context: context).getLocal()!.edit_ucf,
@@ -242,6 +252,9 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                         padding: EdgeInsets.symmetric(
                             horizontal: 2.w, vertical: 2.h),
                         child: ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  MyTheme.accent_color)),
                           child: Text(LangText(context: context)
                               .getLocal()!
                               .delete_ucf),
@@ -282,7 +295,8 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                                       // widget.onProductDeleted(
                                       //     product.id as String);
                                       await productRepo.deleteProduct(
-                                          productID: product.id!);
+                                          productID: product.id!,
+                                          shopID: shop!.id!);
                                       Navigator.of(_).pop(); // Close the dialog
                                     },
                                     child: Text(LangText(context: context)

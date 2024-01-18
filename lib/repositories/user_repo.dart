@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/user_firestore_data.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/admin_infor.dart';
@@ -11,6 +12,10 @@ class UserRepo {
   UserFirestoreDatabase _userFirestoreDatabase = UserFirestoreDatabase();
   Future<List<UserModel>?> getListUser() async {
     return await _userFirestoreDatabase.getListUser();
+  }
+
+  Future<UserModel?> getUserByID(String id) async {
+    return await _userFirestoreDatabase.getUserModel1(id);
   }
 
   Stream<List<AddressInfor>?> getAllAddressInfor(String uid) {
@@ -225,8 +230,8 @@ class UserRepo {
       role: Role.admin,
       userInfor: UserInfor(
           adminInfor: AdminInfor(
-              adminCreatedAt:
-                  DateTime.now().subtract(const Duration(days: 29)))),
+              adminCreatedAt: Timestamp.fromDate(
+                  DateTime.now().subtract(const Duration(days: 29))))),
     ),
     UserModel(
       avatar:

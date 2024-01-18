@@ -65,16 +65,19 @@ class ChatSellerItem extends StatelessWidget {
   }
 
   Widget buildSubtitle(Chat chat, BuildContext context) {
-    if (chat!.listMsg!.last.productID != null) {
-      return Text(LangText(context: context).getLocal()!.product_detail_ucf);
+    if (chat!.listMsg!.isNotEmpty) {
+      if (chat!.listMsg!.last.productID != null) {
+        return Text(LangText(context: context).getLocal()!.product_detail_ucf);
+      }
+      if (chat.lastChatType == ChatType.image) {
+        return Text(LangText(context: context).getLocal()!.a_image_is_send);
+      } else if (chat.lastChatType == ChatType.video) {
+        return Text(LangText(context: context).getLocal()!.a_video_is_send);
+      } else {
+        return Text(LangText(context: context).getLocal()!.a_link_is_send);
+      }
     }
-    if (chat.lastChatType == ChatType.image) {
-      return Text(LangText(context: context).getLocal()!.a_image_is_send);
-    } else if (chat.lastChatType == ChatType.video) {
-      return Text(LangText(context: context).getLocal()!.a_video_is_send);
-    } else {
-      return Text(LangText(context: context).getLocal()!.a_link_is_send);
-    }
+    return const Text("");
   }
 
   String? getAvatar(UserModel currentUser, Chat chatData) {
@@ -135,8 +138,10 @@ class ChatSellerItem extends StatelessWidget {
                             ),
                       title: showName(user!, chat),
                       subtitle: buildSubtitle(chat, context),
-                      trailing: Text(DateHelper.chatTime(
-                          chat.listMsg!.last.time!.toDate())));
+                      trailing: chat.listMsg!.isNotEmpty
+                          ? Text(DateHelper.chatTime(
+                              chat.listMsg!.last.time!.toDate()))
+                          : const Text(""));
                 }
               }
             }

@@ -390,12 +390,26 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             Navigator.of(context).pop();
                             return;
                           }
+                          AddressInfor? addressInfor =
+                              await userRepo.getDefaultAddress(userID);
+                          if (addressInfor == null) {
+                            ToastHelper.showDialog(
+                                LangText(context: context)
+                                    .getLocal()!
+                                    .please_enter_your_address_first,
+                                gravity: ToastGravity.CENTER,
+                                duration: Toast.LENGTH_SHORT);
+                            Navigator.of(context).pop();
+                            return;
+                          } else {}
                           await getVoucherForUser(userID);
                           String? voucherID;
                           if (voucherForUser != null) {
-                            voucherID =
-                                CommondMethods.getVoucherForUserByProduct(
-                                    voucherForUser!, listVoucher!);
+                            if (listVoucher != null) {
+                              voucherID =
+                                  CommondMethods.getVoucherForUserByProduct(
+                                      voucherForUser!, listVoucher!);
+                            }
                           }
                           int savingCost = 0;
                           // if (value.voucherIDs != null) {
@@ -444,8 +458,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             totalCost: orderingProduct.realPrice,
                           );
                           checkoutProvider.setOrder(order);
-                          AddressInfor? addressInfor =
-                              await userRepo.getDefaultAddress(userID);
+
                           addressProvider.setDefaultAddress(addressInfor!);
                           List<AddressInfor>? list =
                               await userRepo.getListAddressInfor(userID);
@@ -481,273 +494,270 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     final userProvider = Provider.of<UserViewModel>(context);
     final checkoutProvider = Provider.of<CheckoutViewModel>(context);
     final user = userProvider.currentUser;
-    return SafeArea(
-      child: RefreshIndicator(
-        onRefresh: () async {
-          await refresh();
-        },
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            leading: CustomArrayBackWidget(function: () {
-              checkoutProvider.reset();
-              productDetailProvider.reset();
-            }),
-            actions: [
-              buildFavouriteIcon(uid: user!.id!, productID: widget.id),
-              const SizedBox(width: 12),
-              InkWell(
-                onTap: () {},
-                child: const Icon(Icons.share),
-              ),
-              const SizedBox(width: 12),
-              Consumer<CartViewModel>(
-                builder: (context, value, child) {
-                  // if (authValue.currentUser != null) {
-                  //   return StreamBuilder(
-                  //     stream: firestoreDatabase
-                  //         .getCartByUser(authValue.currentUser!.id!),
-                  //     builder: (context, snapshot) {
-                  //       if (snapshot.connectionState == ConnectionState.waiting) {
-                  //         return Center(
-                  //           child: CircularProgressIndicator(),
-                  //         );
-                  //       } else {
-                  //         if (snapshot.data != null) {
+    return RefreshIndicator(
+      onRefresh: () async {
+        await refresh();
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          backgroundColor: MyTheme.accent_color,
+          leading: CustomArrayBackWidget(function: () {
+            checkoutProvider.reset();
+            productDetailProvider.reset();
+          }),
+          actions: [
+            buildFavouriteIcon(uid: user!.id!, productID: widget.id),
+            const SizedBox(width: 12),
+            InkWell(
+              onTap: () {},
+              child: const Icon(Icons.share),
+            ),
+            const SizedBox(width: 12),
+            Consumer<CartViewModel>(
+              builder: (context, value, child) {
+                // if (authValue.currentUser != null) {
+                //   return StreamBuilder(
+                //     stream: firestoreDatabase
+                //         .getCartByUser(authValue.currentUser!.id!),
+                //     builder: (context, snapshot) {
+                //       if (snapshot.connectionState == ConnectionState.waiting) {
+                //         return Center(
+                //           child: CircularProgressIndicator(),
+                //         );
+                //       } else {
+                //         if (snapshot.data != null) {
+                if (value.cart!.productInCarts != null) {
                   return CustomBadgeCart(
                       number: value.cart!.productInCarts!.length);
-                  //         } else {
-                  //           return CustomBadgeCart(number: 0);
-                  //         }
-                  //       }
-                  //     },
-                  //   );
-                  // } else {
-                  //   return CustomBadgeCart(number: 0);
-                  // }
-                },
-              ),
-              // Consumer<CartViewModel>(builder: (context, value, child) {
-              //   return CustomBadgeCart(number: value.cart.productInCarts!.length);
-              // }),
-              SizedBox(width: 12.w),
-            ],
-            title: Container(
-                padding: EdgeInsets.symmetric(horizontal: 1.w),
-                constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width * 0.35),
-                child: Text(
-                  product != null ? product!.name! : "",
-                  overflow: TextOverflow.ellipsis,
-                )),
-            centerTitle: true,
-          ),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 5.h),
-              child: isLoadingProduct
-                  ? Container()
-                  : Column(
-                      children: [
-                        _buildSlider(
-                            context: context,
-                            listImage: product!.images,
-                            videos: product!.videos),
-                        SizedBox(height: 8.h),
-                        _buildAnimatedIndicator(
-                            sliderIndex: sliderIndex), // fix
-                        SizedBox(height: 17.h),
-                        // Align(
-                        //   alignment: Alignment.centerLeft,
-                        //   child: Padding(
-                        //     padding: EdgeInsets.only(left: 16.h),
-                        //     child: Text(
-                        //       "lbl_calvin_clein",
-                        //       style: CustomTextStyles.bodySmallGray600,
-                        //     ),
-                        //   ),
-                        // ),
-                        SizedBox(height: 9.h),
+                }
+                return CustomBadgeCart(number: 0);
+                //         } else {
+                //           return CustomBadgeCart(number: 0);
+                //         }
+                //       }
+                //     },
+                //   );
+                // } else {
+                //   return CustomBadgeCart(number: 0);
+                // }
+              },
+            ),
+            // Consumer<CartViewModel>(builder: (context, value, child) {
+            //   return CustomBadgeCart(number: value.cart.productInCarts!.length);
+            // }),
+            SizedBox(width: 12.w),
+          ],
+          title: Container(
+              padding: EdgeInsets.symmetric(horizontal: 1.w),
+              constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.35),
+              child: Text(
+                product != null ? product!.name! : "",
+                overflow: TextOverflow.ellipsis,
+              )),
+          centerTitle: true,
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 5.h),
+            child: isLoadingProduct
+                ? Container()
+                : Column(
+                    children: [
+                      _buildSlider(
+                          context: context,
+                          listImage: product!.images,
+                          videos: product!.videos),
+                      SizedBox(height: 8.h),
+                      _buildAnimatedIndicator(sliderIndex: sliderIndex), // fix
+                      SizedBox(height: 17.h),
+                      // Align(
+                      //   alignment: Alignment.centerLeft,
+                      //   child: Padding(
+                      //     padding: EdgeInsets.only(left: 16.h),
+                      //     child: Text(
+                      //       "lbl_calvin_clein",
+                      //       style: CustomTextStyles.bodySmallGray600,
+                      //     ),
+                      //   ),
+                      // ),
+                      SizedBox(height: 9.h),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Row(children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 16.h),
+                            child: Text(
+                              product!.name!,
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ),
+                          Spacer(),
+                          Padding(
+                              padding: EdgeInsets.only(right: 16.h),
+                              child: Text(
+                                  "${AppLocalizations.of(context)!.available_products}: ${product!.availableQuantity}")),
+                        ]),
+                      ),
+                      SizedBox(height: 8.h),
+
+                      if (product!.reviewIDs != null) ...{
                         Align(
                           alignment: Alignment.centerLeft,
-                          child: Row(children: [
-                            Padding(
-                              padding: EdgeInsets.only(left: 16.h),
-                              child: Text(
-                                product!.name!,
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                            Spacer(),
-                            Padding(
-                                padding: EdgeInsets.only(right: 16.h),
-                                child: Text(
-                                    "${AppLocalizations.of(context)!.available_products}: ${product!.availableQuantity}")),
-                          ]),
-                        ),
-                        SizedBox(height: 8.h),
-
-                        if (product!.reviewIDs != null) ...{
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 16.h),
-                              child: Row(
-                                children: [
-                                  // _buildButton(context),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      left: 8.h,
-                                      top: 2.h,
-                                      bottom: 2.h,
-                                    ),
-                                    child: Text(
-                                      "${product!.reviewIDs!.length} ${AppLocalizations.of(context)!.reviews_ucf}",
-                                      style: CustomTextStyles.bodySmallGray600,
-                                    ),
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 16.h),
+                            child: Row(
+                              children: [
+                                // _buildButton(context),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    left: 8.h,
+                                    top: 2.h,
+                                    bottom: 2.h,
                                   ),
-                                ],
-                              ),
-                            ),
-                          )
-                        },
-                        SizedBox(height: 10.h),
-                        // _buildProductPrices(),
-                        Padding(
-                          padding: EdgeInsets.only(left: 16.h),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                product != null
-                                    ? "${product!.price!} VND"
-                                    : "...",
-                                style: theme.textTheme.bodyLarge!.copyWith(
-                                    // decoration: TextDecoration.lineThrough,c
-                                    color: MyTheme.orange900),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 18.h),
-
-                        if (product!.sizes != null) ...{
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.h),
-                            child: _buildSizeText(
-                              context,
-                              sizeLabel:
-                                  AppLocalizations.of(context)!.sizes_ucf,
-                              sizeChartLabel: "",
-                            ),
-                          ),
-                          SizedBox(height: 6.h),
-                          _buildProductSize(context, product!.sizes!),
-                        },
-                        if (product!.types != null) ...{
-                          SizedBox(height: 10.h),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.h),
-                            child: _buildSizeText(
-                              context,
-                              sizeLabel:
-                                  AppLocalizations.of(context)!.types_ucf,
-                              sizeChartLabel: "",
-                            ),
-                          ),
-                          SizedBox(height: 6.h),
-                          _buildProductType(context, product!.types!),
-                        },
-
-                        if (product!.colors != null) ...{
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.h),
-                            child: _buildSizeText(
-                              context,
-                              sizeLabel:
-                                  AppLocalizations.of(context)!.colors_ucf,
-                              sizeChartLabel: "",
-                            ),
-                          ),
-                          SizedBox(height: 10.h),
-                          _buildProductColor(context, product!.colors!),
-                        },
-
-                        SizedBox(height: 24.h),
-                        isLoadingShop
-                            ? Container()
-                            : _buildShopInfor(context, shop),
-                        SizedBox(height: 24.h),
-                        isLoadingVoucher
-                            ? Container()
-                            : listVoucher != null
-                                ? ListVoucherWidget(list: listVoucher!)
-                                : Container(),
-                        SizedBox(height: 24.h),
-                        // _buildColumn(context),
-                        // SizedBox(height: 16.h),
-                        if (product!.description != null) ...{
-                          _buildProductDescription(context),
-                        },
-
-                        SizedBox(height: 16.h),
-                        _buildRatingsAndReviews(context, product!),
-                        SizedBox(height: 27.h),
-
-                        SizedBox(height: 16.h),
-                        isLoadingShopProduct
-                            ? Container()
-                            : Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 16.w, vertical: 5.h),
-                                    child: _buildSizeText(
-                                      context,
-                                      sizeLabel: AppLocalizations.of(context)!
-                                          .other_products_of_shop,
-                                      sizeChartLabel:
-                                          AppLocalizations.of(context)!
-                                              .view_more_ucf,
-                                    ),
+                                  child: Text(
+                                    "${product!.reviewIDs!.length} ${AppLocalizations.of(context)!.reviews_ucf}",
+                                    style: CustomTextStyles.bodySmallGray600,
                                   ),
-                                  _buildShopProducts(context, listShopProduct!),
-                                ],
-                              ),
-
-                        SizedBox(height: 16.h),
-                        isLoadingRelatedProduct
-                            ? Container()
-                            : listRelatedProduct != null
-                                ? Column(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 16.h),
-                                        child: _buildSizeText(
-                                          context,
-                                          sizeLabel:
-                                              AppLocalizations.of(context)!
-                                                  .you_may_like,
-                                          sizeChartLabel:
-                                              AppLocalizations.of(context)!
-                                                  .view_more_ucf,
-                                        ),
-                                      ),
-                                      _buildRelatedProducts(
-                                          context, listRelatedProduct!),
-                                    ],
-                                  )
-                                : const SizedBox(),
-                        SizedBox(
-                          height: 10.h,
+                                ),
+                              ],
+                            ),
+                          ),
                         )
-                      ],
-                    ),
-            ),
+                      },
+                      SizedBox(height: 10.h),
+                      // _buildProductPrices(),
+                      Padding(
+                        padding: EdgeInsets.only(left: 16.h),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              product != null
+                                  ? "${product!.price!} VND"
+                                  : "...",
+                              style: theme.textTheme.bodyLarge!.copyWith(
+                                  // decoration: TextDecoration.lineThrough,c
+                                  color: MyTheme.orange900),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 18.h),
+
+                      if (product!.sizes != null) ...{
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.h),
+                          child: _buildSizeText(
+                            context,
+                            sizeLabel: AppLocalizations.of(context)!.sizes_ucf,
+                            sizeChartLabel: "",
+                          ),
+                        ),
+                        SizedBox(height: 6.h),
+                        _buildProductSize(context, product!.sizes!),
+                      },
+                      if (product!.types != null) ...{
+                        SizedBox(height: 10.h),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.h),
+                          child: _buildSizeText(
+                            context,
+                            sizeLabel: AppLocalizations.of(context)!.types_ucf,
+                            sizeChartLabel: "",
+                          ),
+                        ),
+                        SizedBox(height: 6.h),
+                        _buildProductType(context, product!.types!),
+                      },
+
+                      if (product!.colors != null) ...{
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.h),
+                          child: _buildSizeText(
+                            context,
+                            sizeLabel: AppLocalizations.of(context)!.colors_ucf,
+                            sizeChartLabel: "",
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        _buildProductColor(context, product!.colors!),
+                      },
+
+                      SizedBox(height: 24.h),
+                      isLoadingShop
+                          ? Container()
+                          : _buildShopInfor(context, shop),
+                      SizedBox(height: 24.h),
+                      isLoadingVoucher
+                          ? Container()
+                          : listVoucher != null
+                              ? ListVoucherWidget(list: listVoucher!)
+                              : Container(),
+                      SizedBox(height: 24.h),
+                      // _buildColumn(context),
+                      // SizedBox(height: 16.h),
+                      if (product!.description != null) ...{
+                        _buildProductDescription(context),
+                      },
+
+                      SizedBox(height: 16.h),
+                      _buildRatingsAndReviews(context, product!),
+                      SizedBox(height: 27.h),
+
+                      SizedBox(height: 16.h),
+                      isLoadingShopProduct
+                          ? Container()
+                          : Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16.w, vertical: 5.h),
+                                  child: _buildSizeText(
+                                    context,
+                                    sizeLabel: AppLocalizations.of(context)!
+                                        .other_products_of_shop,
+                                    sizeChartLabel:
+                                        AppLocalizations.of(context)!
+                                            .view_more_ucf,
+                                  ),
+                                ),
+                                _buildShopProducts(context, listShopProduct!),
+                              ],
+                            ),
+
+                      SizedBox(height: 16.h),
+                      isLoadingRelatedProduct
+                          ? Container()
+                          : listRelatedProduct != null
+                              ? Column(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16.h),
+                                      child: _buildSizeText(
+                                        context,
+                                        sizeLabel: AppLocalizations.of(context)!
+                                            .you_may_like,
+                                        sizeChartLabel:
+                                            AppLocalizations.of(context)!
+                                                .view_more_ucf,
+                                      ),
+                                    ),
+                                    _buildRelatedProducts(
+                                        context, listRelatedProduct!),
+                                  ],
+                                )
+                              : const SizedBox(),
+                      SizedBox(
+                        height: 10.h,
+                      )
+                    ],
+                  ),
           ),
-          bottomNavigationBar: Card(elevation: 45, child: _buildRow2(context)),
         ),
+        bottomNavigationBar: Card(elevation: 45, child: _buildRow2(context)),
       ),
     );
   }
@@ -1358,61 +1368,63 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     final usermodel = userViewModel.currentUser;
     return GestureDetector(
       onTap: () async {
-        Chat? chat;
-        Message msg = Message(
-            chatType: ChatType.text,
-            isShop: false,
-            productID: product!.id,
-            receiverID: seller!.id,
-            senderID: usermodel!.id,
-            time: Timestamp.fromDate(DateTime.now()),
-            content: "");
+        if (!isLoadingSeller) {
+          Chat? chat;
+          Message msg = Message(
+              chatType: ChatType.text,
+              isShop: false,
+              productID: product!.id,
+              receiverID: seller!.id,
+              senderID: usermodel!.id,
+              time: Timestamp.fromDate(DateTime.now()),
+              content: "");
 
-        // dafd
+          // dafd
 
-        bool? hasConversation = await chatRepo.checkExistedChatBoxWithUsers(
-            sellerID: seller!.id!, userID: usermodel.id!);
-        if (!hasConversation!) {
-          chat = Chat(
-            listMsg: [],
-            sellerID: seller!.id,
-            shopID: product!.shopID,
-            shopLogo: product!.shopLogo,
-            shopName: product!.shopName,
-            userAvatar: usermodel.avatar,
-            userID: usermodel.id,
-            userName: usermodel.firstName,
-          );
-          await chatRepo.addNewChat(chat);
-        } else {
-          chat = await chatRepo.getChatWithUsers(
-              userID: usermodel.id!, sellerID: seller!.id!);
+          bool? hasConversation = await chatRepo.checkExistedChatBoxWithUsers(
+              sellerID: seller!.id!, userID: usermodel.id!);
+          if (!hasConversation!) {
+            chat = Chat(
+              listMsg: [],
+              sellerID: seller!.id,
+              shopID: product!.shopID,
+              shopLogo: product!.shopLogo,
+              shopName: product!.shopName,
+              userAvatar: usermodel.avatar,
+              userID: usermodel.id,
+              userName: usermodel.firstName,
+            );
+            await chatRepo.addNewChat(chat);
+          } else {
+            chat = await chatRepo.getChatWithUsers(
+                userID: usermodel.id!, sellerID: seller!.id!);
+          }
+          await chatRepo.sendAMessage(chatID: chat!.id!, msg: msg);
+          // if (!CommondMethods.hasConversation(
+          //     usermodel.id!, seller!.id!, listChat)) {
+          //   chat = Chat(
+          //     listMsg: [],
+          //     sellerID: seller!.id,
+          //     shopID: product!.shopID,
+          //     shopLogo: product!.shopLogo,
+          //     shopName: product!.shopName,
+          //     userAvatar: usermodel.avatar,
+          //     userID: usermodel.id,
+          //     userName: usermodel.firstName,
+          //   );
+          //   chatProvider.addNewChat(chat);
+          // } else {
+          //   chat = CommondMethods.getChatByuserAndSeller(
+          //       seller!.id!, usermodel.id!, listChat);
+          // }
+          // chatProvider.sendMsgToAChatBox(msg, chat!.id!);
+          // ignore: use_build_context_synchronously
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) {
+              return ChattingPage(chat: chat);
+            },
+          ));
         }
-        await chatRepo.sendAMessage(chatID: chat!.id!, msg: msg);
-        // if (!CommondMethods.hasConversation(
-        //     usermodel.id!, seller!.id!, listChat)) {
-        //   chat = Chat(
-        //     listMsg: [],
-        //     sellerID: seller!.id,
-        //     shopID: product!.shopID,
-        //     shopLogo: product!.shopLogo,
-        //     shopName: product!.shopName,
-        //     userAvatar: usermodel.avatar,
-        //     userID: usermodel.id,
-        //     userName: usermodel.firstName,
-        //   );
-        //   chatProvider.addNewChat(chat);
-        // } else {
-        //   chat = CommondMethods.getChatByuserAndSeller(
-        //       seller!.id!, usermodel.id!, listChat);
-        // }
-        // chatProvider.sendMsgToAChatBox(msg, chat!.id!);
-        // ignore: use_build_context_synchronously
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) {
-            return ChattingPage(chat: chat);
-          },
-        ));
       },
       child: Container(
         height: 52.h,

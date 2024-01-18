@@ -11,6 +11,11 @@ class DeliverServiceRepo {
     await firestoreDatabase.addDeliverService(deliverService);
   }
 
+  Future<void> editDeiveryService(
+      {required String id, String? name, String? logo}) async {
+    await firestoreDatabase.editDeliveryService(id: id, logo: logo, name: name);
+  }
+
   Future<void> deleteDeliveryService(String id) async {
     await firestoreDatabase.deleteDeliveryService(id);
   }

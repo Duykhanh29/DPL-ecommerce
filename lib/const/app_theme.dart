@@ -224,12 +224,13 @@ PrimaryColors get appTheme => AppTheme().themeColor();
 ThemeData get theme => AppTheme().themeData();
 
 class MyTheme {
-  static const Color app_accent_color = Color(0xFF212464);
+  static Color xColor = Color.fromRGBO(7, 63, 123, 1);
+  static const Color app_accent_color = Color.fromRGBO(7, 63, 123, 1);
   static Color app_accent_color_extra_light =
       Color.fromRGBO(233, 233, 240, 1.0);
 
-  static Color accent_color = Color(0xff212464);
-
+  static Color accent_color = Color.fromRGBO(18, 94, 175, 1);
+  static Color accent_color_2 = Color.fromRGBO(47, 119, 196, 1);
   static Color splash_screen_color = Colors.white;
   static Color login_reg_screen_color =
       Color(0xFFFFFFFF); // if not sure , use the same color as accent color

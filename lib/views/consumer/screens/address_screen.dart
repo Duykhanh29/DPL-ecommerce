@@ -43,7 +43,7 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
     //     : currentUser.userInfor!.consumerInfor!.addressInfors;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: MyTheme.accent_color,
         title: Text(
           LangText(context: context).getLocal()!.address_ucf,
           textAlign: TextAlign.center,
@@ -59,7 +59,7 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
               child: CircularProgressIndicator.adaptive(),
             );
           } else {
-            if (snapshot.data != null) {
+            if (snapshot.data != null && snapshot.data!.isNotEmpty) {
               final listAddress = snapshot.data;
               return ListView.builder(
                   itemCount: listAddress!.length,

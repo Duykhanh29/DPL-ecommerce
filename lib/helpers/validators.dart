@@ -55,6 +55,12 @@ class Validators {
     }
   }
 
+  static bool isValidEmail1(String email) {
+    return RegExp(
+            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+        .hasMatch(email);
+  }
+
   static String? isValidEmail(String? email) {
     final bool isValid = EmailValidator.validate(email!);
     if (isValid) {

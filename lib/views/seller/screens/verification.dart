@@ -41,7 +41,7 @@ class __VerificationState extends State<Verification> {
   StorageService storageService = StorageService();
   String? taxPaperPath;
   String? taxPaperName;
-
+  bool isInitial = true;
   File? _image;
   String? urlImage;
   XFile? pickedFile;
@@ -72,10 +72,15 @@ class __VerificationState extends State<Verification> {
     final shopProvider = Provider.of<ShopViewModel>(context);
     final user = userProvider.currentUser;
     final shop = shopProvider.shop;
-    if (shop != null) {
-      phoneNumberController.text = shop.contactPhone ?? "";
+    if (shop != null && isInitial) {
+      if (shop.contactPhone != null) {
+        phoneNumberController.text = shop.contactPhone!;
+      }
+      if (shop.name != null) {
+        shopNameController.text = shop.name!;
+      }
+      // = shop.contactPhone ?? "";
       // lisenceController.text=shop.
-      shopNameController.text = shop.name ?? "";
     }
 
     return Scaffold(
@@ -129,7 +134,7 @@ class __VerificationState extends State<Verification> {
                   height: 20.h,
                 ),
                 _buidck(
-                    readOnly: true,
+                    readOnly: shop!.contactPhone != null ? true : false,
                     textInputType: TextInputType.phone,
                     name: "",
                     hintname:
@@ -252,7 +257,8 @@ class __VerificationState extends State<Verification> {
                     secondRef: shop.id,
                   );
                   VerificationForm verificationForm = VerificationForm(
-                      contactAddress: AddressInfor(),
+                      contactAddress:
+                          user!.userInfor!.sellerInfor!.contactAddress!,
                       email: user!.email ?? "",
                       licenseNo: lisenceController.text,
                       homeNumber: homeNumberController.text,

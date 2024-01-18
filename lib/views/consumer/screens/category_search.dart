@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/search_result_page.dart';
 import 'package:flutter/material.dart';
@@ -51,9 +52,11 @@ class _CategoryInterfaceState extends State<CategoryInterface> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(LangText(context: context).getLocal()!.category_ucf),
-      ),
+      appBar: CustomAppBar(
+              title: LangText(context: context).getLocal()!.category_ucf,
+              centerTitle: true,
+              context: context)
+          .show(),
       body: !isLoading
           ? list != null
               ? ListView.builder(

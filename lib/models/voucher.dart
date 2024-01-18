@@ -21,7 +21,7 @@ class Voucher {
       this.shopID,
       this.name,
       this.isAdmin = false}) {
-    id ??= Uuid().v4();
+    this.id ??= Uuid().v4();
   }
   factory Voucher.fromJson(Map<String, dynamic> json) {
     return Voucher(

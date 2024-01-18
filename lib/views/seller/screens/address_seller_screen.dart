@@ -1,5 +1,6 @@
 import 'package:dpl_ecommerce/const/app_decoration.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_elevate_button.dart';
 import 'package:dpl_ecommerce/customs/custom_icon_button.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
@@ -41,16 +42,21 @@ class _AddresslistItemWidgetState extends State<AddressSellerScreen> {
     //     ? []
     //     : currentUser.userInfor!.consumerInfor!.addressInfors;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Text(
-          LangText(context: context).getLocal()!.address_ucf,
-          textAlign: TextAlign.center,
-        ),
-        centerTitle: true,
+      appBar: CustomAppBar(
+              title: LangText(context: context).getLocal()!.address_ucf,
+              centerTitle: true,
+              context: context)
+          .show(),
+      // AppBar(
+      //   backgroundColor: Colors.blue,
+      //   title: Text(
+      //     LangText(context: context).getLocal()!.address_ucf,
+      //     textAlign: TextAlign.center,
+      //   ),
+      //   centerTitle: true,
 
-        //leading: Icon(Icons.menu),
-      ),
+      //   //leading: Icon(Icons.menu),
+      // ),
       body: StreamBuilder(
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

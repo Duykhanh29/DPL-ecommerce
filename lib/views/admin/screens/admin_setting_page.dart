@@ -31,120 +31,117 @@ class AdminSettingProfilePage extends StatelessWidget {
     final user = userProvider.currentUser;
     final userInfo = user!.userInfor;
     final sellerInfo = userInfo!.sellerInfor;
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: CustomAppBar(
-                centerTitle: true,
-                context: context,
-                title: LangText(context: context).getLocal()!.profile_setting)
-            .show(),
-        body: Padding(
-          padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 5.h),
-          child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                SizedBox(
-                  height: 40.h,
-                ),
-                SizedBox(
-                  height: 100.h,
-                  width: 100.w,
-                  child: Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      Consumer<UserViewModel>(builder: (context, value, child) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) {
-                                return Scaffold(
-                                  appBar: AppBar(
-                                    leading: CustomArrayBackWidget(),
-                                    actions: [
-                                      value.userModel!.avatar != null
-                                          ? IconButton(
-                                              onPressed: () async {
-                                                await storageService
-                                                    .downloadAndSaveImage(
-                                                        value
-                                                            .userModel!.avatar!,
-                                                        context);
-                                              },
-                                              icon: Icon(
-                                                Icons.download_outlined,
-                                                size: 20.h,
-                                              ))
-                                          : Container()
-                                    ],
-                                  ),
-                                  body: CustomPhotoView(
-                                      urlImage: value.userModel!.avatar),
-                                );
-                              },
-                            ));
-                          },
-                          child: value.userModel!.avatar != null
-                              ? CircleAvatar(
-                                  radius: 60.r,
-                                  backgroundImage:
-                                      NetworkImage(value.userModel!.avatar!),
-                                )
-                              : CircleAvatar(
-                                  radius: 60.r,
-                                  backgroundImage:
-                                      AssetImage(ImageData.circelAvatar),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: CustomAppBar(
+              centerTitle: true,
+              context: context,
+              title: LangText(context: context).getLocal()!.profile_setting)
+          .show(),
+      body: Padding(
+        padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 5.h),
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SizedBox(
+                height: 40.h,
+              ),
+              SizedBox(
+                height: 100.h,
+                width: 100.w,
+                child: Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    Consumer<UserViewModel>(builder: (context, value, child) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) {
+                              return Scaffold(
+                                appBar: AppBar(
+                                  leading: CustomArrayBackWidget(),
+                                  actions: [
+                                    value.userModel!.avatar != null
+                                        ? IconButton(
+                                            onPressed: () async {
+                                              await storageService
+                                                  .downloadAndSaveImage(
+                                                      value.userModel!.avatar!,
+                                                      context);
+                                            },
+                                            icon: Icon(
+                                              Icons.download_outlined,
+                                              size: 20.h,
+                                            ))
+                                        : Container()
+                                  ],
                                 ),
-                        );
-                      }),
-                      InkWell(
-                        onTap: () async {
-                          final result = await FilePicker.platform.pickFiles(
-                              allowMultiple: false,
-                              type: FileType.custom,
-                              allowedExtensions: ['png', 'jpg']);
-                          if (result != null) {
-                            final path = result.files.single.path;
-                            final fileName = result.files.single.name;
-                            // String type = 'images';
-                            bool isSuccess = await storageService.uploadFile(
-                              filePath: path!,
+                                body: CustomPhotoView(
+                                    urlImage: value.userModel!.avatar),
+                              );
+                            },
+                          ));
+                        },
+                        child: value.userModel!.avatar != null
+                            ? CircleAvatar(
+                                radius: 60.r,
+                                backgroundImage:
+                                    NetworkImage(value.userModel!.avatar!),
+                              )
+                            : CircleAvatar(
+                                radius: 60.r,
+                                backgroundImage:
+                                    AssetImage(ImageData.circelAvatar),
+                              ),
+                      );
+                    }),
+                    InkWell(
+                      onTap: () async {
+                        final result = await FilePicker.platform.pickFiles(
+                            allowMultiple: false,
+                            type: FileType.custom,
+                            allowedExtensions: ['png', 'jpg']);
+                        if (result != null) {
+                          final path = result.files.single.path;
+                          final fileName = result.files.single.name;
+                          // String type = 'images';
+                          bool isSuccess = await storageService.uploadFile(
+                            filePath: path!,
+                            fileName: fileName,
+                            secondRef: user.id!,
+                            rootRef: 'avatars',
+                          );
+                          if (isSuccess) {
+                            String url = await storageService.downloadURL(
+                              filePath: path,
                               fileName: fileName,
                               secondRef: user.id!,
                               rootRef: 'avatars',
                             );
-                            if (isSuccess) {
-                              String url = await storageService.downloadURL(
-                                filePath: path,
-                                fileName: fileName,
-                                secondRef: user.id!,
-                                rootRef: 'avatars',
-                              );
-                              await userRepo.updateAvatar(
-                                  uid: user.id!, avatar: url);
-                              userProvider.updateAvatar(url);
-                            }
+                            await userRepo.updateAvatar(
+                                uid: user.id!, avatar: url);
+                            userProvider.updateAvatar(url);
                           }
-                        },
-                        child: Container(
-                          decoration: const BoxDecoration(
-                              shape: BoxShape.circle, color: Colors.blueAccent),
-                          padding: EdgeInsets.all(2.h),
-                          child: Icon(
-                            Icons.edit,
-                            size: 20.h,
-                          ),
+                        }
+                      },
+                      child: Container(
+                        decoration: const BoxDecoration(
+                            shape: BoxShape.circle, color: Colors.blueAccent),
+                        padding: EdgeInsets.all(2.h),
+                        child: Icon(
+                          Icons.edit,
+                          size: 20.h,
                         ),
-                      )
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 ),
-                SizedBox(height: 90.h),
-                BuildForm(),
-              ],
-            ),
+              ),
+              SizedBox(height: 90.h),
+              BuildForm(),
+            ],
           ),
         ),
       ),
@@ -298,7 +295,7 @@ class _BuildFormState extends State<BuildForm> {
                 },
               ),
               SizedBox(
-                height: 20.h,
+                height: 45.h,
               ),
               // buildTaxPaper(context, sellerInfo!),
               // SizedBox(
@@ -357,6 +354,7 @@ class _BuildFormState extends State<BuildForm> {
           }
         },
         style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(MyTheme.accent_color),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.r)))),
         child: Text(LangText(context: context).getLocal()!.save_ucf),

@@ -20,6 +20,7 @@ class CustomAppBar {
   AppBar show({var elevation = 5.0}) {
     return AppBar(
         // leadingWidth: 0.0,
+        automaticallyImplyLeading: isLeading,
         centerTitle: true,
         elevation: elevation,
         title: Text(

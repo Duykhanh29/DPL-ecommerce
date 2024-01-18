@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/category.dart';
 import 'package:dpl_ecommerce/repositories/category_repo.dart';
@@ -120,7 +121,7 @@ Widget _buildListCategory(BuildContext context, List<Category>? list) {
             height: 100.h,
             width: MediaQuery.of(context).size.width * 0.9,
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: MyTheme.accent_color_2,
               // border: Border.all(color: Colors.yellow),
               // borderRadius: BorderRadius.circular(10.r),
             ),

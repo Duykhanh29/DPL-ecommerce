@@ -1,5 +1,6 @@
 // products_app.dart
 
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/helpers/toast_helper.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
@@ -29,6 +30,8 @@ class ProductsApp extends StatelessWidget {
     final user = userProvider.currentUser;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: MyTheme.accent_color,
+        centerTitle: true,
         title: Text(LangText(context: context).getLocal()!.products_ucf),
         automaticallyImplyLeading: false,
       ),
@@ -48,6 +51,7 @@ class ProductsApp extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: MyTheme.accent_color,
         onPressed: () {
           if (!user!.userInfor!.sellerInfor!.isVerified!) {
             showDialog(context);

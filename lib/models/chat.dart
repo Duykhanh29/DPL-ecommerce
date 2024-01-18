@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_null_aware_operators
+
 import 'package:dpl_ecommerce/models/message.dart';
 import 'package:uuid/uuid.dart';
 
@@ -43,21 +45,26 @@ class Chat {
                 .map((e) => Message.fromJson(e))
                 .toList(),
         sellerID: json['sellerID'],
-        lastChatType: ChatType.values.firstWhere((element) =>
-            element.toString().split(".").last == json['lastChatType']),
-        lastMessage: json['lastMessage']);
+        lastChatType: json['lastChatType'] != null
+            ? ChatType.values.firstWhere((element) =>
+                element.toString().split(".").last == json['lastChatType'])
+            : null,
+        lastMessage: json['lastMessage'] ?? null);
   }
   Map<String, dynamic> toJson() => {
         'userID': userID,
         'id': id,
         'shopID': shopID,
-        'listMsg': listMsg!.map((e) => e.toJson()).toList(),
+        'listMsg':
+            listMsg != null ? listMsg!.map((e) => e.toJson()).toList() : null,
         'shopLogo': shopLogo,
         'shopName': shopName,
         'userAvatar': userAvatar,
         'userName': userName,
         'sellerID': sellerID,
         'lastMessage': lastMessage,
-        'lastChatType': lastChatType.toString().split(".").last
+        'lastChatType': lastChatType != null
+            ? lastChatType.toString().split(".").last
+            : null
       };
 }

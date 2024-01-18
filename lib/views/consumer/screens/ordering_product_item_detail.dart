@@ -88,92 +88,90 @@ class _OrderingProductDetailScreenState
     } else if (widget.order.deliverStatus == DeliverStatus.delivered) {
       status = 4;
     }
-    return SafeArea(
-      child: Scaffold(
-          //backgroundColor: appTheme.gray5001,
-          appBar: CustomAppBar(
-                  backgroundColor: MyTheme.accent_color,
-                  title:
-                      LangText(context: context).getLocal()!.order_details_ucf,
-                  context: context,
-                  centerTitle: true)
-              .show(),
-          body: Padding(
-            padding: EdgeInsets.only(bottom: 8.h, top: 1.h),
-            child: SingleChildScrollView(
-              child: Container(
-                height: MediaQuery.of(context).size.height,
-                child: Column(
-                  // alignment: Alignment.topCenter,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 20.w,
-                    ),
-                    Padding(
-                        padding:
-                            EdgeInsets.only(left: 10.h, top: 3.h, bottom: 2.h),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: 10.h,
-                              ),
+    return Scaffold(
+        //backgroundColor: appTheme.gray5001,
+        appBar: CustomAppBar(
+                backgroundColor: MyTheme.accent_color,
+                title: LangText(context: context).getLocal()!.order_details_ucf,
+                context: context,
+                centerTitle: true)
+            .show(),
+        body: Padding(
+          padding: EdgeInsets.only(bottom: 8.h, top: 1.h),
+          child: SingleChildScrollView(
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                // alignment: Alignment.topCenter,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 20.w,
+                  ),
+                  Padding(
+                      padding:
+                          EdgeInsets.only(left: 10.h, top: 3.h, bottom: 2.h),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            Text(
+                              buildText(context, status!),
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 18.sp),
+                              //style: CustomTextStyles.titleMediumNunitoOnPrimary
+                            ),
+                            SizedBox(height: 10.h),
+                            if (status == 4)
                               Text(
-                                buildText(context, status!),
+                                LangText(context: context)
+                                    .getLocal()!
+                                    .rate_product_to_get_points,
                                 style: TextStyle(
-                                    color: Colors.black, fontSize: 18.sp),
-                                //style: CustomTextStyles.titleMediumNunitoOnPrimary
+                                    color: Colors.black, fontSize: 16.sp),
+                                textAlign: TextAlign.center,
+                                softWrap: true,
+
+                                maxLines: 7,
+                                //style: theme.textTheme.labelMedium
                               ),
-                              SizedBox(height: 10.h),
-                              if (status == 4)
-                                Text(
-                                  LangText(context: context)
-                                      .getLocal()!
-                                      .rate_product_to_get_points,
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 16.sp),
-                                  textAlign: TextAlign.center,
-                                  softWrap: true,
+                            SizedBox(height: 10.h),
+                          ])),
+                  OrderingProductItem(
+                    orderingProduct: widget.order,
+                    orderID: widget.orderID,
+                    isDetail: true,
+                  ),
+                  SizedBox(
+                    height: 15.h,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: Text(
+                      LangText(context: context).getLocal()!.track_orders,
+                      style: TextStyle(color: Colors.black, fontSize: 16.sp),
+                    ),
+                  ),
+                  buildTrackTime(context, status!),
 
-                                  maxLines: 7,
-                                  //style: theme.textTheme.labelMedium
-                                ),
-                              SizedBox(height: 10.h),
-                            ])),
-                    OrderingProductItem(
-                      orderingProduct: widget.order,
-                      orderID: widget.orderID,
-                    ),
-                    SizedBox(
-                      height: 15.h,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w),
-                      child: Text(
-                        LangText(context: context).getLocal()!.track_orders,
-                        style: TextStyle(color: Colors.black, fontSize: 16.sp),
-                      ),
-                    ),
-                    buildTrackTime(context, status!),
-
-                    if (status == 3) buildConfirmButton(context),
-                    if (status != 4) Container(),
-                    isLoading
-                        ? Container()
-                        : !isReviewed
-                            ? (status == 4)
-                                ? buildRateButton(context)
-                                : Container()
-                            : Container()
-                    // if (status == 4)
-                  ],
-                ),
+                  if (status == 3) buildConfirmButton(context),
+                  if (status != 4) Container(),
+                  isLoading
+                      ? Container()
+                      : !isReviewed
+                          ? (status == 4)
+                              ? buildRateButton(context)
+                              : Container()
+                          : Container()
+                  // if (status == 4)
+                ],
               ),
             ),
-          )),
-    );
+          ),
+        ));
   }
 
   Widget buildConfirmButton(BuildContext context) {
