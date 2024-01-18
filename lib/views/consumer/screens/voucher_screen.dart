@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/voucher_for_user_repo.dart';
@@ -152,108 +153,114 @@ class __VoucherScreenState extends State<VoucherScreen> {
             // child: CircularProgressIndicator(),
             )
         : listVoucher != null && listVoucher!.isNotEmpty
-            ? GridView.builder(
-                shrinkWrap: true,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisSpacing: 5,
-                  mainAxisSpacing: 5,
-                  crossAxisCount: 2,
-                  //mainAxisExtent: 200.h,
-                  // childAspectRatio: 3 / 2,
-                ),
-                itemBuilder: (context, index) {
-                  return ClipPath(
-                    clipper: VoucherClipper(),
-                    child: Row(
-                      children: [
-                        Container(
-                          height: 160.h,
-                          width: 50.w,
-                          alignment: Alignment.center,
-                          color: Colors.blue,
-                          // child: Text(
-                          //   list![index].id!,
-                          //   style: TextStyle(color: Colors.white),
-                          // ),
-                        ),
-                        Container(
-                          height: 160.h,
-                          width: 110.w,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                              width: 0.5.w,
-                              color: Colors.grey,
-                            ),
+            ? Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.h),
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisSpacing: 5,
+                    mainAxisSpacing: 5,
+                    crossAxisCount: 2,
+                    //mainAxisExtent: 200.h,
+                    // childAspectRatio: 3 / 2,
+                  ),
+                  itemBuilder: (context, index) {
+                    return ClipPath(
+                      clipper: VoucherClipper(),
+                      child: Row(
+                        children: [
+                          Container(
+                            // height: 160.h,
+                            padding: EdgeInsets.symmetric(vertical: 5.h),
+                            width: 30.w,
+                            alignment: Alignment.center,
+                            color: MyTheme.accent_color_2,
+                            // child: Text(
+                            //   list![index].id!,
+                            //   style: TextStyle(color: Colors.white),
+                            // ),
                           ),
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(0, 10.h, 2.w, 0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                listVoucher![index].discountAmount == null
-                                    ? Text(
-                                        "${LangText(context: context).getLocal()!.reduce_ucf}${listVoucher![index].discountPercent} %",
-                                        maxLines: 3,
-                                        style: TextStyle(
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.bold,
-                                        ))
-                                    : Text(
-                                        "${LangText(context: context).getLocal()!.reduce_ucf}đ${listVoucher![index].discountAmount} k",
-                                        style: TextStyle(
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.bold,
+                          Container(
+                            // height: 160.h,
+                            width: 130.w,
+                            padding: EdgeInsets.symmetric(
+                                vertical: 5.h, horizontal: 5.w),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                width: 0.5.w,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(0, 10.h, 2.w, 0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  listVoucher![index].discountAmount == null
+                                      ? Text(
+                                          "${LangText(context: context).getLocal()!.reduce_ucf}${listVoucher![index].discountPercent} %",
+                                          maxLines: 3,
+                                          style: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.bold,
+                                          ))
+                                      : Text(
+                                          "${LangText(context: context).getLocal()!.reduce_ucf}đ${listVoucher![index].discountAmount} k",
+                                          style: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          maxLines: 4,
                                         ),
-                                        maxLines: 4,
-                                      ),
-                                SizedBox(
-                                  height: 10.h,
-                                ),
-                                Text(LangText(context: context)
-                                    .getLocal()!
-                                    .from_ucf),
-                                Text(
-                                  '${listVoucher![index].releasedDate!.toDate().day}'
-                                  "/"
-                                  '${listVoucher![index].releasedDate!.toDate().month}'
-                                  "/"
-                                  '${listVoucher![index].releasedDate!.toDate().year}',
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    //fontWeight: FontWeight.w400,
+                                  SizedBox(
+                                    height: 10.h,
                                   ),
-                                ),
-                                Text(LangText(context: context)
-                                    .getLocal()!
-                                    .to_ucf),
-                                Text(
-                                  '${listVoucher![index].expDate!.toDate().day}'
-                                  "/"
-                                  '${listVoucher![index].expDate!.toDate().month}'
-                                  "/"
-                                  '${listVoucher![index].expDate!.toDate().year}',
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    //fontWeight: FontWeight.w400,
+                                  Text(LangText(context: context)
+                                      .getLocal()!
+                                      .from_ucf),
+                                  Text(
+                                    '${listVoucher![index].releasedDate!.toDate().day}'
+                                    "/"
+                                    '${listVoucher![index].releasedDate!.toDate().month}'
+                                    "/"
+                                    '${listVoucher![index].releasedDate!.toDate().year}',
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      //fontWeight: FontWeight.w400,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 10.h,
-                                ),
-                                buildSaveButton(
-                                    listVoucher![index].id!, user!.id!)
-                              ],
+                                  Text(LangText(context: context)
+                                      .getLocal()!
+                                      .to_ucf),
+                                  Text(
+                                    '${listVoucher![index].expDate!.toDate().day}'
+                                    "/"
+                                    '${listVoucher![index].expDate!.toDate().month}'
+                                    "/"
+                                    '${listVoucher![index].expDate!.toDate().year}',
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      //fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10.h,
+                                  ),
+                                  buildSaveButton(
+                                      listVoucher![index].id!, user!.id!)
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                physics: BouncingScrollPhysics(),
-                itemCount: listVoucher!.length,
+                        ],
+                      ),
+                    );
+                  },
+                  physics: BouncingScrollPhysics(),
+                  itemCount: listVoucher!.length,
+                ),
               )
             : Center(
                 child: Text(LangText(context: context)
@@ -277,6 +284,9 @@ class __VoucherScreenState extends State<VoucherScreen> {
                   height: 30.h,
                   width: 90.w,
                   child: ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(MyTheme.red)),
                     child: Text(LangText(context: context).getLocal()!.add_ucf),
                     onPressed: () async {
                       await voucherForUserRepo.updateVoucherForUser(
@@ -286,6 +296,20 @@ class __VoucherScreenState extends State<VoucherScreen> {
                 );
               }
             }
+          } else {
+            return Container(
+              height: 30.h,
+              width: 90.w,
+              child: ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(MyTheme.red)),
+                child: Text(LangText(context: context).getLocal()!.add_ucf),
+                onPressed: () async {
+                  await voucherForUserRepo.updateVoucherForUser(
+                      userID: uid, voucherID: voucherID);
+                },
+              ),
+            );
           }
         }
         return Container();

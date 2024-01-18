@@ -2016,7 +2016,8 @@ class FirestoreDatabase {
         };
         await voucherDoc.update(newData);
       } else {
-        addVoucherForUser(VoucherForUser(userID: userID, vouchers: [userID]));
+        await addVoucherForUser(
+            VoucherForUser(userID: userID, vouchers: [voucherID]));
       }
     } catch (e) {
       print("An error occured: $e");

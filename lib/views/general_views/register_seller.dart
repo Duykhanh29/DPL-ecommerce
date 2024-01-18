@@ -63,6 +63,8 @@ class _RegistrationState extends State<Registration> {
   TextEditingController _cityController = TextEditingController();
   TextEditingController _districtController = TextEditingController();
   TextEditingController _wardController = TextEditingController();
+  bool isPassVissiable = true;
+  bool isConfirmPassVissiable = true;
 
   onPressReg(AuthViewModel authViewModel, BuildContext context) async {
     String name = nameController.text.trim();
@@ -430,36 +432,72 @@ class _RegistrationState extends State<Registration> {
                         color: MyTheme.textfield_grey),
                     height: 40.h,
                     child: TextField(
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(
-                            255), // Giới hạn độ dài tối đa
-                      ],
-                      focusNode: passFocusNode,
-                      onTap: () {
-                        setState(() {
-                          passFocusNode.requestFocus();
-                        });
-                      },
-                      onEditingComplete: () {
-                        print("Untap");
-                        setState(() {
-                          passFocusNode.unfocus();
-                        });
-                      },
-                      controller: passwordController,
-                      autofocus: false,
-                      obscureText: true,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      style: const TextStyle(color: Colors.black),
-                      decoration: InputDecorations.buildInputDecoration_1(
-                          borderColor: MyTheme.noColor,
-                          hint_text: passwordController.text.isEmpty &&
-                                  !passFocusNode.hasFocus
-                              ? "• • • • • • • •"
-                              : null,
-                          hintTextColor: Colors.grey),
-                    ),
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(
+                              255), // Giới hạn độ dài tối đa
+                        ],
+                        focusNode: passFocusNode,
+                        onTap: () {
+                          setState(() {
+                            passFocusNode.requestFocus();
+                          });
+                        },
+                        onEditingComplete: () {
+                          print("Untap");
+                          setState(() {
+                            passFocusNode.unfocus();
+                          });
+                        },
+                        controller: passwordController,
+                        autofocus: false,
+                        obscureText: isPassVissiable,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        style: const TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                            suffixIcon: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  isPassVissiable = !isPassVissiable;
+                                });
+                              },
+                              child: Icon(isPassVissiable
+                                  ? Icons.visibility_off_sharp
+                                  : Icons.visibility_sharp),
+                            ),
+                            fillColor: const Color.fromRGBO(255, 255, 255, 0),
+                            hintText: passwordController.text.isEmpty &&
+                                    !passFocusNode.hasFocus
+                                ? "• • • • • • • •"
+                                : null,
+                            hintStyle:
+                                TextStyle(fontSize: 12.sp, color: Colors.grey),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: MyTheme.grey_153, width: 1),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10.r),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color:
+                                      MyTheme.app_accent_color.withOpacity(0.5),
+                                  width: 1.5),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10.r),
+                              ),
+                            ),
+                            contentPadding: EdgeInsets.only(left: 16.0.w))
+
+                        //  InputDecorations.buildInputDecoration_1(
+                        //     borderColor: MyTheme.noColor,
+                        //     hint_text: passwordController.text.isEmpty &&
+                        //             !passFocusNode.hasFocus
+                        //         ? "• • • • • • • •"
+                        //         : null,
+                        //     hintTextColor: Colors.grey),
+                        ),
                   ),
                 ],
               ),
@@ -481,36 +519,72 @@ class _RegistrationState extends State<Registration> {
                         color: MyTheme.textfield_grey),
                     height: 40.h,
                     child: TextField(
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(
-                            255), // Giới hạn độ dài tối đa
-                      ],
-                      focusNode: confirmPassFocusNode,
-                      onTap: () {
-                        setState(() {
-                          confirmPassFocusNode.requestFocus();
-                        });
-                      },
-                      onEditingComplete: () {
-                        print("Untap");
-                        setState(() {
-                          confirmPassFocusNode.unfocus();
-                        });
-                      },
-                      controller: confirmPassController,
-                      autofocus: false,
-                      obscureText: true,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      style: TextStyle(color: Colors.black),
-                      decoration: InputDecorations.buildInputDecoration_1(
-                          borderColor: MyTheme.noColor,
-                          hint_text: confirmPassController.text.isEmpty &&
-                                  !confirmPassFocusNode.hasFocus
-                              ? "• • • • • • • •"
-                              : null,
-                          hintTextColor: Colors.grey),
-                    ),
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(
+                              255), // Giới hạn độ dài tối đa
+                        ],
+                        focusNode: confirmPassFocusNode,
+                        onTap: () {
+                          setState(() {
+                            confirmPassFocusNode.requestFocus();
+                          });
+                        },
+                        onEditingComplete: () {
+                          print("Untap");
+                          setState(() {
+                            confirmPassFocusNode.unfocus();
+                          });
+                        },
+                        controller: confirmPassController,
+                        autofocus: false,
+                        obscureText: isConfirmPassVissiable,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        style: TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                            suffixIcon: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  isConfirmPassVissiable =
+                                      !isConfirmPassVissiable;
+                                });
+                              },
+                              child: Icon(isConfirmPassVissiable
+                                  ? Icons.visibility_off_sharp
+                                  : Icons.visibility_sharp),
+                            ),
+                            fillColor: const Color.fromRGBO(255, 255, 255, 0),
+                            hintText: confirmPassController.text.isEmpty &&
+                                    !confirmPassFocusNode.hasFocus
+                                ? "• • • • • • • •"
+                                : null,
+                            hintStyle:
+                                TextStyle(fontSize: 12.sp, color: Colors.grey),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: MyTheme.grey_153, width: 1),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10.r),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color:
+                                      MyTheme.app_accent_color.withOpacity(0.5),
+                                  width: 1.5),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10.r),
+                              ),
+                            ),
+                            contentPadding: EdgeInsets.only(left: 16.0.w))
+                        //  InputDecorations.buildInputDecoration_1(
+                        //     borderColor: MyTheme.noColor,
+                        //     hint_text: confirmPassController.text.isEmpty &&
+                        //             !confirmPassFocusNode.hasFocus
+                        //         ? "• • • • • • • •"
+                        //         : null,
+                        //     hintTextColor: Colors.grey),
+                        ),
                   ),
                 ],
               ),
