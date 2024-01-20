@@ -18,6 +18,10 @@ class VerificationFormRepo {
     return await firestoreDatabase.getVerificationFormByID(id);
   }
 
+  Future<bool?> isVerificatioinFormExist(String shopID) async {
+    return await firestoreDatabase.isVerificatioinFormExist(shopID);
+  }
+
   //admin actions
   Future<void> confirmSellerRequest(VerificationForm verificationForm) async {
     await firestoreDatabase.confirmSellerRequest(verificationForm);

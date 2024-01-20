@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/voucher_for_user_repo.dart';
@@ -167,18 +168,21 @@ class __VoucherScreenState extends State<VoucherScreen> {
                     child: Row(
                       children: [
                         Container(
-                          height: 160.h,
-                          width: 50.w,
+                          // height: 160.h,
+                          padding: EdgeInsets.symmetric(vertical: 5.h),
+                          width: 30.w,
                           alignment: Alignment.center,
-                          color: Colors.blue,
+                          color: MyTheme.accent_color_2,
                           // child: Text(
                           //   list![index].id!,
                           //   style: TextStyle(color: Colors.white),
                           // ),
                         ),
                         Container(
-                          height: 160.h,
-                          width: 110.w,
+                          // height: 160.h,
+                          width: 130.w,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 5.h, horizontal: 5.w),
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -197,13 +201,13 @@ class __VoucherScreenState extends State<VoucherScreen> {
                                         "${LangText(context: context).getLocal()!.reduce_ucf}${listVoucher![index].discountPercent} %",
                                         maxLines: 3,
                                         style: TextStyle(
-                                          fontSize: 16.sp,
+                                          fontSize: 15.sp,
                                           fontWeight: FontWeight.bold,
                                         ))
                                     : Text(
                                         "${LangText(context: context).getLocal()!.reduce_ucf}đ${listVoucher![index].discountAmount} k",
                                         style: TextStyle(
-                                          fontSize: 16.sp,
+                                          fontSize: 15.sp,
                                           fontWeight: FontWeight.bold,
                                         ),
                                         maxLines: 4,
@@ -286,6 +290,18 @@ class __VoucherScreenState extends State<VoucherScreen> {
                 );
               }
             }
+          } else {
+            return Container(
+              height: 30.h,
+              width: 90.w,
+              child: ElevatedButton(
+                child: Text(LangText(context: context).getLocal()!.add_ucf),
+                onPressed: () async {
+                  await voucherForUserRepo.updateVoucherForUser(
+                      userID: uid, voucherID: voucherID);
+                },
+              ),
+            );
           }
         }
         return Container();

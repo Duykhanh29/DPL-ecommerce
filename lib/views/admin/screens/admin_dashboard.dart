@@ -48,6 +48,29 @@ class _DashAdminState extends State<DashAdmin> {
 
   // ignore: library_private_types_in_public_api
   final List<Product>? products = ProductRepo().list;
+  void reset() {
+    listTopProduct = null;
+    totalUser = null;
+    totalShop = null;
+    totalProduct = null;
+    totalCategory = null;
+    totalDeliveryService = null;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> onRefresh() async {
+    reset();
+    await fetchData();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    onRefresh();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,115 +87,121 @@ class _DashAdminState extends State<DashAdmin> {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(8.h),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 40.h,
-              ),
-              Padding(
-                padding: const EdgeInsetsDirectional.all(8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        _buiditeam(
-                            lable:
-                                LangText(context: context).getLocal()!.user_ucf,
-                            value: totalUser != null
-                                ? totalUser.toString()
-                                : "...",
-                            icon1: Icons.account_box),
-                        SizedBox(
-                          height: 12.h,
-                        ),
-                        _buiditeam(
-                            lable:
-                                LangText(context: context).getLocal()!.shop_ucf,
-                            value: totalShop != null
-                                ? totalShop.toString()
-                                : "...",
-                            icon1: Icons.manage_accounts),
-                      ],
-                    ),
-                    SizedBox(
-                      width: 12.h,
-                    ),
-                    Column(
-                      children: [
-                        _buiditeam(
+      body: RefreshIndicator(
+        onRefresh: onRefresh,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(8.h),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 40.h,
+                ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.all(8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          _buiditeam(
+                              lable: LangText(context: context)
+                                  .getLocal()!
+                                  .user_ucf,
+                              value: totalUser != null
+                                  ? totalUser.toString()
+                                  : "...",
+                              icon1: Icons.account_box),
+                          SizedBox(
+                            height: 12.h,
+                          ),
+                          _buiditeam(
+                              lable: LangText(context: context)
+                                  .getLocal()!
+                                  .shop_ucf,
+                              value: totalShop != null
+                                  ? totalShop.toString()
+                                  : "...",
+                              icon1: Icons.manage_accounts),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 12.h,
+                      ),
+                      Column(
+                        children: [
+                          _buiditeam(
+                              lable: LangText(context: context)
+                                  .getLocal()!
+                                  .orders_ucf,
+                              value: totalOrder != null
+                                  ? totalOrder.toString()
+                                  : "...",
+                              icon1: CupertinoIcons.cart_fill),
+                          SizedBox(
+                            height: 12.h,
+                          ),
+                          _buiditeam(
                             lable: LangText(context: context)
                                 .getLocal()!
-                                .orders_ucf,
-                            value: totalOrder != null
-                                ? totalOrder.toString()
+                                .products_ucf,
+                            value: totalProduct != null
+                                ? totalProduct.toString()
                                 : "...",
-                            icon1: CupertinoIcons.cart_fill),
-                        SizedBox(
-                          height: 12.h,
-                        ),
-                        _buiditeam(
+                            icon1: CupertinoIcons.cube_box_fill,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      _buiditeam1(
                           lable: LangText(context: context)
                               .getLocal()!
-                              .products_ucf,
-                          value: totalProduct != null
-                              ? totalProduct.toString()
+                              .category_ucf,
+                          value: totalCategory != null
+                              ? totalCategory.toString()
                               : "...",
-                          icon1: CupertinoIcons.cube_box_fill,
-                        ),
-                      ],
-                    ),
-                  ],
+                          icon1: Icons.category),
+                      SizedBox(
+                        width: 12.h,
+                      ),
+                      _buiditeam1(
+                          lable: LangText(context: context)
+                              .getLocal()!
+                              .delivery_service_ucf,
+                          value: totalDeliveryService != null
+                              ? totalDeliveryService.toString()
+                              : "...",
+                          icon1: Icons.local_shipping_rounded),
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
+                SizedBox(
+                  height: 10.h,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buiditeam1(
-                        lable:
-                            LangText(context: context).getLocal()!.category_ucf,
-                        value: totalCategory != null
-                            ? totalCategory.toString()
-                            : "...",
-                        icon1: Icons.category),
-                    SizedBox(
-                      width: 12.h,
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10.w),
+                      child: Text(
+                        LangText(context: context).getLocal()!.top_products_ucf,
+                        style: TextStyle(fontSize: 16.sp),
+                      ),
                     ),
-                    _buiditeam1(
-                        lable: LangText(context: context)
-                            .getLocal()!
-                            .delivery_service_ucf,
-                        value: totalDeliveryService != null
-                            ? totalDeliveryService.toString()
-                            : "...",
-                        icon1: Icons.local_shipping_rounded),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    buildTopProducts(context)
                   ],
                 ),
-              ),
-              SizedBox(
-                height: 10.h,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.w),
-                    child: Text(
-                      LangText(context: context).getLocal()!.top_products_ucf,
-                      style: TextStyle(fontSize: 16.sp),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5.h,
-                  ),
-                  buildTopProducts(context)
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -295,7 +324,7 @@ class _DashAdminState extends State<DashAdmin> {
                   Icon(
                     icon1,
                     size: 75.sp,
-                    color: MyTheme.background,
+                    color: MyTheme.golden,
                   ),
                 ],
               ),

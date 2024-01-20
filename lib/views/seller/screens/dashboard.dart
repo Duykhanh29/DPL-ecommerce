@@ -23,33 +23,15 @@ import 'package:provider/provider.dart';
 // ignore: depend_on_referenced_packages
 
 // ignore: must_be_immutable
-class Dashboard extends StatelessWidget {
+class Dashboard extends StatefulWidget {
   Dashboard({super.key});
+
+  @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
   // ignore: library_private_types_in_public_api
-  // final List<Product>? products = ProductRepo().list;
-  // Shop shop = Shop(
-  //   ratingCount: 123,
-  //   totalProduct: 32,
-  //   name: "DK",
-  //   addressInfor: AddressInfor(
-  //       city: City(id: 8, name: "Tuyen Quang"),
-  //       country: "Viet nam",
-  //       isDefaultAddress: false,
-  //       latitude: 123.12,
-  //       longitude: 123,
-  //       name: "My address",
-  //       district: District(id: 123, name: "Hoang Mai")),
-  //   contactPhone: "0987654321",
-  //   id: "shopID01",
-  //   shopDescription:
-  //       "Cultivate your love for gardening with Green Thumb Nursery. We offer a variety of plants, gardening tools, and expert advice to help you create a vibrant and thriving garden.",
-  //   logo:
-  //       "https://cdn.shopify.com/shopifycloud/hatchful_web_two/bundles/4a14e7b2de7f6eaf5a6c98cb8c00b8de.png",
-  //   rating: 4.4,
-  //   shopView: 120,
-  //   totalRevenue: 120000,
-  //   totalOrder: 12,
-  // );
   @override
   Widget build(BuildContext context) {
     // print("ProductRepo().list: ${products!.length}");
@@ -239,32 +221,40 @@ class Dashboard extends StatelessWidget {
                             ),
                           ),
                           const Spacer(),
-                          GestureDetector(
-                            onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Verification(),
-                              ),
-                            ),
-                            child: Container(
-                              height: 30.h,
-                              width: 100.w,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(8)),
-                              child: Center(
-                                child: Text(
-                                  LangText(context: context)
-                                      .getLocal()!
-                                      .verify_now,
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                    fontSize: 12.sp,
+                          Consumer<ShopViewModel>(
+                              builder: (context, value, child) {
+                            if (value.shop != null) {
+                              return GestureDetector(
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        Verification(shopID: value.shop!.id!),
                                   ),
                                 ),
-                              ),
-                            ),
-                          ),
+                                child: Container(
+                                  height: 30.h,
+                                  width: 100.w,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(8)),
+                                  child: Center(
+                                    child: Text(
+                                      LangText(context: context)
+                                          .getLocal()!
+                                          .verify_now,
+                                      style: TextStyle(
+                                        color: Colors.blue,
+                                        fontSize: 12.sp,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return const SizedBox();
+                            }
+                          }),
                           SizedBox(
                             width: 20.w,
                           ),
@@ -536,6 +526,7 @@ class Dashboard extends StatelessWidget {
           ),
         ],
       );
+
   Widget _buildoder({
     required String name1,
     required String value,

@@ -744,5 +744,6 @@
     "email_provided_already_exists":"Email đã tồn tại",
      "an_error_has_occurred":"Một lỗi đã xảy ra",
      "please_enter_your_address_first":"Hãy nhập địa chỉ trước",
-     "please_choose_at_least_one_product":"Hãy chọn ít nhất một sản phẩm"
+     "please_choose_at_least_one_product":"Hãy chọn ít nhất một sản phẩm",
+      "you_have_sent_verification":"Bạn đã gửi biểu mẫu xác minh"
 }

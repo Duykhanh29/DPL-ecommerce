@@ -61,7 +61,7 @@ class _SellerLoginState extends State<SellerLogin> {
           gravity: ToastGravity.BOTTOM, duration: Toast.LENGTH_SHORT);
 
       return;
-    } else if (password.length < 8 && password.length > 0) {
+    } else if (password.length < 6 && password.length > 0) {
       ToastHelper.showDialog(AppLocalizations.of(context)!.enter_password,
           gravity: ToastGravity.BOTTOM, duration: Toast.LENGTH_SHORT);
 

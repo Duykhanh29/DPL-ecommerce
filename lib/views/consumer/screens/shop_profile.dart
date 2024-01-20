@@ -159,10 +159,17 @@ class _ShopProfileState extends State<ShopProfile>
                               }
                             },
                             child: shop != null
-                                ? CircleAvatar(
-                                    radius: 35.r,
-                                    backgroundImage: NetworkImage(shop!.logo!),
-                                  )
+                                ? shop!.logo != null
+                                    ? CircleAvatar(
+                                        radius: 35.r,
+                                        backgroundImage:
+                                            NetworkImage(shop!.logo!),
+                                      )
+                                    : CircleAvatar(
+                                        radius: 35.r,
+                                        backgroundImage:
+                                            AssetImage(ImageData.circelAvatar),
+                                      )
                                 : CircleAvatar(
                                     radius: 35.r,
                                     backgroundImage:
@@ -483,8 +490,11 @@ class _ShopProfileState extends State<ShopProfile>
                                                   EdgeInsets.only(left: 10.w),
                                               child: Text(
                                                 shop != null
-                                                    ? shop!.shopDescription!
-                                                    : "...",
+                                                    ? shop!.shopDescription !=
+                                                            null
+                                                        ? shop!.shopDescription!
+                                                        : "..."
+                                                    : "",
                                                 overflow: TextOverflow.clip,
                                                 textAlign: TextAlign.left,
                                                 style: TextStyle(

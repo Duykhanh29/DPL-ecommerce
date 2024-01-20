@@ -745,5 +745,6 @@
     "email_provided_already_exists":"Email Provided already Exists",
     "an_error_has_occurred":"An error has occurred",
     "please_enter_your_address_first":"Please enter your address first",
-    "please_choose_at_least_one_product":"Please choose at least one product"
+    "please_choose_at_least_one_product":"Please choose at least one product",
+    "you_have_sent_verification":"You have sent verification"
 }

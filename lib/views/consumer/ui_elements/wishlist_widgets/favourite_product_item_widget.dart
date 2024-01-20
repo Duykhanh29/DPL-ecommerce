@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dpl_ecommerce/models/favourite_product.dart';
 import 'package:dpl_ecommerce/repositories/wishlist_repo.dart';
+import 'package:dpl_ecommerce/const/app_theme.dart';
 
 // ignore: must_be_immutable
 class FavouriteProductItemWidget extends StatefulWidget {
@@ -95,24 +96,24 @@ class _FavouriteProductItemWidgetState
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Container(
-                              width: 56.h,
-                              margin: EdgeInsets.only(bottom: 77.h),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 4.h,
-                                vertical: 2.h,
-                              ),
-                              decoration: AppDecoration.fillOrange.copyWith(
-                                borderRadius: BorderRadiusStyle.roundedBorder2,
-                              ),
-                              child: Text(
-                                "top_seller",
-                                style: CustomTextStyles
-                                    .labelMediumOnPrimaryContainer,
-                              ),
-                            ),
+                            // Container(
+                            //   width: 56.h,
+                            //   margin: EdgeInsets.only(bottom: 77.h),
+                            //   padding: EdgeInsets.symmetric(
+                            //     horizontal: 4.h,
+                            //     vertical: 2.h,
+                            //   ),
+                            //   decoration: AppDecoration.fillOrange.copyWith(
+                            //     borderRadius: BorderRadiusStyle.roundedBorder2,
+                            //   ),
+                            //   child: Text(
+                            //     "top_seller",
+                            //     style: CustomTextStyles
+                            //         .labelMediumOnPrimaryContainer,
+                            //   ),
+                            // ),
                             Padding(
                                 padding: EdgeInsets.only(
                                   // right: 10.w,

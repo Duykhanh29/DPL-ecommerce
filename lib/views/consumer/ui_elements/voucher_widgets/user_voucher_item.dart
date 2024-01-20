@@ -77,7 +77,9 @@ class TicketData extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "${voucher!.discountPercent!} %",
+                  voucher!.discountPercent != null
+                      ? "${voucher!.discountPercent!} %"
+                      : "${voucher!.discountAmount} VND",
                   style: theme.textTheme.titleLarge,
                 ),
                 Text(
