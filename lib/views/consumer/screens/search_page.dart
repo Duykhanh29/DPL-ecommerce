@@ -6,8 +6,10 @@ import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_search_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/models/product.dart';
+import 'package:dpl_ecommerce/models/recommeded_product.dart';
 import 'package:dpl_ecommerce/models/search_history.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
+import 'package:dpl_ecommerce/repositories/recommed_product_repo.dart';
 import 'package:dpl_ecommerce/repositories/search_history_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
@@ -31,6 +33,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   ProductRepo productRepo = ProductRepo();
   SearchHistoryRepo searchHistoryRepo = SearchHistoryRepo();
+  RecommededProductRepo recommededProductRepo = RecommededProductRepo();
   int sliderIndex = 1;
 
   Product? product = Product(
@@ -64,6 +67,10 @@ class _SearchScreenState extends State<SearchScreen> {
   bool isLoading = true;
   List<SeacrhHistory>? listSearchHistory;
   List<String>? listSearchHistoryKey;
+  List<String>? listCategoryID;
+  List<Product>? listRecommededProduct;
+  List<RecommendedProducts>? listRecommed;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -88,6 +95,32 @@ class _SearchScreenState extends State<SearchScreen> {
     listSearchHistory = await searchHistoryRepo.getListSearchHistory();
     listSearchHistoryKey = await searchHistoryRepo
         .convertSeacrhListToListString(listSearchHistory);
+    listRecommed = await recommededProductRepo.fetchRecentData();
+    if (listRecommed != null) {
+      listCategoryID =
+          await recommededProductRepo.getListCategoryID(listRecommed!);
+      if (listCategoryID != null && listCategoryID!.isNotEmpty) {
+        for (var element in listCategoryID!) {
+          final listProduct =
+              await productRepo.getListProductByCategory(element);
+          if (listProduct != null && listProduct.isNotEmpty) {
+            if (listRecommededProduct != null &&
+                listRecommededProduct!.length == 10) {
+            } else {
+              if (listRecommededProduct != null) {
+                listRecommededProduct!.addAll(listProduct);
+              } else {
+                listRecommededProduct = listProduct;
+              }
+            }
+          }
+        }
+      } else {
+        listRecommededProduct = await productRepo.getActiveProducts(limit: 10);
+      }
+    } else {
+      listRecommededProduct = await productRepo.getActiveProducts(limit: 10);
+    }
     Future.delayed(const Duration(seconds: 2)).then((value) {
       setState(() {
         isLoading = false;
@@ -190,7 +223,11 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                     ),
                     SizedBox(height: 16.h),
-                    _buildProductSmallList1(context, product!),
+                    isLoading
+                        ? const SizedBox()
+                        : listRecommededProduct != null
+                            ? _buildProductSmallList1(context)
+                            : const SizedBox(),
                   ],
                 ),
               ),
@@ -297,7 +334,7 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildProductSmallList1(BuildContext context, Product product) {
+  Widget _buildProductSmallList1(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(right: 10.h),
       child: GridView.builder(
@@ -311,11 +348,11 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         itemBuilder: (context, index) {
           return Productsmalllist1ItemWidget(
-            product: product,
+            product: listRecommededProduct![index],
           );
         },
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: 10,
+        itemCount: listRecommededProduct!.length,
       ),
     );
   }

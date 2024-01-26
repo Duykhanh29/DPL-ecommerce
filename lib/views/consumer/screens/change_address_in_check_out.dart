@@ -51,8 +51,9 @@ class __ChangeAddressState extends State<ChangeAddress> {
                 //   height: 14.h,
                 // ),
                 Container(
-                    height: 121.h,
-                    width: 383.w,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 2.w, vertical: 5.h),
                     decoration: BoxDecoration(
                         color: const Color(0xFFF3F3F3),
                         borderRadius: BorderRadius.circular(10)),

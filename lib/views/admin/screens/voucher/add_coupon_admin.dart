@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
+import 'package:dpl_ecommerce/helpers/toast_helper.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
@@ -288,7 +289,8 @@ class __AddVoucherState extends State<AddVoucher> {
                                 MyTheme.accent_color)),
                         onPressed: pickDateRange,
                         child: Text(
-                            '${startDate!.toDate().day}/${startDate!.toDate().month}/${startDate!.toDate().year}'),
+                            '${startDate!.toDate().day}/${startDate!.toDate().month}/${startDate!.toDate().year}',
+                            style: TextStyle(color: MyTheme.white)),
                       ),
                     ),
                     SizedBox(
@@ -301,7 +303,8 @@ class __AddVoucherState extends State<AddVoucher> {
                                 MyTheme.accent_color)),
                         onPressed: pickDateRange,
                         child: Text(
-                            '${expDate!.toDate().day}/${expDate!.toDate().month}/${expDate!.toDate().year}'),
+                            '${expDate!.toDate().day}/${expDate!.toDate().month}/${expDate!.toDate().year}',
+                            style: TextStyle(color: MyTheme.white)),
                       ),
                     ),
                   ],
@@ -323,7 +326,7 @@ class __AddVoucherState extends State<AddVoucher> {
           },
           child: Text(
             LangText(context: context).getLocal()!.send_ucf,
-            style: TextStyle(fontSize: 18.sp),
+            style: TextStyle(fontSize: 18.sp, color: MyTheme.white),
           ),
         ),
       ),
@@ -348,6 +351,12 @@ class __AddVoucherState extends State<AddVoucher> {
   }
 
   Future<void> _addVoucher(BuildContext context) async {
+    final isValid = _formKey.currentState!.validate();
+    if (!isValid) {
+      ToastHelper.showDialog(
+          LangText(context: context).getLocal()!.please_enter_valid_field);
+      return;
+    }
     String name = _nameController.text;
 
     int? discountPercent;
@@ -365,8 +374,7 @@ class __AddVoucherState extends State<AddVoucher> {
 
     if (name.isNotEmpty) {
       print("Name not empty");
-      if (discountType == LangText(context: context).getLocal()!.percent &&
-          _percentController.text.isNotEmpty) {
+      if (discountType == "Percent" && _percentController.text.isNotEmpty) {
         Voucher newVoucher = Voucher(
           isAdmin: true,
           name: name,

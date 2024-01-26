@@ -746,5 +746,13 @@
     "an_error_has_occurred":"An error has occurred",
     "please_enter_your_address_first":"Please enter your address first",
     "please_choose_at_least_one_product":"Please choose at least one product",
-    "you_have_sent_verification":"You have sent verification"
+    "you_have_sent_verification":"You have sent verification",
+    "send_code":"Send code",
+     "change_voucher_for_apply":"Change voucher",
+     "total_price_without_discount_ucf":"Total price without discount",
+    "rating_should_to_be_greater_than_zero":"Rating should be a number greater than 0",
+    "edit":"Edit",
+    "please_enter_valid_field":"Please enter valid field",
+    "you_cannot_update_the_payment_status_yet":"You cannot update the payment status yet",
+    "number_of_products_by_category":"Number of products by category"
 }

@@ -18,8 +18,8 @@ class VoucherItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: MediaQuery.of(context).size.width * 0.6,
-        padding: const EdgeInsets.only(left: 15, right: 5),
+        width: MediaQuery.of(context).size.width * 0.61,
+        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
         height: MediaQuery.of(context).size.height * 0.15,
         // decoration: BoxDecoration(
         //   border: Border.fromBorderSide(
@@ -41,8 +41,8 @@ class VoucherItem extends StatelessWidget {
           drawTriangle: false,
           drawDivider: false,
           trianglePos: 0.65,
-          child: TicketData(voucher: voucher),
           drawShadow: false,
+          child: TicketData(voucher: voucher),
         )
         // TicketWidget(
         //   width: 350,

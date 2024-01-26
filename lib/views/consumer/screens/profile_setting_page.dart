@@ -55,6 +55,7 @@ class ProfileSettingScreen extends StatelessWidget {
                             builder: (context) {
                               return Scaffold(
                                 appBar: AppBar(
+                                  backgroundColor: MyTheme.accent_color,
                                   leading: CustomArrayBackWidget(),
                                   actions: [
                                     IconButton(
@@ -65,7 +66,8 @@ class ProfileSettingScreen extends StatelessWidget {
                                                   context);
                                         },
                                         icon: Icon(
-                                          Icons.download_outlined,
+                                          Icons.download_rounded,
+                                          color: MyTheme.white,
                                           size: 20.h,
                                         ))
                                   ],
@@ -338,7 +340,10 @@ class _BuildFormState extends State<BuildForm> {
             backgroundColor: MaterialStateProperty.all(MyTheme.accent_color),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.r)))),
-        child: Text(LangText(context: context).getLocal()!.save_ucf),
+        child: Text(
+          LangText(context: context).getLocal()!.save_ucf,
+          style: TextStyle(color: MyTheme.white),
+        ),
       ),
     );
   }

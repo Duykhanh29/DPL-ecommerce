@@ -39,7 +39,7 @@ class __DisplayCouponState extends State<DisplayCoupon> {
           );
         } else {
           if (snapshot.hasData) {
-            if (snapshot.data != null) {
+            if (snapshot.data != null && snapshot.data!.isNotEmpty) {
               final list = snapshot.data;
               return buildListVoucher(context, list!);
             } else {
@@ -156,8 +156,8 @@ class __DisplayCouponState extends State<DisplayCoupon> {
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          IconButton.filled(
-                            hoverColor: Colors.blue,
+                          IconButton(
+                            // hoverColor: Colors.blue,
                             color: Colors.blue,
                             icon: Icon(
                               Icons.edit,

@@ -32,7 +32,10 @@ class ProductsApp extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: MyTheme.accent_color,
         centerTitle: true,
-        title: Text(LangText(context: context).getLocal()!.products_ucf),
+        title: Text(
+          LangText(context: context).getLocal()!.products_ucf,
+          style: TextStyle(color: MyTheme.white),
+        ),
         automaticallyImplyLeading: false,
       ),
       body: Consumer<ShopViewModel>(
@@ -61,6 +64,7 @@ class ProductsApp extends StatelessWidget {
         },
         child: Icon(
           Icons.add,
+          color: MyTheme.white,
           size: 20.h,
         ),
       ),

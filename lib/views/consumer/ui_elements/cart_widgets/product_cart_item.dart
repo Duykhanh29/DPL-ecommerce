@@ -337,20 +337,41 @@ class _ProductCartItemState extends State<ProductCartItem> {
 
   Widget _buildCostWidget(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 6),
+      padding: EdgeInsets.only(top: 6.h),
       child: voucher != null
-          ? (voucher!.discountAmount != null
-              ? Text(
-                  "${widget.productInCartModel!.cost - voucher!.discountAmount!} VND",
-                  style: CustomTextStyles.labelLargeBluegray300,
+          ? Column(
+              children: [
+                (voucher!.discountAmount != null
+                    ? Text(
+                        "${widget.productInCartModel!.cost - voucher!.discountAmount!} VND",
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: MyTheme.button_color,
+                        ),
+                      )
+                    : Text(
+                        "${widget.productInCartModel!.cost - (voucher!.discountPercent! / 100) * widget.productInCartModel!.cost} VND",
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: MyTheme.button_color,
+                        ),
+                      )),
+                Text(
+                  "${widget.productInCartModel!.cost} VND",
+                  style: TextStyle(
+                      fontSize: 14.sp,
+                      color: MyTheme.dark_grey,
+                      decoration: TextDecoration.lineThrough,
+                      decorationColor: MyTheme.red),
                 )
-              : Text(
-                  "${widget.productInCartModel!.cost - (voucher!.discountPercent! / 100) * widget.productInCartModel!.cost} VND",
-                  style: CustomTextStyles.labelLargeBluegray300,
-                ))
+              ],
+            )
           : Text(
               "${widget.productInCartModel!.cost} VND",
-              style: CustomTextStyles.labelLargeBluegray300,
+              style: TextStyle(
+                fontSize: 16.sp,
+                color: MyTheme.button_color,
+              ),
             ),
     );
   }

@@ -235,7 +235,7 @@ class _EditAddressState extends State<EditAddress> {
         },
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(15.0.h),
             child: Form(
               key: _formKey,
               child: Column(
@@ -709,6 +709,15 @@ class _EditAddressState extends State<EditAddress> {
         width: MediaQuery.of(context).size.width * 0.9,
         margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 25.h),
         child: ElevatedButton(
+          style: ButtonStyle(
+            elevation: MaterialStateProperty.all(5),
+            shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.r),
+                side: BorderSide(color: MyTheme.accent_color_2, width: 1),
+              ),
+            ),
+          ),
           onPressed: () async {
             if (_formKey.currentState?.validate() ?? false) {
               _formKey.currentState?.save();
@@ -742,7 +751,10 @@ class _EditAddressState extends State<EditAddress> {
           },
           child: Text(
             LangText(context: context).getLocal()!.update_all_capital,
-            style: TextStyle(fontSize: 18.sp),
+            style: TextStyle(
+                fontSize: 18.sp,
+                color: MyTheme.accent_color,
+                fontWeight: FontWeight.w700),
           ),
         ),
       ),

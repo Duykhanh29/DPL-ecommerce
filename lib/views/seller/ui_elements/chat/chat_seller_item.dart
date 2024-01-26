@@ -109,12 +109,13 @@ class ChatSellerItem extends StatelessWidget {
               if (snapshot.hasData) {
                 if (snapshot.data != null) {
                   final chat = snapshot.data;
-                  final url;
+                  String? url;
                   if (chat!.id == chat!.userID) {
                     url = chat.shopLogo!;
                   } else {
-                    url = chat.userAvatar!;
+                    url = chat.userAvatar;
                   }
+
                   return ListTile(
                       onTap: () {
                         // go to chattingPage

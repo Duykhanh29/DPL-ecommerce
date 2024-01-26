@@ -1,5 +1,6 @@
 import 'package:dpl_ecommerce/const/app_decoration.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/customs/custom_elevate_button.dart';
 import 'package:dpl_ecommerce/customs/custom_icon_button.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
@@ -43,10 +44,14 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
     //     : currentUser.userInfor!.consumerInfor!.addressInfors;
     return Scaffold(
       appBar: AppBar(
+        leading: CustomArrayBackWidget(),
         backgroundColor: MyTheme.accent_color,
         title: Text(
           LangText(context: context).getLocal()!.address_ucf,
           textAlign: TextAlign.center,
+          style: TextStyle(
+            color: MyTheme.white,
+          ),
         ),
         centerTitle: true,
 
@@ -173,7 +178,7 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
                                           // For example, you can show a confirmation dialog and then delete the address
                                           showDialog(
                                             context: context,
-                                            builder: (context) => AlertDialog(
+                                            builder: (_) => AlertDialog(
                                               title: Text(
                                                   LangText(context: context)
                                                       .getLocal()!
@@ -185,7 +190,7 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
                                               actions: [
                                                 TextButton(
                                                   onPressed: () {
-                                                    Navigator.of(context).pop();
+                                                    Navigator.of(_).pop();
                                                   },
                                                   child: Text(
                                                       LangText(context: context)
@@ -204,7 +209,7 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
                                                         .deleteAddress(
                                                             address.id!,
                                                             currentUser);
-                                                    Navigator.of(context)
+                                                    Navigator.of(_)
                                                         .pop(); // Close the dialog
                                                   },
                                                   child: Text(
@@ -250,8 +255,13 @@ Widget _buildAddAddressButton(BuildContext context) {
         ));
       },
       height: 40.h,
+      buttonStyle: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(MyTheme.white)),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.r),
+          border: Border.all(color: MyTheme.accent_color, width: 0.5)),
       width: MediaQuery.of(context).size.width * 0.9,
       text: LangText(context: context).getLocal()!.add_new_address,
-      buttonTextStyle: TextStyle(fontSize: 18.sp),
+      buttonTextStyle: TextStyle(fontSize: 18.sp, color: MyTheme.accent_color),
       margin: EdgeInsets.only(left: 16.h, right: 16.h, bottom: 25.h));
 }

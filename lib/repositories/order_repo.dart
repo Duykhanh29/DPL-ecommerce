@@ -46,6 +46,12 @@ class OrderRepo {
     return await firestoreDatabase.getListOrderingProductByOrder(orderID);
   }
 
+  Future<OrderingProduct?> getOrderingProductByOrderID(
+      {required String orderID, required String orderingProductID}) async {
+    return await firestoreDatabase.getOrderingProductByOrderID(
+        orderID: orderID, orderingProductID: orderingProductID);
+  }
+
   // for shop
 
   Future<void> addOrderShop(OrderShop orderShop) async {

@@ -1,5 +1,4 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
-import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -41,7 +40,11 @@ class CustomIconButton extends StatelessWidget {
         : iconButtonWidget;
   }
 
-  Widget get iconButtonWidget => SizedBox(
+  Widget get iconButtonWidget => Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: MyTheme.accent_color_2, width: 0.2),
+          borderRadius: BorderRadius.circular(24.r),
+        ),
         height: height ?? 0,
         width: width ?? 0,
         child: IconButton(
@@ -66,18 +69,18 @@ class CustomIconButton extends StatelessWidget {
 extension IconButtonStyleHelper on CustomIconButton {
   static BoxDecoration get fillGray => BoxDecoration(
         color: appTheme.gray10002,
-        borderRadius: BorderRadius.circular(24.h),
+        borderRadius: BorderRadius.circular(24.r),
       );
   static BoxDecoration get fillYellow => BoxDecoration(
         color: appTheme.yellow50,
-        borderRadius: BorderRadius.circular(24.h),
+        borderRadius: BorderRadius.circular(24.r),
       );
   static BoxDecoration get fillLightBlue => BoxDecoration(
         color: appTheme.lightBlue50,
-        borderRadius: BorderRadius.circular(24.h),
+        borderRadius: BorderRadius.circular(24.r),
       );
   static BoxDecoration get fillGrayTL24 => BoxDecoration(
         color: appTheme.gray10001,
-        borderRadius: BorderRadius.circular(24.h),
+        borderRadius: BorderRadius.circular(24.r),
       );
 }

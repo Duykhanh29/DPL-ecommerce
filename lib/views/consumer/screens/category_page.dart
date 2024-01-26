@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CategoryPage extends StatefulWidget {
-  const CategoryPage({super.key});
-
+  CategoryPage({super.key, this.fromHome = false});
+  bool fromHome;
   @override
   State<CategoryPage> createState() => __CategoryPageState();
 }
@@ -48,7 +48,7 @@ class __CategoryPageState extends State<CategoryPage> {
     return Scaffold(
       //backgroundColor: Color.fromARGB(143, 4, 20, 243),
       appBar: CustomAppBar(
-              isLeading: false,
+              isLeading: widget.fromHome ? true : false,
               centerTitle: true,
               context: context,
               title: LangText(context: context).getLocal()!.categories_ucf)

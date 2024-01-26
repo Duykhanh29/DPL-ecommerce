@@ -4,6 +4,7 @@ import 'package:dpl_ecommerce/const/app_decoration.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/cart.dart';
 import 'package:dpl_ecommerce/models/category.dart';
+import 'package:dpl_ecommerce/models/category_chart.dart';
 import 'package:dpl_ecommerce/models/chat.dart';
 import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/consumer_infor.dart';
@@ -56,13 +57,19 @@ class FirestoreDatabase {
     }
   }
 
-  Future<List<Product>?> getActiveProducts() async {
+  Future<List<Product>?> getActiveProducts({int limit = 0}) async {
     try {
       List<Product> list = [];
-      final snapshot = await _firestore
-          .collection('products')
-          .where('availableQuantity', isGreaterThan: 0)
-          .get();
+      final snapshot = limit == 0
+          ? await _firestore
+              .collection('products')
+              .where('availableQuantity', isGreaterThan: 0)
+              .get()
+          : await _firestore
+              .collection('products')
+              .where('availableQuantity', isGreaterThan: 0)
+              .limit(limit)
+              .get();
       for (var data in snapshot.docs) {
         final productData = data.data();
         Product product = Product.fromJson(productData);
@@ -369,41 +376,83 @@ class FirestoreDatabase {
   Future<List<Product>?> getListTopProduct() async {
     try {
       List<Product> list = [];
-      final snapshot = await _firestore
-          .collection('products')
-          .where('availableQuantity', isGreaterThan: 0);
+      // final snapshot = await _firestore
+      //     .collection('products')
+      //     .where('availableQuantity', isGreaterThan: 0);
 
-      QuerySnapshot snapshot1 = await _firestore
-          .collection('products')
-          .where('availableQuantity', isGreaterThan: 0)
-          .where('rating', isGreaterThan: 4)
-          .where('ratingCount', isGreaterThanOrEqualTo: 0)
-          .get();
+      // QuerySnapshot snapshot1 = await _firestore
+      //     .collection('products')
 
-      // Điều kiện 2: purchaseCount > 50
+      //     .get();
+      // Thực hiện hai truy vấn riêng biệt
+
       QuerySnapshot snapshot2 = await _firestore
           .collection('products')
-          .where('availableQuantity', isGreaterThan: 0)
-          .where('purchasingCount', isGreaterThan: 2)
+          .where('rating', isGreaterThan: 4)
+          .get();
+      // QuerySnapshot snapshot3 = await _firestore
+      //     .collection('products')
+      //     .where('availableQuantity', isGreaterThan: 0)
+
+      //     .get();
+      // Điều kiện 2: purchaseCount > 10
+      QuerySnapshot snapshot4 = await _firestore
+          .collection('products')
+          .where('purchasingCount', isGreaterThan: 10)
           .get();
 
-// Kết hợp kết quả của cả hai truy vấn
       List<QueryDocumentSnapshot> combinedResults = [];
-      combinedResults.addAll(snapshot1.docs);
+
+      // combinedResults.addAll(snapshot1.docs);
       combinedResults.addAll(snapshot2.docs);
+      // combinedResults.addAll(snapshot3.docs);
+      combinedResults.addAll(snapshot4.docs);
 
       // Lọc bản ghi trùng lặp (nếu có)
-      combinedResults = combinedResults.toSet().toList();
+      Map<String, DocumentSnapshot> map = {};
+      for (var doc in combinedResults) {
+        map[doc.id] = doc;
+      }
+      combinedResults = map.values.toList().cast<QueryDocumentSnapshot>();
 
       // Xử lý dữ liệu trong combinedResults
-      list = combinedResults.map((DocumentSnapshot doc) {
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        // Chuyển đổi dữ liệu thành đối tượng Product hoặc xử lý dữ liệu theo ý muốn
-        return Product.fromJson(data);
-      }).toList();
+      for (var element in combinedResults) {
+        Map<String, dynamic> data = element.data() as Map<String, dynamic>;
+        Product p = Product.fromJson(data);
+        if (p.availableQuantity! > 0) {
+          list.add(p);
+        }
+      }
+      // list = combinedResults.map((DocumentSnapshot doc) {
+      //   Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      //   // Chuyển đổi dữ liệu thành đối tượng Product hoặc xử lý dữ liệu theo ý muốn
+      //   return Product.fromJson(data);
+      // }).toList();
 
       list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
       return list;
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<List<Product>?> getListDealOfTheDay() async {
+    try {
+      List<Voucher>? listVoucher = await getActivceVoucherList();
+      if (listVoucher != null && listVoucher.isNotEmpty) {
+        List<Product> listProduct = [];
+        for (var element in listVoucher) {
+          if (element.productID != null) {
+            Product? product = await getProductByID(element.productID!);
+            if (product != null) {
+              listProduct.add(product);
+            }
+          }
+        }
+        return listProduct;
+      } else {
+        print("Empty voucher");
+      }
     } catch (e) {
       print("An error occured: $e");
     }
@@ -420,18 +469,18 @@ class FirestoreDatabase {
 
       QuerySnapshot snapshot1 = await _firestore
           .collection('products')
-          .where('availableQuantity', isGreaterThan: 0)
+          // .where('availableQuantity', isGreaterThan: 0)
           .where('shopID', isEqualTo: shopID)
           .where('rating', isGreaterThan: 4)
-          .where('ratingCount', isGreaterThanOrEqualTo: 0)
+          // .where('ratingCount', isGreaterThanOrEqualTo: 5)
           .get();
 
       // Điều kiện 2: purchaseCount > 50
       QuerySnapshot snapshot2 = await _firestore
           .collection('products')
           .where('shopID', isEqualTo: shopID)
-          .where('availableQuantity', isGreaterThan: 0)
-          .where('purchasingCount', isGreaterThan: 2)
+          // .where('availableQuantity', isGreaterThan: 0)
+          .where('purchasingCount', isGreaterThan: 10)
           .get();
 
 // Kết hợp kết quả của cả hai truy vấn
@@ -439,15 +488,20 @@ class FirestoreDatabase {
       combinedResults.addAll(snapshot1.docs);
       combinedResults.addAll(snapshot2.docs);
 
-      // Lọc bản ghi trùng lặp (nếu có)
-      combinedResults = combinedResults.toSet().toList();
+      Map<String, DocumentSnapshot> map = {};
+      for (var doc in combinedResults) {
+        map[doc.id] = doc;
+      }
+      combinedResults = map.values.toList().cast<QueryDocumentSnapshot>();
 
       // Xử lý dữ liệu trong combinedResults
-      list = combinedResults.map((DocumentSnapshot doc) {
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        // Chuyển đổi dữ liệu thành đối tượng Product hoặc xử lý dữ liệu theo ý muốn
-        return Product.fromJson(data);
-      }).toList();
+      for (var element in combinedResults) {
+        Map<String, dynamic> data = element.data() as Map<String, dynamic>;
+        Product p = Product.fromJson(data);
+        if (p.availableQuantity! > 0) {
+          list.add(p);
+        }
+      }
 
       list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
       return list;
@@ -980,6 +1034,33 @@ class FirestoreDatabase {
     }
   }
 
+  Future<List<CategoryChart>?> getTotalProductOfEachCategoryByShop(
+      String shopID) async {
+    try {
+      List<Category>? listCategory = await getListCategory();
+      List<Product>? listProduct = await getActiveProducts();
+      if (listCategory != null && listCategory!.isNotEmpty) {
+        if (listProduct != null && listProduct.isNotEmpty) {
+          List<CategoryChart> list = [];
+          for (var category in listCategory) {
+            int total = 0;
+            for (var product in listProduct) {
+              if (product.shopID == shopID &&
+                  product.categoryID == category.id) {
+                total++;
+              }
+            }
+            CategoryChart categoryChart = CategoryChart(category.name!, total);
+            list.add(categoryChart);
+          }
+          return list;
+        }
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
   Future<void> updateTotalOrderForShop({required String shopID}) async {
     try {
       final shopDoc = _firestore.collection('shops').doc(shopID);
@@ -1021,7 +1102,7 @@ class FirestoreDatabase {
       if (snapshot.exists) {
         final shopData = snapshot.data();
         Shop shop = Shop.fromJson(shopData!);
-        shop.ratingCount = shop.ratingCount++;
+        shop.ratingCount = shop.ratingCount + 1;
 
         double newRating =
             (shop.rating * shop.ratingCount + rating) / (shop.ratingCount + 1);
@@ -1716,7 +1797,7 @@ class FirestoreDatabase {
           }
         } else {
           print("Empty");
-          streamController.close();
+          // streamController.close();
         }
 
         streamController.sink.add(list);
@@ -2024,6 +2105,35 @@ class FirestoreDatabase {
     }
   }
 
+  Future<void> deleteVoucherIDForUser(
+      {required String uid, required String voucherID}) async {
+    try {
+      final voucherDoc = _firestore.collection("voucherForUsers").doc(uid);
+      final voucherSnaphot = await voucherDoc.get();
+      if (voucherSnaphot.exists) {
+        final data = voucherSnaphot.data();
+        final listVoucher = data!['vouchers'] as List<dynamic>;
+        final vouchers = listVoucher.map((e) => e.toString()).toList();
+        if (vouchers.isNotEmpty) {
+          for (var element in vouchers) {
+            if (element == voucherID) {
+              vouchers.remove(element);
+            }
+          }
+        }
+        final newData = {
+          'userID': uid,
+          'vouchers': FieldValue.arrayUnion(vouchers)
+        };
+        await voucherDoc.update(newData);
+      } else {
+        print("EMPTY");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
   Stream<bool> isCollectedVoucher(
       {required String uid, required String voucherID}) async* {
     try {
@@ -2095,19 +2205,19 @@ class FirestoreDatabase {
       StreamSubscription subscription = ref.listen((event) {
         // if (event.docs.isEmpty) {
         // for (var data in event.docs) {
-        VoucherForUser voucher = VoucherForUser(
-            userID: event.data()!['userID'],
-            vouchers: event.data()!['vouchers'] != null
-                ? (event.data()!['vouchers'] as List<dynamic>)
-                    .map((e) => e.toString())
-                    .toList()
-                : null);
-        streamController.sink.add(voucher);
-        // }
-        // } else {
-        //   print("Emmpty");
-        //   streamController.close();
-        // }
+        if (event.exists) {
+          VoucherForUser voucher = VoucherForUser(
+              userID: event.data()!['userID'],
+              vouchers: event.data()!['vouchers'] != null
+                  ? (event.data()!['vouchers'] as List<dynamic>)
+                      .map((e) => e.toString())
+                      .toList()
+                  : null);
+          streamController.sink.add(voucher);
+        } else {
+          print("Emmpty");
+          streamController.close();
+        }
       });
       streamController.onCancel = () {
         subscription.cancel();
@@ -2125,7 +2235,11 @@ class FirestoreDatabase {
       if (ref.exists) {
         return VoucherForUser.fromJson(ref.data()!);
       } else {
+        VoucherForUser voucherForUser =
+            VoucherForUser(userID: uid, vouchers: []);
+        await addVoucherForUser(voucherForUser);
         print("EMPTY");
+        return voucherForUser;
       }
     } catch (e) {
       print("An error occured: $e");
@@ -2493,11 +2607,13 @@ class FirestoreDatabase {
               DateTime now = DateTime.now();
               DateTime time = data.date!.toDate();
               final difference = now.difference(time);
-              if (difference.inHours > 24) {
+              if (difference.inHours > 4) {
                 await updateOrderingProductStatus(
                     orderID: element.id!,
                     orderingProductID: data.id!,
                     status: DeliverStatus.delivering);
+                await updateOrderShopStatusByOrderingProductID(
+                    data.id!, DeliverStatus.delivering);
               }
               // else if (difference.inMinutes > 12) {
               //   await updateOrderingProductStatus(
@@ -2632,6 +2748,12 @@ class FirestoreDatabase {
             }
           }
         }
+        final updateData = {
+          'orderingProductsID': listProduct?.map((e) => e.toJson()).toList(),
+          // Cập nhật các trường khác cần thiết
+          // ...
+        };
+
         orderModel.Order order = orderModel.Order.fromJson(data);
         // orderModel.Order(
         //     deliverServiceID: data!['deliverServiceID'],
@@ -2646,7 +2768,9 @@ class FirestoreDatabase {
         //     userID: data['userID'],
         //     voucherDiscountID: data['voucherDiscountID'],
         //     time: (data['time'] as Timestamp));
-        await doc.update(order.toJson());
+        await doc.update(updateData);
+        await updateOrderShopStatusByOrderingProductID(
+            orderingProductID, status);
       } else {
         print("NOt exists");
       }
@@ -2678,6 +2802,31 @@ class FirestoreDatabase {
         orderModel.Order order = orderModel.Order.fromJson(data!);
         final list = order.orderingProductsID;
         return list;
+      } else {
+        print("Empty");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<OrderingProduct?> getOrderingProductByOrderID(
+      {required String orderID, required String orderingProductID}) async {
+    try {
+      final ref = await _firestore.collection('orders').doc(orderID).get();
+      if (ref.exists) {
+        final data = ref.data();
+        orderModel.Order order = orderModel.Order.fromJson(data!);
+        final list = order.orderingProductsID;
+        if (list != null) {
+          for (var element in list!) {
+            if (element.id == orderingProductID) {
+              return element;
+            }
+          }
+        } else {
+          print("null");
+        }
       } else {
         print("Empty");
       }
@@ -2785,6 +2934,26 @@ class FirestoreDatabase {
         }
       } else {
         print("EMPTy");
+      }
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<void> updateOrderShopStatusByOrderingProductID(
+      String orderingProductID, DeliverStatus status) async {
+    try {
+      final orderShop = await _firestore
+          .collection('orderShops')
+          .where('orderingProductID', isEqualTo: orderingProductID)
+          .get();
+      if (orderShop.docs.isNotEmpty) {
+        await _firestore
+            .collection('orderShops')
+            .doc(orderShop.docs[0].id)
+            .update({'deliverStatus': status.toString().split(".").last});
+      } else {
+        print("EMPTY");
       }
     } catch (e) {
       print("An error occured: $e");
@@ -3500,6 +3669,31 @@ class FirestoreDatabase {
     try {
       final ref = await _firestore.collection('categories').get();
       return ref.size;
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
+  Future<List<CategoryChart>?> getTotalProductOfEachCategory() async {
+    try {
+      List<Category>? listCategory = await getListCategory();
+      List<Product>? listProduct = await getActiveProducts();
+      if (listCategory != null && listCategory!.isNotEmpty) {
+        if (listProduct != null && listProduct.isNotEmpty) {
+          List<CategoryChart> list = [];
+          for (var category in listCategory) {
+            int total = 0;
+            for (var product in listProduct) {
+              if (product.categoryID == category.id) {
+                total++;
+              }
+            }
+            CategoryChart categoryChart = CategoryChart(category.name!, total);
+            list.add(categoryChart);
+          }
+          return list;
+        }
+      }
     } catch (e) {
       print("An error occured: $e");
     }

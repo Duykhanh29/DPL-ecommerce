@@ -14,7 +14,7 @@ class ListVoucherWidget extends StatelessWidget {
   Widget _buildShopVoucher(BuildContext context, List<Voucher> list) {
     return Container(
       // margin: EdgeInsets.symmetric(horizontal: 16.h),
-      padding: EdgeInsets.symmetric(vertical: 5.h),
+      padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 3.w),
       height: MediaQuery.of(context).size.height * 0.12,
       width: double.infinity,
       child: ListView.builder(

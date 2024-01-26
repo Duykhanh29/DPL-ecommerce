@@ -162,12 +162,12 @@ class CartViewModel extends ChangeNotifier {
             voucher.expDate!.compareTo(Timestamp.fromDate(DateTime.now())) >
                 0) {
           if (voucher.discountAmount != null) {
-            cost -= voucher.discountAmount!;
+            // cost -= voucher.discountAmount!;
             savingPrice += voucher.discountAmount!;
           } else {
             double percent = voucher.discountPercent! / 100;
-            int savingPrice = (cost * percent).toInt();
-            cost -= savingPrice;
+            savingPrice = (cost * percent).toInt();
+            // cost -= savingPrice;
           }
         } else {
           print("Im oke");

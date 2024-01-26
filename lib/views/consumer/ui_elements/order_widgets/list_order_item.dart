@@ -34,6 +34,19 @@ class _ListorderingItemState extends State<ListorderingItem> {
     }
   }
 
+  void reset() {
+    list = null;
+    list = null;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> onRefresh() async {
+    reset();
+    await fetchData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -53,7 +66,7 @@ class _ListorderingItemState extends State<ListorderingItem> {
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   return OrderingProductItem(
-                    orderingProduct: list![index],
+                    orderingProductID: list![index].id!,
                     orderID: widget.orderID,
                   );
                 },

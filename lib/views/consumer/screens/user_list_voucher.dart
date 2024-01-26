@@ -87,9 +87,8 @@ class _UserListVoucherState extends State<UserListVoucher> {
           //   child:
           Padding(
         padding: EdgeInsets.only(top: 10.h, bottom: 5.h, left: 5.w, right: 5.w),
-        child: StreamBuilder(
-          stream: voucherForUserRepo
-              .getVoucherForUser(authViewModel.currentUser!.id!),
+        child: FutureBuilder(
+          future: voucherForUserRepo.getVoucher(authViewModel.currentUser!.id!),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(

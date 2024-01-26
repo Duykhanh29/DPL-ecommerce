@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/customs/custom_search_view.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
@@ -93,6 +94,7 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
     final user = userProvider.currentUser;
     return Scaffold(
       appBar: AppBar(
+        leading: CustomArrayBackWidget(),
         backgroundColor: MyTheme.accent_color,
         title: Row(
           children: [
@@ -130,7 +132,10 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                                 // Navigator.of(context).pop();
                               });
                             },
-                            child: const Icon(Icons.close),
+                            child: Icon(
+                              Icons.close,
+                              color: MyTheme.green_light,
+                            ),
                           )
                         : null,
                 hintText:
@@ -139,25 +144,23 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                     padding: EdgeInsets.all(7.h),
                     child: Icon(
                       Icons.search,
+                      color: MyTheme.green_light,
                       size: 25.h,
                     )),
               ),
             ),
             SizedBox(width: 8.w),
 
+            // IconButton(
+            //   icon: Icon(Icons.clear, size: 20.h, color: MyTheme.green_light),
+            //   onPressed: () {_
+            //     setState(() {
+            //       searchController.text = '';
+            //     });
+            //   },
+            // ),
             IconButton(
-              icon: Icon(
-                Icons.clear,
-                size: 20.h,
-              ),
-              onPressed: () {
-                setState(() {
-                  searchController.text = '';
-                });
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.list, size: 20.h),
+              icon: Icon(Icons.list, size: 20.h, color: MyTheme.green_light),
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -168,7 +171,8 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
               ),
             ),
             IconButton(
-              icon: Icon(Icons.filter_list, size: 20.h),
+              icon: Icon(Icons.filter_list,
+                  size: 20.h, color: MyTheme.green_light),
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(

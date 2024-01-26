@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
+import 'package:dpl_ecommerce/helpers/toast_helper.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
@@ -393,7 +394,9 @@ class __AddCouponState extends State<AddCoupon> {
                                 MyTheme.accent_color)),
                         onPressed: pickDateRange,
                         child: Text(
-                            '${startDate!.toDate().day}/${startDate!.toDate().month}/${startDate!.toDate().year}'),
+                          '${startDate!.toDate().day}/${startDate!.toDate().month}/${startDate!.toDate().year}',
+                          style: TextStyle(color: MyTheme.white),
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -406,7 +409,8 @@ class __AddCouponState extends State<AddCoupon> {
                                 MyTheme.accent_color)),
                         onPressed: pickDateRange,
                         child: Text(
-                            '${expDate!.toDate().day}/${expDate!.toDate().month}/${expDate!.toDate().year}'),
+                            '${expDate!.toDate().day}/${expDate!.toDate().month}/${expDate!.toDate().year}',
+                            style: TextStyle(color: MyTheme.white)),
                       ),
                     ),
                   ],
@@ -437,7 +441,7 @@ class __AddCouponState extends State<AddCoupon> {
           },
           child: Text(
             LangText(context: context).getLocal()!.send_ucf,
-            style: TextStyle(fontSize: 18.sp),
+            style: TextStyle(fontSize: 18.sp, color: MyTheme.white),
           ),
         ),
       ),
@@ -462,12 +466,18 @@ class __AddCouponState extends State<AddCoupon> {
   }
 
   Future<void> _addVoucher(BuildContext context, String shopId) async {
+    final isValid = _formKey.currentState!.validate();
+    if (!isValid) {
+      ToastHelper.showDialog(
+          LangText(context: context).getLocal()!.please_enter_valid_field);
+      return;
+    }
     String name = _nameController.text;
     String? shopID;
     String? productID;
     int? discountPercent;
     int? discountAmount;
-    if (dropdownValue == LangText(context: context).getLocal()!.product_ucf) {
+    if (dropdownValue == "Product") {
       productID = selectedProduct!.id;
     }
     // else {
@@ -481,21 +491,22 @@ class __AddCouponState extends State<AddCoupon> {
     }
 
     if (name.isNotEmpty) {
-      if (discountType == LangText(context: context).getLocal()!.percent &&
-          _percentController.text.isNotEmpty) {
-        Voucher newVoucher = Voucher(
-          name: name,
-          discountAmount: discountAmount,
-          discountPercent: discountPercent,
-          expDate: expDate,
-          productID: productID,
-          releasedDate: startDate,
-          shopID: shopId,
-        );
-        await voucherRepo.addVoucher(newVoucher);
+      if (discountType == "Percent") {
+        if (_percentController.text.isNotEmpty) {
+          Voucher newVoucher = Voucher(
+            name: name,
+            discountAmount: discountAmount,
+            discountPercent: discountPercent,
+            expDate: expDate,
+            productID: productID,
+            releasedDate: startDate,
+            shopID: shopId,
+          );
+          await voucherRepo.addVoucher(newVoucher);
+        }
+
         // widget.onVoucherAdded(newVoucher);
-      } else if (discountType !=
-              LangText(context: context).getLocal()!.percent &&
+      } else if (discountType != "Percent" &&
           _amountController.text.isNotEmpty) {
         Voucher newVoucher = Voucher(
           name: name,
@@ -508,6 +519,10 @@ class __AddCouponState extends State<AddCoupon> {
         );
         // widget.onVoucherAdded(newVoucher);
         await voucherRepo.addVoucher(newVoucher);
+      } else {
+        ToastHelper.showDialog(
+            LangText(context: context).getLocal()!.please_enter_valid_field);
+        return;
       }
 
       // Clear text fields and image path

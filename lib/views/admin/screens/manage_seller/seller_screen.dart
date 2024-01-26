@@ -91,14 +91,20 @@ class _SellerScreenState extends State<SellerScreen>
       appBar: AppBar(
         backgroundColor: MyTheme.accent_color,
         automaticallyImplyLeading: widget.isDrawer,
-        title: Text(LangText(context: context).getLocal()!.shop_ucf),
+        title: Text(
+          LangText(context: context).getLocal()!.shop_ucf,
+          style: TextStyle(fontWeight: FontWeight.w700, color: MyTheme.white),
+        ),
         centerTitle: true,
         leading: widget.isDrawer ? CustomArrayBackWidget() : Container(),
         bottom: TabBar(
-          indicatorColor: MyTheme.white,
+          labelStyle: TextStyle(color: MyTheme.white),
+          indicatorColor: MyTheme.green_light,
           controller: _tabController,
           tabs: [
-            Tab(text: LangText(context: context).getLocal()!.confirmed_ucf),
+            Tab(
+              text: LangText(context: context).getLocal()!.confirmed_ucf,
+            ),
             Tab(
               text: LangText(context: context).getLocal()!.unconfirmed_ucf,
             ),
@@ -139,6 +145,8 @@ class _SellerScreenState extends State<SellerScreen>
                           },
                           child: Container(
                             //height: 120.h,
+                            padding: EdgeInsets.symmetric(
+                                vertical: 5.h, horizontal: 5.w),
                             width: 340.w,
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -162,17 +170,23 @@ class _SellerScreenState extends State<SellerScreen>
                                     width: 10.w,
                                   ),
                                   Container(
-                                    height: 80.h,
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 3.h),
+                                    // height: 80.h,
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
                                       children: [
-                                        SizedBox(
-                                          height: 10.h,
-                                        ),
+                                        // SizedBox(
+                                        //   height: 10.h,
+                                        // ),
                                         Text(
                                           '${user.firstName}',
-                                          style: TextStyle(fontSize: 16.sp),
+                                          style: TextStyle(
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w600),
                                         ),
                                         Text(
                                           '${user.email}',
@@ -181,9 +195,9 @@ class _SellerScreenState extends State<SellerScreen>
                                             color: Colors.grey,
                                           ),
                                         ),
-                                        SizedBox(
-                                          height: 5.h,
-                                        ),
+                                        // SizedBox(
+                                        //   height: 5.h,
+                                        // ),
                                         user.phone != null
                                             ? Text(
                                                 user.phone ?? "",
@@ -268,6 +282,8 @@ class _SellerScreenState extends State<SellerScreen>
                           },
                           child: Container(
                             //height: 120.h,
+                            padding: EdgeInsets.symmetric(
+                                vertical: 5.h, horizontal: 5.w),
                             width: 340.w,
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -301,7 +317,9 @@ class _SellerScreenState extends State<SellerScreen>
                                         ),
                                         Text(
                                           '${user.firstName}',
-                                          style: TextStyle(fontSize: 16.sp),
+                                          style: TextStyle(
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w600),
                                         ),
                                         Text(
                                           '${user.email}',

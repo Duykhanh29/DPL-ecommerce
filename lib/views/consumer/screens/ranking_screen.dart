@@ -133,8 +133,9 @@ class __RankUserState extends State<RankUser> {
                         children: [
                           Text(
                             LangText(context: context).getLocal()!.your_rank,
+                            textAlign: TextAlign.center,
                             style:
-                                TextStyle(fontSize: 20.sp, color: Colors.grey),
+                                TextStyle(fontSize: 18.sp, color: Colors.grey),
                           ),
                           SizedBox(
                             height: 5.h,
@@ -144,8 +145,9 @@ class __RankUserState extends State<RankUser> {
                                   LangText(context: context)
                                       .getLocal()!
                                       .bronze_ucf,
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize: 20.sp, color: Colors.grey),
+                                      fontSize: 18.sp, color: Colors.grey),
                                 )
                               : Container(),
                           userInfor.raking == Raking.silver
@@ -153,8 +155,9 @@ class __RankUserState extends State<RankUser> {
                                   LangText(context: context)
                                       .getLocal()!
                                       .silver_ucf,
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize: 20.sp, color: Colors.grey),
+                                      fontSize: 18.sp, color: Colors.grey),
                                 )
                               : Container(),
                           userInfor.raking == Raking.gold
@@ -162,8 +165,9 @@ class __RankUserState extends State<RankUser> {
                                   LangText(context: context)
                                       .getLocal()!
                                       .gold_ucf,
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize: 20.sp, color: Colors.grey),
+                                      fontSize: 18.sp, color: Colors.grey),
                                 )
                               : Container(),
                         ],
@@ -180,10 +184,15 @@ class __RankUserState extends State<RankUser> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            LangText(context: context).getLocal()!.your_score,
-                            style:
-                                TextStyle(fontSize: 20.sp, color: Colors.grey),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 3.w, vertical: 3.h),
+                            child: Text(
+                              LangText(context: context).getLocal()!.your_score,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 18.sp, color: Colors.grey),
+                            ),
                           ),
                           SizedBox(
                             height: 5.h,
@@ -191,7 +200,7 @@ class __RankUserState extends State<RankUser> {
                           Text(
                             userInfor.rewardPoints.toString(),
                             style:
-                                TextStyle(fontSize: 20.sp, color: Colors.grey),
+                                TextStyle(fontSize: 18.sp, color: Colors.grey),
                           ),
                         ],
                       ),

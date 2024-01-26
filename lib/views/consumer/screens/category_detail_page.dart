@@ -63,6 +63,7 @@ class _RatingState extends State<CategoryDetail> {
         backgroundColor: MyTheme.accent_color,
         title: Text(
           LangText(context: context).getLocal()!.product_category,
+          style: TextStyle(color: MyTheme.white),
           textAlign: TextAlign.center,
         ),
         centerTitle: true,

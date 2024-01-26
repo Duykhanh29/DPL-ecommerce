@@ -90,6 +90,7 @@ class __VoucherAdminState extends State<VoucherAdmin> {
         child: Icon(
           Icons.add,
           size: 20.h,
+          color: MyTheme.white,
         ),
       ),
     );
@@ -219,8 +220,7 @@ class __VoucherAdminState extends State<VoucherAdmin> {
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          IconButton.filled(
-                            hoverColor: Colors.blue,
+                          IconButton(
                             color: Colors.blue,
                             icon: Icon(
                               Icons.edit,

@@ -7,6 +7,7 @@ import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/voucher_for_user_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:dpl_ecommerce/view_model/consumer/voucher_for_user_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/voucher_widgets/voucher_clipper.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +16,8 @@ import 'package:dpl_ecommerce/models/voucher_for_user.dart';
 import 'package:provider/provider.dart';
 
 class VoucherScreen extends StatefulWidget {
-  const VoucherScreen({super.key});
-
+  VoucherScreen({super.key, required this.uid});
+  String uid;
   @override
   State<VoucherScreen> createState() => __VoucherScreenState();
 }
@@ -26,7 +27,7 @@ class __VoucherScreenState extends State<VoucherScreen> {
   List<Voucher>? listVoucher;
   VoucherRepo voucherRepo = VoucherRepo();
   VoucherForUserRepo voucherForUserRepo = VoucherForUserRepo();
-
+  VoucherForUser? voucherForUser;
   @override
   void initState() {
     super.initState();
@@ -34,6 +35,7 @@ class __VoucherScreenState extends State<VoucherScreen> {
   }
 
   Future<void> fetchData() async {
+    // voucherForUser = await voucherForUserRepo.getVoucher(widget.uid);
     listVoucher = await voucherRepo.getListVoucher();
     isLoading = false;
     if (mounted) {
@@ -198,14 +200,14 @@ class __VoucherScreenState extends State<VoucherScreen> {
                               children: [
                                 listVoucher![index].discountAmount == null
                                     ? Text(
-                                        "${LangText(context: context).getLocal()!.reduce_ucf}${listVoucher![index].discountPercent} %",
+                                        "-${listVoucher![index].discountPercent} %",
                                         maxLines: 3,
                                         style: TextStyle(
                                           fontSize: 15.sp,
                                           fontWeight: FontWeight.bold,
                                         ))
                                     : Text(
-                                        "${LangText(context: context).getLocal()!.reduce_ucf}đ${listVoucher![index].discountAmount} k",
+                                        "-${listVoucher![index].discountAmount} VND",
                                         style: TextStyle(
                                           fontSize: 15.sp,
                                           fontWeight: FontWeight.bold,
@@ -247,7 +249,7 @@ class __VoucherScreenState extends State<VoucherScreen> {
                                   height: 10.h,
                                 ),
                                 buildSaveButton(
-                                    listVoucher![index].id!, user!.id!)
+                                    listVoucher![index].id!, user!.id!, context)
                               ],
                             ),
                           ),
@@ -266,7 +268,9 @@ class __VoucherScreenState extends State<VoucherScreen> {
               );
   }
 
-  Widget buildSaveButton(String voucherID, String uid) {
+  Widget buildSaveButton(String voucherID, String uid, BuildContext context) {
+    final voucherForUserViewModel =
+        Provider.of<VoucherForUserViewModel>(context);
     return StreamBuilder(
       stream: voucherForUserRepo.isCollectedVoucher(uid, voucherID),
       builder: (context, snapshot) {
@@ -285,6 +289,9 @@ class __VoucherScreenState extends State<VoucherScreen> {
                     onPressed: () async {
                       await voucherForUserRepo.updateVoucherForUser(
                           userID: uid, voucherID: voucherID);
+                      // voucherForUserViewModel
+                      //     .setVoucherForUser(voucherForUser!);
+                      // voucherForUserViewModel.addNewVoucherID(voucherID);
                     },
                   ),
                 );
@@ -299,6 +306,8 @@ class __VoucherScreenState extends State<VoucherScreen> {
                 onPressed: () async {
                   await voucherForUserRepo.updateVoucherForUser(
                       userID: uid, voucherID: voucherID);
+                  // voucherForUserViewModel.setVoucherForUser(voucherForUser!);
+                  // voucherForUserViewModel.addNewVoucherID(voucherID);
                 },
               ),
             );

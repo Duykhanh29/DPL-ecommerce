@@ -71,7 +71,6 @@ class SellerRoutes {
     changeLanguagePage: (context) => LanguagePage(),
     profileSettingSellerPage: (context) => ProfileSettingSellerScreen(),
     sellerProfilePage: (context) => UserProfilePage(),
-    verification: (context) => Verification(),
     dashboard: (context) => Dashboard(),
     chatList: (context) => ChatList(),
     changeLanguage: (context) => LanguagePage(),

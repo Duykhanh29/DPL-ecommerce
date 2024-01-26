@@ -37,6 +37,19 @@ class CommondMethods {
     }
   }
 
+  static List<Voucher>? getListVoucherOfAdminInUserAcc(
+      List<String> list, List<Voucher> listVoucher) {
+    List<Voucher> result = [];
+    for (var element in listVoucher) {
+      for (var element1 in list) {
+        if (element1 == element.id && element.isAdmin) {
+          result.add(element);
+        }
+      }
+    }
+    return result;
+  }
+
   static bool hasConversation(String userID1, String userID2, List<Chat> list) {
     for (var element in list) {
       if ((userID1 == element.sellerID || userID1 == element.userID) &&

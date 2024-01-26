@@ -177,7 +177,7 @@ class __DisplayVoucherState extends State<DisplayVoucher> {
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          IconButton.filled(
+                          IconButton(
                             hoverColor: Colors.blue,
                             color: Colors.blue,
                             icon: Icon(

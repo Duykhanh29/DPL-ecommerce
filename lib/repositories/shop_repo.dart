@@ -1,6 +1,7 @@
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/user_firestore_data.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
+import 'package:dpl_ecommerce/models/category_chart.dart';
 import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/daily_revenue.dart';
 import 'package:dpl_ecommerce/models/district.dart';
@@ -56,6 +57,11 @@ class ShopRepo {
 
   Future<void> updateShopView(String shopID) async {
     await _shopFirestoreDB.updateShopView(shopID);
+  }
+
+  Future<List<CategoryChart>?> getTotalProductOfEachCategoryByShop(
+      String shopID) async {
+    return await _shopFirestoreDB.getTotalProductOfEachCategoryByShop(shopID);
   }
 
   Future<void> dispose() async {

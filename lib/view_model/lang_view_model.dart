@@ -44,7 +44,7 @@ class LocaleProvider with ChangeNotifier {
         id: "languageID02",
         image: ImageData.ukFlag,
         is_default: false,
-        name: "english",
+        name: "English",
         code: "en"),
   ];
 }

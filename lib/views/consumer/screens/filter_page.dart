@@ -1,4 +1,5 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
@@ -29,9 +30,11 @@ class _FilterPageState extends State<FilterPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        leading: CustomArrayBackWidget(),
         backgroundColor: MyTheme.accent_color,
         title: Text(
           LangText(context: context).getLocal()!.filter_ucf,
+          style: TextStyle(color: MyTheme.white),
           textAlign: TextAlign.center,
         ),
         centerTitle: true,
@@ -66,7 +69,10 @@ class _FilterPageState extends State<FilterPage> {
                   },
                 ));
               },
-              child: Text(LangText(context: context).getLocal()!.apply_ucf),
+              child: Text(
+                LangText(context: context).getLocal()!.apply_ucf,
+                style: TextStyle(color: MyTheme.white),
+              ),
             ),
           ),
         ],
@@ -107,7 +113,7 @@ class _FilterPageState extends State<FilterPage> {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Row(
               children: [
                 SizedBox(
@@ -115,30 +121,29 @@ class _FilterPageState extends State<FilterPage> {
                 ),
                 Text(
                   LangText(context: context).getLocal()!.condition,
-                  style: TextStyle(),
                   textAlign: TextAlign.left,
                 ),
               ],
             ),
 
-            Row(
-              children: [
-                const SizedBox(
-                  width: 10,
-                ),
-                _buildConditionButton(
-                    LangText(context: context).getLocal()!.new_ucf),
-                const SizedBox(
-                  width: 5,
-                ),
-                _buildConditionButton(
-                    LangText(context: context).getLocal()!.newest_ucf),
-                const SizedBox(
-                  width: 5,
-                ),
-                _buildConditionButton(''),
-              ],
-            ),
+            // Row(
+            //   children: [
+            //     const SizedBox(
+            //       width: 10,
+            //     ),
+            //     _buildConditionButton(
+            //         LangText(context: context).getLocal()!.new_ucf),
+            //     const SizedBox(
+            //       width: 5,
+            //     ),
+            //     _buildConditionButton(
+            //         LangText(context: context).getLocal()!.newest_ucf),
+            //     // const SizedBox(
+            //     //   width: 5,
+            //     // ),
+            //     // _buildConditionButton(''),
+            //   ],
+            // ),
             //SizedBox(height: 8),
             ListTile(
               title: Text(LangText(context: context).getLocal()!.rating_ucf),
@@ -191,9 +196,11 @@ class _FilterPageState extends State<FilterPage> {
             }
           });
         },
-        style: ElevatedButton.styleFrom(
-          primary: buttonColor,
-        ),
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(buttonColor)),
+        // ElevatedButton.styleFrom(
+        //   primary: buttonColor,
+        // ),
         child: Text(
           label,
           style: TextStyle(color: textColor),

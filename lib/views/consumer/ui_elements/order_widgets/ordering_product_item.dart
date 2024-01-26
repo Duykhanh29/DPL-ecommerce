@@ -1,6 +1,7 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
+import 'package:dpl_ecommerce/repositories/order_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
@@ -13,10 +14,11 @@ import 'package:dpl_ecommerce/models/ordering_product.dart';
 class OrderingProductItem extends StatefulWidget {
   OrderingProductItem(
       {super.key,
-      required this.orderingProduct,
+      required this.orderingProductID,
       required this.orderID,
       this.isDetail = false});
-  OrderingProduct orderingProduct;
+  // OrderingProduct orderingProduct;
+  String orderingProductID;
   final String orderID;
   bool isDetail;
   @override
@@ -25,11 +27,15 @@ class OrderingProductItem extends StatefulWidget {
 
 class _OrderingProductItemState extends State<OrderingProductItem> {
   Product? product;
-  ProductRepo productRepo = ProductRepo();
+
   bool isLoading = true;
-  VoucherRepo voucherRepo = VoucherRepo();
+
   Voucher? voucher;
   int discountValue = 0;
+  OrderingProduct? orderingProduct;
+  VoucherRepo voucherRepo = VoucherRepo();
+  ProductRepo productRepo = ProductRepo();
+  OrderRepo orderRepo = OrderRepo();
   @override
   void initState() {
     // TODO: implement initState
@@ -38,28 +44,52 @@ class _OrderingProductItemState extends State<OrderingProductItem> {
   }
 
   Future<void> fetchData() async {
-    product =
-        await productRepo.getProductByID(widget.orderingProduct.productID!);
-    if (widget.orderingProduct.voucherID != null) {
-      voucher =
-          await voucherRepo.getVoucherByID(widget.orderingProduct.voucherID!);
+    orderingProduct = await orderRepo.getOrderingProductByOrderID(
+        orderID: widget.orderID, orderingProductID: widget.orderingProductID);
+    if (orderingProduct != null) {
+      product = await productRepo.getProductByID(orderingProduct!.productID!);
+      if (orderingProduct!.voucherID != null) {
+        voucher = await voucherRepo.getVoucherByID(orderingProduct!.voucherID!);
+      }
     }
+
     isLoading = false;
     if (mounted) {
       setState(() {});
     }
   }
 
+  void reset() {
+    product = null;
+    orderingProduct = null;
+    isLoading = true;
+    voucher = null;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> onRefresh() async {
+    reset();
+    await fetchData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         // go to detail
         if (!widget.isDetail) {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => OrderingProductDetailScreen(
-                order: widget.orderingProduct, orderID: widget.orderID),
-          ));
+          if (!isLoading && orderingProduct != null) {
+            final result = await Navigator.of(context)
+                .push(MaterialPageRoute(
+              builder: (context) => OrderingProductDetailScreen(
+                  order: orderingProduct!, orderID: widget.orderID),
+            ))
+                .whenComplete(() async {
+              await onRefresh();
+            });
+          }
         }
       },
       child: Container(
@@ -117,27 +147,39 @@ class _OrderingProductItemState extends State<OrderingProductItem> {
                       Row(
                         children: [
                           Text(
-                            widget.orderingProduct.size != null
-                                ? "${LangText(context: context).getLocal()!.size_ucf}: ${widget.orderingProduct.size}"
-                                : "",
+                            isLoading
+                                ? "..."
+                                : orderingProduct != null
+                                    ? orderingProduct!.size != null
+                                        ? "${LangText(context: context).getLocal()!.size_ucf}: ${orderingProduct!.size}"
+                                        : ""
+                                    : "",
                             style: TextStyle(fontSize: 14.sp),
                           ),
                           SizedBox(
                             width: 10.w,
                           ),
                           Text(
-                            widget.orderingProduct.color != null
-                                ? "${LangText(context: context).getLocal()!.color_ucf} ${widget.orderingProduct.color}"
-                                : "",
+                            isLoading
+                                ? "..."
+                                : orderingProduct != null
+                                    ? orderingProduct!.color != null
+                                        ? "${LangText(context: context).getLocal()!.color_ucf} ${orderingProduct!.color}"
+                                        : ""
+                                    : "",
                             style: TextStyle(fontSize: 14.sp),
                           ),
                           SizedBox(
                             width: 10.w,
                           ),
                           Text(
-                            widget.orderingProduct.type != null
-                                ? "${LangText(context: context).getLocal()!.type_ucf} ${widget.orderingProduct.type}"
-                                : "",
+                            isLoading
+                                ? "..."
+                                : orderingProduct != null
+                                    ? orderingProduct!.type != null
+                                        ? "${LangText(context: context).getLocal()!.type_ucf} ${orderingProduct!.type}"
+                                        : ""
+                                    : "",
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(fontSize: 14.sp),
                           ),
@@ -200,16 +242,24 @@ class _OrderingProductItemState extends State<OrderingProductItem> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Text(
-                      //   "${widget.orderingProduct.quantity!} VND",
+                      //   "${orderingProduct!.quantity!} VND",
                       //   style:
                       //       TextStyle(fontSize: 18.sp, color: Colors.black38),
                       // ),
                       Text(
-                        "${widget.orderingProduct.price}  VND",
+                        isLoading
+                            ? "..."
+                            : orderingProduct != null
+                                ? "${orderingProduct!.price}  VND"
+                                : "",
                         style: TextStyle(fontSize: 17.sp, color: MyTheme.black),
                       ),
                       Text(
-                        widget.orderingProduct.quantity.toString(),
+                        isLoading
+                            ? "..."
+                            : orderingProduct != null
+                                ? orderingProduct!.quantity.toString()
+                                : "",
                         style: TextStyle(fontSize: 17.sp, color: MyTheme.black),
                       ),
                       if (voucher != null)
@@ -217,14 +267,22 @@ class _OrderingProductItemState extends State<OrderingProductItem> {
                           padding: EdgeInsets.symmetric(horizontal: 5.w),
                           width: MediaQuery.of(context).size.width * 0.5,
                           child: Text(
-                            widget.orderingProduct.voucherID.toString(),
+                            isLoading
+                                ? "..."
+                                : orderingProduct != null
+                                    ? orderingProduct!.voucherID.toString()
+                                    : "",
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                                 fontSize: 17.sp, color: MyTheme.black),
                           ),
                         ),
                       Text(
-                        "${widget.orderingProduct.realPrice!} VND",
+                        isLoading
+                            ? "..."
+                            : orderingProduct != null
+                                ? "${orderingProduct!.realPrice!} VND"
+                                : "",
                         style: TextStyle(fontSize: 17.sp, color: MyTheme.black),
                       ),
                     ],

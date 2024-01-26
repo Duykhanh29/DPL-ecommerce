@@ -348,7 +348,7 @@ class __GeneralSettingState extends State<GeneralSetting> {
           },
           child: Text(
             LangText(context: context).getLocal()!.save_ucf,
-            style: TextStyle(fontSize: 18.sp),
+            style: TextStyle(fontSize: 18.sp, color: MyTheme.white),
           ),
         ),
       ),

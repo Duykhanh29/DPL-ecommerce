@@ -50,14 +50,14 @@ class _AdminMainViewState extends State<AdminMainView> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.dashboard_rounded,
-              color: MyTheme.accent_color,
+              color: indexPage == 0 ? MyTheme.accent_color : MyTheme.grey_153,
             ),
             label: LangText(context: context).getLocal()!.dashboard_ucf,
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.manage_accounts_rounded,
-              color: MyTheme.accent_color,
+              color: indexPage == 1 ? MyTheme.accent_color : MyTheme.grey_153,
             ),
             label: LangText(context: context).getLocal()!.shop_ucf,
           ),
@@ -68,7 +68,7 @@ class _AdminMainViewState extends State<AdminMainView> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.category_rounded,
-              color: MyTheme.accent_color,
+              color: indexPage == 2 ? MyTheme.accent_color : MyTheme.grey_153,
             ),
             label: LangText(context: context).getLocal()!.category_ucf,
           ),
@@ -81,7 +81,7 @@ class _AdminMainViewState extends State<AdminMainView> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.person_2_rounded,
-              color: MyTheme.accent_color,
+              color: indexPage == 3 ? MyTheme.accent_color : MyTheme.grey_153,
             ),
             label: LangText(context: context).getLocal()!.profile_ucf,
           ),

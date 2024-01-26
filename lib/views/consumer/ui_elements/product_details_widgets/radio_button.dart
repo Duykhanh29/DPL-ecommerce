@@ -1,6 +1,7 @@
 import 'package:dpl_ecommerce/view_model/consumer/product_detail_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/product_detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 // enum KindOfData { types, sizes, colors }
@@ -27,11 +28,11 @@ class _CustomradioButtonState extends State<CustomradioButton> {
     final size = MediaQuery.of(context).size;
     final productDetailProvider = Provider.of<ProductDetailViewModel>(context);
     return Container(
-      padding: const EdgeInsets.only(right: 20),
+      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
       height: size.height * 0.06,
       width: double.infinity,
       child: ListView.builder(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           return customRadio(context, index, widget.list![index]);
@@ -44,9 +45,10 @@ class _CustomradioButtonState extends State<CustomradioButton> {
   Widget customRadio(BuildContext context, int index, String text) {
     final productDetailProvider = Provider.of<ProductDetailViewModel>(context);
     final size = MediaQuery.of(context).size;
-    return SizedBox(
+    return Container(
       height: size.height * 0.04,
-      width: size.width * 0.2,
+      // width: size.width * 0.2,
+      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
       child: OutlinedButton(
           onPressed: () {
             changeIndex(index);

@@ -327,7 +327,7 @@ class _DetailBodyState extends State<DetailBody> {
                           LangText(context: context)
                               .getLocal()!
                               .payment_method_ucf,
-                          style: TextStyle(fontSize: 18.sp),
+                          style: TextStyle(fontSize: 15.sp),
                         ),
                       ],
                     ),
@@ -369,7 +369,7 @@ class _DetailBodyState extends State<DetailBody> {
                   children: [
                     Text(
                       LangText(context: context).getLocal()!.order_code_ucf,
-                      style: TextStyle(fontSize: 16.sp),
+                      style: TextStyle(fontSize: 15.sp),
                     ),
                     Container(
                       constraints: BoxConstraints(
@@ -378,7 +378,8 @@ class _DetailBodyState extends State<DetailBody> {
                       child: Text(
                         widget.order.id!,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 16.sp),
+                        style: TextStyle(fontSize: 15.sp),
+                        maxLines: 3,
                       ),
                     ),
                   ],
@@ -387,13 +388,13 @@ class _DetailBodyState extends State<DetailBody> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      LangText(context: context).getLocal()!.order_date_ucf,
-                      style: TextStyle(fontSize: 16.sp, color: Colors.black38),
+                      "${LangText(context: context).getLocal()!.order_date_ucf}: ",
+                      style: TextStyle(fontSize: 15.sp, color: Colors.black38),
                     ),
                     Text(
                       DateHelper.convertCommonDateTime(widget.order.time!),
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 16.sp, color: Colors.black38),
+                      style: TextStyle(fontSize: 15.sp, color: Colors.black38),
                     ),
                   ],
                 ),

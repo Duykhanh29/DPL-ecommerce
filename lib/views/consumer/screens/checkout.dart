@@ -17,14 +17,18 @@ import 'package:dpl_ecommerce/repositories/deliver_service_repo.dart';
 import 'package:dpl_ecommerce/repositories/order_repo.dart';
 import 'package:dpl_ecommerce/repositories/payment_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
+import 'package:dpl_ecommerce/repositories/recommed_product_repo.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
+import 'package:dpl_ecommerce/repositories/voucher_for_user_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/address_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/checkout_view_model.dart';
+import 'package:dpl_ecommerce/view_model/consumer/voucher_for_user_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/main_view.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/change_address_in_check_out.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/change_apply_voucher.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/ordering_success_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -39,7 +43,7 @@ class CheckOut extends StatefulWidget {
 }
 
 class __CheckOutState extends State<CheckOut> {
-  final List<Product>? products = ProductRepo().list;
+  // final List<Product>? products = ProductRepo().list;
   String shipType = "Cash";
   DeliverService? selectedService;
   List<DeliverService>? listDeliverySerice;
@@ -48,6 +52,7 @@ class __CheckOutState extends State<CheckOut> {
   UserRepo userRepo = UserRepo();
   OrderRepo orderRepo = OrderRepo();
   ProductRepo productRepo = ProductRepo();
+  VoucherForUserRepo voucherForUserRepo = VoucherForUserRepo();
   // AddressInfor? addressInfor;
   // AddressInfor? defaultAddress;
   bool isLoading = true;
@@ -55,6 +60,7 @@ class __CheckOutState extends State<CheckOut> {
   List<PaymentType>? listPaymentType;
   PayMentRepo payMentRepo = PayMentRepo();
   CartRepo cartRepo = CartRepo();
+  RecommededProductRepo recommededProductRepo = RecommededProductRepo();
   @override
   void initState() {
     // TODO: implement initState
@@ -107,6 +113,8 @@ class __CheckOutState extends State<CheckOut> {
     final checkoutProvider = Provider.of<CheckoutViewModel>(context);
     final cartProvider = Provider.of<CartViewModel>(context);
     final userProvider = Provider.of<UserViewModel>(context);
+    final voucherForUserProvider =
+        Provider.of<VoucherForUserViewModel>(context);
     final user = userProvider.currentUser;
     final listProduct = checkoutProvider.order!.orderingProductsID;
     final order = checkoutProvider.order;
@@ -117,9 +125,7 @@ class __CheckOutState extends State<CheckOut> {
               title: LangText(context: context).getLocal()!.confirm_payment)
           .show(),
       body: RefreshIndicator(
-        onRefresh: () async {
-          await onRefresh();
-        },
+        onRefresh: onRefresh,
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -143,6 +149,16 @@ class __CheckOutState extends State<CheckOut> {
                   ],
                 ),
               ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Divider(
+                height: 2.h,
+                color: Color(0xFFD8D9DB),
+              ),
+              voucherForUserProvider.listVoucherOfAdmin.isNotEmpty
+                  ? _buildApplyVoucher(context)
+                  : const SizedBox(),
               SizedBox(
                 height: 10.h,
               ),
@@ -228,6 +244,62 @@ class __CheckOutState extends State<CheckOut> {
                     SizedBox(
                       height: 10.h,
                     ),
+                    Consumer<VoucherForUserViewModel>(
+                      builder: (context, value, child) {
+                        if (value.selectedVoucher != null) {
+                          return Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                      LangText(context: context)
+                                          .getLocal()!
+                                          .total_price_without_discount_ucf,
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: const Color(0xFF000000),
+                                      )),
+                                  const Spacer(),
+                                  Text(order!.totalCost!.toString(),
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: const Color(0xFF000000),
+                                      )),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                      LangText(context: context)
+                                          .getLocal()!
+                                          .discount_ucf,
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: const Color(0xFF000000),
+                                      )),
+                                  const Spacer(),
+                                  Text(
+                                      value.selectedVoucher!.discountAmount !=
+                                              null
+                                          ? "${value.selectedVoucher!.discountAmount} VND"
+                                          : "${value.selectedVoucher!.discountPercent} %",
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: const Color(0xFF000000),
+                                      )),
+                                ],
+                              ),
+                            ],
+                          );
+                        } else {
+                          return const SizedBox();
+                        }
+                      },
+                    ),
                     Row(
                       children: [
                         Text(
@@ -240,12 +312,44 @@ class __CheckOutState extends State<CheckOut> {
                               color: const Color(0xFF000000),
                             )),
                         const Spacer(),
-                        Text(order!.totalCost!.toString(),
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w400,
-                              color: const Color(0xFF000000),
-                            )),
+                        Consumer<VoucherForUserViewModel>(
+                          builder: (context, value, child) {
+                            if (value.selectedVoucher != null) {
+                              int totalCost = order!.totalCost!;
+                              if (voucherForUserProvider.selectedVoucher !=
+                                  null) {
+                                if (voucherForUserProvider
+                                        .selectedVoucher!.discountAmount !=
+                                    null) {
+                                  totalCost = totalCost -
+                                      voucherForUserProvider
+                                          .selectedVoucher!.discountAmount!;
+                                } else {
+                                  totalCost = totalCost -
+                                      (totalCost *
+                                              voucherForUserProvider
+                                                  .selectedVoucher!
+                                                  .discountPercent!) ~/
+                                          100;
+                                }
+                              }
+                              totalCost = totalCost + 10000;
+                              return Text(totalCost.toString(),
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: const Color(0xFF000000),
+                                  ));
+                            } else {
+                              return Text(order!.totalCost!.toString(),
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: const Color(0xFF000000),
+                                  ));
+                            }
+                          },
+                        ),
                       ],
                     ),
                     SizedBox(
@@ -254,10 +358,13 @@ class __CheckOutState extends State<CheckOut> {
                     Container(
                       width: 384.h,
                       height: 50.h,
-                      decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(10)),
+                      // decoration: BoxDecoration(
+                      //     color: Colors.blue,
+                      //     borderRadius: BorderRadius.circular(10)),
                       child: ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  MyTheme.accent_color)),
                           child: Text(
                             LangText(context: context).getLocal()!.orders_ucf,
                             style:
@@ -265,23 +372,59 @@ class __CheckOutState extends State<CheckOut> {
                           ),
                           onPressed: () async {
                             // perform ordering
+                            int totalCost = order!.totalCost!;
+                            if (voucherForUserProvider.selectedVoucher !=
+                                null) {
+                              if (voucherForUserProvider
+                                      .selectedVoucher!.discountAmount !=
+                                  null) {
+                                totalCost = totalCost -
+                                    voucherForUserProvider
+                                        .selectedVoucher!.discountAmount!;
+                              } else {
+                                totalCost = totalCost -
+                                    (totalCost *
+                                            voucherForUserProvider
+                                                .selectedVoucher!
+                                                .discountPercent!) ~/
+                                        100;
+                              }
+                            }
+                            totalCost = totalCost + 10000;
                             if (selectedService == null) {
                               showNotification(context);
                             } else {
                               orderModel.Order newOrder = orderModel.Order(
                                   deliverServiceID: selectedService!.id,
                                   // deliverStatus: DeliverStatus.processing,
+                                  voucherDiscountID:
+                                      voucherForUserProvider.selectedVoucher !=
+                                              null
+                                          ? voucherForUserProvider
+                                              .selectedVoucher!.id!
+                                          : null,
                                   id: order.id,
                                   orderingProductsID: listProduct,
                                   paymentTypeID: listPaymentType![0].id,
                                   receivedAddress:
                                       addressProvider.orderingAddress,
                                   shippingCost: 10000,
-                                  totalCost: order.totalCost! + 10000,
+                                  totalCost: totalCost,
                                   totalProduct: listProduct!.length,
                                   userID: user!.id,
                                   time: Timestamp.now());
                               await orderRepo.addAnOrder(newOrder);
+                              for (var element
+                                  in newOrder.orderingProductsID!) {
+                                if (element.voucherID != null) {
+                                  await voucherForUserRepo
+                                      .deleteVoucherIDForUser(
+                                          uid: user.id!,
+                                          voucherID: element.voucherID!);
+                                  voucherForUserProvider
+                                      .deleteVoucherID(element.voucherID!);
+                                }
+                              }
                               for (var element in listProduct) {
                                 final product = await productRepo
                                     .getProductByID(element.productID!);
@@ -311,10 +454,15 @@ class __CheckOutState extends State<CheckOut> {
                                 for (var element
                                     in checkoutProvider.listProductInCartID!) {
                                   await cartRepo.deleteByProductInCartModelID(
-                                      uid: user!.id!,
+                                      uid: user.id!,
                                       productInCartModelID: element);
                                 }
                               }
+
+                              // voucherForUserProvider.resetData();
+                              // for (var element in listProduct) {
+                              //   recommededProductRepo.insertData(uid: user.id!,categoryID: element.)
+                              // }
 
                               Navigator.of(context)
                                   .pushReplacement(MaterialPageRoute(
@@ -395,8 +543,8 @@ class __CheckOutState extends State<CheckOut> {
               height: 14.h,
             ),
             Container(
-                height: 121.h,
-                width: 383.w,
+                width: MediaQuery.of(context).size.width * 0.9,
+                padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 5.h),
                 decoration: BoxDecoration(
                     color: const Color(0xFFF3F3F3),
                     borderRadius: BorderRadius.circular(10)),
@@ -471,6 +619,83 @@ class __CheckOutState extends State<CheckOut> {
       ),
     );
   }
+
+  Widget _buildApplyVoucher(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(LangText(context: context).getLocal()!.voucher_ucf,
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  //fontFamily = FontFamily(Font(R.font.svn - gilroy)),
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF000000),
+                )),
+            SizedBox(
+              height: 14.h,
+            ),
+            Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 5.h),
+                decoration: BoxDecoration(
+                    color: const Color(0xFFF3F3F3),
+                    borderRadius: BorderRadius.circular(10)),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(13, 12, 0, 0),
+                  child: Consumer<VoucherForUserViewModel>(
+                    builder: (context, provider, child) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(provider.selectedVoucher!.name!,
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: const Color(0xFF000000),
+                                )),
+                            SizedBox(
+                              width: 170.w,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        ChangeApplyVoucher()));
+                              },
+                              child: Text(
+                                  LangText(context: context)
+                                      .getLocal()!
+                                      .change_ucf,
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color(0xFFEE4D2C),
+                                  )),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 8.h,
+                        ),
+                        Text(
+                            provider.selectedVoucher!.discountAmount != null
+                                ? "${provider.selectedVoucher!.discountAmount} VND"
+                                : "${provider.selectedVoucher!.discountPercent} %",
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF777777),
+                            )),
+                      ],
+                    ),
+                  ),
+                ))
+          ],
+        ));
+  }
 }
 
 class ListOrderingProductItem extends StatefulWidget {
@@ -521,7 +746,7 @@ class _ListOrderingProductItemState extends State<ListOrderingProductItem> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8.r),
                         child: Image.network(
-                          list![index]!.images![0],
+                          list![index].images![0],
                           height: 120.h,
                           width: 110.w,
                         ),

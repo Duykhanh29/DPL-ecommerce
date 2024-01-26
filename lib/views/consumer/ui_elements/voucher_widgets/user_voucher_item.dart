@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/helpers/date_helper.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -40,9 +41,9 @@ class UserVoucherItem extends StatelessWidget {
 
           drawTriangle: false,
           drawDivider: false,
-          trianglePos: 0.7,
-          child: TicketData(voucher: voucher),
+          trianglePos: 0.68,
           drawShadow: false,
+          child: TicketData(voucher: voucher),
         )
         // TicketWidget(
         //   width: 350,
@@ -72,7 +73,7 @@ class TicketData extends StatelessWidget {
           child: Container(
             // color: Colors.lightGreen,
             // width: MediaQuery.of(context).size.width * 0.3,
-            padding: const EdgeInsets.only(left: 8),
+            padding: EdgeInsets.only(left: 8.w),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -102,12 +103,18 @@ class TicketData extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Exp"),
-                  const SizedBox(
-                    height: 15,
+                  Text(
+                    LangText(context: context).getLocal()!.exp_date,
+                    textAlign: TextAlign.center,
                   ),
-                  Text(DateHelper.convertDateToDateString(
-                      voucher!.expDate!.toDate()))
+                  SizedBox(
+                    height: 15.h,
+                  ),
+                  Text(
+                    DateHelper.convertDateToDateString(
+                        voucher!.expDate!.toDate()),
+                    textAlign: TextAlign.center,
+                  )
                 ],
               ),
             ),

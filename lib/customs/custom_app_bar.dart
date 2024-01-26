@@ -2,6 +2,7 @@ import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/const/my_text_style.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomAppBar {
   bool? centerTitle = true;
@@ -26,7 +27,9 @@ class CustomAppBar {
         title: Text(
           title!,
           style: TextStyle(
-              fontSize: 17, fontWeight: FontWeight.bold, color: MyTheme.white),
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+              color: MyTheme.white),
         ),
         backgroundColor: backgroundColor ?? MyTheme.accent_color,
         leading: isLeading ? CustomArrayBackWidget() : null);

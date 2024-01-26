@@ -11,8 +11,8 @@ class ProductRepo {
     return productFirestoreDatabase.getListActiveProduct();
   }
 
-  Future<List<Product>?> getActiveProducts() async {
-    return await productFirestoreDatabase.getActiveProducts();
+  Future<List<Product>?> getActiveProducts({int limit = 0}) async {
+    return await productFirestoreDatabase.getActiveProducts(limit: limit);
   }
 
   Stream<List<Product>?> getAllProductByShopID(String shopID) {
@@ -35,6 +35,9 @@ class ProductRepo {
     return await productFirestoreDatabase.getListTopProductByShop(shopID);
   }
 
+  Future<List<Product>?> getListDealOfTheDay() async {
+    return await productFirestoreDatabase.getListDealOfTheDay();
+  }
   // get
 
   Future<Product?> getProductByID(String id) async {

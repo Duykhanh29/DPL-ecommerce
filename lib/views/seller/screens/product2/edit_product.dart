@@ -512,7 +512,7 @@ class _AddProductScreenState extends State<EditProductScreen> {
           },
           child: Text(
             LangText(context: context).getLocal()!.update_product_ucf,
-            style: TextStyle(fontSize: 18.sp),
+            style: TextStyle(fontSize: 18.sp, color: MyTheme.white),
           ),
         ),
       ),

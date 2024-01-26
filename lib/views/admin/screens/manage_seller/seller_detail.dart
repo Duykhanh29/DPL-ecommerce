@@ -160,25 +160,41 @@ class _ShopDetailsState extends State<ShopDetails> {
                         height: 2.w,
                       ),
                       SizedBox(height: 10.h),
-                      Row(
-                        children: [
-                          Text(
-                            LangText(context: context).getLocal()!.address_ucf,
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                            ),
+                      Container(
+                        // height: 80.h,
+                        padding: EdgeInsets.symmetric(vertical: 2.h),
+                        child: Center(
+                          child: Row(
+                            children: [
+                              Text(
+                                LangText(context: context)
+                                    .getLocal()!
+                                    .address_ucf,
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                ),
+                              ),
+                              const Spacer(),
+                              Container(
+                                // height: 80.h,
+                                width: 240.w,
+                                // decoration: BoxDecoration(color: MyTheme.red),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 2.h, horizontal: 5.w),
+                                child: Text(
+                                  verificationForm != null
+                                      ? '${verificationForm!.contactAddress?.district} ${verificationForm!.contactAddress?.city}'
+                                      : "...",
+                                  overflow: TextOverflow.fade,
+                                  style: TextStyle(
+                                    fontSize: 18.sp,
+                                  ),
+                                  maxLines: 3,
+                                ),
+                              ),
+                            ],
                           ),
-                          const Spacer(),
-                          Text(
-                            verificationForm != null
-                                ? '${verificationForm!.contactAddress?.district} ${verificationForm!.contactAddress?.city}'
-                                : "...",
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                            ),
-                            maxLines: 3,
-                          ),
-                        ],
+                        ),
                       ),
                       SizedBox(height: 10.h),
                       Divider(

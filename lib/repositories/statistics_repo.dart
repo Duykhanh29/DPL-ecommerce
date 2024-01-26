@@ -1,4 +1,5 @@
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
+import 'package:dpl_ecommerce/models/category_chart.dart';
 
 class StatisticsRepo {
   FirestoreDatabase firestoreDatabase = FirestoreDatabase();
@@ -24,6 +25,10 @@ class StatisticsRepo {
 
   Future<int?> getTotalCategory() async {
     return await firestoreDatabase.getTotalCategory();
+  }
+
+  Future<List<CategoryChart>?> getTotalProductOfEachCategory() async {
+    return await firestoreDatabase.getTotalProductOfEachCategory();
   }
 
   Future<void> dispose() async {

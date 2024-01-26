@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:dpl_ecommerce/const/app_theme.dart';
 
 class CustomImageView extends StatelessWidget {
   /////[imagePath] is required parameter for showing image
@@ -48,7 +49,9 @@ class CustomImageView extends StatelessWidget {
   }
 
   Widget _buildWidget() {
-    return Padding(
+    return Container(
+      decoration: BoxDecoration(
+          border: Border.all(color: MyTheme.accent_color_2, width: 0.4)),
       padding: margin ?? EdgeInsets.zero,
       child: InkWell(
         onTap: onTap,

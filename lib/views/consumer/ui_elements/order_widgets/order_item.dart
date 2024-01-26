@@ -178,12 +178,12 @@ class OrderItem extends StatelessWidget {
                     builder: (context) => OrderDetailScreen(order: order!)),
               ),
               child: Container(
-                padding: EdgeInsets.all(4.h),
+                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
                 alignment: Alignment.bottomRight,
                 decoration: BoxDecoration(
                     color: Colors.blue, borderRadius: BorderRadius.circular(8)),
-                width: 120.w,
-                height: 40.h,
+                // width: 120.w,
+                // height: 40.h,
                 child: Center(
                     child: Text(
                   LangText(context: context).getLocal()!.order_details_ucf,

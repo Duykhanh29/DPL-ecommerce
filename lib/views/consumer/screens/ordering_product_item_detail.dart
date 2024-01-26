@@ -141,7 +141,7 @@ class _OrderingProductDetailScreenState
                             SizedBox(height: 10.h),
                           ])),
                   OrderingProductItem(
-                    orderingProduct: widget.order,
+                    orderingProductID: widget.order.id!,
                     orderID: widget.orderID,
                     isDetail: true,
                   ),

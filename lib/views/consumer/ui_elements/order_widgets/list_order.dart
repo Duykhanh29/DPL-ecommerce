@@ -30,27 +30,41 @@ class _ListOrderState extends State<ListOrder> {
     }
   }
 
+  void reset() {
+    listOrder = null;
+    isLoading = true;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> onRefresh() async {
+    reset();
+    await fetchData();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return isLoading
-        ? Container(
-            child: Center(
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: isLoading
+          ? const Center(
               child: CircularProgressIndicator(),
-            ),
-          )
-        : (listOrder != null
-            ? ListView.builder(
-                itemBuilder: (context, index) {
-                  return OrderItem(
-                    order: listOrder![index],
-                  );
-                },
-                itemCount: listOrder!.length,
-              )
-            : Center(
-                child: Text(LangText(context: context)
-                    .getLocal()!
-                    .no_data_is_available),
-              ));
+            )
+          : (listOrder != null && listOrder!.isNotEmpty
+              ? ListView.builder(
+                  itemBuilder: (context, index) {
+                    return OrderItem(
+                      order: listOrder![index],
+                    );
+                  },
+                  itemCount: listOrder!.length,
+                )
+              : Center(
+                  child: Text(LangText(context: context)
+                      .getLocal()!
+                      .no_data_is_available),
+                )),
+    );
   }
 }

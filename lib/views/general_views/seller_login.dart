@@ -7,6 +7,7 @@ import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/helpers/toast_helper.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
+import 'package:dpl_ecommerce/views/general_views/forgot_password.dart';
 import 'package:dpl_ecommerce/views/general_views/register_seller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -256,10 +257,10 @@ class _SellerLoginState extends State<SellerLogin> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            // Navigator.push(context,
-                            //     MaterialPageRoute(builder: (context) {
-                            //   return PasswordForget();
-                            // }));
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return PasswordForget();
+                            }));
                           },
                           child: Text(
                             AppLocalizations.of(context)!

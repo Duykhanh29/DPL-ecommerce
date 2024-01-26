@@ -91,6 +91,7 @@ class __VoucherAppState extends State<VoucherApp> {
         child: Icon(
           Icons.add,
           size: 20.h,
+          color: MyTheme.white,
         ),
       ),
     );

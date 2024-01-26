@@ -1,9 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/repositories/statistics_repo.dart';
+import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:dpl_ecommerce/views/admin/ui_elements/chart/category_chart_widget.dart';
 import 'package:dpl_ecommerce/views/admin/ui_section/admin_drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -184,6 +187,10 @@ class _DashAdminState extends State<DashAdmin> {
                 SizedBox(
                   height: 10.h,
                 ),
+                const CategoryChartWidget(),
+                SizedBox(
+                  height: 10.h,
+                ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -238,12 +245,43 @@ class _DashAdminState extends State<DashAdmin> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Image.network(
-                          listTopProduct![index].images![0],
-                          height: 80.h,
-                          width: 80.w,
-                          fit: BoxFit.cover,
-                        ),
+                        listTopProduct![index].images != null &&
+                                listTopProduct![index]!.images!.isNotEmpty
+                            ? CachedNetworkImage(
+                                imageUrl: listTopProduct![index].images![0],
+                                imageBuilder: (context, imageProvider) {
+                                  return Container(
+                                    height: 80.h,
+                                    width: 80.w,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: imageProvider)),
+                                  );
+                                },
+                                errorWidget: (context, url, error) => Container(
+                                  height: 80.h,
+                                  width: 80.w,
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.error_outline_rounded,
+                                      color: MyTheme.golden,
+                                    ),
+                                  ),
+                                ),
+                                placeholder: (context, url) => Container(
+                                  height: 80.h,
+                                  width: 80.w,
+                                  child: Center(
+                                      child:
+                                          Image.asset(ImageData.placeHolder)),
+                                ),
+                              )
+                            : Container(
+                                height: 80.h,
+                                width: 80.w,
+                                child: Center(
+                                    child: Image.asset(ImageData.placeHolder)),
+                              ),
                         SizedBox(
                           width: 15.w,
                         ),
@@ -258,13 +296,6 @@ class _DashAdminState extends State<DashAdmin> {
                               Text(
                                 listTopProduct![index].name!,
                                 style: TextStyle(fontSize: 16.sp),
-                              ),
-                              Text(
-                                listTopProduct![index].types.toString(),
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  color: Colors.grey,
-                                ),
                               ),
                               SizedBox(
                                 height: 10.h,

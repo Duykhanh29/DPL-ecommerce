@@ -8,7 +8,7 @@ class LanguageViewModel extends ChangeNotifier {
         id: "languageID02",
         image: ImageData.ukFlag,
         is_default: false,
-        name: "english",
+        name: "English",
         code: "en"),
     Language(
         id: "languageID01",
@@ -21,7 +21,7 @@ class LanguageViewModel extends ChangeNotifier {
       id: "languageID02",
       image: ImageData.ukFlag,
       is_default: false,
-      name: "english",
+      name: "English",
       code: "en");
   void changeLanguage(int index) {
     currentLanguage = list[index];

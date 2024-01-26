@@ -9,6 +9,7 @@ import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
 import 'package:dpl_ecommerce/views/general_views/admin_login.dart';
+import 'package:dpl_ecommerce/views/general_views/login_custumer.dart';
 import 'package:dpl_ecommerce/views/general_views/register_seller.dart';
 import 'package:dpl_ecommerce/views/general_views/seller_login.dart';
 import 'package:flutter/material.dart';
@@ -32,96 +33,98 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Form(
-        key: _formKey,
-        child: Container(
-          width: double.maxFinite,
-          padding: EdgeInsets.only(
-            left: 16.h,
-            top: 68.h,
-            right: 16.h,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              SizedBox(
-                height: 50.h,
-              ),
-              Image.asset(
-                ImageData.appLogo,
-                height: 100.h,
-                width: 120.w,
-              ),
-              SizedBox(height: 30.h),
-              Text(
-                LangText(context: context).getLocal()!.welcome_to_DPL,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 24.sp,
-                    color: MyTheme.accent_color,
-                    fontWeight: FontWeight.w800),
-              ),
-              // SizedBox(height: 10.h),
-              // Text(
-              //   LangText(context: context).getLocal()!.sign_in_to_continue,
-              //   style: TextStyle(
-              //       fontSize: 18.sp,
-              //       color: MyTheme.accent_color_shadow,
-              //       fontWeight: FontWeight.w400),
-              // ),
-              SizedBox(height: 80.h),
-              // _buildEmail(context),
-              // SizedBox(height: 8.h),
-              // _buildPassword(context),
-              // SizedBox(height: 16.h),
-              // _buildSignIn(context),
-              // SizedBox(height: 20.h),s
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Container(
+            width: double.maxFinite,
+            padding: EdgeInsets.only(
+              left: 16.h,
+              top: 68.h,
+              right: 16.h,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                SizedBox(
+                  height: 50.h,
+                ),
+                Image.asset(
+                  ImageData.appLogo,
+                  height: 100.h,
+                  width: 120.w,
+                ),
+                SizedBox(height: 30.h),
+                Text(
+                  LangText(context: context).getLocal()!.welcome_to_DPL,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 24.sp,
+                      color: MyTheme.accent_color,
+                      fontWeight: FontWeight.w800),
+                ),
+                // SizedBox(height: 10.h),
+                // Text(
+                //   LangText(context: context).getLocal()!.sign_in_to_continue,
+                //   style: TextStyle(
+                //       fontSize: 18.sp,
+                //       color: MyTheme.accent_color_shadow,
+                //       fontWeight: FontWeight.w400),
+                // ),
+                SizedBox(height: 80.h),
+                // _buildEmail(context),
+                // SizedBox(height: 8.h),
+                // _buildPassword(context),
+                // SizedBox(height: 16.h),
+                _buildSignIn(context),
+                SizedBox(height: 20.h),
 
-              // SizedBox(height: 10.h),
-              // Padding(padding: EdgeInsets.symmetric(vertical: 10.h)),
-              _buildLoginWithGoogle(context),
-              // SizedBox(height: 8.h),
-              // _buildLoginWithFacebook(context),
-              SizedBox(height: 80.h),
-              _buildOrLine(context),
-              // Align(
-              //   alignment: Alignment.centerRight,
-              //   child: TextButton(
-              //     onPressed: () {},
-              //     child: Text(
-              //       LangText(context: context)
-              //           .getLocal()!
-              //           .login_screen_forgot_password,
-              //       style: TextStyle(fontSize: 12.sp, color: Colors.black),
-              //     ),
-              //   ),
-              // ),
-              SizedBox(height: 30.h),
-              buildLoginAsSeller(context),
-              SizedBox(
-                height: 15.h,
-              ),
-              buildLoginAsAdmin(context),
-              // RichText(
-              //   text: TextSpan(
-              //     children: [
-              //       TextSpan(
-              //         text: "don't have a account",
-              //         style: theme.textTheme.bodySmall,
-              //       ),
-              //       TextSpan(
-              //         text: " ",
-              //       ),
-              //       TextSpan(
-              //         text: "Register",
-              //         style: CustomTextStyles.labelLargeOnPrimaryContainer,
-              //       ),
-              //     ],
-              //   ),
-              //   textAlign: TextAlign.left,
-              // ),
-              SizedBox(height: 100.h),
-            ],
+                // SizedBox(height: 10.h),
+                // Padding(padding: EdgeInsets.symmetric(vertical: 10.h)),
+                _buildLoginWithGoogle(context),
+                // SizedBox(height: 8.h),
+                // _buildLoginWithFacebook(context),
+                SizedBox(height: 80.h),
+                _buildOrLine(context),
+                // Align(
+                //   alignment: Alignment.centerRight,
+                //   child: TextButton(
+                //     onPressed: () {},
+                //     child: Text(
+                //       LangText(context: context)
+                //           .getLocal()!
+                //           .login_screen_forgot_password,
+                //       style: TextStyle(fontSize: 12.sp, color: Colors.black),
+                //     ),
+                //   ),
+                // ),
+                SizedBox(height: 30.h),
+                buildLoginAsSeller(context),
+                SizedBox(
+                  height: 15.h,
+                ),
+                buildLoginAsAdmin(context),
+                // RichText(
+                //   text: TextSpan(
+                //     children: [
+                //       TextSpan(
+                //         text: "don't have a account",
+                //         style: theme.textTheme.bodySmall,
+                //       ),
+                //       TextSpan(
+                //         text: " ",
+                //       ),
+                //       TextSpan(
+                //         text: "Register",
+                //         style: CustomTextStyles.labelLargeOnPrimaryContainer,
+                //       ),
+                //     ],
+                //   ),
+                //   textAlign: TextAlign.left,
+                // ),
+                SizedBox(height: 100.h),
+              ],
+            ),
           ),
         ),
       ),
@@ -240,15 +243,30 @@ class LoginScreen extends StatelessWidget {
 
   /// Section Widget
   Widget _buildSignIn(BuildContext context) {
-    return Container(
-      height: 50.h,
-      width: ScreenUtil().screenWidth * 0.9,
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ButtonStyle(
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.r)))),
-        child: Text(LangText(context: context).getLocal()!.login_ucf),
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) {
+            return CustomerLogin();
+          },
+        ));
+      },
+      child: Container(
+        height: 50.h,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.r),
+            color: MyTheme.accent_color,
+            border: Border.all(color: MyTheme.white)),
+        width: ScreenUtil().screenWidth * 0.9,
+        child: Center(
+          child: Text(
+            LangText(context: context).getLocal()!.login_ucf,
+            style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w500,
+                color: MyTheme.white),
+          ),
+        ),
       ),
     );
   }

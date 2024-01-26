@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/district.dart';
 import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
+import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/seller/shop_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
@@ -13,6 +15,7 @@ import 'package:dpl_ecommerce/views/seller/screens/product2/edit_product.dart';
 import 'package:dpl_ecommerce/views/seller/screens/shop_setting/setting.dart';
 import 'package:dpl_ecommerce/views/seller/screens/verification.dart';
 import 'package:dpl_ecommerce/views/seller/screens/voucher/voucher_app.dart';
+import 'package:dpl_ecommerce/views/seller/ui_elements/chart/category_chart_container.dart';
 import 'package:dpl_ecommerce/views/seller/ui_elements/chart/chart_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +45,10 @@ class _DashboardState extends State<Dashboard> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: MyTheme.accent_color,
-        title: Text(LangText(context: context).getLocal()!.dashboard_ucf),
+        title: Text(
+          LangText(context: context).getLocal()!.dashboard_ucf,
+          style: TextStyle(color: MyTheme.white),
+        ),
         centerTitle: true,
         leadingWidth: 0,
         automaticallyImplyLeading: false,
@@ -296,12 +302,12 @@ class _DashboardState extends State<Dashboard> {
                   //   height: 10.h,
                   // ),
 
-                  Text(LangText(context: context)
-                      .getLocal()!
-                      .your_categories_ucf),
-                  SizedBox(
-                    height: 10.h,
-                  ),
+                  // Text(LangText(context: context)
+                  //     .getLocal()!
+                  //     .your_categories_ucf),
+                  // SizedBox(
+                  //   height: 10.h,
+                  // ),
                   // products != null && products!.isNotEmpty
                   // ? SingleChildScrollView(
                   //     child: Container(
@@ -369,6 +375,19 @@ class _DashboardState extends State<Dashboard> {
                   //     ),
                   //   )
                   // : Container(),
+                  SizedBox(
+                    height: 20.h,
+                  ),
+                  Consumer<ShopViewModel>(
+                    builder: (context, value, child) {
+                      if (value.shop != null) {
+                        return CategoryChartContainer(shopID: value.shop!.id!);
+                      } else {
+                        return const SizedBox();
+                      }
+                    },
+                  ),
+
                   SizedBox(
                     height: 20.h,
                   ),
@@ -663,12 +682,45 @@ class _ListTopProductOfShopState extends State<ListTopProductOfShop> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Image.network(
-                                list![0]!.images![0],
-                                height: 80.h,
-                                width: 80.w,
-                                fit: BoxFit.cover,
-                              ),
+                              list![index].images != null &&
+                                      list![index]!.images!.isNotEmpty
+                                  ? CachedNetworkImage(
+                                      imageUrl: list![index].images![0],
+                                      imageBuilder: (context, imageProvider) {
+                                        return Container(
+                                          height: 80.h,
+                                          width: 80.w,
+                                          decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                  image: imageProvider)),
+                                        );
+                                      },
+                                      errorWidget: (context, url, error) =>
+                                          Container(
+                                        height: 80.h,
+                                        width: 80.w,
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.error_outline_rounded,
+                                            color: MyTheme.golden,
+                                          ),
+                                        ),
+                                      ),
+                                      placeholder: (context, url) => Container(
+                                        height: 80.h,
+                                        width: 80.w,
+                                        child: Center(
+                                            child: Image.asset(
+                                                ImageData.placeHolder)),
+                                      ),
+                                    )
+                                  : Container(
+                                      height: 80.h,
+                                      width: 80.w,
+                                      child: Center(
+                                          child: Image.asset(
+                                              ImageData.placeHolder)),
+                                    ),
                               SizedBox(
                                 width: 15.w,
                               ),
@@ -684,21 +736,22 @@ class _ListTopProductOfShopState extends State<ListTopProductOfShop> {
                                       list![index].name!,
                                       style: TextStyle(fontSize: 16.sp),
                                     ),
-                                    Text(
-                                      list![index].types.toString(),
-                                      style: TextStyle(
-                                        fontSize: 16.sp,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
+                                    // Text(
+                                    //   list![index].types.toString(),
+                                    //   style: TextStyle(
+                                    //     fontSize: 16.sp,
+                                    //     color: Colors.grey,
+                                    //   ),
+                                    // ),
                                     SizedBox(
                                       height: 10.h,
                                     ),
                                     Text(
                                       list![index].price.toString(),
                                       style: TextStyle(
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.bold),
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ],
                                 ),

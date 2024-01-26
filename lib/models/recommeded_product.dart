@@ -1,20 +1,20 @@
 class RecommendedProducts {
+  int? id;
   String? userID;
-  List<String>? categories;
-  List<String>? shops;
-  RecommendedProducts({this.categories, this.shops, this.userID});
+  String? categoryID;
+  String? shopID;
+  RecommendedProducts({this.categoryID, this.shopID, this.userID, this.id});
   factory RecommendedProducts.fromJson(Map<String, dynamic> json) {
     return RecommendedProducts(
-      shops: (json['shops'] as List<dynamic>).map((e) => e.toString()).toList(),
-      userID: json['userID'],
-      categories: (json['categories'] as List<dynamic>)
-          .map((e) => e.toString())
-          .toList(),
-    );
+        shopID: (json['shopID']),
+        userID: json['userID'],
+        categoryID: (json['categoryID']),
+        id: json['id']);
   }
   Map<String, dynamic> toJson() => {
-        'categories': categories!.map((e) => e.toString()).toList(),
+        'categoryID': categoryID,
         'userID': userID,
-        'shops': shops!.map((e) => e.toString()).toList(),
+        'shopID': shopID,
+        'id': id,
       };
 }

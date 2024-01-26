@@ -3,6 +3,7 @@ import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/helpers/toast_helper.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/category.dart';
 import 'package:dpl_ecommerce/models/chat.dart';
@@ -32,7 +33,9 @@ import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item
 import 'package:dpl_ecommerce/views/consumer/screens/detail_seller_profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
@@ -65,6 +68,125 @@ class _ShopProfileState extends State<ShopProfile>
   ChatRepo chatRepo = ChatRepo();
   // UserModel userModel = AuthRepo().user;
   // List<Chat> listChat = ChatRepo().list;
+  Future buildShowAddFormDialog(BuildContext context, String shopID) {
+    double rating = 0;
+    return showDialog(
+        context: context,
+        builder: (_) {
+          return StatefulBuilder(builder: (BuildContext context,
+              StateSetter setModalState /*You can rename this!*/) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.r)),
+              insetPadding: EdgeInsets.symmetric(horizontal: 10.w),
+              contentPadding: EdgeInsets.only(
+                  top: 36.h, left: 36.w, right: 36.w, bottom: 2.h),
+              content: Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: SingleChildScrollView(
+                    child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Padding(
+                          //   padding: EdgeInsets.only(bottom: 8.h),
+                          //   child: Text(
+                          //       "${AppLocalizations.of(_)!.raking_ucf} *",
+                          //       style: TextStyle(
+                          //           color: MyTheme.dark_font_grey,
+                          //           fontSize: 12)),
+                          // ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 16.0),
+                            child: RatingBar.builder(
+                              initialRating: rating,
+                              minRating: 1,
+                              direction: Axis.horizontal,
+                              allowHalfRating: true,
+                              itemCount: 5,
+                              itemPadding:
+                                  EdgeInsets.symmetric(horizontal: 4.w),
+                              itemBuilder: (context, _) => Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                                size: 20.h,
+                              ),
+                              onRatingUpdate: (newRating) {
+                                setState(() {
+                                  rating = newRating;
+                                });
+                              },
+                            ),
+                          ),
+                        ]),
+                  )),
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 8.w),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(_, rootNavigator: true).pop();
+                        },
+                        child: Container(
+                          height: 40.h,
+                          width: 60.w,
+                          decoration: BoxDecoration(
+                              color: MyTheme.white,
+                              borderRadius: BorderRadius.circular(5.r),
+                              border: Border.all(
+                                  color: MyTheme.accent_color, width: 0.3)),
+                          child: Icon(
+                            Icons.close,
+                            color: MyTheme.accent_color,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 3.w,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(right: 28.w),
+                      child: GestureDetector(
+                        onTap: () async {
+                          if (rating != 0) {
+                            await shopRepo.updateRatingCountForShop(
+                                shopID: shopID, rating: rating);
+                          } else {
+                            ToastHelper.showDialog(
+                                LangText(context: context)
+                                    .getLocal()!
+                                    .rating_should_to_be_greater_than_zero,
+                                gravity: ToastGravity.CENTER);
+                          }
+                          // Close the dialog
+                          Navigator.of(_, rootNavigator: true).pop();
+                        },
+                        child: Container(
+                          height: 40.h,
+                          width: 60.w,
+                          decoration: BoxDecoration(
+                              color: MyTheme.accent_color,
+                              borderRadius: BorderRadius.circular(5.r),
+                              border:
+                                  Border.all(color: MyTheme.white, width: 0.3)),
+                          child: Icon(
+                            Icons.send,
+                            color: MyTheme.white,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              ],
+            );
+          });
+        });
+  }
 
   @override
   void initState() {
@@ -147,16 +269,16 @@ class _ShopProfileState extends State<ShopProfile>
                         children: [
                           GestureDetector(
                             onTap: () {
-                              if (shop != null) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProfileSeller(
-                                      shop: shop!,
-                                    ),
-                                  ),
-                                );
-                              }
+                              // if (shop != null) {
+                              //   Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (context) => ProfileSeller(
+                              //         shop: shop!,
+                              //       ),
+                              //     ),
+                              //   );
+                              // }
                             },
                             child: shop != null
                                 ? shop!.logo != null
@@ -229,16 +351,19 @@ class _ShopProfileState extends State<ShopProfile>
                           ),
                           const Spacer(),
                           Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Center(
                                 child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 16.w, vertical: 8.h),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5.r),
-                                    ),
-                                  ),
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              MyTheme.medium_grey_50),
+                                      shape: MaterialStateProperty.all(
+                                          RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      10.r)))),
                                   onPressed: () async {
                                     List<UserModel>? lisUser =
                                         await userRepo.getListUser();
@@ -291,15 +416,15 @@ class _ShopProfileState extends State<ShopProfile>
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const Icon(
+                                      Icon(
                                         Icons.chat,
-                                        color: Colors.white,
+                                        color: MyTheme.golden,
                                       ),
                                       SizedBox(width: 8.w),
                                       Text(
                                         AppLocalizations.of(context)!.chat_ucf,
                                         style: TextStyle(
-                                          color: Colors.white,
+                                          color: MyTheme.accent_color_2,
                                           fontSize: 16.sp,
                                         ),
                                       ),
@@ -309,72 +434,41 @@ class _ShopProfileState extends State<ShopProfile>
                               ),
                               Center(
                                 child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 16.w, vertical: 8.h),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5.r),
-                                    ),
-                                  ),
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              MyTheme.medium_grey_50),
+                                      shape: MaterialStateProperty.all(
+                                          RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      10.r)))),
+                                  //  ElevatedButton.styleFrom(
+                                  //   backgroundColor: MyTheme.blue_grey,
+                                  //   padding: EdgeInsets.symmetric(
+                                  //       horizontal: 16.w, vertical: 8.h),
+                                  //   shape: RoundedRectangleBorder(
+                                  //     borderRadius: BorderRadius.circular(5.r),
+                                  //   ),
+                                  // ),
                                   onPressed: () async {
-                                    // List<UserModel>? lisUser =
-                                    //     await userRepo.getListUser();
-                                    // Future.delayed(const Duration(seconds: 5));
-                                    // UserModel? seller =
-                                    //     CommondMethods.getUserModelByShopID(
-                                    //         widget.shop!.id!, lisUser!);
-
-                                    // Chat? chat;
-                                    // // // TODO: Add button press logic
-                                    // bool? hasConversation = await chatRepo
-                                    //     .checkExistedChatBoxWithUsers(
-                                    //         sellerID: seller!.id!,
-                                    //         userID: currentUser!.id!);
-                                    // if (hasConversation!) {
-                                    //   chat = await chatRepo.getChatWithUsers(
-                                    //       userID: currentUser.id!,
-                                    //       sellerID: seller.id!);
-                                    //   // chatProvider.addNewChat(chat);
-                                    // } else {
-                                    //   // chat =
-                                    //   //     CommondMethods.getChatByuserAndSeller(
-                                    //   //         seller.id!,
-                                    //   //         currentUser.id!,
-                                    //   //         chatProvider.list);
-                                    //   chat = Chat(
-                                    //     listMsg: [],
-                                    //     sellerID: seller.id,
-                                    //     shopID: widget.shop!.id,
-                                    //     shopLogo: widget.shop!.logo,
-                                    //     shopName: widget.shop!.name,
-                                    //     userAvatar: currentUser.avatar,
-                                    //     userID: currentUser.id,
-                                    //     userName: currentUser.firstName,
-                                    //   );
-                                    //   chatProvider.addNewChat(chat);
-                                    //   await chatRepo.addNewChat(chat);
-                                    // }
-
-                                    // // ignore: use_build_context_synchronously
-                                    // Navigator.of(context).push(MaterialPageRoute(
-                                    //   builder: (context) {
-                                    //     return ChattingPage(
-                                    //         chat: chat, isNew: !hasConversation);
-                                    //   },
-                                    // ));
+                                    if (shop != null) {
+                                      await buildShowAddFormDialog(
+                                          context, shop!.id!);
+                                    }
                                   },
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const Icon(
-                                        CupertinoIcons.star,
-                                        color: Colors.white,
+                                      Icon(
+                                        CupertinoIcons.star_fill,
+                                        color: MyTheme.golden,
                                       ),
                                       SizedBox(width: 8.w),
                                       Text(
                                         AppLocalizations.of(context)!.rate_ucf,
                                         style: TextStyle(
-                                          color: Colors.white,
+                                          color: MyTheme.accent_color_2,
                                           fontSize: 16.sp,
                                         ),
                                       ),
@@ -623,9 +717,19 @@ class _ShopProfileState extends State<ShopProfile>
                                                 );
                                               },
                                               placeholder: (context, url) =>
-                                                  const Center(
-                                                child:
-                                                    CircularProgressIndicator(),
+                                                  SizedBox(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.08,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.1,
+                                                child: const Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                ),
                                               ),
                                             ),
                                             title: Text(category.name!),

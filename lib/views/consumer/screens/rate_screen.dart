@@ -48,6 +48,7 @@ class _RatingState extends State<RatingScreen> {
         backgroundColor: MyTheme.accent_color,
         title: Text(
           LangText(context: context).getLocal()!.rate_product,
+          style: TextStyle(color: MyTheme.white),
           textAlign: TextAlign.center,
         ),
         centerTitle: true,
@@ -324,10 +325,10 @@ class _ImageUploadSectionState extends State<ImageUploadSection> {
               await reviewRepo.addNewReview(review);
               await orderRepo.updateRatingForProduct(
                   widget.orderID, widget.orderingProductID);
-              if (shop != null) {
-                await shopRepo.updateRatingCountForShop(
-                    shopID: shop!.id!, rating: reviewProvider.rating);
-              }
+              // if (shop != null) {
+              //   await shopRepo.updateRatingCountForShop(
+              //       shopID: shop!.id!, rating: reviewProvider.rating);
+              // }
 
               // Navigator.of(context).pushNamedAndRemoveUntil(newRouteName, (route) => false);
               Navigator.of(context).pop();

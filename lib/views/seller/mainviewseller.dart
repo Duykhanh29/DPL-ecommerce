@@ -48,7 +48,7 @@ class _MainViewState extends State<MainViewSeller> {
           BottomNavigationBarItem(
               icon: Icon(
                 Icons.dashboard_outlined,
-                color: MyTheme.accent_color,
+                color: indexPage == 0 ? MyTheme.accent_color : MyTheme.grey_153,
               ),
               label: AppLocalizations.of(context)!.dashboard_ucf
               //     .search_anything,,
@@ -56,21 +56,21 @@ class _MainViewState extends State<MainViewSeller> {
           BottomNavigationBarItem(
             icon: Icon(
               CupertinoIcons.cube_box,
-              color: MyTheme.accent_color,
+              color: indexPage == 1 ? MyTheme.accent_color : MyTheme.grey_153,
             ),
             label: LangText(context: context).getLocal()!.products_ucf,
           ),
           BottomNavigationBarItem(
             icon: Icon(
               CupertinoIcons.square_list,
-              color: MyTheme.accent_color,
+              color: indexPage == 2 ? MyTheme.accent_color : MyTheme.grey_153,
             ),
             label: LangText(context: context).getLocal()!.orders_ucf,
           ),
           BottomNavigationBarItem(
             icon: Icon(
               CupertinoIcons.person_alt_circle,
-              color: MyTheme.accent_color,
+              color: indexPage == 3 ? MyTheme.accent_color : MyTheme.grey_153,
             ),
             label: LangText(context: context).getLocal()!.profile_ucf,
           ),

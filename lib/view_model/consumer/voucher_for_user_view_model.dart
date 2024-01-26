@@ -38,6 +38,37 @@ class VoucherForUserViewModel extends ChangeNotifier {
   //   "voucher11",
   //   "voucher12"
   // ]);
+  VoucherForUser? voucherForUser;
+  List<String> voucherOfAdmin = [];
+  List<Voucher> listVoucherOfAdmin = [];
+  Voucher? selectedVoucher;
+  void setVoucherOfAdmin(List<String> list) {
+    voucherOfAdmin = list;
+    notifyListeners();
+  }
+
+  void setVoucherForUser(VoucherForUser voucher) {
+    voucherForUser = voucher;
+    notifyListeners();
+  }
+
+  void addNewVoucherID(String voucherID) {
+    voucherForUser!.vouchers!.add(voucherID);
+    notifyListeners();
+  }
+
+  void deleteVoucherID(String voucherID) {
+    if (voucherForUser!.vouchers != null) {
+      // for (var element in voucherForUser!.vouchers!) {
+      //   if (element == voucherID) {
+      //     voucherForUser!.vouchers!.remove(element);
+      //   }
+      // }
+      voucherForUser!.vouchers!.removeWhere((element) => element == voucherID);
+    }
+    notifyListeners();
+  }
+
   List<Voucher> list = [];
   void setList(List<Voucher> listVocuher) {
     list = listVocuher;
@@ -62,4 +93,22 @@ class VoucherForUserViewModel extends ChangeNotifier {
   //   }
   //   return false;
   // }
+
+  // with purpose for checking out
+  void setListVoucherOfAdmin(List<Voucher> list) {
+    listVoucherOfAdmin = list;
+    selectedVoucher = list[0];
+    notifyListeners();
+  }
+
+  void changeSelectedVoucher(Voucher voucher) {
+    selectedVoucher = voucher;
+    notifyListeners();
+  }
+
+  void resetData() {
+    selectedVoucher = null;
+    listVoucherOfAdmin = [];
+    notifyListeners();
+  }
 }

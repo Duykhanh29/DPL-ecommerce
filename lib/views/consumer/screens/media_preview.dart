@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/models/chat.dart';
 import 'package:dpl_ecommerce/models/message.dart';
@@ -41,10 +42,15 @@ class MediaPreviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: MyTheme.accent_color,
         leading: CustomArrayBackWidget(),
-        title: Text(isImage(file.name)
-            ? LangText(context: context).getLocal()!.preview_image
-            : LangText(context: context).getLocal()!.preview_video),
+        centerTitle: true,
+        title: Text(
+          isImage(file.name)
+              ? LangText(context: context).getLocal()!.preview_image
+              : LangText(context: context).getLocal()!.preview_video,
+          style: TextStyle(color: MyTheme.white),
+        ),
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.w),

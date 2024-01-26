@@ -41,7 +41,6 @@ class AdminDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            const Divider(),
             // ListTile(
             //   leading: const Icon(Icons.dashboard_rounded),
             //   title: Text(LangText(context: context).getLocal()!.dashboard_ucf),

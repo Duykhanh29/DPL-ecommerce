@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
+import 'package:dpl_ecommerce/helpers/toast_helper.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
@@ -268,9 +269,12 @@ class _AddProductScreenState extends State<EditVoucher> {
                             backgroundColor: MaterialStateProperty.all(
                                 MyTheme.accent_color)),
                         onPressed: pickDateRange,
-                        child: Text(startDate != null
-                            ? '${startDate!.toDate().day}/${startDate!.toDate().month}/${startDate!.toDate().year}'
-                            : "..."),
+                        child: Text(
+                          startDate != null
+                              ? '${startDate!.toDate().day}/${startDate!.toDate().month}/${startDate!.toDate().year}'
+                              : "...",
+                          style: TextStyle(color: MyTheme.white),
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -282,9 +286,12 @@ class _AddProductScreenState extends State<EditVoucher> {
                             backgroundColor: MaterialStateProperty.all(
                                 MyTheme.accent_color)),
                         onPressed: pickDateRange,
-                        child: Text(expDate != null
-                            ? '${expDate!.toDate().day}/${expDate!.toDate().month}/${expDate!.toDate().year}'
-                            : "..."),
+                        child: Text(
+                          expDate != null
+                              ? '${expDate!.toDate().day}/${expDate!.toDate().month}/${expDate!.toDate().year}'
+                              : "...",
+                          style: TextStyle(color: MyTheme.white),
+                        ),
                       ),
                     ),
                   ],
@@ -307,7 +314,7 @@ class _AddProductScreenState extends State<EditVoucher> {
           },
           child: Text(
             LangText(context: context).getLocal()!.update_voucher,
-            style: TextStyle(fontSize: 18.sp),
+            style: TextStyle(fontSize: 18.sp, color: MyTheme.white),
           ),
         ),
       ),
@@ -315,6 +322,12 @@ class _AddProductScreenState extends State<EditVoucher> {
   }
 
   Future<void> _updateVoucher(Shop shop) async {
+    final isValid = _formKey.currentState!.validate();
+    if (!isValid) {
+      ToastHelper.showDialog(
+          LangText(context: context).getLocal()!.please_enter_valid_field);
+      return;
+    }
     String name = _nameController.text;
     // String expDate1 = expDate.toString();
     // String releasedDate = startDate.toString();

@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
@@ -204,7 +205,7 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                             maxLines: 2,
                           ),
                           Text(
-                            '${LangText(context: context).getLocal()!.quantity_ucf}: ${product.availableQuantity}',
+                            '${LangText(context: context).getLocal()!.quantity_ucf} ${product.availableQuantity}',
                             //style: theme.textTheme.bodySmall,
                           ),
                         ],
@@ -216,8 +217,8 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                     children: [
                       Container(
                         padding: EdgeInsets.symmetric(
-                            horizontal: 2.w, vertical: 2.h),
-                        width: 80.w,
+                            horizontal: 5.w, vertical: 2.h),
+                        width: 100.w,
                         height: 40.h,
 
                         // decoration: BoxDecoration(
@@ -237,7 +238,7 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                           },
                           child: Center(
                               child: Text(
-                            LangText(context: context).getLocal()!.edit_ucf,
+                            LangText(context: context).getLocal()!.edit,
                             style: TextStyle(
                                 fontSize: 16.sp, color: Colors.black54),
                           )),
@@ -247,17 +248,18 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                         height: 10.h,
                       ),
                       Container(
-                        width: 80.w,
+                        width: 100.w,
                         height: 40.h,
                         padding: EdgeInsets.symmetric(
-                            horizontal: 2.w, vertical: 2.h),
+                            horizontal: 5.w, vertical: 2.h),
                         child: ElevatedButton(
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(
                                   MyTheme.accent_color)),
-                          child: Text(LangText(context: context)
-                              .getLocal()!
-                              .delete_ucf),
+                          child: Text(
+                            LangText(context: context).getLocal()!.delete_ucf,
+                            style: TextStyle(color: MyTheme.white),
+                          ),
 
                           // Add onPressed callback for the Delete button
                           onPressed: () {
@@ -297,6 +299,8 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                                       await productRepo.deleteProduct(
                                           productID: product.id!,
                                           shopID: shop!.id!);
+                                      shopProvider.updateTotalProduct(
+                                          TypeOfTotalProduct.decrease);
                                       Navigator.of(_).pop(); // Close the dialog
                                     },
                                     child: Text(LangText(context: context)

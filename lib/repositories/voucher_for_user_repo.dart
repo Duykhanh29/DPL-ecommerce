@@ -13,6 +13,11 @@ class VoucherForUserRepo {
     return await firestoreDatabase.getVoucherUser(uid);
   }
 
+  // Future<List<String>?> getListVoucherOfAdminInVoucherFOrUser(
+  //     String uid) async {
+  //   return firestoreDatabase.getListVoucherOfAdminInVoucherFOrUser(uid);
+  // }
+
   Future<void> addVoucherForUser(VoucherForUser voucherForUser) async {
     await firestoreDatabase.addVoucherForUser(voucherForUser);
   }
@@ -25,6 +30,12 @@ class VoucherForUserRepo {
       {required String userID, required String voucherID}) async {
     await firestoreDatabase.updateVoucherForUser(
         userID: userID, voucherID: voucherID);
+  }
+
+  Future<void> deleteVoucherIDForUser(
+      {required String uid, required String voucherID}) async {
+    await firestoreDatabase.deleteVoucherIDForUser(
+        uid: uid, voucherID: voucherID);
   }
 
   final VoucherForUser voucherForUser = VoucherForUser(

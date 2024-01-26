@@ -61,13 +61,13 @@ class _DeliverListScreenState extends State<DeliverListScreen> {
       context: context,
       builder: (_) => AlertDialog(
         contentPadding:
-            EdgeInsets.only(top: 16.0, left: 2.0, right: 2.0, bottom: 2.0),
+            EdgeInsets.only(top: 16.0, left: 2.0, right: 2.w, bottom: 2.h),
         content: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
           child: Text(
             AppLocalizations.of(context)!.are_you_sure_to_remove_this_item,
             maxLines: 3,
-            style: TextStyle(color: MyTheme.font_grey, fontSize: 14),
+            style: TextStyle(color: MyTheme.font_grey, fontSize: 14.sp),
           ),
         ),
         actions: [
@@ -120,8 +120,10 @@ class _DeliverListScreenState extends State<DeliverListScreen> {
         centerTitle: true,
         automaticallyImplyLeading: widget.isDrawer,
         leading: widget.isDrawer ? CustomArrayBackWidget() : Container(),
-        title:
-            Text(LangText(context: context).getLocal()!.delivery_service_ucf),
+        title: Text(
+          LangText(context: context).getLocal()!.delivery_service_ucf,
+          style: TextStyle(fontWeight: FontWeight.w700, color: MyTheme.white),
+        ),
         actions: <Widget>[
           IconButton(
               icon: const Icon(Icons.add, color: Colors.white),

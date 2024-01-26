@@ -26,8 +26,8 @@ class CustomPhotoView extends StatelessWidget {
               4.0, // Đặt giá trị maxScale bằng minScale
           imageProvider: NetworkImage(urlImage!),
           backgroundDecoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.5),
-          ),
+              // color: Colors.black.withOpacity(0.5),
+              ),
         ),
       ),
     );

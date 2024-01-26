@@ -745,5 +745,14 @@
      "an_error_has_occurred":"Một lỗi đã xảy ra",
      "please_enter_your_address_first":"Hãy nhập địa chỉ trước",
      "please_choose_at_least_one_product":"Hãy chọn ít nhất một sản phẩm",
-      "you_have_sent_verification":"Bạn đã gửi biểu mẫu xác minh"
+      "you_have_sent_verification":"Bạn đã gửi biểu mẫu xác minh",
+      "send_code":"Gửi mã",
+     
+       "change_voucher_for_apply":"Thay đổi mã giảm giá",
+      "total_price_without_discount_ucf":"Tổng tiền chưa tính giảm giá",
+      "rating_should_to_be_greater_than_zero":"Đánh giá nên là số lớn hơn 0",
+      "edit":"Sửa",
+      "please_enter_valid_field":"Vui lòng nhập các trường hợp lệ",
+      "you_cannot_update_the_payment_status_yet":"Bạn chưa thể cập nhật trạng thái thanh toán được",
+      "number_of_products_by_category":"Số lượng hàng theo danh mục"
 }

@@ -17,7 +17,10 @@ class ChatPage extends StatelessWidget {
         centerTitle: true,
         backgroundColor: MyTheme.accent_color,
         leading: CustomArrayBackWidget(),
-        title: Text(AppLocalizations.of(context)!.chat_list),
+        title: Text(
+          AppLocalizations.of(context)!.chat_list,
+          style: TextStyle(color: MyTheme.white),
+        ),
       ),
       body: ListChat(),
     );

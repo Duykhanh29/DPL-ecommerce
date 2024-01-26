@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
+import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
 import 'package:dpl_ecommerce/models/category.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/shop.dart';
@@ -508,11 +509,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
           //   }
           // },
           onPressed: () async {
-            await _addProduct(context, shop!);
+            await _addProduct(context, shop!, shopProvider);
           },
           child: Text(
             AppLocalizations.of(context)!.add_new_product_ucf,
-            style: TextStyle(fontSize: 18.sp),
+            style: TextStyle(fontSize: 18.sp, color: MyTheme.white),
           ),
         ),
       ),
@@ -787,7 +788,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
     return list;
   }
 
-  Future<void> _addProduct(BuildContext context, Shop shop) async {
+  Future<void> _addProduct(
+      BuildContext context, Shop shop, ShopViewModel shopViewModel) async {
     String name = _nameController.text;
     String priceString = _priceController.text;
     String availableQuantity1 = _availableQuantityController.text;
@@ -835,7 +837,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         );
         await productRepo.addProduct(newProduct, shop.id!);
         // widget.onProductAdded(newProduct);
-
+        shopViewModel.updateTotalProduct(TypeOfTotalProduct.increase);
         // Clear text fields and image path
         _nameController.clear();
         _priceController.clear();

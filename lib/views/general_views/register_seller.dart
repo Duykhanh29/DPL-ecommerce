@@ -140,6 +140,14 @@ class _RegistrationState extends State<Registration> {
           gravity: ToastGravity.BOTTOM);
       return;
     }
+    if (passwordController.text.length < 6) {
+      ToastHelper.showDialog(
+          LangText(context: context)
+              .getLocal()!
+              .password_must_contain_at_least_6_characters,
+          gravity: ToastGravity.BOTTOM);
+      return;
+    }
 
     // loading();
     await authViewModel.registerForSellerByEmaillAndPass(
@@ -653,7 +661,9 @@ class _RegistrationState extends State<Registration> {
                           }
                         },
                         child: Text(
-                            LangText(context: context).getLocal()!.register))),
+                          LangText(context: context).getLocal()!.register,
+                          style: TextStyle(color: MyTheme.white),
+                        ))),
               ),
             ),
             spacer(height: 10.h),

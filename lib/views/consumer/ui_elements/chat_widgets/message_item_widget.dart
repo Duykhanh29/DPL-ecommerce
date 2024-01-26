@@ -1,3 +1,4 @@
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_photo_view.dart';
@@ -171,6 +172,7 @@ class ImageWidget extends StatelessWidget {
                   builder: (context) {
                     return Scaffold(
                       appBar: AppBar(
+                        backgroundColor: MyTheme.accent_color,
                         leading: CustomArrayBackWidget(),
                         actions: [
                           IconButton(
@@ -178,7 +180,10 @@ class ImageWidget extends StatelessWidget {
                                 await storageService.downloadAndSaveImage(
                                     message!.content!, context);
                               },
-                              icon: Icon(Icons.download_outlined))
+                              icon: Icon(
+                                Icons.download_rounded,
+                                color: MyTheme.white,
+                              ))
                         ],
                       ),
                       body: CustomPhotoView(urlImage: message!.content),

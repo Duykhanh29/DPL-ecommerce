@@ -42,6 +42,7 @@ import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_for_user_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/repositories/wishlist_repo.dart';
+import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
 import 'package:dpl_ecommerce/utils/common/common_caculated_methods.dart';
 import 'package:dpl_ecommerce/utils/common/common_methods.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
@@ -54,6 +55,7 @@ import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/checkout_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/product_detail_view_model.dart';
+import 'package:dpl_ecommerce/view_model/consumer/voucher_for_user_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/cart_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/chat_page.dart';
@@ -100,6 +102,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   FirestoreDatabase firestoreDatabase = FirestoreDatabase();
+  StorageService storageService = StorageService();
   List<Voucher>? listVoucher;
   late List<Shop>? listShop;
   List<Product>? listShopProduct;
@@ -217,8 +220,25 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     }
   }
 
-  void showSheet(size, CheckoutViewModel checkoutProvider, String userID,
-      AddressViewModel addressProvider) {
+  Future<void> getListVoucherOfAdminBeforeCheckout(
+      VoucherForUserViewModel voucherForUserViewModel) async {
+    List<Voucher>? listAllVoucher = await voucherRepo.getListVoucher();
+    if (listAllVoucher != null) {
+      List<Voucher>? voucherOfAdminInUser =
+          CommondMethods.getListVoucherOfAdminInUserAcc(
+              voucherForUser!.vouchers!, listAllVoucher);
+      if (voucherOfAdminInUser != null && voucherOfAdminInUser.isNotEmpty) {
+        voucherForUserViewModel.setListVoucherOfAdmin(voucherOfAdminInUser!);
+      }
+    }
+  }
+
+  void showSheet(
+      size,
+      CheckoutViewModel checkoutProvider,
+      String userID,
+      AddressViewModel addressProvider,
+      VoucherForUserViewModel voucherForUserViewModel) {
     return BottomSheetHelper.showBottomSheet(
         context: context,
         child: Padding(
@@ -239,7 +259,24 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) {
                             return Scaffold(
-                              appBar: AppBar(leading: CustomArrayBackWidget()),
+                              appBar: AppBar(
+                                leading: CustomArrayBackWidget(),
+                                backgroundColor: MyTheme.accent_color,
+                                actions: [
+                                  IconButton(
+                                      onPressed: () async {
+                                        await storageService
+                                            .downloadAndSaveImage(
+                                                product!.images![0], context);
+                                      },
+                                      icon: Icon(
+                                        Icons.download_rounded,
+                                        color: MyTheme.white,
+                                        size: 20.h,
+                                      ))
+                                ],
+                                centerTitle: true,
+                              ),
                               body: CustomPhotoView(
                                 urlImage: product!.images![0],
                               ),
@@ -270,7 +307,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   ],
                 ),
               ),
-              if (product!.sizes != null) ...{
+              if (product!.sizes != null && product!.sizes!.isNotEmpty) ...{
                 Padding(
                   padding: EdgeInsets.only(top: 5.h, left: 25.w),
                   child: Align(
@@ -282,7 +319,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 CustomradioButtonForBuyNow(
                     list: product!.sizes!, kindOfData: KindOfData.sizes),
               },
-              if (product!.types != null) ...{
+              if (product!.types != null && product!.types!.isNotEmpty) ...{
                 Padding(
                   padding: EdgeInsets.only(top: 5.h, left: 25.w),
                   child: Align(
@@ -294,7 +331,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 CustomradioButtonForBuyNow(
                     list: product!.types!, kindOfData: KindOfData.types),
               },
-              if (product!.colors != null) ...{
+              if (product!.colors != null && product!.colors!.isNotEmpty) ...{
                 const SizedBox(
                   width: 15,
                 ),
@@ -378,6 +415,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 child: Consumer<CheckoutViewModel>(
                   builder: (context, value, child) {
                     return ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            elevation: 10, // Set the elevation value here
+                            backgroundColor: MyTheme.accent_color),
                         onPressed: () async {
                           if (value.initialPurcharsingNumber >
                               product!.availableQuantity!) {
@@ -401,7 +441,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 duration: Toast.LENGTH_SHORT);
                             Navigator.of(context).pop();
                             return;
-                          } else {}
+                          }
+
                           await getVoucherForUser(userID);
                           String? voucherID;
                           if (voucherForUser != null) {
@@ -455,7 +496,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             orderingProductsID: [orderingProduct],
                             totalProduct: 1,
                             userID: userID,
-                            totalCost: orderingProduct.realPrice,
+                            totalCost: orderingProduct.realPrice! *
+                                orderingProduct.quantity!,
                           );
                           checkoutProvider.setOrder(order);
 
@@ -464,15 +506,21 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               await userRepo.getListAddressInfor(userID);
                           addressProvider.setListAddressInfor(list!);
                           addressProvider.setOrderingAddress(addressInfor);
+                          await getListVoucherOfAdminBeforeCheckout(
+                              voucherForUserViewModel);
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) {
                               return CheckOut(uid: userID);
                             },
                           ));
                         },
-                        child: Text(LangText(context: context)
-                            .getLocal()!
-                            .buy_now_ucf));
+                        child: Text(
+                          LangText(context: context).getLocal()!.buy_now_ucf,
+                          style: TextStyle(
+                              fontSize: 18.sp,
+                              color: MyTheme.white,
+                              fontWeight: FontWeight.w600),
+                        ));
                   },
                 ),
               ),
@@ -509,11 +557,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           actions: [
             buildFavouriteIcon(uid: user!.id!, productID: widget.id),
             const SizedBox(width: 12),
-            InkWell(
-              onTap: () {},
-              child: const Icon(Icons.share),
-            ),
-            const SizedBox(width: 12),
+            // InkWell(
+            //   onTap: () {},
+            //   child: const Icon(Icons.share),
+            // ),
+            // const SizedBox(width: 12),
             Consumer<CartViewModel>(
               builder: (context, value, child) {
                 // if (authValue.currentUser != null) {
@@ -554,6 +602,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   maxWidth: MediaQuery.of(context).size.width * 0.35),
               child: Text(
                 product != null ? product!.name! : "",
+                style: TextStyle(
+                    fontWeight: FontWeight.w500, color: MyTheme.white),
                 overflow: TextOverflow.ellipsis,
               )),
           centerTitle: true,
@@ -1547,8 +1597,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) {
                                 return Scaffold(
-                                  appBar:
-                                      AppBar(leading: CustomArrayBackWidget()),
+                                  appBar: AppBar(
+                                    leading: CustomArrayBackWidget(),
+                                    backgroundColor: MyTheme.accent_color,
+                                  ),
                                   body: CustomPhotoView(
                                     urlImage: product!.images![0],
                                   ),
@@ -1579,7 +1631,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       ],
                     ),
                   ),
-                  if (product!.sizes != null) ...{
+                  if (product!.sizes != null && product!.sizes!.isNotEmpty) ...{
                     Padding(
                       padding: EdgeInsets.only(top: 5.h, left: 25.w),
                       child: Align(
@@ -1591,7 +1643,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     CustomradioButton(
                         list: product!.sizes!, kindOfData: KindOfData.sizes),
                   },
-                  if (product!.types != null) ...{
+                  if (product!.types != null && product!.types!.isNotEmpty) ...{
                     Padding(
                       padding: EdgeInsets.only(top: 5.h, left: 25.w),
                       child: Align(
@@ -1603,7 +1655,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     CustomradioButton(
                         list: product!.types!, kindOfData: KindOfData.types),
                   },
-                  if (product!.colors != null) ...{
+                  if (product!.colors != null &&
+                      product!.colors!.isNotEmpty) ...{
                     const SizedBox(
                       width: 15,
                     ),
@@ -1687,6 +1740,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     child: Consumer<ProductDetailViewModel>(
                       builder: (context, value, child) {
                         return ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: MyTheme.accent_color,
+                              elevation: 10, // Set the elevation value here
+                            ),
                             onPressed: () async {
                               if (value.choseNumber >
                                   product!.availableQuantity!) {
@@ -1701,7 +1758,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               }
                               await getVoucherForUser(userModel!.id!);
                               String? voucherID;
-                              if (voucherForUser != null) {
+                              if (voucherForUser != null &&
+                                  listVoucher != null) {
                                 voucherID =
                                     CommondMethods.getVoucherForUserByProduct(
                                         voucherForUser!, listVoucher!);
@@ -1750,9 +1808,15 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               productDetailProvider.reset();
                               Navigator.of(context).pop();
                             },
-                            child: Text(LangText(context: context)
-                                .getLocal()!
-                                .add_to_cart_ucf));
+                            child: Text(
+                              LangText(context: context)
+                                  .getLocal()!
+                                  .add_to_cart_ucf,
+                              style: TextStyle(
+                                  fontSize: 18.sp,
+                                  color: MyTheme.white,
+                                  fontWeight: FontWeight.w600),
+                            ));
                       },
                     ),
                   ),
@@ -1801,12 +1865,14 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   Widget _buildBuyNow(BuildContext context) {
     final checkoutProvider = Provider.of<CheckoutViewModel>(context);
     final addressProvider = Provider.of<AddressViewModel>(context);
+    final voucherForUserProvider =
+        Provider.of<VoucherForUserViewModel>(context);
     final size = MediaQuery.of(context).size;
     return Consumer<UserViewModel>(
       builder: (context, provider, child) => GestureDetector(
         onTap: () async {
           showSheet(size, checkoutProvider, provider.currentUser!.id!,
-              addressProvider);
+              addressProvider, voucherForUserProvider);
         },
         child: Container(
           height: 52.h,
@@ -2056,15 +2122,15 @@ class _buildHeader extends StatelessWidget {
               child: const Icon(Icons.favorite_outline),
             ),
           ),
-          Container(
-            width: 40.h,
-            height: 40.h,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(100)),
-            child: InkWell(
-              onTap: () {},
-              child: Icon(Icons.share),
-            ),
-          ),
+          // Container(
+          //   width: 40.h,
+          //   height: 40.h,
+          //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(100)),
+          //   child: InkWell(
+          //     onTap: () {},
+          //     child: Icon(Icons.share),
+          //   ),
+          // ),
           Container(
             width: 40.h,
             height: 40.h,

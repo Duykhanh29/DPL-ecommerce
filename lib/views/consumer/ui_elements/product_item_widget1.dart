@@ -26,11 +26,11 @@ class ProductItemWidget extends StatelessWidget {
         ));
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 1.w, vertical: 1.h),
+        padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.h),
         decoration:
             BoxDecoration(border: Border.all(color: Colors.black, width: 0.1)),
-        height: 170.h,
-        width: 145.w,
+        width: MediaQuery.of(context).size.width * 0.4,
+        constraints: BoxConstraints(maxHeight: 135.h),
         child: Column(
           children: [
             Container(

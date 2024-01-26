@@ -12,6 +12,31 @@ class ShopViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateTotalProduct(TypeOfTotalProduct type) {
+    if (shop != null) {
+      if (type == TypeOfTotalProduct.increase) {
+        shop!.totalProduct++;
+      } else {
+        shop!.totalProduct--;
+      }
+      notifyListeners();
+    }
+  }
+
+  void updateTotalOrder() {
+    if (shop != null) {
+      shop!.totalOrder++;
+      notifyListeners();
+    }
+  }
+
+  void updateTotalRevenue(int newRevenue) {
+    if (shop != null) {
+      shop!.totalRevenue = shop!.totalRevenue + newRevenue;
+      notifyListeners();
+    }
+  }
+
   UserFirestoreDatabase userFirestoreDatabase = UserFirestoreDatabase();
   FirestoreDatabase firestoreDatabase = FirestoreDatabase();
   UserModel? currentUser;

@@ -7,11 +7,13 @@ import 'package:dpl_ecommerce/models/order_shop.dart';
 import 'package:dpl_ecommerce/models/ordering_product.dart';
 import 'package:dpl_ecommerce/repositories/order_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:dpl_ecommerce/view_model/seller/shop_view_model.dart';
 import 'package:dpl_ecommerce/views/seller/screens/order/order_shop_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 class ListOrderShop extends StatefulWidget {
   ListOrderShop({super.key, required this.shopID});
@@ -71,7 +73,7 @@ class _ListOrderShopState extends State<ListOrderShop> {
               padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
               child: ListView.separated(
                 itemBuilder: (context, index) {
-                  return buildOrderShopItem(index);
+                  return buildOrderShopItem(index, context);
                 },
                 separatorBuilder: (context, index) => SizedBox(
                   height: 10.h,
@@ -82,9 +84,10 @@ class _ListOrderShopState extends State<ListOrderShop> {
     }
   }
 
-  Widget buildOrderShopItem(int index) {
+  Widget buildOrderShopItem(int index, BuildContext context) {
     PaymentStatus paymentStatus = listOrder![index].paymentStatus!;
     DeliverStatus deliverStatus = listOrder![index].deliverStatus!;
+    final shopProvider = Provider.of<ShopViewModel>(context);
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -159,8 +162,23 @@ class _ListOrderShopState extends State<ListOrderShop> {
                     focusColor: MyTheme.accent_color,
                     items: buildDropdownPaymentStatusItemsForUpdate(context),
                     onChanged: (value) async {
+                      if (listOrder![index].deliverStatus ==
+                              DeliverStatus.confirmed ||
+                          listOrder![index].deliverStatus ==
+                              DeliverStatus.delivering) {
+                        ToastHelper.showDialog(
+                            LangText(context: context)
+                                .getLocal()!
+                                .you_cannot_update_the_payment_status_yet,
+                            gravity: ToastGravity.CENTER);
+                        return;
+                      }
                       await orderRepo.updatePaymentStatusForOrderShop(
                           listOrder![index].id!, value!);
+                      if (value == PaymentStatus.paid) {
+                        shopProvider
+                            .updateTotalRevenue(listOrder![index].totalPrice!);
+                      }
                       await onRefresh();
                     },
                   ),

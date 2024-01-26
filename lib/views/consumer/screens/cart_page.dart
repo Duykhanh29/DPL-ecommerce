@@ -18,16 +18,19 @@ import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/product_in_cart_model.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
+import 'package:dpl_ecommerce/models/voucher_for_user.dart';
 import 'package:dpl_ecommerce/repositories/cart_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_in_cart_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
+import 'package:dpl_ecommerce/repositories/voucher_for_user_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/common/common_methods.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/address_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/checkout_view_model.dart';
+import 'package:dpl_ecommerce/view_model/consumer/voucher_for_user_view_model.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/checkout.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/cart_widgets/product_cart_item.dart';
@@ -51,9 +54,11 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   CartRepo cartrepo = CartRepo();
   VoucherRepo voucherRepo = VoucherRepo();
+  VoucherForUserRepo voucherForUserRepo = VoucherForUserRepo();
   UserRepo userRepo = UserRepo();
   List<Voucher>? listVoucher;
   bool isLoading = true;
+  VoucherForUser? voucherForUser;
   @override
   void initState() {
     // TODO: implement initState
@@ -68,11 +73,29 @@ class _CartPageState extends State<CartPage> {
     });
   }
 
+  Future<void> getVoucherForUser(String uid) async {
+    voucherForUser = await voucherForUserRepo.getVoucher(uid);
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
     listVoucher!.clear();
+  }
+
+  Future<void> getListVoucherOfAdminBeforeCheckout(
+      VoucherForUserViewModel voucherForUserViewModel, String uid) async {
+    await getVoucherForUser(uid);
+    List<Voucher>? listAllVoucher = await voucherRepo.getListVoucher();
+    if (listAllVoucher != null) {
+      List<Voucher>? voucherOfAdminInUser =
+          CommondMethods.getListVoucherOfAdminInUserAcc(
+              voucherForUser!.vouchers!, listAllVoucher);
+      if (voucherOfAdminInUser != null && voucherOfAdminInUser.isNotEmpty) {
+        voucherForUserViewModel.setListVoucherOfAdmin(voucherOfAdminInUser!);
+      }
+    }
   }
 
   @override
@@ -88,6 +111,8 @@ class _CartPageState extends State<CartPage> {
     if (!isLoading) {
       provider.setListVoucher(listVoucher!);
     }
+    final vouhcerForUserProvider =
+        Provider.of<VoucherForUserViewModel>(context);
     // final selectedProduct = provider.list;
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -127,8 +152,19 @@ class _CartPageState extends State<CartPage> {
                 width: size.width * 0.9,
                 child: ElevatedButton(
                     style: ButtonStyle(
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.r)))),
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.r),
+                        ),
+                      ),
+                      backgroundColor: MaterialStateProperty.all(MyTheme.white),
+                      side: MaterialStateProperty.all(
+                        BorderSide(
+                          color: MyTheme.accent_color,
+                          width: 1,
+                        ),
+                      ),
+                    ),
                     onPressed: () async {
                       if (provider.list.isEmpty) {
                         ToastHelper.showDialog(
@@ -195,7 +231,7 @@ class _CartPageState extends State<CartPage> {
                             price: element.cost,
                             productID: element.productID,
                             quantity: element.quantity,
-                            realPrice: realCost,
+                            realPrice: realCost * element.quantity,
                             size: element.size,
                             type: element.type,
                             userID: element.userID,
@@ -214,12 +250,16 @@ class _CartPageState extends State<CartPage> {
 
                       checkoutProvider
                           .setListProductInCartID(listProductInCartID);
+                      await getListVoucherOfAdminBeforeCheckout(
+                          vouhcerForUserProvider, user.id!);
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => CheckOut(uid: user.id!),
                       ));
                     },
                     child: Text(
-                        LangText(context: context).getLocal()!.checkout_ucf)),
+                      LangText(context: context).getLocal()!.checkout_ucf,
+                      style: TextStyle(color: MyTheme.accent_color),
+                    )),
               ),
             ),
             SizedBox(height: 10.h),
@@ -251,9 +291,9 @@ class _CartPageState extends State<CartPage> {
         // final cart = snapshot.data;
         // return
         Container(
-      height: MediaQuery.of(context).size.height * 0.14,
+      // height: MediaQuery.of(context).size.height * 0.14,
       margin: EdgeInsets.symmetric(horizontal: 15.w),
-      padding: EdgeInsets.all(5.h),
+      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
       decoration: AppDecoration.outlineBlueGray.copyWith(
         borderRadius: BorderRadius.circular(10),
       ),
@@ -279,7 +319,7 @@ class _CartPageState extends State<CartPage> {
           ),
           // SizedBox(height: 10),
           const Divider(),
-          const SizedBox(height: 6),
+          SizedBox(height: 6.h),
           Consumer<CartViewModel>(
             builder: (context, value, child) => _buildShipping(
               context,
@@ -287,6 +327,7 @@ class _CartPageState extends State<CartPage> {
               priceLabel: "${provider.totalCost - provider.savingCost}",
             ),
           ),
+          SizedBox(height: 6.h),
         ],
       ),
     );

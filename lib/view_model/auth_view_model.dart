@@ -101,6 +101,81 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> registerUserByEmailAndPass(
+      {required String email,
+      required String password,
+      required BuildContext context,
+      required String name}) async {
+    try {
+      UserCredential result = await auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+
+      if (result == null) {
+        print("Account created failed");
+      } else {
+        var isExist = await userFirestoreDatabase
+            .existedUserCheckWithPhoneOrEmail(email: email);
+        if (isExist) {
+          print("Exist");
+          // userModel = await userFirestoreDatabase
+          //     .getUserModel1(result.user!.uid);
+        } else {
+          // bool isEmailVerified = auth.currentUser!.emailVerified;
+          // if (!isEmailVerified) {
+          //   // sendVerificationEmail();
+          //   final user = auth.currentUser!;
+          //   user.sendEmailVerification();
+          //   timer = Timer.periodic(Duration(seconds: 3), (timer) async {
+          //     await auth.currentUser!.reload();
+          //     bool isEmailVerified = auth.currentUser!.emailVerified;
+          //     notifyListeners();
+          //     if (isEmailVerified) {
+          //       timer.cancel();
+          UserModel user = UserModel(
+            id: result.user!.uid,
+            email: email,
+            firstName: name,
+            role: Role.consumer,
+            userInfor: UserInfor(
+                consumerInfor: ConsumerInfor(
+              addressInfors: [],
+              raking: Raking.bronze,
+              rewardPoints: 100,
+            )),
+          );
+          await userFirestoreDatabase.addUser(user);
+          userModel = user;
+          //   }
+          // });
+          // }
+          // await userFirestoreDatabase.
+        }
+        notifyListeners();
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        ToastHelper.showDialog(
+            LangText(context: context)
+                .getLocal()!
+                .password_must_contain_at_least_6_characters,
+            gravity: ToastGravity.BOTTOM);
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(content: Text('Password Provided is too weak')));
+      } else if (e.code == 'email-already-in-use') {
+        ToastHelper.showDialog(
+            LangText(context: context)
+                .getLocal()!
+                .email_provided_already_exists,
+            gravity: ToastGravity.BOTTOM);
+      }
+    } catch (e) {
+      ToastHelper.showDialog(
+          "${LangText(context: context).getLocal()!.an_error_has_occurred}: $e",
+          gravity: ToastGravity.BOTTOM);
+      print("The error is here: $e");
+    }
+  }
+
   Future signInWithEmailAndPass(
       {required String email,
       required String password,
@@ -295,6 +370,15 @@ class AuthViewModel extends ChangeNotifier {
       await user!.sendEmailVerification();
     } catch (e) {
       print("The error is here: $e");
+    }
+  }
+
+  Future sendPasswordReset(String email, BuildContext context) async {
+    try {
+      await auth.sendPasswordResetEmail(email: email.trim());
+    } catch (e) {
+      ToastHelper.showDialog(
+          "${LangText(context: context).getLocal()!.an_error_has_occurred}: $e");
     }
   }
 }

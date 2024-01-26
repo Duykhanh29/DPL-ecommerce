@@ -1,6 +1,10 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/models/voucher_for_user.dart';
+import 'package:dpl_ecommerce/repositories/voucher_for_user_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
+import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/cart_view_model.dart';
+import 'package:dpl_ecommerce/view_model/consumer/voucher_for_user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/cart_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/category_page.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/home_page.dart';
@@ -25,6 +29,8 @@ class MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<MainView> {
+  VoucherForUserRepo voucherForUserRepo = VoucherForUserRepo();
+
   List<Widget> pages = [
     HomePage(),
     CategoryPage(),
@@ -32,8 +38,22 @@ class _MainViewState extends State<MainView> {
     OrderScreen(),
     UserProfilePage(),
   ];
-  int indexPage = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final auth = Provider.of<AuthViewModel>(context, listen: false);
+    getVoucherForUser(auth.currentUser!.id!).then((value) {
+      Provider.of<VoucherForUserViewModel>(context, listen: false)
+          .setVoucherForUser(value!);
+    });
+  }
 
+  Future<VoucherForUser?> getVoucherForUser(String uid) async {
+    return await voucherForUserRepo.getVoucher(uid);
+  }
+
+  int indexPage = 0;
   @override
   Widget build(BuildContext context) {
     return
@@ -41,7 +61,7 @@ class _MainViewState extends State<MainView> {
         //   create: (context) => CartViewModel(),
         //   child:
         Scaffold(
-      drawer: ConsumerDrawer(),
+      // drawer: ConsumerDrawer(),
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: true,
         showUnselectedLabels: true,
@@ -57,21 +77,26 @@ class _MainViewState extends State<MainView> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.home,
-              color: MyTheme.accent_color,
+              color: indexPage == 0 ? MyTheme.accent_color : MyTheme.grey_153,
             ),
             label: LangText(context: context).getLocal()!.home_ucf,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.category_sharp, color: MyTheme.accent_color),
+            icon: Icon(Icons.category_sharp,
+                color:
+                    indexPage == 1 ? MyTheme.accent_color : MyTheme.grey_153),
             label: LangText(context: context).getLocal()!.categories_ucf,
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.cart, color: MyTheme.accent_color),
+            icon: Icon(CupertinoIcons.cart,
+                color:
+                    indexPage == 2 ? MyTheme.accent_color : MyTheme.grey_153),
             label: LangText(context: context).getLocal()!.orders_ucf,
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.person_alt_circle,
-                color: MyTheme.accent_color),
+                color:
+                    indexPage == 3 ? MyTheme.accent_color : MyTheme.grey_153),
             label: LangText(context: context).getLocal()!.profile_ucf,
           ),
         ],

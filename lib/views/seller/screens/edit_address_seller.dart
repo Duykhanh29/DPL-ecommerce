@@ -232,7 +232,7 @@ class _EditAddressSellerState extends State<EditAddressSeller> {
         },
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(15.0.h),
             child: Form(
               key: _formKey,
               child: Column(
@@ -709,7 +709,10 @@ class _EditAddressSellerState extends State<EditAddressSeller> {
           },
           child: Text(
             AppLocalizations.of(context)!.update_ucf,
-            style: TextStyle(fontSize: 18.sp),
+            style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w700,
+                color: MyTheme.accent_color),
           ),
         ),
       ),
