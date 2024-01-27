@@ -1301,7 +1301,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         ),
                         SizedBox(height: 2.h),
                         Text(
-                          "${product.ratingCount} ${LangText(context: context).getLocal()!.ratings_ucf}s",
+                          "${product.ratingCount} ${LangText(context: context).getLocal()!.ratings_ucf}",
                           style: CustomTextStyles.bodySmallGray600,
                         ),
                       ],

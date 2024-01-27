@@ -464,9 +464,8 @@ class __CheckOutState extends State<CheckOut> {
                               //   recommededProductRepo.insertData(uid: user.id!,categoryID: element.)
                               // }
 
-                              Navigator.of(context)
-                                  .pushReplacement(MaterialPageRoute(
-                                builder: (context) => MainView(),
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => SuccessScreen(),
                               ));
                               // checkoutProvider.reset();
                             }

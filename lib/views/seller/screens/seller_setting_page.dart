@@ -57,34 +57,37 @@ class ProfileSettingSellerScreen extends StatelessWidget {
                     Consumer<UserViewModel>(builder: (context, value, child) {
                       return GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) {
-                              return Scaffold(
-                                appBar: AppBar(
-                                  backgroundColor: MyTheme.accent_color,
-                                  leading: CustomArrayBackWidget(),
-                                  actions: [
-                                    value.userModel!.avatar != null
-                                        ? IconButton(
-                                            onPressed: () async {
-                                              await storageService
-                                                  .downloadAndSaveImage(
-                                                      value.userModel!.avatar!,
-                                                      context);
-                                            },
-                                            icon: Icon(
-                                              Icons.download_rounded,
-                                              color: MyTheme.white,
-                                              size: 20.h,
-                                            ))
-                                        : Container()
-                                  ],
-                                ),
-                                body: CustomPhotoView(
-                                    urlImage: value.userModel!.avatar),
-                              );
-                            },
-                          ));
+                          if (value.userModel!.avatar != null) {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) {
+                                return Scaffold(
+                                  appBar: AppBar(
+                                    backgroundColor: MyTheme.accent_color,
+                                    leading: CustomArrayBackWidget(),
+                                    actions: [
+                                      value.userModel!.avatar != null
+                                          ? IconButton(
+                                              onPressed: () async {
+                                                await storageService
+                                                    .downloadAndSaveImage(
+                                                        value
+                                                            .userModel!.avatar!,
+                                                        context);
+                                              },
+                                              icon: Icon(
+                                                Icons.download_rounded,
+                                                color: MyTheme.white,
+                                                size: 20.h,
+                                              ))
+                                          : Container()
+                                    ],
+                                  ),
+                                  body: CustomPhotoView(
+                                      urlImage: value.userModel!.avatar),
+                                );
+                              },
+                            ));
+                          }
                         },
                         child: value.userModel!.avatar != null
                             ? CircleAvatar(

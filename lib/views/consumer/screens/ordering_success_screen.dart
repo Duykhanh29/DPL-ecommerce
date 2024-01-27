@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:dpl_ecommerce/views/consumer/main_view.dart';
 
 class SuccessScreen extends StatefulWidget {
   const SuccessScreen({super.key});
@@ -98,10 +99,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 // ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.of(context, rootNavigator: true).pushReplacement(
+                    Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
                         builder: (context) {
-                          return HomePage();
+                          return MainView();
                         },
                       ),
                     );
