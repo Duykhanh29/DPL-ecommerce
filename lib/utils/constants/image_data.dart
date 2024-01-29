@@ -58,4 +58,7 @@ class ImageData {
   static String googleLogo = '$imagePath/google_logo.png';
   static String circelAvatar = '$imagePath/circel_avatar.png';
   static String placeHolder = '$imagePath/place_holder.png';
+
+  // internet
+  static String noInternet = "$imagePath/no-wifi.png";
 }

@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dpl_ecommerce/app_obsever.dart';
 import 'package:dpl_ecommerce/lang_config.dart';
 import 'package:dpl_ecommerce/models/user.dart' as userModel;
@@ -21,6 +24,7 @@ import 'package:dpl_ecommerce/views/admin/routes/admin_routes.dart';
 import 'package:dpl_ecommerce/views/consumer/main_view.dart';
 import 'package:dpl_ecommerce/views/consumer/routes/routes.dart';
 import 'package:dpl_ecommerce/views/general_views/login_screen.dart';
+import 'package:dpl_ecommerce/views/general_views/no_internet_connection.dart';
 import 'package:dpl_ecommerce/views/general_views/register_seller.dart';
 import 'package:dpl_ecommerce/views/general_views/splash_screen.dart';
 import 'package:dpl_ecommerce/views/seller/mainviewseller.dart';
@@ -147,25 +151,43 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
+  final Connectivity _connectivity = Connectivity();
+  ConnectivityResult _connectivityResult = ConnectivityResult.none;
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   auth.User? user;
   bool isLoading = true;
+  bool hasInternetConnection = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     // super.initState();
     // final authProvider = Provider.of<AuthViewModel>(context);
+
     Future.delayed(const Duration(seconds: 5)).whenComplete(() {
       setState(() {
         isLoading = false;
       });
     });
-
-    auth.FirebaseAuth.instance.authStateChanges().listen((event) {
-      setState(() {
-        user = event;
-      });
-    });
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen(
+      (event) {
+        if (event == ConnectivityResult.wifi ||
+            event == ConnectivityResult.mobile) {
+          setState(() {
+            hasInternetConnection = true;
+          });
+          auth.FirebaseAuth.instance.authStateChanges().listen((event) {
+            setState(() {
+              user = event;
+            });
+          });
+        } else {
+          setState(() {
+            hasInternetConnection = false;
+          });
+        }
+      },
+    );
   }
 
   @override
@@ -194,23 +216,29 @@ class _FirstPageState extends State<FirstPage> {
     //   },
     // );
     return isLoading
-        ? SplashScreen()
+        ? !hasInternetConnection
+            ? NoInternetConnection()
+            : SplashScreen()
         : user != null
-            ? AuthorizatedPage()
-            : Consumer<LocaleProvider>(
-                builder: (context, value, child) => MaterialApp(
-                  debugShowCheckedModeBanner: false,
-                  home: LoginScreen(),
-                  localizationsDelegates: const [
-                    AppLocalizations.delegate, // Add this line
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  supportedLocales: AppLocalizations.supportedLocales,
-                  locale: value.locale,
-                ),
-              );
+            ? !hasInternetConnection
+                ? NoInternetConnection()
+                : const AuthorizatedPage()
+            : !hasInternetConnection
+                ? NoInternetConnection()
+                : Consumer<LocaleProvider>(
+                    builder: (context, value, child) => MaterialApp(
+                      debugShowCheckedModeBanner: false,
+                      home: LoginScreen(),
+                      localizationsDelegates: const [
+                        AppLocalizations.delegate, // Add this line
+                        GlobalMaterialLocalizations.delegate,
+                        GlobalWidgetsLocalizations.delegate,
+                        GlobalCupertinoLocalizations.delegate,
+                      ],
+                      supportedLocales: AppLocalizations.supportedLocales,
+                      locale: value.locale,
+                    ),
+                  );
   }
 }
 
