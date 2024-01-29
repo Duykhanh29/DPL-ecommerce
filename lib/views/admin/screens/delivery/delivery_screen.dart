@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
+import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:dpl_ecommerce/models/deliver_service.dart';
 import 'package:dpl_ecommerce/repositories/deliver_service_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
@@ -170,9 +171,14 @@ class _DeliverListScreenState extends State<DeliverListScreen> {
 
   Widget buildListDelivery(BuildContext context) {
     if (isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return ListView.separated(
+          itemBuilder: (context, index) => ShimmerHelper().buildBasicShimmer(
+              height: MediaQuery.of(context).size.height * 0.12,
+              width: MediaQuery.of(context).size.width * 0.9),
+          separatorBuilder: (context, index) => SizedBox(
+                height: 10.h,
+              ),
+          itemCount: 12);
     } else {
       if (list != null && list!.isNotEmpty) {
         return ListView.builder(

@@ -754,5 +754,7 @@
     "edit":"Edit",
     "please_enter_valid_field":"Please enter valid field",
     "you_cannot_update_the_payment_status_yet":"You cannot update the payment status yet",
-    "number_of_products_by_category":"Number of products by category"
+    "number_of_products_by_category":"Number of products by category",
+    "data_no_longer_exists":"Data no longer exists",
+     "current_inventory_is_insufficient_for":"Hàng tồn kho hiện tại không đủ cho "
 }

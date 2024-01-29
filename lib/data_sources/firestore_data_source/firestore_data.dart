@@ -620,6 +620,63 @@ class FirestoreDatabase {
     }
   }
 
+  // Future<List<Product>?> filterMixedConditions({
+  //   String? name,
+  //   String? categoryID,
+  //   int? minPrice,
+  //   int? maxPrice,
+  //   DateTime? dateTime,
+  //   double? rating,
+  // }) async {
+  //   try {
+  //     List<Product> list = [];
+
+  //     var query = _firestore
+  //         .collection('products')
+  //         .where('availableQuantity', isGreaterThan: 0);
+
+  //     // Lọc theo khoảng giá
+  //     if (minPrice != null) {
+  //       query = query.where('price', isGreaterThanOrEqualTo: minPrice);
+  //     }
+  //     if (maxPrice != null) {
+  //       query = query.where('price', isLessThanOrEqualTo: maxPrice);
+  //     }
+
+  //     // Lọc theo rating
+  //     if (rating != null) {
+  //       query = query.where('rating', isGreaterThanOrEqualTo: rating);
+  //     }
+
+  //     // Lọc theo ngày đăng
+  //     if (dateTime != null) {
+  //       query = query.where('updatedAt',
+  //           isLessThanOrEqualTo: Timestamp.fromDate(dateTime));
+  //     }
+
+  //     // Lọc theo thể loại
+  //     if (categoryID != null && categoryID.isNotEmpty) {
+  //       query = query.where('categoryID', isEqualTo: categoryID);
+  //     }
+
+  //     // Thực hiện truy vấn
+  //     final snapshot = await query.get();
+
+  //     for (var data in snapshot.docs) {
+  //       final productData = data.data();
+  //       final productName = productData['name'].toString().toLowerCase();
+  //       if (productName.contains(name!.toLowerCase())) {
+  //         Product product = Product.fromJson(productData);
+  //         list.add(product);
+  //       }
+  //     }
+  //     list.sort((a, b) => a.name!.compareTo(b.name!));
+  //     list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
+  //     return list;
+  //   } catch (e) {
+  //     print("An error occurred: $e");
+  //   }
+  // }
   Future<List<Product>?> filterMixedConditions({
     String? name,
     String? categoryID,
@@ -635,29 +692,21 @@ class FirestoreDatabase {
           .collection('products')
           .where('availableQuantity', isGreaterThan: 0);
 
-      // Lọc theo khoảng giá
-      if (minPrice != null) {
-        query = query.where('price', isGreaterThanOrEqualTo: minPrice);
-      }
-      if (maxPrice != null) {
-        query = query.where('price', isLessThanOrEqualTo: maxPrice);
-      }
-
       // Lọc theo rating
-      if (rating != null) {
-        query = query.where('rating', isGreaterThanOrEqualTo: rating);
-      }
+      // if (rating != null) {
+      //   query = query.where('rating', isGreaterThanOrEqualTo: rating);
+      // }
 
-      // Lọc theo ngày đăng
-      if (dateTime != null) {
-        query = query.where('updatedAt',
-            isLessThanOrEqualTo: Timestamp.fromDate(dateTime));
-      }
+      // // Lọc theo ngày đăng
+      // if (dateTime != null) {
+      //   query = query.where('updatedAt',
+      //       isLessThanOrEqualTo: Timestamp.fromDate(dateTime));
+      // }
 
-      // Lọc theo thể loại
-      if (categoryID != null && categoryID.isNotEmpty) {
-        query = query.where('categoryID', isEqualTo: categoryID);
-      }
+      // // Lọc theo thể loại
+      // if (categoryID != null && categoryID.isNotEmpty) {
+      //   query = query.where('categoryID', isEqualTo: categoryID);
+      // }
 
       // Thực hiện truy vấn
       final snapshot = await query.get();
@@ -670,11 +719,35 @@ class FirestoreDatabase {
           list.add(product);
         }
       }
+
+      // Filter by price on the client side
+      if (minPrice != null && maxPrice != null) {
+        list = list.where((product) {
+          final price = product.price ?? 0;
+          return (price >= minPrice) && (price <= maxPrice);
+        }).toList();
+      }
+      if (categoryID != null) {
+        list = list.where((product) {
+          final category = product.categoryID;
+          return (category == categoryID);
+        }).toList();
+      }
+      if (rating != null && rating != 0.0) {
+        list = list.where((product) {
+          final ratingProduct = product.rating;
+          return (ratingProduct! >= rating);
+        }).toList();
+      }
+
+      // Sort the final list
       list.sort((a, b) => a.name!.compareTo(b.name!));
       list.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
+
       return list;
     } catch (e) {
       print("An error occurred: $e");
+      // Handle the error appropriately
     }
   }
 
@@ -1061,6 +1134,25 @@ class FirestoreDatabase {
     }
   }
 
+  Future<List<Shop>?> searchShopByName(String name) async {
+    try {
+      List<Shop> list = [];
+      final snapshot = await _firestore.collection('shops').get();
+      for (var data in snapshot.docs) {
+        final shopData = data.data();
+        String shopName = shopData['name'].toString().toLowerCase();
+        if (shopName.contains(name.toLowerCase())) {
+          Shop shop = Shop.fromJson(shopData);
+          list.add(shop);
+        }
+      }
+      list.sort((a, b) => a.name!.compareTo(b.name!));
+      return list;
+    } catch (e) {
+      print("An error occured: $e");
+    }
+  }
+
   Future<void> updateTotalOrderForShop({required String shopID}) async {
     try {
       final shopDoc = _firestore.collection('shops').doc(shopID);
@@ -1133,18 +1225,18 @@ class FirestoreDatabase {
       if (snapshot.exists) {
         final shopData = snapshot.data();
         Shop shop = Shop.fromJson(shopData!);
-        shop.logo = logo ?? shopData!['logo'];
-        shop.name = name ?? shopData!['name'];
-        shop.totalProduct = totalProduct ?? shopData!['totalProduct'];
-        shop.totalOrder = totalOrder ?? shopData!['totalOrder'];
-        shop.totalRevenue = totalRevenue ?? shopData!['totalRevenue'];
+        shop.logo = logo ?? shopData['logo'];
+        shop.name = name ?? shopData['name'];
+        shop.totalProduct = totalProduct ?? shopData['totalProduct'];
+        shop.totalOrder = totalOrder ?? shopData['totalOrder'];
+        shop.totalRevenue = totalRevenue ?? shopData['totalRevenue'];
         shop.addressInfor =
-            addressInfor ?? AddressInfor.fromJson(shopData!['addressInfor']);
-        shop.shopDescription = shopDescription ?? shopData!['shopDescription'];
+            addressInfor ?? AddressInfor.fromJson(shopData['addressInfor']);
+        shop.shopDescription = shopDescription ?? shopData['shopDescription'];
 
-        shop.rating = rating ?? shopData!['rating'];
-        shop.shopView = shopView ?? shopData!['shopView'];
-        shop.contactPhone = contactPhone ?? shopData!['contactPhone'];
+        shop.rating = rating ?? shopData['rating'];
+        shop.shopView = shopView ?? shopData['shopView'];
+        shop.contactPhone = contactPhone ?? shopData['contactPhone'];
         await shopDoc.update(shop.toJson());
       }
     } catch (e) {
@@ -1232,9 +1324,9 @@ class FirestoreDatabase {
         for (var productIncart in listProductIncart) {
           if (productInCartModel!.productID == productIncart.productID) {
             if (productIncart.color == productInCartModel.color) {
-              if (productInCartModel!.type == productIncart.type) {
+              if (productInCartModel.type == productIncart.type) {
                 if (productIncart.size == productInCartModel.size) {
-                  if (productInCartModel!.cost == productIncart.cost) {
+                  if (productInCartModel.cost == productIncart.cost) {
                     if (productIncart.voucherID ==
                         productInCartModel.voucherID) {
                       productIncart.quantity =
@@ -2070,10 +2162,14 @@ class FirestoreDatabase {
 
   // voucher for user
   Future<void> addVoucherForUser(VoucherForUser voucherForUser) async {
-    await _firestore
-        .collection('voucherForUsers')
-        .doc(voucherForUser.userID)
-        .set(voucherForUser.toJson());
+    try {
+      await _firestore
+          .collection('voucherForUsers')
+          .doc(voucherForUser.userID)
+          .set(voucherForUser.toJson());
+    } catch (e) {
+      print("An error occured: $e");
+    }
   }
 
   Future<bool> isExistVoucherForUser(String uid) async {
@@ -3053,10 +3149,14 @@ class FirestoreDatabase {
   // admin sides
 // category sections
   Future<void> addCategory(Category category) async {
-    await _firestore
-        .collection('categories')
-        .doc(category.id)
-        .set(category.toJson());
+    try {
+      await _firestore
+          .collection('categories')
+          .doc(category.id)
+          .set(category.toJson());
+    } catch (e) {
+      print("An error occured: $e");
+    }
   }
 
   Future<void> editCategory(
@@ -3155,6 +3255,7 @@ class FirestoreDatabase {
       final ref = await _firestore
           .collection('flashSales')
           .where('expDate', isLessThan: Timestamp.now())
+          .where('isDeleted', isEqualTo: false)
           .get();
       if (ref.docs.isNotEmpty) {
         List<FlashSale>? list = [];
@@ -3223,6 +3324,7 @@ class FirestoreDatabase {
       final ref = await _firestore
           .collection('flashSales')
           .where('expDate', isLessThan: Timestamp.now())
+          .where('isDeleted', isEqualTo: false)
           .snapshots();
       StreamController<List<FlashSale>?> streamController =
           StreamController<List<FlashSale>?>();
@@ -3556,7 +3658,10 @@ class FirestoreDatabase {
   Future<List<DeliverService>?> getDeliverServiceList() async {
     try {
       List<DeliverService> list = [];
-      final snapshot = await _firestore.collection('deliverservices').get();
+      final snapshot = await _firestore
+          .collection('deliverservices')
+          .where('isDeleted', isEqualTo: false)
+          .get();
       for (var data in snapshot.docs) {
         DeliverService deliverService =
             DeliverService.fromJson({'id': data.id, ...data.data()});
@@ -3573,7 +3678,16 @@ class FirestoreDatabase {
 
   Future<void> deleteDeliveryService(String id) async {
     try {
-      await _firestore.collection('deliverservices').doc(id).delete();
+      // await _firestore.collection('deliverservices').doc(id).delete();
+      final docs = _firestore.collection('deliverservices').doc(id);
+      final ref = await docs.get();
+      if (ref.exists) {
+        DeliverService deliverService = DeliverService.fromJson(ref.data()!);
+        deliverService.isDeleted = true;
+        await docs.update(deliverService.toJson());
+      } else {
+        print("NOT exists");
+      }
     } catch (e) {
       print("An error occured: $e");
     }
@@ -3614,7 +3728,10 @@ class FirestoreDatabase {
 
   Future<List<PaymentType>?> getListPayment() async {
     try {
-      final ref = await _firestore.collection('payments').get();
+      final ref = await _firestore
+          .collection('payments')
+          .where('isDeleted', isEqualTo: false)
+          .get();
 
       if (ref.docs.isNotEmpty) {
         List<PaymentType>? list = [];
@@ -3631,7 +3748,16 @@ class FirestoreDatabase {
 
   Future<void> deletePaymentByID(String id) async {
     try {
-      final ref = await _firestore.collection('payments').doc(id).delete();
+      // final ref = await _firestore.collection('payments').doc(id).delete();
+      final docs = _firestore.collection('payments').doc(id);
+      final ref = await docs.get();
+      if (ref.exists) {
+        PaymentType paymentType = PaymentType.fromJson(ref.data()!);
+        paymentType.isDeleted = true;
+        await docs.update(paymentType.toJson());
+      } else {
+        print("NOT exists");
+      }
     } catch (e) {
       print("An error occured: $e");
     }

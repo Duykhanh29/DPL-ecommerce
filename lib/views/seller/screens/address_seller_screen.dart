@@ -6,6 +6,7 @@ import 'package:dpl_ecommerce/customs/custom_icon_button.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_outline_button.dart';
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/user_firestore_data.dart';
+import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
@@ -60,9 +61,9 @@ class _AddresslistItemWidgetState extends State<AddressSellerScreen> {
       body: StreamBuilder(
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator.adaptive(),
-            );
+            return ShimmerHelper().buildBasicShimmer(
+                height: MediaQuery.of(context).size.height * 0.12,
+                width: MediaQuery.of(context).size.width * 0.9);
           } else {
             if (snapshot.data != null) {
               final address = snapshot.data;

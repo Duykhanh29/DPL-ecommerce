@@ -421,7 +421,8 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                             ),
-                            // SizedBox(height: 8.h),
+                            SizedBox(height: 8.h),
+
                             SizedBox(
                               height: 6.h,
                               child: AnimatedSmoothIndicator(
@@ -551,19 +552,20 @@ class _HomePageState extends State<HomePage> {
   Widget _buildCategoryList(BuildContext context) {
     return isCateLoading
         ? Container(
-            height: MediaQuery.of(context).size.height * 0.12,
+            height: MediaQuery.of(context).size.height * 0.08,
             child: ListView.separated(
-                itemBuilder: (context, index) => SizedBox(
-                      height: 230.h,
-                    ),
-                //  ShimmerHelper()
-                //     .buildBasicShimmerForCategoryHorizontalList(
-                //         height: MediaQuery.of(context).size.height * 0.1,
-                //         width: MediaQuery.of(context).size.height * 0.1),
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) =>
+                    // SizedBox(
+                    //       height: 230.h,
+                    //     ),
+                    ShimmerHelper().buildBasicShimmerForCategoryHorizontalList(
+                        height: MediaQuery.of(context).size.height * 0.06,
+                        width: MediaQuery.of(context).size.height * 0.06),
                 separatorBuilder: (context, index) => SizedBox(
-                      width: 5.w,
+                      width: 10.w,
                     ),
-                itemCount: 4),
+                itemCount: 8),
           )
         : listCategory != null && listCategory!.isNotEmpty
             ? Container(
@@ -606,19 +608,23 @@ class _HomePageState extends State<HomePage> {
                 ),
               )
             : Container(
-                height: MediaQuery.of(context).size.height * 0.12,
+                height: MediaQuery.of(context).size.height * 0.08,
                 child: ListView.separated(
-                    itemBuilder: (context, index) => SizedBox(
-                          height: 230.h,
-                        ),
-                    //  ShimmerHelper()
-                    //     .buildBasicShimmerForCategoryHorizontalList(
-                    //         height: MediaQuery.of(context).size.height * 0.1,
-                    //         width: MediaQuery.of(context).size.height * 0.1),
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) =>
+                        //  SizedBox(
+                        //       height: 230.h,
+                        //     ),
+                        ShimmerHelper()
+                            .buildBasicShimmerForCategoryHorizontalList(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.06,
+                                width:
+                                    MediaQuery.of(context).size.height * 0.06),
                     separatorBuilder: (context, index) => SizedBox(
-                          width: 5.w,
+                          width: 10.w,
                         ),
-                    itemCount: 4),
+                    itemCount: 8),
               );
   }
 
@@ -762,11 +768,13 @@ class _HomePageState extends State<HomePage> {
         ? SizedBox(
             height: 220.h,
             child: ListView.separated(
-                itemBuilder: (context, index) => SizedBox(
-                      height: 230.h,
-                    ),
-                //  ShimmerHelper()
-                //     .buildBasicShimmer(height: 200.h, width: 100.w),
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) =>
+                    // SizedBox(
+                    //       height: 230.h,
+                    //     ),
+                    ShimmerHelper()
+                        .buildBasicShimmer(height: 200.h, width: 150.w),
                 separatorBuilder: (context, index) => SizedBox(
                       width: 10.w,
                     ),
@@ -817,11 +825,13 @@ class _HomePageState extends State<HomePage> {
             : SizedBox(
                 height: 220.h,
                 child: ListView.separated(
-                    itemBuilder: (context, index) => SizedBox(
-                          height: 230.h,
-                        ),
-                    //  ShimmerHelper()
-                    //     .buildBasicShimmer(height: 200.h, width: 100.w),
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) =>
+                        // SizedBox(
+                        //       height: 230.h,
+                        //     ),
+                        ShimmerHelper()
+                            .buildBasicShimmer(height: 200.h, width: 150.w),
                     separatorBuilder: (context, index) => SizedBox(
                           width: 10.w,
                         ),
@@ -835,11 +845,13 @@ class _HomePageState extends State<HomePage> {
         ? SizedBox(
             height: 230.h,
             child: ListView.separated(
-                itemBuilder: (context, index) => SizedBox(
-                      height: 230.h,
-                    ),
-                // ShimmerHelper()
-                //     .buildBasicShimmer(height: 200.h, width: 100.w),
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) =>
+                    //  SizedBox(
+                    //       height: 230.h,
+                    //     ),
+                    ShimmerHelper()
+                        .buildBasicShimmer(height: 200.h, width: 150.w),
                 separatorBuilder: (context, index) => SizedBox(
                       width: 5.w,
                       height: 5.h,
@@ -902,19 +914,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildProductSmallList1(BuildContext context) {
     return isActiveProduct
         ? SizedBox(
-            height: 230.h,
-            child: ListView.separated(
-                itemBuilder: (context, index) =>
-                    // ShimmerHelper().buildProductGridShimmer(),
-                    SizedBox(
-                      height: 230.h,
-                    ),
-                separatorBuilder: (context, index) => SizedBox(
-                      width: 5.w,
-                      height: 5.h,
-                    ),
-                itemCount: 16),
-          )
+            height: 640.h, child: ShimmerHelper().buildProductGridShimmer())
         : listProduct != null && listProduct!.isNotEmpty
             ? Padding(
                 padding: EdgeInsets.only(right: 10.h),

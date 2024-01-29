@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
+import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/voucher_for_user_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
@@ -151,9 +152,10 @@ class __VoucherScreenState extends State<VoucherScreen> {
     // ];
     // print("List length: ${listVoucher!.length}");
     return isLoading
-        ? const Center(
-            // child: CircularProgressIndicator(),
-            )
+        ? SizedBox(
+            height: 400.h,
+            child: ShimmerHelper().buildVoucherGridShimmer(),
+          )
         : listVoucher != null && listVoucher!.isNotEmpty
             ? GridView.builder(
                 shrinkWrap: true,

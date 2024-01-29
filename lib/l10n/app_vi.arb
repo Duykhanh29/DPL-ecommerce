@@ -754,5 +754,7 @@
       "edit":"Sửa",
       "please_enter_valid_field":"Vui lòng nhập các trường hợp lệ",
       "you_cannot_update_the_payment_status_yet":"Bạn chưa thể cập nhật trạng thái thanh toán được",
-      "number_of_products_by_category":"Số lượng hàng theo danh mục"
+      "number_of_products_by_category":"Số lượng hàng theo danh mục",
+      "data_no_longer_exists":"Dữ liệu này không còn tồn tại",
+      "current_inventory_is_insufficient_for":"Current inventory is insufficient for "
 }

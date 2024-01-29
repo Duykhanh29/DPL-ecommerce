@@ -1,4 +1,5 @@
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
+import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:dpl_ecommerce/models/favourite_product.dart';
 import 'package:dpl_ecommerce/repositories/wishlist_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
@@ -34,9 +35,7 @@ class WishlistPage extends StatelessWidget {
               stream: wishListRepo.getAllFavouriteProduct(uid),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return ShimmerHelper().buildProductGridShimmer();
                 } else {
                   if (snapshot.data != null) {
                     final listFavourite = snapshot.data;

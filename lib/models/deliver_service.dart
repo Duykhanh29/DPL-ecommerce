@@ -4,19 +4,17 @@ class DeliverService {
   String? id;
   String? name;
   String? logo;
-  DeliverService({this.id, this.logo, this.name}) {
+  bool isDeleted;
+  DeliverService({this.id, this.logo, this.name, this.isDeleted = false}) {
     id ??= Uuid().v4();
   }
   factory DeliverService.fromJson(Map<String, dynamic> json) {
     return DeliverService(
-      id: json['id'],
-      name: json['name'],
-      logo: json['logo'],
-    );
+        id: json['id'],
+        name: json['name'],
+        logo: json['logo'],
+        isDeleted: json['isDeleted']);
   }
-  Map<String, dynamic> toJson() => {
-        'logo': logo,
-        'id': id,
-        'name': name,
-      };
+  Map<String, dynamic> toJson() =>
+      {'logo': logo, 'id': id, 'name': name, 'isDeleted': isDeleted};
 }

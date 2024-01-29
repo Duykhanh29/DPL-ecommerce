@@ -1,5 +1,6 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
+import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:dpl_ecommerce/models/category.dart';
 import 'package:dpl_ecommerce/repositories/category_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
@@ -59,9 +60,16 @@ class __CategoryPageState extends State<CategoryPage> {
         },
         child: SingleChildScrollView(
           child: isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
+              ? ListView.separated(
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) => ShimmerHelper()
+                      .buildBasicShimmer(
+                          height: MediaQuery.of(context).size.height * 0.1,
+                          width: MediaQuery.of(context).size.width * 0.9),
+                  separatorBuilder: (context, index) => SizedBox(
+                        height: 10.h,
+                      ),
+                  itemCount: 20)
               : Column(
                   children: [
                     //SizedBox(height: 10.h,),

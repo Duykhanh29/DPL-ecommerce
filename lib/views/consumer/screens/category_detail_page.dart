@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -79,9 +80,7 @@ class _RatingState extends State<CategoryDetail> {
           child: Container(
             width: double.maxFinite,
             child: isLoading
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
+                ? ShimmerHelper().buildProductGridShimmer()
                 : Column(
                     children: [
                       Expanded(

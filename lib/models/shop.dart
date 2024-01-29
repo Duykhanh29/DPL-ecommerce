@@ -36,7 +36,7 @@ class Shop {
         logo: json['logo'],
         id: json['id'],
         name: json['name'],
-        rating: json['rating'],
+        rating: (json['rating'] as num).toDouble(),
         shopView: json['shopView'],
         shopDescription: json['shopDescription'],
         ratingCount: json['ratingCount'],

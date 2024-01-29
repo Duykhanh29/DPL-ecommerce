@@ -5,21 +5,28 @@ import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_search_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/helpers/which_filter_helper.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/recommeded_product.dart';
 import 'package:dpl_ecommerce/models/search_history.dart';
+import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/repositories/recommed_product_repo.dart';
 import 'package:dpl_ecommerce/repositories/search_history_repo.dart';
+import 'package:dpl_ecommerce/repositories/shop_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/search_result_page.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/search_shop_result_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:dpl_ecommerce/models/search_history.dart';
+import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
+
+enum WhichFilter { product, shop }
 
 class SearchScreen extends StatefulWidget {
   SearchScreen({Key? key}) : super(key: key);
@@ -29,41 +36,15 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  WhichFilter? whichFilter;
   TextEditingController searchController = TextEditingController();
 
   ProductRepo productRepo = ProductRepo();
+  ShopRepo shopRepo = ShopRepo();
   SearchHistoryRepo searchHistoryRepo = SearchHistoryRepo();
   RecommededProductRepo recommededProductRepo = RecommededProductRepo();
   int sliderIndex = 1;
 
-  Product? product = Product(
-    availableQuantity: 100,
-    categoryID: "cacd",
-    colors: ["Red", "Yellow"],
-    createdAt: Timestamp.fromDate(DateTime(2023, 11, 4)),
-    description: "This is a clothe",
-    id: "ProductID01",
-    images: [
-      // "https://t3.ftcdn.net/jpg/06/49/51/82/360_F_649518247_J27irz9TezhqqHS6EpF0AQY7bFdVAIn8.jpg",
-      "https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&q=80&w=1000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8M3x8fGVufDB8fHx8fA%3D%3D",
-      "https://images.unsplash.com/photo-1575936123452-b67c3203c357?auto=format&fit=crop&q=80&w=1000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D",
-      "https://images.pexels.com/photos/11061877/pexels-photo-11061877.jpeg?cs=srgb&dl=pexels-bailey-dill-11061877.jpg&fm=jpg"
-    ],
-    name: "Cloth",
-    price: 12345,
-    purchasingCount: 123,
-    rating: 4.3,
-    ratingCount: 100,
-    reviewIDs: [
-      "Fdsafs",
-      "fdasfd",
-      "fdasdf",
-    ],
-    shopID: "fdfas",
-    shopLogo: "fdafdfd",
-    shopName: "fdfds",
-    updatedAt: Timestamp.fromDate(DateTime.now()),
-  );
   bool isLoading = true;
   List<SeacrhHistory>? listSearchHistory;
   List<String>? listSearchHistoryKey;
@@ -75,6 +56,7 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    whichFilter = WhichFilter.product;
     fetchData();
   }
 
@@ -134,59 +116,15 @@ class _SearchScreenState extends State<SearchScreen> {
     final user = userProvider.currentUser;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: CustomAppBar(
-              title: LangText(context: context).getLocal()!.search_ucf,
-              centerTitle: true,
-              context: context)
-          .show(),
+      appBar: buildAppBar(context, user!),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
+        padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
         child: SizedBox(
-            width: double.maxFinite,
-            child: ListView(children: [
-              SizedBox(height: 25.h),
-              Padding(
-                padding: EdgeInsets.only(left: 24.h, right: 25.h),
-                child: CustomSearchView(
-                  suffix: searchController.text != "" &&
-                          searchController.text != null
-                      ? InkWell(
-                          onTap: () {
-                            setState(() {
-                              searchController.text = "";
-                            });
-                          },
-                          child: const Icon(Icons.close),
-                        )
-                      : null,
-                  textInputAction: TextInputAction.search,
-                  onChanged: (p0) {
-                    // await productRepo.searchProductByName(p0);
-                  },
-                  onFieldSubmitted: (p0) async {
-                    final list = await productRepo.searchProductByName(p0);
-                    await searchHistoryRepo.insertSearchKey(
-                        uid: user!.id!, searchKey: p0);
-                    // ignore: use_build_context_synchronously
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SearchFilterScreen(
-                            list: list, searchKey: searchController.text),
-                      ),
-                    );
-                  },
-                  controller: searchController,
-                  hintText:
-                      LangText(context: context).getLocal()!.search_anything,
-                  prefix: Padding(
-                      padding: EdgeInsets.all(7.h),
-                      child: Icon(
-                        Icons.search,
-                        size: 25.h,
-                      )),
-                ),
-              ),
+          width: double.maxFinite,
+          child: ListView(
+            children: [
+              // SizedBox(height: 25.h),
+
               SizedBox(height: 20.h),
               !isLoading && listSearchHistory != null
                   ? Align(
@@ -199,7 +137,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   .recent_search,
                               style: theme.textTheme.titleSmall)))
                   : Container(),
-              SizedBox(height: 20.h),
+              SizedBox(height: 15.h),
               searchController.text.isEmpty
                   ? (isLoading
                       ? Container()
@@ -231,9 +169,146 @@ class _SearchScreenState extends State<SearchScreen> {
                   ],
                 ),
               ),
-            ])),
+            ],
+          ),
+        ),
       ),
     );
+  }
+
+  PreferredSize buildAppBar(BuildContext context, UserModel user) {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(110.h),
+      child: AppBar(
+          backgroundColor: MyTheme.accent_color_3,
+          leading: Container(
+            padding: EdgeInsets.only(bottom: 25.h),
+            width: 40,
+            height: 40,
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: Icon(
+                Icons.arrow_back_ios,
+                color: MyTheme.white,
+              ),
+            ),
+          ),
+          elevation: 3,
+          centerTitle: false,
+          flexibleSpace: Column(children: [
+            buildTopAppbar(context, user),
+            buildBottomAppBar(context)
+          ])),
+    );
+  }
+
+  Widget buildTopAppbar(BuildContext context, UserModel user) {
+    return Padding(
+      padding: EdgeInsets.only(left: 45.w, right: 25.w, top: 50.h),
+      child: CustomSearchView(
+        suffix: searchController.text != "" && searchController.text != null
+            ? InkWell(
+                onTap: () {
+                  setState(() {
+                    searchController.text = "";
+                  });
+                },
+                child: const Icon(Icons.close),
+              )
+            : null,
+        textInputAction: TextInputAction.search,
+        onChanged: (p0) {
+          // await productRepo.searchProductByName(p0);
+        },
+        onFieldSubmitted: (p0) async {
+          if (whichFilter == WhichFilter.product) {
+            final list = await productRepo.searchProductByName(p0);
+            await searchHistoryRepo.insertSearchKey(
+                uid: user!.id!, searchKey: p0);
+            // ignore: use_build_context_synchronously
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SearchFilterScreen(
+                    list: list, searchKey: searchController.text),
+              ),
+            );
+          } else {
+            final listShop = await shopRepo.searchShopByName(p0);
+            // ignore: use_build_context_synchronously
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SearchShopResultScreen(
+                    list: listShop, searchKey: searchController.text),
+              ),
+            );
+          }
+        },
+        controller: searchController,
+        hintText: LangText(context: context).getLocal()!.search_anything,
+        prefix: Padding(
+            padding: EdgeInsets.all(7.h),
+            child: Icon(
+              Icons.search,
+              size: 25.h,
+            )),
+      ),
+    );
+  }
+
+  Widget buildBottomAppBar(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: 15.w,
+      ),
+      height: 60.h,
+      width: MediaQuery.of(context).size.width * 0.9,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Text(
+            LangText(context: context).getLocal()!.search_ucf,
+            style: TextStyle(fontSize: 14.sp),
+          ),
+          Expanded(
+              flex: 2,
+              child: DropdownButton<WhichFilter>(
+                value: whichFilter,
+                isExpanded: true,
+                items: buildDropdownWhichFilterItems(context),
+                onChanged: (value) {
+                  setState(() {
+                    if (value! == WhichFilter.product) {
+                      whichFilter = WhichFilter.product;
+                    } else {
+                      whichFilter = WhichFilter.shop;
+                    }
+                  });
+                },
+              ))
+        ],
+      ),
+    );
+  }
+
+  List<DropdownMenuItem<WhichFilter>> buildDropdownWhichFilterItems(
+      BuildContext context) {
+    List<DropdownMenuItem<WhichFilter>> items = [];
+    List<WhichFilter> list = [WhichFilter.product, WhichFilter.shop];
+    for (WhichFilter item in list as Iterable<WhichFilter>) {
+      items.add(
+        DropdownMenuItem(
+          alignment: Alignment.center,
+          value: item,
+          child: Text(WhichFilterHelper.translateWhichHelper(context, item),
+              style: TextStyle(fontSize: 14.sp)),
+        ),
+      );
+    }
+    return items;
   }
 
   Widget _buildLastSearchItem(BuildContext context,

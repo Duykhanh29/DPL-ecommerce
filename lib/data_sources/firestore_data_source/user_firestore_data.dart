@@ -163,6 +163,7 @@ class UserFirestoreDatabase {
     try {
       final ref = await _firestore.collection('users').doc(uid).get();
       if (ref.exists) {
+        List<AddressInfor> result = [];
         List<AddressInfor> addressInfors = [];
         final userData = ref.data();
         if (userData!['userInfor'] != null &&
@@ -174,7 +175,12 @@ class UserFirestoreDatabase {
               .map((addressData) => AddressInfor.fromJson(addressData))
               .toList();
         }
-        return addressInfors;
+        for (var element in addressInfors) {
+          if (!element.isDeleted) {
+            result.add(element);
+          }
+        }
+        return result;
       } else {
         print("Empty");
       }
@@ -190,6 +196,7 @@ class UserFirestoreDatabase {
           StreamController<List<AddressInfor>?>();
       StreamSubscription streamSubscription = ref.listen((event) {
         List<AddressInfor> addressInfors = [];
+        List<AddressInfor> result = [];
         if (event.exists) {
           final userData = event.data();
           if (userData!['userInfor'] != null &&
@@ -201,7 +208,12 @@ class UserFirestoreDatabase {
                 .map((addressData) => AddressInfor.fromJson(addressData))
                 .toList();
           }
-          streamController.sink.add(addressInfors);
+          for (var element in addressInfors) {
+            if (!element.isDeleted) {
+              result.add(element);
+            }
+          }
+          streamController.sink.add(result);
         } else {
           print("Not exists ");
         }
@@ -359,7 +371,15 @@ class UserFirestoreDatabase {
         if (user.userInfor != null) {
           if (user.userInfor!.consumerInfor != null) {
             listAdd = user.userInfor!.consumerInfor!.addressInfors ?? [];
-            listAdd.removeWhere((element) => element.id == id);
+            // listAdd.removeWhere((element) => element.id == id);
+            for (var element in listAdd) {
+              if (element.id == id) {
+                element.isDeleted = true;
+                if (listAdd.length > 1 && element.isDefaultAddress) {
+                  listAdd[0].isDefaultAddress = true;
+                }
+              }
+            }
             user.userInfor!.consumerInfor!.addressInfors = listAdd;
             await userDoc.update(user.toJson());
           }

@@ -2,6 +2,7 @@ import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/helpers/date_helper.dart';
 import 'package:dpl_ecommerce/helpers/delivery_status_helper.dart';
 import 'package:dpl_ecommerce/helpers/payment_status_helper.dart';
+import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:dpl_ecommerce/helpers/toast_helper.dart';
 import 'package:dpl_ecommerce/models/order_shop.dart';
 import 'package:dpl_ecommerce/models/ordering_product.dart';
@@ -60,9 +61,14 @@ class _ListOrderShopState extends State<ListOrderShop> {
 
   Widget buildListOrder() {
     if (isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return ListView.separated(
+          itemBuilder: (context, index) => ShimmerHelper().buildBasicShimmer(
+              height: MediaQuery.of(context).size.height * 0.12,
+              width: MediaQuery.of(context).size.width * 0.9),
+          separatorBuilder: (context, index) => SizedBox(
+                height: 10.h,
+              ),
+          itemCount: 12);
     } else {
       return listOrder == null || listOrder!.isEmpty
           ? Center(

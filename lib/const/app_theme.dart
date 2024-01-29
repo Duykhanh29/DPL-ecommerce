@@ -231,6 +231,7 @@ class MyTheme {
 
   static Color accent_color = Color.fromRGBO(18, 94, 175, 1);
   static Color accent_color_2 = Color.fromRGBO(47, 119, 196, 1);
+  static Color accent_color_3 = Color.fromRGBO(61, 140, 224, 1);
   static Color splash_screen_color = Colors.white;
   static Color login_reg_screen_color =
       Color(0xFFFFFFFF); // if not sure , use the same color as accent color

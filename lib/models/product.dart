@@ -23,28 +23,33 @@ class Product {
   List<String>? types;
   List<String>? colors;
   List<String>? reviewIDs;
-  Product(
-      {this.availableQuantity,
-      this.categoryID,
-      this.colors,
-      this.createdAt,
-      this.description,
-      this.id,
-      this.images,
-      this.name,
-      this.price,
-      this.purchasingCount = 0,
-      this.rating,
-      this.ratingCount = 0,
-      this.reviewIDs,
-      this.shopID,
-      this.shopLogo,
-      this.shopName,
-      this.sizes,
-      this.types,
-      this.updatedAt,
-      this.videos,
-      this.voucherID}) {
+  // bool isDeleted;
+  // bool isPulished;
+  Product({
+    this.availableQuantity,
+    this.categoryID,
+    this.colors,
+    this.createdAt,
+    this.description,
+    this.id,
+    this.images,
+    this.name,
+    this.price,
+    this.purchasingCount = 0,
+    this.rating,
+    this.ratingCount = 0,
+    this.reviewIDs,
+    this.shopID,
+    this.shopLogo,
+    this.shopName,
+    this.sizes,
+    this.types,
+    this.updatedAt,
+    this.videos,
+    this.voucherID,
+    // this.isDeleted = false,
+    // this.isPulished = false
+  }) {
     id ??= Uuid().v4();
   }
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -84,6 +89,8 @@ class Product {
       types: json['types'] != null
           ? (json['types'] as List<dynamic>).map((e) => e.toString()).toList()
           : null,
+      // isDeleted: json['isDeleted'],
+      // isPulished: json['isPulished'],
     );
   }
   Map<String, dynamic> toJson() => {
@@ -115,5 +122,7 @@ class Product {
             types != null ? types!.map((e) => e.toString()).toList() : null,
         'sizes':
             sizes != null ? sizes!.map((e) => e.toString()).toList() : null,
+        // 'isDeleted': isDeleted,
+        // 'isPulished': isPulished,
       };
 }

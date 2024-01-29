@@ -64,6 +64,10 @@ class ShopRepo {
     return await _shopFirestoreDB.getTotalProductOfEachCategoryByShop(shopID);
   }
 
+  Future<List<Shop>?> searchShopByName(String name) async {
+    return await _shopFirestoreDB.searchShopByName(name);
+  }
+
   Future<void> dispose() async {
     await _shopFirestoreDB.dispose();
   }

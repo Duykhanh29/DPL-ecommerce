@@ -1,5 +1,6 @@
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
+import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/models/voucher_for_user.dart';
 import 'package:dpl_ecommerce/repositories/voucher_for_user_repo.dart';
@@ -91,9 +92,15 @@ class _UserListVoucherState extends State<UserListVoucher> {
           future: voucherForUserRepo.getVoucher(authViewModel.currentUser!.id!),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return ListView.separated(
+                  itemBuilder: (context, index) => ShimmerHelper()
+                      .buildBasicShimmer(
+                          height: MediaQuery.of(context).size.height * 0.08,
+                          width: MediaQuery.of(context).size.width * 0.9),
+                  separatorBuilder: (context, index) => SizedBox(
+                        height: 5.h,
+                      ),
+                  itemCount: 12);
             } else {
               if (snapshot.data != null) {
                 final voucherForUser = snapshot.data;

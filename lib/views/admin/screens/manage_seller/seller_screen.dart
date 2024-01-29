@@ -13,6 +13,8 @@ import 'package:dpl_ecommerce/views/admin/screens/manage_seller/seller_infor.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../helpers/shimmer_helper.dart';
+
 class SellerScreen extends StatefulWidget {
   SellerScreen({super.key, this.isDrawer = false});
   bool isDrawer;
@@ -126,9 +128,15 @@ class _SellerScreenState extends State<SellerScreen>
     return RefreshIndicator(
       onRefresh: onRefresh,
       child: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
+          ? ListView.separated(
+              itemBuilder: (context, index) => ShimmerHelper()
+                  .buildBasicShimmer(
+                      height: MediaQuery.of(context).size.height * 0.1,
+                      width: MediaQuery.of(context).size.width * 0.9),
+              separatorBuilder: (context, index) => SizedBox(
+                    height: 10.h,
+                  ),
+              itemCount: 12)
           : listVerifiedSeller != null && listVerifiedSeller!.isNotEmpty
               ? ListView.builder(
                   itemCount: listVerifiedSeller!.length,
@@ -263,9 +271,15 @@ class _SellerScreenState extends State<SellerScreen>
     return RefreshIndicator(
       onRefresh: onRefresh,
       child: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
+          ? ListView.separated(
+              itemBuilder: (context, index) => ShimmerHelper()
+                  .buildBasicShimmer(
+                      height: MediaQuery.of(context).size.height * 0.1,
+                      width: MediaQuery.of(context).size.width * 0.9),
+              separatorBuilder: (context, index) => SizedBox(
+                    height: 10.h,
+                  ),
+              itemCount: 12)
           : listUnverifiedSeller != null && listUnverifiedSeller!.isNotEmpty
               ? ListView.builder(
                   itemCount: listUnverifiedSeller!.length,

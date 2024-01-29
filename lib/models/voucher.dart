@@ -11,29 +11,34 @@ class Voucher {
   Timestamp? expDate;
   String? name;
   bool isAdmin;
-  Voucher(
-      {this.discountAmount,
-      this.discountPercent,
-      this.expDate,
-      this.id,
-      this.productID,
-      this.releasedDate,
-      this.shopID,
-      this.name,
-      this.isAdmin = false}) {
+  // bool isDeleted;
+  Voucher({
+    this.discountAmount,
+    this.discountPercent,
+    this.expDate,
+    this.id,
+    this.productID,
+    this.releasedDate,
+    this.shopID,
+    this.name,
+    this.isAdmin = false,
+    // this.isDeleted = false
+  }) {
     this.id ??= Uuid().v4();
   }
   factory Voucher.fromJson(Map<String, dynamic> json) {
     return Voucher(
-        discountAmount: json['discountAmount'],
-        discountPercent: json['discountPercent'],
-        expDate: (json['expDate'] as Timestamp?),
-        id: json['id'],
-        productID: json['productID'],
-        releasedDate: (json['releasedDate'] as Timestamp?),
-        shopID: json['shopID'],
-        name: json['name'],
-        isAdmin: json['isAdmin']);
+      discountAmount: json['discountAmount'],
+      discountPercent: json['discountPercent'],
+      expDate: (json['expDate'] as Timestamp?),
+      id: json['id'],
+      productID: json['productID'],
+      releasedDate: (json['releasedDate'] as Timestamp?),
+      shopID: json['shopID'],
+      name: json['name'],
+      isAdmin: json['isAdmin'],
+      // isDeleted: json['isDeleted']
+    );
   }
   Map<String, dynamic> toJson() => {
         'discountAmount': discountAmount,
@@ -44,6 +49,7 @@ class Voucher {
         'releasedDate': releasedDate,
         'shopID': shopID,
         'name': name,
-        'isAdmin': isAdmin
+        'isAdmin': isAdmin,
+        // 'isDeleted': isDeleted
       };
 }

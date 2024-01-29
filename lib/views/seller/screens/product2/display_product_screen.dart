@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
+import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
@@ -65,9 +66,15 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
       stream: productRepo.getAllProductByShopID(widget.shopID),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return ListView.separated(
+              itemBuilder: (context, index) => ShimmerHelper()
+                  .buildBasicShimmer(
+                      height: MediaQuery.of(context).size.height * 0.12,
+                      width: MediaQuery.of(context).size.width * 0.9),
+              separatorBuilder: (context, index) => SizedBox(
+                    height: 10.h,
+                  ),
+              itemCount: 12);
         } else {
           if (snapshot.hasData) {
             if (snapshot.data != null) {

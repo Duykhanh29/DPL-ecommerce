@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
+import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
@@ -68,9 +69,15 @@ class __DisplayVoucherState extends State<DisplayVoucher> {
     return RefreshIndicator(
       onRefresh: onRefressh,
       child: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
+          ? ListView.separated(
+              itemBuilder: (context, index) => ShimmerHelper()
+                  .buildBasicShimmer(
+                      height: MediaQuery.of(context).size.height * 0.12,
+                      width: MediaQuery.of(context).size.width * 0.9),
+              separatorBuilder: (context, index) => SizedBox(
+                    height: 10.h,
+                  ),
+              itemCount: 12)
           : listVoucher != null && listVoucher!.isNotEmpty
               ? buildListVoucher(context, listVoucher!)
               : Center(

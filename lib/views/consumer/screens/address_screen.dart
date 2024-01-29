@@ -6,6 +6,7 @@ import 'package:dpl_ecommerce/customs/custom_icon_button.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_outline_button.dart';
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/user_firestore_data.dart';
+import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
@@ -18,23 +19,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-class AddressScreen extends StatefulWidget {
+class AddressScreen extends StatelessWidget {
   AddressScreen({Key? key}) : super(key: key);
-  @override
-  _AddresslistItemWidgetState createState() => _AddresslistItemWidgetState();
-}
-
-class _AddresslistItemWidgetState extends State<AddressScreen> {
   UserRepo userRepo = UserRepo();
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
 
   // Stream<void> fetchData()async*{
-  //   yield* userFirestoreDatabase.getAddressInfors(uid)
-  // }
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserViewModel>(context, listen: false);
@@ -60,9 +49,15 @@ class _AddresslistItemWidgetState extends State<AddressScreen> {
       body: StreamBuilder(
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator.adaptive(),
-            );
+            return ListView.separated(
+                itemBuilder: (context, index) => ShimmerHelper()
+                    .buildBasicShimmer(
+                        height: MediaQuery.of(context).size.height * 0.01,
+                        width: MediaQuery.of(context).size.width * 0.9),
+                separatorBuilder: (context, index) => SizedBox(
+                      height: 10.h,
+                    ),
+                itemCount: 4);
           } else {
             if (snapshot.data != null && snapshot.data!.isNotEmpty) {
               final listAddress = snapshot.data;

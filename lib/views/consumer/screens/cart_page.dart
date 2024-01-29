@@ -9,6 +9,7 @@ import 'package:dpl_ecommerce/customs/custom_button_style.dart';
 import 'package:dpl_ecommerce/customs/custom_elevate_button.dart';
 import 'package:dpl_ecommerce/customs/custom_text_form_field.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:dpl_ecommerce/helpers/toast_helper.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
 import 'package:dpl_ecommerce/models/cart.dart';
@@ -111,7 +112,7 @@ class _CartPageState extends State<CartPage> {
     if (!isLoading) {
       provider.setListVoucher(listVoucher!);
     }
-    final vouhcerForUserProvider =
+    final voucherForUserProvider =
         Provider.of<VoucherForUserViewModel>(context);
     // final selectedProduct = provider.list;
     return Scaffold(
@@ -145,126 +146,148 @@ class _CartPageState extends State<CartPage> {
 
             // Spacer(),
             SizedBox(height: 10.h),
-            Consumer<CartViewModel>(
-              builder: (context, provider, child) => Container(
-                padding: EdgeInsets.all(3.h),
-                height: size.height * 0.07,
-                width: size.width * 0.9,
-                child: ElevatedButton(
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.r),
-                        ),
-                      ),
-                      backgroundColor: MaterialStateProperty.all(MyTheme.white),
-                      side: MaterialStateProperty.all(
-                        BorderSide(
-                          color: MyTheme.accent_color,
-                          width: 1,
-                        ),
-                      ),
-                    ),
-                    onPressed: () async {
-                      if (provider.list.isEmpty) {
-                        ToastHelper.showDialog(
-                            LangText(context: context)
-                                .getLocal()!
-                                .please_choose_at_least_one_product,
-                            gravity: ToastGravity.CENTER,
-                            duration: Toast.LENGTH_SHORT);
-                        return;
-                      }
-                      // set address
-                      AddressInfor? addressInfor =
-                          await userRepo.getDefaultAddress(user!.id!);
-                      if (addressInfor == null) {
-                        ToastHelper.showDialog(
-                            LangText(context: context)
-                                .getLocal()!
-                                .please_enter_your_address_first,
-                            gravity: ToastGravity.CENTER,
-                            duration: Toast.LENGTH_SHORT);
-                        return;
-                      }
-                      addressProvider.setDefaultAddress(addressInfor!);
-                      addressProvider.setOrderingAddress(addressInfor);
-                      List<AddressInfor>? list =
-                          await userRepo.getListAddressInfor(user!.id!);
-
-                      addressProvider.setListAddressInfor(list!);
-
-                      // set order
-                      int totalCost = provider.totalCost;
-                      int realCost = provider.totalCost - provider.savingCost;
-                      List<OrderingProduct>? listOrderingProduct = [];
-                      List<String> listProductInCartID = [];
-                      for (var element in provider.list) {
-                        listProductInCartID.add(element.id!);
-                        String productID = element.productID!;
-                        Product? product =
-                            await ProductRepo().getProductByID(productID);
-                        if (product!.availableQuantity! < element.quantity) {
-                          break;
-                        }
-                        int realCost = element.cost;
-                        if (element.voucherID != null) {
-                          Voucher? voucher = await voucherRepo
-                              .getVoucherByID(element.voucherID!);
-                          if (voucher != null &&
-                              voucher.expDate!.compareTo(
-                                      Timestamp.fromDate(DateTime.now())) >
-                                  0) {
-                            if (voucher.discountAmount != null) {
-                              realCost = realCost - voucher.discountAmount!;
-                            } else {
-                              realCost = realCost -
-                                  (realCost * voucher.discountPercent! / 100)
-                                      .toInt();
-                            }
-                          }
-                        }
-
-                        OrderingProduct orderingProduct = OrderingProduct(
-                            color: element.color,
-                            date: Timestamp.now(),
-                            price: element.cost,
-                            productID: element.productID,
-                            quantity: element.quantity,
-                            realPrice: realCost * element.quantity,
-                            size: element.size,
-                            type: element.type,
-                            userID: element.userID,
-                            voucherID: element.voucherID,
-                            deliverStatus: DeliverStatus.processing);
-                        listOrderingProduct.add(orderingProduct);
-                      }
-
-                      orderModel.Order order = orderModel.Order(
-                        orderingProductsID: listOrderingProduct,
-                        totalCost: totalCost,
-                        userID: user!.id,
-                        totalProduct: listOrderingProduct.length,
-                      );
-                      checkoutProvider.setOrder(order);
-
-                      checkoutProvider
-                          .setListProductInCartID(listProductInCartID);
-                      await getListVoucherOfAdminBeforeCheckout(
-                          vouhcerForUserProvider, user.id!);
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => CheckOut(uid: user.id!),
-                      ));
-                    },
-                    child: Text(
-                      LangText(context: context).getLocal()!.checkout_ucf,
-                      style: TextStyle(color: MyTheme.accent_color),
-                    )),
-              ),
-            ),
+            buildCheckOutButton(context),
             SizedBox(height: 10.h),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildCheckOutButton(BuildContext context) {
+    final provider = Provider.of<CartViewModel>(context, listen: true);
+    final cart = provider.cart;
+    final userProvider = Provider.of<UserViewModel>(context);
+    final checkoutProvider = Provider.of<CheckoutViewModel>(context);
+    final addressProvider = Provider.of<AddressViewModel>(context);
+    final user = userProvider.currentUser;
+    final size = MediaQuery.of(context).size;
+
+    final voucherForUserProvider =
+        Provider.of<VoucherForUserViewModel>(context);
+    return Consumer<CartViewModel>(
+      builder: (context, provider, child) => Container(
+        padding: EdgeInsets.all(3.h),
+        height: size.height * 0.07,
+        width: size.width * 0.9,
+        child: ElevatedButton(
+            style: ButtonStyle(
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.r),
+                ),
+              ),
+              backgroundColor: MaterialStateProperty.all(MyTheme.white),
+              side: MaterialStateProperty.all(
+                BorderSide(
+                  color: MyTheme.accent_color,
+                  width: 1,
+                ),
+              ),
+            ),
+            onPressed: () async {
+              if (provider.list.isEmpty) {
+                ToastHelper.showDialog(
+                    LangText(context: context)
+                        .getLocal()!
+                        .please_choose_at_least_one_product,
+                    gravity: ToastGravity.CENTER,
+                    duration: Toast.LENGTH_SHORT);
+                return;
+              }
+              // set address
+              AddressInfor? addressInfor =
+                  await userRepo.getDefaultAddress(user!.id!);
+              if (addressInfor == null) {
+                ToastHelper.showDialog(
+                    LangText(context: context)
+                        .getLocal()!
+                        .please_enter_your_address_first,
+                    gravity: ToastGravity.CENTER,
+                    duration: Toast.LENGTH_SHORT);
+                return;
+              }
+              addressProvider.setDefaultAddress(addressInfor!);
+              addressProvider.setOrderingAddress(addressInfor);
+              List<AddressInfor>? list =
+                  await userRepo.getListAddressInfor(user!.id!);
+
+              addressProvider.setListAddressInfor(list!);
+
+              // set order
+              int totalCost = provider.totalCost;
+              int realCost = provider.totalCost - provider.savingCost;
+              List<OrderingProduct>? listOrderingProduct = [];
+              List<String> listProductInCartID = [];
+              for (var element in provider.list) {
+                listProductInCartID.add(element.id!);
+                String productID = element.productID!;
+                Product? product =
+                    await ProductRepo().getProductByID(productID);
+                if (product == null) {
+                  ToastHelper.showDialog(
+                      "${LangText(context: context).getLocal()!.data_no_longer_exists}${element.productName}",
+                      gravity: ToastGravity.CENTER);
+                  break;
+                }
+                if (product!.availableQuantity! < element.quantity) {
+                  ToastHelper.showDialog(
+                      "${LangText(context: context).getLocal()!.current_inventory_is_insufficient_for}${product.name}",
+                      gravity: ToastGravity.CENTER);
+                  break;
+                }
+
+                int realCost = element.cost;
+                if (element.voucherID != null) {
+                  Voucher? voucher =
+                      await voucherRepo.getVoucherByID(element.voucherID!);
+                  if (voucher != null &&
+                      voucher.expDate!
+                              .compareTo(Timestamp.fromDate(DateTime.now())) >
+                          0) {
+                    if (voucher.discountAmount != null) {
+                      realCost = realCost - voucher.discountAmount!;
+                    } else {
+                      realCost = realCost -
+                          (realCost * voucher.discountPercent! / 100).toInt();
+                    }
+                  }
+                }
+
+                OrderingProduct orderingProduct = OrderingProduct(
+                    color: element.color,
+                    date: Timestamp.now(),
+                    price: element.cost,
+                    productID: element.productID,
+                    quantity: element.quantity,
+                    realPrice: realCost * element.quantity,
+                    size: element.size,
+                    type: element.type,
+                    userID: element.userID,
+                    voucherID: element.voucherID,
+                    deliverStatus: DeliverStatus.processing);
+                listOrderingProduct.add(orderingProduct);
+              }
+
+              orderModel.Order order = orderModel.Order(
+                orderingProductsID: listOrderingProduct,
+                totalCost: totalCost,
+                userID: user!.id,
+                totalProduct: listOrderingProduct.length,
+              );
+              checkoutProvider.setOrder(order);
+
+              checkoutProvider.setListProductInCartID(listProductInCartID);
+              await getListVoucherOfAdminBeforeCheckout(
+                  voucherForUserProvider, user.id!);
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => CheckOut(uid: user.id!),
+              ));
+            },
+            child: Text(
+              LangText(context: context).getLocal()!.checkout_ucf,
+              style: TextStyle(color: MyTheme.accent_color),
+            )),
       ),
     );
   }
@@ -422,15 +445,30 @@ class CartBody extends StatelessWidget {
     return Expanded(
       child: FutureBuilder(
         builder: (context, snapshot) {
-          // if (snapshot.connectionState == ConnectionState.waiting) {
-          //   return Center(
-          //     child: CircularProgressIndicator(),
-          //   );
-          // } else {
-          if (snapshot.data != null) {
-            final cart = snapshot.data;
-            if (cart!.productInCarts != null) {
-              return ProductInCartDetails(list: cart!.productInCarts!);
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return ListView.separated(
+                itemBuilder: (context, index) => ShimmerHelper()
+                    .buildBasicShimmer(
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        width: MediaQuery.of(context).size.width * 0.9),
+                separatorBuilder: (context, index) => SizedBox(
+                      height: 10.h,
+                    ),
+                itemCount: 8);
+          } else {
+            if (snapshot.data != null) {
+              final cart = snapshot.data;
+              if (cart!.productInCarts != null) {
+                return ProductInCartDetails(list: cart.productInCarts);
+              } else {
+                return Container(
+                  height: size.height * 0.5,
+                  child: Center(
+                    child:
+                        Text(LangText(context: context).getLocal()!.no_product),
+                  ),
+                );
+              }
             } else {
               return Container(
                 height: size.height * 0.5,
@@ -440,16 +478,8 @@ class CartBody extends StatelessWidget {
                 ),
               );
             }
-          } else {
-            return Container(
-              height: size.height * 0.5,
-              child: Center(
-                child: Text(LangText(context: context).getLocal()!.no_product),
-              ),
-            );
           }
         },
-        // },
         future: cartrepo.getCart(user!.id!),
       ),
     );

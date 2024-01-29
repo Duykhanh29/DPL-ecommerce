@@ -131,14 +131,13 @@ class CustomSearchView extends StatelessWidget {
               right: 14.h,
               bottom: 14.h,
             ),
-        fillColor:
-            fillColor ?? theme.colorScheme.onPrimaryContainer.withOpacity(1),
+        fillColor: fillColor ?? MyTheme.grey_153,
         filled: filled,
         border: borderDecoration ??
             OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.h),
               borderSide: BorderSide(
-                color: appTheme.blueGray100,
+                color: MyTheme.borderColor,
                 width: 1,
               ),
             ),

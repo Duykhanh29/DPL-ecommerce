@@ -1,8 +1,10 @@
+import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:dpl_ecommerce/models/order_model.dart';
 import 'package:dpl_ecommerce/repositories/order_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/order_widgets/order_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ListOrder extends StatefulWidget {
   ListOrder({super.key, required this.uid});
@@ -48,9 +50,15 @@ class _ListOrderState extends State<ListOrder> {
     return RefreshIndicator(
       onRefresh: onRefresh,
       child: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
+          ? ListView.separated(
+              itemBuilder: (context, index) => ShimmerHelper()
+                  .buildBasicShimmer(
+                      height: MediaQuery.of(context).size.height * 0.12,
+                      width: MediaQuery.of(context).size.width * 0.9),
+              separatorBuilder: (context, index) => SizedBox(
+                    height: 10.h,
+                  ),
+              itemCount: 12)
           : (listOrder != null && listOrder!.isNotEmpty
               ? ListView.builder(
                   itemBuilder: (context, index) {

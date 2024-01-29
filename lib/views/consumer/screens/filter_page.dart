@@ -19,8 +19,8 @@ class FilterPage extends StatefulWidget {
 class _FilterPageState extends State<FilterPage> {
   ProductRepo productRepo = ProductRepo();
 
-  int _minPrice = 1;
-  int _maxPrice = 1000000;
+  int _minPrice = 10;
+  int _maxPrice = 10000000;
   List<String> _selectedCondition = [];
   List<String> _selectedConst = [];
   List<String> _selectedConn = [];
@@ -91,25 +91,25 @@ class _FilterPageState extends State<FilterPage> {
                   Text(LangText(context: context).getLocal()!.price_range_ucf),
               subtitle: Row(
                 children: [
-                  Text('\$$_minPrice'),
+                  Text('$_minPrice VND'),
                   Expanded(
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.7,
                       child: RangeSlider(
-                        min: 1,
-                        max: 1000000,
+                        min: 10,
+                        max: 10000000,
                         divisions: 10,
-                        values: RangeValues(1, _maxPrice.toDouble()),
+                        values: RangeValues(10, _maxPrice.toDouble()),
                         onChanged: (RangeValues values) {
                           setState(() {
-                            _minPrice = 1;
+                            _minPrice = 10;
                             _maxPrice = values.end.toInt();
                           });
                         },
                       ),
                     ),
                   ),
-                  Text('\$$_maxPrice'),
+                  Text('$_maxPrice VND'),
                 ],
               ),
             ),
@@ -149,7 +149,7 @@ class _FilterPageState extends State<FilterPage> {
               title: Text(LangText(context: context).getLocal()!.rating_ucf),
               subtitle: Row(
                 children: [
-                  Text('0'),
+                  const Text('0'),
                   Expanded(
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.7,
@@ -166,7 +166,7 @@ class _FilterPageState extends State<FilterPage> {
                       ),
                     ),
                   ),
-                  Text('${rating.toStringAsFixed(1)}'),
+                  Text(rating.toStringAsFixed(1)),
                 ],
               ),
             ),

@@ -27,6 +27,7 @@ class OrderingProductItem extends StatefulWidget {
 
 class _OrderingProductItemState extends State<OrderingProductItem> {
   Product? product;
+  bool isFetchingProduct = true;
 
   bool isLoading = true;
 
@@ -48,6 +49,7 @@ class _OrderingProductItemState extends State<OrderingProductItem> {
         orderID: widget.orderID, orderingProductID: widget.orderingProductID);
     if (orderingProduct != null) {
       product = await productRepo.getProductByID(orderingProduct!.productID!);
+      isFetchingProduct = false;
       if (orderingProduct!.voucherID != null) {
         voucher = await voucherRepo.getVoucherByID(orderingProduct!.voucherID!);
       }
@@ -64,6 +66,7 @@ class _OrderingProductItemState extends State<OrderingProductItem> {
     orderingProduct = null;
     isLoading = true;
     voucher = null;
+    isFetchingProduct = true;
     if (mounted) {
       setState(() {});
     }
@@ -114,12 +117,20 @@ class _OrderingProductItemState extends State<OrderingProductItem> {
                   Column(
                     children: [
                       !isLoading
-                          ? FadeInImage.assetNetwork(
-                              placeholder: ImageData.imageNotFound,
-                              image: product!.images![0],
-                              height: 80.h,
-                              width: 80.h,
-                            )
+                          ? product != null
+                              ? FadeInImage.assetNetwork(
+                                  placeholder: ImageData.imageNotFound,
+                                  image: product!.images![0],
+                                  height: 80.h,
+                                  width: 80.h,
+                                )
+                              : Container(
+                                  height: 80.h,
+                                  width: 80.h,
+                                  child: Center(
+                                    child: Image.asset(ImageData.placeHolder),
+                                  ),
+                                )
                           : Container()
                       // Image.network(
                       //   'https://picsum.photos/250?image=9',
@@ -140,7 +151,11 @@ class _OrderingProductItemState extends State<OrderingProductItem> {
                             ? "..."
                             : product != null
                                 ? product!.name!
-                                : "",
+                                : isFetchingProduct
+                                    ? ""
+                                    : LangText(context: context)
+                                        .getLocal()!
+                                        .data_no_longer_exists,
                         style: TextStyle(
                             fontSize: 20.sp, fontWeight: FontWeight.w800),
                       ),

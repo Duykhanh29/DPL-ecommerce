@@ -8,8 +8,10 @@ import 'package:dpl_ecommerce/models/deliver_service.dart';
 import 'package:dpl_ecommerce/models/order_model.dart';
 import 'package:dpl_ecommerce/models/ordering_product.dart';
 import 'package:dpl_ecommerce/models/payment_type.dart';
+import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/deliver_service_repo.dart';
 import 'package:dpl_ecommerce/repositories/payment_repo.dart';
+import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/constants/size_utils.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
@@ -115,10 +117,13 @@ class DetailBody extends StatefulWidget {
 
 class _DetailBodyState extends State<DetailBody> {
   DeliverService? deliverService;
+  PaymentType? paymentType;
+  Voucher? voucher;
   bool isLoading = true;
   DeliverServiceRepo deliverServiceRepo = DeliverServiceRepo();
   PayMentRepo payMentRepo = PayMentRepo();
-  PaymentType? paymentType;
+  VoucherRepo voucherRepo = VoucherRepo();
+  bool hasVoucher = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -130,6 +135,12 @@ class _DetailBodyState extends State<DetailBody> {
     deliverService = await deliverServiceRepo
         .getDeliveryServiceByID(widget.order.deliverServiceID!);
     paymentType = await payMentRepo.getPaymentByID(widget.order.paymentTypeID!);
+    if (widget.order.voucherDiscountID != null) {
+      voucher =
+          await voucherRepo.getVoucherByID(widget.order.voucherDiscountID!);
+      hasVoucher = true;
+    }
+
     isLoading = false;
     if (mounted) {
       setState(() {});
@@ -196,7 +207,13 @@ class _DetailBodyState extends State<DetailBody> {
                     width: 60.w,
                   ),
                   Text(
-                    isLoading ? "..." : deliverService!.name!,
+                    isLoading
+                        ? "..."
+                        : deliverService!.isDeleted
+                            ? LangText(context: context)
+                                .getLocal()!
+                                .data_no_longer_exists
+                            : deliverService!.name!,
                     style: TextStyle(fontSize: 14.sp),
                   ),
                   SizedBox(
@@ -342,7 +359,9 @@ class _DetailBodyState extends State<DetailBody> {
                         ? "..."
                         : paymentType != null
                             ? paymentType!.name!
-                            : "",
+                            : LangText(context: context)
+                                .getLocal()!
+                                .data_no_longer_exists,
                     style: TextStyle(fontSize: 14.sp),
                   ),
                   SizedBox(
@@ -411,8 +430,13 @@ class _DetailBodyState extends State<DetailBody> {
             SizedBox(
               height: 20.h,
             ),
-            buildPriceRow(context, widget.order.totalProduct!,
-                widget.order.shippingCost!, null, widget.order.totalCost!),
+            buildPriceRow(
+                context,
+                widget.order.totalProduct!,
+                widget.order.shippingCost!,
+                voucher,
+                widget.order.totalCost!,
+                hasVoucher),
             SizedBox(
               height: 20.h,
             ),
@@ -423,7 +447,7 @@ class _DetailBodyState extends State<DetailBody> {
   }
 
   Widget buildPriceRow(BuildContext context, int totalProduct, int shippingCost,
-      int? voucherValue, int totalCost) {
+      Voucher? voucher, int totalCost, bool hasVoucher) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       decoration: BoxDecoration(
@@ -460,7 +484,7 @@ class _DetailBodyState extends State<DetailBody> {
                       fontWeight: FontWeight.w600))
             ],
           ),
-          if (voucherValue != null)
+          if (hasVoucher) ...{
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -468,13 +492,28 @@ class _DetailBodyState extends State<DetailBody> {
                   LangText(context: context).getLocal()!.voucher_ucf,
                   style: TextStyle(fontSize: 16.sp, color: Colors.black38),
                 ),
-                Text(voucherValue.toString(),
-                    style: TextStyle(
-                        fontSize: 16.sp,
-                        color: Colors.black38,
-                        fontWeight: FontWeight.w600))
+                if (voucher != null) ...{
+                  Text(
+                      voucher.discountAmount != null
+                          ? "${voucher.discountAmount} VND"
+                          : "${voucher.discountAmount} %",
+                      style: TextStyle(
+                          fontSize: 16.sp,
+                          color: Colors.black38,
+                          fontWeight: FontWeight.w600))
+                } else ...{
+                  Text(
+                      LangText(context: context)
+                          .getLocal()!
+                          .data_no_longer_exists,
+                      style: TextStyle(
+                          fontSize: 16.sp,
+                          color: Colors.black38,
+                          fontWeight: FontWeight.w600))
+                }
               ],
             ),
+          },
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

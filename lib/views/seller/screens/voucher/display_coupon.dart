@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/data_sources/firestore_data_source/firestore_data.dart';
+import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/repositories/voucher_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
@@ -34,9 +35,15 @@ class __DisplayCouponState extends State<DisplayCoupon> {
       stream: firestoreDatabase.getAllVoucherByShop(widget.shopID),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return ListView.separated(
+              itemBuilder: (context, index) => ShimmerHelper()
+                  .buildBasicShimmer(
+                      height: MediaQuery.of(context).size.height * 0.12,
+                      width: MediaQuery.of(context).size.width * 0.9),
+              separatorBuilder: (context, index) => SizedBox(
+                    height: 10.h,
+                  ),
+              itemCount: 12);
         } else {
           if (snapshot.hasData) {
             if (snapshot.data != null && snapshot.data!.isNotEmpty) {
