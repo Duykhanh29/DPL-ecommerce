@@ -8,6 +8,7 @@ import 'package:dpl_ecommerce/models/ward.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
+import 'package:dpl_ecommerce/views/general_views/common_web_view.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -619,17 +620,17 @@ class _RegistrationState extends State<Registration> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                // Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //         builder: (context) =>
-                                //             CommonWebviewScreen(
-                                //               page_name:
-                                //                   AppLocalizations.of(context)!
-                                //                       .policy,
-                                //               url:
-                                //                   "${AppConfig.RAW_BASE_URL}/mobile-page/privacy-policy",
-                                //             )));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            CommonWebViewScreen(
+                                              name:
+                                                  AppLocalizations.of(context)!
+                                                      .policy,
+                                              url:
+                                                  "https://hasumart.online/mobile-page/privacy-policy",
+                                            )));
                               },
                           )
                         ]),

@@ -82,6 +82,7 @@ import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:social_share/social_share.dart';
 
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ProductDetailsPage extends StatefulWidget {
@@ -570,11 +571,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 actions: [
                   buildFavouriteIcon(uid: user!.id!, productID: widget.id),
                   const SizedBox(width: 12),
-                  // InkWell(
-                  //   onTap: () {},
-                  //   child: const Icon(Icons.share),
-                  // ),
-                  // const SizedBox(width: 12),
+                  InkWell(
+                    onTap: () {},
+                    child: const Icon(Icons.share),
+                  ),
+                  const SizedBox(width: 12),
                   Consumer<CartViewModel>(
                     builder: (context, value, child) {
                       // if (authValue.currentUser != null) {

@@ -61,4 +61,9 @@ class ImageData {
 
   // internet
   static String noInternet = "$imagePath/no-wifi.png";
+
+  // onboarding
+  static String onboarding1 = "$imagePath/onborading1.jpg";
+  static String onboarding2 = "$imagePath/onboarding2.jpg";
+  static String onboarding3 = "$imagePath/onboarding3.jpg";
 }

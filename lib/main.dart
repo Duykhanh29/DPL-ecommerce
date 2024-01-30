@@ -25,6 +25,7 @@ import 'package:dpl_ecommerce/views/consumer/main_view.dart';
 import 'package:dpl_ecommerce/views/consumer/routes/routes.dart';
 import 'package:dpl_ecommerce/views/general_views/login_screen.dart';
 import 'package:dpl_ecommerce/views/general_views/no_internet_connection.dart';
+import 'package:dpl_ecommerce/views/general_views/onboarding_screen.dart';
 import 'package:dpl_ecommerce/views/general_views/register_seller.dart';
 import 'package:dpl_ecommerce/views/general_views/splash_screen.dart';
 import 'package:dpl_ecommerce/views/seller/mainviewseller.dart';
@@ -121,10 +122,92 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class RootWidget extends StatelessWidget {
+class RootWidget extends StatefulWidget {
   const RootWidget({
     super.key,
   });
+
+  @override
+  State<RootWidget> createState() => _RootWidgetState();
+}
+
+class _RootWidgetState extends State<RootWidget> {
+  final Connectivity _connectivity = Connectivity();
+  ConnectivityResult _connectivityResult = ConnectivityResult.none;
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
+  bool hasInternetConnection = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen(
+      (event) {
+        if (event == ConnectivityResult.wifi ||
+            event == ConnectivityResult.mobile) {
+          setState(() {
+            hasInternetConnection = true;
+          });
+        } else {
+          setState(() {
+            hasInternetConnection = false;
+          });
+        }
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return hasInternetConnection ? InitialScreen() : NoInternetConnection();
+  }
+}
+
+class InitialScreen extends StatefulWidget {
+  const InitialScreen({super.key});
+
+  @override
+  State<InitialScreen> createState() => _InitialScreenState();
+}
+
+class _InitialScreenState extends State<InitialScreen> {
+  late SharedPreferences pref;
+  var newLaunch = false;
+  bool isLoading = true;
+  void loadNewLaunch() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      bool _newLaunch = ((pref.getBool('newLaunch') ?? false));
+      newLaunch = _newLaunch;
+      print("newLaunch: ${newLaunch}");
+      // var data = (pref.getString("userData"));
+      // user = User.fromJson(jsonDecode(data!));
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(const Duration(seconds: 5)).whenComplete(() {
+      setState(() {
+        isLoading = false;
+      });
+    });
+    loadNewLaunch();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return isLoading
+        ? SplashScreen()
+        : newLaunch
+            ? FirstScreen()
+            : OnBoardingScreen();
+  }
+}
+
+class FirstScreen extends StatelessWidget {
+  const FirstScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -151,12 +234,8 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
-  final Connectivity _connectivity = Connectivity();
-  ConnectivityResult _connectivityResult = ConnectivityResult.none;
-  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   auth.User? user;
-  bool isLoading = true;
-  bool hasInternetConnection = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -164,30 +243,11 @@ class _FirstPageState extends State<FirstPage> {
     // super.initState();
     // final authProvider = Provider.of<AuthViewModel>(context);
 
-    Future.delayed(const Duration(seconds: 5)).whenComplete(() {
+    auth.FirebaseAuth.instance.authStateChanges().listen((event) {
       setState(() {
-        isLoading = false;
+        user = event;
       });
     });
-    _connectivitySubscription = _connectivity.onConnectivityChanged.listen(
-      (event) {
-        if (event == ConnectivityResult.wifi ||
-            event == ConnectivityResult.mobile) {
-          setState(() {
-            hasInternetConnection = true;
-          });
-          auth.FirebaseAuth.instance.authStateChanges().listen((event) {
-            setState(() {
-              user = event;
-            });
-          });
-        } else {
-          setState(() {
-            hasInternetConnection = false;
-          });
-        }
-      },
-    );
   }
 
   @override
@@ -215,30 +275,22 @@ class _FirstPageState extends State<FirstPage> {
     //     }
     //   },
     // );
-    return isLoading
-        ? !hasInternetConnection
-            ? NoInternetConnection()
-            : SplashScreen()
-        : user != null
-            ? !hasInternetConnection
-                ? NoInternetConnection()
-                : const AuthorizatedPage()
-            : !hasInternetConnection
-                ? NoInternetConnection()
-                : Consumer<LocaleProvider>(
-                    builder: (context, value, child) => MaterialApp(
-                      debugShowCheckedModeBanner: false,
-                      home: LoginScreen(),
-                      localizationsDelegates: const [
-                        AppLocalizations.delegate, // Add this line
-                        GlobalMaterialLocalizations.delegate,
-                        GlobalWidgetsLocalizations.delegate,
-                        GlobalCupertinoLocalizations.delegate,
-                      ],
-                      supportedLocales: AppLocalizations.supportedLocales,
-                      locale: value.locale,
-                    ),
-                  );
+    return user != null
+        ? const AuthorizatedPage()
+        : Consumer<LocaleProvider>(
+            builder: (context, value, child) => MaterialApp(
+              debugShowCheckedModeBanner: false,
+              home: LoginScreen(),
+              localizationsDelegates: const [
+                AppLocalizations.delegate, // Add this line
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: value.locale,
+            ),
+          );
   }
 }
 
