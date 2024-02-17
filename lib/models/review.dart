@@ -34,8 +34,10 @@ class Review {
         urlMedia: json['urlMedia'],
         productID: json['productID'],
         rating: json['rating'],
-        resourseType: ResourseType.values.firstWhere((element) =>
-            element.toString().split(".").last == json['resourseType']),
+        resourseType: json['resourseType'] == null
+            ? null
+            : ResourseType.values.firstWhere((element) =>
+                element.toString().split(".").last == json['resourseType']),
         id: json['id'],
         text: json['text'],
         userAvatar: json['userAvatar'],

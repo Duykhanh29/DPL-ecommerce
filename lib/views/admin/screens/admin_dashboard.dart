@@ -94,7 +94,7 @@ class _DashAdminState extends State<DashAdmin> {
         onRefresh: onRefresh,
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(8.h),
+            padding: EdgeInsets.all(5.h),
             child: Column(
               children: [
                 SizedBox(
@@ -129,7 +129,7 @@ class _DashAdminState extends State<DashAdmin> {
                         ],
                       ),
                       SizedBox(
-                        width: 12.h,
+                        width: 10.h,
                       ),
                       Column(
                         children: [
@@ -384,7 +384,7 @@ class _DashAdminState extends State<DashAdmin> {
                     lable,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 19.sp,
+                      fontSize: 18.sp,
                     ),
                   ),
                 ],

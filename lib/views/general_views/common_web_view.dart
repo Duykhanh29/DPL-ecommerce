@@ -28,7 +28,10 @@ class _CommonWebViewState extends State<CommonWebViewScreen> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onWebResourceError: (error) {},
-          onPageFinished: (page) {},
+          onPageFinished: (page) {
+            _webViewController.runJavaScript(
+                "document.querySelectorAll('*').forEach(function(el) { el.style.fontSize = '115%'; });");
+          },
         ),
       )
       ..loadRequest(Uri.parse(widget.url));

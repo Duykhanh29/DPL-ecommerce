@@ -1,8 +1,15 @@
 import 'dart:convert';
 
+import 'package:dpl_ecommerce/models/address_response/city_response.dart'
+    as newCity;
+import 'package:dpl_ecommerce/models/address_response/district_response.dart'
+    as newDistrict;
+import 'package:dpl_ecommerce/models/address_response/ward_response.dart'
+    as newWard;
 import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/district.dart';
 import 'package:dpl_ecommerce/models/ward.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 class AddressRepository {
@@ -101,5 +108,69 @@ class AddressRepository {
       result = Ward(id: data['code'], name: data['name']);
     }
     return result!;
+  }
+
+  // new API
+  // new address API
+
+  Future<List<dynamic>> loadData() async {
+    String response = await rootBundle.loadString('assets/json/addresses.json');
+    print("response: $response");
+    return await json.decode(response);
+  }
+
+  Future<List<newCity.City>> getAllCity() async {
+    final data = await loadData();
+    return data.map((e) => newCity.City.fromJson(e)).toList();
+  }
+
+  Future<newCity.City> getProvinceByID(String id) async {
+    final data = await getAllCity();
+    return data.firstWhere((element) => element.id == id);
+  }
+
+  Future<List<newDistrict.District>> getAllDitrictByProvinceID(
+      String provinceID) async {
+    final data = await getAllCity();
+    final provinceData = data.firstWhere((element) => element.id == provinceID);
+    return provinceData.districts;
+  }
+
+  Future<newDistrict.District> getDistrictByID(
+      {required String provinceID, required String districtID}) async {
+    final data = await getAllDitrictByProvinceID(provinceID);
+    return data.firstWhere((element) => element.id == districtID);
+  }
+
+  Future<List<newWard.Ward>> getAllWardByDistrictD(
+      {required String provinceID, required String districtID}) async {
+    final data = await getAllDitrictByProvinceID(provinceID);
+    final districtData = data.firstWhere((element) => element.id == districtID);
+    return districtData.wards;
+  }
+
+  Future<newWard.Ward> getWardtByID(
+      {required String provinceID,
+      required String districtID,
+      required String wardID}) async {
+    final data = await getAllWardByDistrictD(
+        provinceID: provinceID, districtID: districtID);
+    return data.firstWhere((element) => element.id == wardID);
+  }
+
+  // convert city
+  Future<City> convertProvinceToCity(newCity.City province) async {
+    City city = City(id: province.id, name: province.name);
+    return city;
+  }
+
+  Future<District> convertDistrict(newDistrict.District district1) async {
+    District district = District(id: district1.id, name: district1.name);
+    return district;
+  }
+
+  Future<Ward> convertWard(newWard.Ward ward1) async {
+    Ward ward = Ward(id: ward1.id, name: ward1.name);
+    return ward;
   }
 }

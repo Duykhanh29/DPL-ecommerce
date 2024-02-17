@@ -183,7 +183,7 @@ class _ShopDetailsState extends State<ShopDetails> {
                                     vertical: 2.h, horizontal: 5.w),
                                 child: Text(
                                   verificationForm != null
-                                      ? '${verificationForm!.contactAddress?.district} ${verificationForm!.contactAddress?.city}'
+                                      ? '${verificationForm!.contactAddress?.district!.name} - ${verificationForm!.contactAddress?.city!.name}'
                                       : "...",
                                   overflow: TextOverflow.fade,
                                   style: TextStyle(

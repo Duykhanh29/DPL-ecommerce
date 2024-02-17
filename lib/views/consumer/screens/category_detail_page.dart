@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
+import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -60,17 +62,11 @@ class _RatingState extends State<CategoryDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: MyTheme.accent_color,
-        title: Text(
-          LangText(context: context).getLocal()!.product_category,
-          style: TextStyle(color: MyTheme.white),
-          textAlign: TextAlign.center,
-        ),
+      appBar: CustomAppBar(
         centerTitle: true,
-
-        //leading: Icon(Icons.menu),
-      ),
+        context: context,
+        title: LangText(context: context).getLocal()!.product_category,
+      ).show(),
       body: RefreshIndicator(
         onRefresh: () async {
           await onRefresh();
@@ -189,22 +185,30 @@ Widget _buildProductSmallList(BuildContext context, List<Product> list) {
 Widget _buildProductSmallList1(BuildContext context, List<Product> list) {
   return Padding(
     padding: EdgeInsets.only(right: 10.h),
-    child: GridView.builder(
-      shrinkWrap: true,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        mainAxisExtent: 283.h,
-        // childAspectRatio: 3 / 2,
-      ),
-      itemBuilder: (context, index) {
-        return Productsmalllist1ItemWidget(
-          product: list[index],
-        );
-      },
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: list.length,
-    ),
+    child: list.isNotEmpty
+        ? GridView.builder(
+            shrinkWrap: true,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              mainAxisExtent: 283.h,
+              // childAspectRatio: 3 / 2,
+            ),
+            itemBuilder: (context, index) {
+              return Productsmalllist1ItemWidget(
+                product: list[index],
+              );
+            },
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: list.length,
+          )
+        : SizedBox(
+            height: MediaQuery.of(context).size.height * 0.7,
+            child: Center(
+              child: Text(
+                  LangText(context: context).getLocal()!.no_data_is_available),
+            ),
+          ),
   );
 }

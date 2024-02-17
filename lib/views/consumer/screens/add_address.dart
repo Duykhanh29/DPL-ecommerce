@@ -22,6 +22,12 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:dpl_ecommerce/models/address_response/city_response.dart'
+    as newCity;
+import 'package:dpl_ecommerce/models/address_response/district_response.dart'
+    as newDistrict;
+import 'package:dpl_ecommerce/models/address_response/ward_response.dart'
+    as newWard;
 
 class AddAddress extends StatefulWidget {
   AddAddress({super.key});
@@ -58,55 +64,60 @@ class _AddAddressState extends State<AddAddress> {
 
   FocusNode countryFocusNode = FocusNode();
   FocusNode homeNumberFocusNode = FocusNode();
+
+  // new
+  newCity.City? selectedCity;
+  newDistrict.District? selectedDistrict;
+  newWard.Ward? selectedWard;
   UserRepo userRepo = UserRepo();
   bool isDefaultAddress = false;
   onSelectCityDuringAdd(city) {
-    if (_selected_city != null && city.id == _selected_city!.id) {
+    if (selectedCity != null && city.id == selectedCity!.id) {
       setState(() {
         _cityController.text = city.name;
       });
-      print("${_selected_city!.id}");
+      print("${selectedCity!.id}");
       print("object");
-      print("${_selected_city!.name}");
+      print("${selectedCity!.name}");
 
       return;
     }
     setState(() {
-      _selected_city = city;
+      selectedCity = city;
 
       _cityController.text = city.name;
-      _selected_district = null;
-      _selected_ward = null;
+      selectedDistrict = null;
+      selectedWard = null;
       _districtController.text = "";
       _wardController.text = "";
     });
   }
 
   onSelectDistrictDuringAdd(district) {
-    if (_selected_city != null &&
-        _selected_district != null &&
-        district.id == _selected_district!.id) {
+    if (selectedCity != null &&
+        selectedDistrict != null &&
+        district.id == selectedDistrict!.id) {
       setState(() {
         _districtController.text = district.name;
       });
-      print("${_selected_city!.id}");
-      print("object");
-      print("${_selected_city!.name}");
+      // print("${_selected_city!.id}");
+      // print("object");
+      // print("${_selected_city!.name}");
 
       return;
     }
-    _selected_district = district;
+    selectedDistrict = district;
     setState(() {
       _districtController.text = district.name;
-      _selected_ward = null;
+      selectedWard = null;
       _wardController.text = "";
     });
   }
 
   onSelectWardDuringAdd(ward) {
-    if (_selected_city != null &&
-        _selected_district != null &&
-        _selected_ward != null &&
+    if (selectedCity != null &&
+        selectedDistrict != null &&
+        selectedWard != null &&
         ward.id == _selected_ward!.id) {
       setState(() {
         _wardController.text = ward.name;
@@ -117,7 +128,7 @@ class _AddAddressState extends State<AddAddress> {
 
       return;
     }
-    _selected_ward = ward;
+    selectedWard = ward;
     setState(() {
       _wardController.text = ward.name;
     });
@@ -129,14 +140,21 @@ class _AddAddressState extends State<AddAddress> {
     String homeNumber = _homeNumberController.text.trim();
     // String address = addressController.text.trim();
     // loading();
+    City city = City(id: selectedCity!.id, name: selectedCity!.name);
+    District district =
+        District(id: selectedDistrict!.id, name: selectedDistrict!.name);
+    Ward? ward;
+    if (selectedWard != null) {
+      ward = Ward(id: selectedWard!.id, name: selectedWard!.name);
+    }
     AddressInfor addressInfor = AddressInfor(
-        city: _selected_city,
-        district: _selected_district,
+        city: city,
+        district: district,
         country: country,
         isDefaultAddress: isDefaultAddress,
         name: name,
         number: homeNumber,
-        ward: _selected_ward);
+        ward: ward);
     addressViewModel.addAdd(addressInfor);
     await userRepo.addNewAddress(addressInfor, user);
   }
@@ -306,7 +324,7 @@ class _AddAddressState extends State<AddAddress> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(3),
                           color: MyTheme.textfield_grey),
-                      child: TypeAheadField<City>(
+                      child: TypeAheadField<newCity.City>(
                         hideKeyboard: true,
                         onSuggestionsBoxToggle: (p0) {
                           print("P0 is: $p0");
@@ -316,17 +334,17 @@ class _AddAddressState extends State<AddAddress> {
                           if (cityFocusNode.hasFocus &&
                               _cityController.text.isNotEmpty) {
                             var cityResponse = await AddressRepository()
-                                .getCityList(); // blank response
+                                .getAllCity(); // blank response
                             return cityResponse;
                           }
-                          if (_selected_city == null) {
+                          if (selectedCity == null) {
                             var cityResponse = await AddressRepository()
-                                .getCityList(); // blank response
+                                .getAllCity(); // blank response
                             return cityResponse;
                           }
                           var cityResponse = await AddressRepository()
-                              .getCityByCode(_selected_city!.id!);
-                          return [cityResponse!];
+                              .getProvinceByID(selectedCity!.id);
+                          return [cityResponse];
                         },
                         loadingBuilder: (context) {
                           return SizedBox(
@@ -360,7 +378,7 @@ class _AddAddressState extends State<AddAddress> {
                                         TextStyle(color: MyTheme.medium_grey))),
                           );
                         },
-                        onSuggestionSelected: (City city) {
+                        onSuggestionSelected: (newCity.City city) {
                           print("Check again");
                           onSelectCityDuringAdd(
                             city,
@@ -408,27 +426,29 @@ class _AddAddressState extends State<AddAddress> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: MyTheme.textfield_grey),
-                      child: TypeAheadField<District?>(
+                      child: TypeAheadField<newDistrict.District>(
                         hideKeyboard: true,
                         suggestionsCallback: (name) async {
-                          if (_selected_city == null) {
+                          if (selectedCity == null) {
                             return [];
                           }
                           if (districtFocusNode.hasFocus &&
                               _districtController.text.isNotEmpty) {
                             var districtResponse = await AddressRepository()
-                                .getDistrictListByCityCode(
-                                    _selected_city!.id!); // blank response
+                                .getAllDitrictByProvinceID(
+                                    selectedCity!.id); // blank response
                             return districtResponse;
                           }
-                          if (_selected_district == null) {
+                          if (selectedDistrict == null) {
                             var districtResponse = await AddressRepository()
-                                .getDistrictListByCityCode(
-                                    _selected_city!.id!); // blank response
+                                .getAllDitrictByProvinceID(
+                                    selectedCity!.id); // blank response
                             return districtResponse;
                           }
                           var districtResponse = await AddressRepository()
-                              .getDistrictByCode(_selected_district!.id!);
+                              .getDistrictByID(
+                                  districtID: selectedDistrict!.id,
+                                  provinceID: selectedCity!.id);
                           return [districtResponse];
                         },
                         loadingBuilder: (context) {
@@ -463,7 +483,7 @@ class _AddAddressState extends State<AddAddress> {
                                         TextStyle(color: MyTheme.medium_grey))),
                           );
                         },
-                        onSuggestionSelected: (District? district) {
+                        onSuggestionSelected: (newDistrict.District? district) {
                           onSelectDistrictDuringAdd(
                             district,
                           );
@@ -513,28 +533,34 @@ class _AddAddressState extends State<AddAddress> {
                           borderRadius: BorderRadius.circular(10),
                           color: MyTheme.textfield_grey),
                       child: Center(
-                        child: TypeAheadField<Ward?>(
+                        child: TypeAheadField<newWard.Ward?>(
                           hideKeyboard: true,
                           suggestionsCallback: (name) async {
-                            if (_selected_district == null) {
+                            if (selectedDistrict == null) {
                               return [];
                             }
                             if (wardFocusNode.hasFocus &&
                                 _wardController.text.isNotEmpty) {
                               var wardResponse = await AddressRepository()
-                                  .getWardListByDistrictCode(_selected_district!
-                                      .id!); // blank response
+                                  .getAllWardByDistrictD(
+                                      provinceID: selectedCity!.id,
+                                      districtID: selectedDistrict!
+                                          .id); // blank response
                               return wardResponse;
                             }
-                            if (_selected_ward == null) {
+                            if (selectedWard == null) {
                               var wardResponse = await AddressRepository()
-                                  .getWardListByDistrictCode(_selected_district!
-                                      .id!); // blank response
+                                  .getAllWardByDistrictD(
+                                      provinceID: selectedCity!.id,
+                                      districtID: selectedDistrict!.id);
                               return wardResponse;
                             }
                             var wardResponse = await AddressRepository()
-                                .getWardByCode(_selected_ward!.id!);
-                            return [wardResponse!];
+                                .getWardtByID(
+                                    provinceID: selectedCity!.id,
+                                    districtID: selectedDistrict!.id,
+                                    wardID: selectedWard!.id!);
+                            return [wardResponse];
                           },
                           loadingBuilder: (context) {
                             return Container(
@@ -570,7 +596,7 @@ class _AddAddressState extends State<AddAddress> {
                                           color: MyTheme.medium_grey))),
                             );
                           },
-                          onSuggestionSelected: (Ward? ward) {
+                          onSuggestionSelected: (newWard.Ward? ward) {
                             onSelectWardDuringAdd(
                               ward,
                             );
@@ -708,9 +734,9 @@ class _AddAddressState extends State<AddAddress> {
         child: ElevatedButton(
           onPressed: () async {
             if (_countryController.text.isEmpty ||
-                _selected_city == null ||
-                _selected_district == null ||
-                _selected_ward == null ||
+                selectedCity == null ||
+                selectedDistrict == null ||
+                selectedWard == null ||
                 _homeNumberController.text.isEmpty ||
                 _nameController.text.isEmpty) {
               onPressRegFail();

@@ -1,15 +1,9 @@
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/helpers/date_helper.dart';
-import 'package:dpl_ecommerce/models/address_infor.dart';
-import 'package:dpl_ecommerce/models/city.dart';
-import 'package:dpl_ecommerce/models/district.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
-import 'package:dpl_ecommerce/models/ward.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
-import 'package:dpl_ecommerce/view_model/address_view_model.dart';
 import 'package:dpl_ecommerce/view_model/consumer/voucher_for_user_view_model.dart';
-import 'package:dpl_ecommerce/views/consumer/screens/address_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';

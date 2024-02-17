@@ -823,20 +823,12 @@ class _HomePageState extends State<HomePage> {
                 // ),
                 )
             : SizedBox(
-                height: 220.h,
-                child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) =>
-                        // SizedBox(
-                        //       height: 230.h,
-                        //     ),
-                        ShimmerHelper()
-                            .buildBasicShimmer(height: 200.h, width: 150.w),
-                    separatorBuilder: (context, index) => SizedBox(
-                          width: 10.w,
-                        ),
-                    itemCount: 5),
-              );
+                height: 40.h,
+                child: Center(
+                  child: Text(LangText(context: context)
+                      .getLocal()!
+                      .no_data_is_available),
+                ));
   }
 
   /// Section Widget

@@ -77,7 +77,7 @@ class _AddresslistItemWidgetState extends State<AddressSellerScreen> {
                       BoxDecoration(borderRadius: BorderRadius.circular(15.r)),
                   child: Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: 23.h,
+                      horizontal: 15.w,
                       vertical: 21.h,
                     ),
                     decoration: BoxDecoration(

@@ -55,6 +55,7 @@ class _ShopProfileState extends State<ShopProfile>
   int selectedIndex = -1;
   // List<FlashSale>? listFlashSale;
   List<Product>? listProduct;
+  List<Product>? listFeaturedProduct;
   List<Category>? listCategory;
   List<Voucher>? listVoucher;
   bool isLoading = true;
@@ -208,6 +209,8 @@ class _ShopProfileState extends State<ShopProfile>
       listProduct = await shopRepo.getListProductByShopID(shop!.id!);
       listVoucher = await voucherRepo.getListVoucherByShop(shop!.id!);
       listCategory = await categoryRepo.getListCategory();
+      listFeaturedProduct =
+          await productRepo.getListTopProductByShop(shop!.id!);
     }
 
     setState(() {
@@ -520,11 +523,15 @@ class _ShopProfileState extends State<ShopProfile>
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  if (listVoucher != null && !isLoading) ...{
+                                  if (listVoucher != null &&
+                                      listVoucher!.isNotEmpty &&
+                                      !isLoading) ...{
                                     ListVoucherWidget(list: listVoucher!),
                                   },
 
-                                  if (listProduct != null && !isLoading) ...{
+                                  if (listFeaturedProduct != null &&
+                                      listFeaturedProduct!.isNotEmpty &&
+                                      !isLoading) ...{
                                     Padding(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 10.h, vertical: 6),
@@ -533,15 +540,14 @@ class _ShopProfileState extends State<ShopProfile>
                                         dealOfTheDayText:
                                             AppLocalizations.of(context)!
                                                 .featured_products_ucf,
-                                        viewAllText: listProduct!.length > 2
-                                            ? AppLocalizations.of(context)!
-                                                .view_more_ucf
-                                            : "",
+                                        viewAllText: "",
                                       ),
                                     ),
-                                    shop != null
+                                    shop != null &&
+                                            listFeaturedProduct != null &&
+                                            listFeaturedProduct!.isNotEmpty
                                         ? _buildDealOfTheDayRow(
-                                            context, listProduct!)
+                                            context, listFeaturedProduct!)
                                         : Container(),
                                   },
 

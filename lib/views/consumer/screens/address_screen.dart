@@ -171,6 +171,7 @@ class AddressScreen extends StatelessWidget {
                                         onPressed: () {
                                           // Add your logic for deleting here
                                           // For example, you can show a confirmation dialog and then delete the address
+                                          print("ADDRESS ID: ${address.id!}");
                                           showDialog(
                                             context: context,
                                             builder: (_) => AlertDialog(
@@ -200,6 +201,7 @@ class AddressScreen extends StatelessWidget {
                                                     //   listAddress
                                                     //       .removeAt(index);
                                                     // });
+
                                                     await userRepo
                                                         .deleteAddress(
                                                             address.id!,

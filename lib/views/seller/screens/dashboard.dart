@@ -471,7 +471,7 @@ class _DashboardState extends State<Dashboard> {
       Container(
         padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.h),
         height: 70.h,
-        width: MediaQuery.of(context).size.width * 0.44,
+        width: MediaQuery.of(context).size.width * 0.43,
         decoration: BoxDecoration(
             color: MyTheme.accent_color,
             borderRadius: BorderRadius.circular(10)),
@@ -514,9 +514,9 @@ class _DashboardState extends State<Dashboard> {
                   size: 24,
                   color: Colors.white,
                 ),
-                SizedBox(
-                  width: 10.w,
-                ),
+                // SizedBox(
+                //   width: 10.w,
+                // ),
               ],
             )
           ],

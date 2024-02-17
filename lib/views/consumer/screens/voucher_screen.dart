@@ -151,123 +151,130 @@ class __VoucherScreenState extends State<VoucherScreen> {
     //       releasedDate: Timestamp.fromDate(DateTime(2023, 9, 7, 17, 30))),
     // ];
     // print("List length: ${listVoucher!.length}");
-    return isLoading
-        ? SizedBox(
-            height: 400.h,
-            child: ShimmerHelper().buildVoucherGridShimmer(),
-          )
-        : listVoucher != null && listVoucher!.isNotEmpty
-            ? GridView.builder(
-                shrinkWrap: true,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisSpacing: 5,
-                  mainAxisSpacing: 5,
-                  crossAxisCount: 2,
-                  //mainAxisExtent: 200.h,
-                  // childAspectRatio: 3 / 2,
-                ),
-                itemBuilder: (context, index) {
-                  return ClipPath(
-                    clipper: VoucherClipper(),
-                    child: Row(
-                      children: [
-                        Container(
-                          // height: 160.h,
-                          padding: EdgeInsets.symmetric(vertical: 5.h),
-                          width: 30.w,
-                          alignment: Alignment.center,
-                          color: MyTheme.accent_color_2,
-                          // child: Text(
-                          //   list![index].id!,
-                          //   style: TextStyle(color: Colors.white),
-                          // ),
-                        ),
-                        Container(
-                          // height: 160.h,
-                          width: 130.w,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 5.h, horizontal: 5.w),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                              width: 0.5.w,
-                              color: Colors.grey,
-                            ),
+    if (isLoading) {
+      return SizedBox(
+        height: 400.h,
+        child: ShimmerHelper().buildVoucherGridShimmer(),
+      );
+    } else {
+      return listVoucher != null && listVoucher!.isNotEmpty
+          ? GridView.builder(
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisSpacing: 5,
+                mainAxisSpacing: 5,
+                crossAxisCount: 2,
+                //mainAxisExtent: 200.h,
+                // childAspectRatio: 3 / 2,
+              ),
+              itemBuilder: (context, index) {
+                return ClipPath(
+                  clipper: VoucherClipper(),
+                  child: Row(
+                    children: [
+                      Container(
+                        // height: 160.h,
+                        padding: EdgeInsets.symmetric(vertical: 5.h),
+                        width: 30.w,
+                        alignment: Alignment.center,
+                        color: MyTheme.accent_color_2,
+                        // child: Text(
+                        //   list![index].id!,
+                        //   style: TextStyle(color: Colors.white),
+                        // ),
+                      ),
+                      Container(
+                        // height: 160.h,
+                        width: 130.w,
+                        padding: EdgeInsets.symmetric(
+                            vertical: 5.h, horizontal: 5.w),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            width: 0.5.w,
+                            color: Colors.grey,
                           ),
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(0, 10.h, 2.w, 0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                listVoucher![index].discountAmount == null
-                                    ? Text(
-                                        "-${listVoucher![index].discountPercent} %",
-                                        maxLines: 3,
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.bold,
-                                        ))
-                                    : Text(
-                                        "-${listVoucher![index].discountAmount} VND",
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        maxLines: 4,
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(0, 10.h, 2.w, 0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              listVoucher![index].discountAmount == null
+                                  ? Text(
+                                      "-${listVoucher![index].discountPercent} %",
+                                      maxLines: 3,
+                                      style: TextStyle(
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ))
+                                  : Text(
+                                      "-${listVoucher![index].discountAmount} VND",
+                                      style: TextStyle(
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                SizedBox(
-                                  height: 10.h,
+                                      maxLines: 4,
+                                    ),
+                              SizedBox(
+                                height: 10.h,
+                              ),
+                              Text(LangText(context: context)
+                                  .getLocal()!
+                                  .from_ucf),
+                              Text(
+                                '${listVoucher![index].releasedDate!.toDate().day}'
+                                "/"
+                                '${listVoucher![index].releasedDate!.toDate().month}'
+                                "/"
+                                '${listVoucher![index].releasedDate!.toDate().year}',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  //fontWeight: FontWeight.w400,
                                 ),
-                                Text(LangText(context: context)
-                                    .getLocal()!
-                                    .from_ucf),
-                                Text(
-                                  '${listVoucher![index].releasedDate!.toDate().day}'
-                                  "/"
-                                  '${listVoucher![index].releasedDate!.toDate().month}'
-                                  "/"
-                                  '${listVoucher![index].releasedDate!.toDate().year}',
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    //fontWeight: FontWeight.w400,
-                                  ),
+                              ),
+                              Text(LangText(context: context)
+                                  .getLocal()!
+                                  .to_ucf),
+                              Text(
+                                '${listVoucher![index].expDate!.toDate().day}'
+                                "/"
+                                '${listVoucher![index].expDate!.toDate().month}'
+                                "/"
+                                '${listVoucher![index].expDate!.toDate().year}',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  //fontWeight: FontWeight.w400,
                                 ),
-                                Text(LangText(context: context)
-                                    .getLocal()!
-                                    .to_ucf),
-                                Text(
-                                  '${listVoucher![index].expDate!.toDate().day}'
-                                  "/"
-                                  '${listVoucher![index].expDate!.toDate().month}'
-                                  "/"
-                                  '${listVoucher![index].expDate!.toDate().year}',
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    //fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10.h,
-                                ),
-                                buildSaveButton(
-                                    listVoucher![index].id!, user!.id!, context)
-                              ],
-                            ),
+                              ),
+                              SizedBox(
+                                height: 10.h,
+                              ),
+                              buildSaveButton(
+                                  listVoucher![index].id!, user!.id!, context)
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  );
-                },
-                physics: BouncingScrollPhysics(),
-                itemCount: listVoucher!.length,
-              )
-            : Center(
-                child: Text(LangText(context: context)
-                    .getLocal()!
-                    .no_data_is_available),
-              );
+                      ),
+                    ],
+                  ),
+                );
+              },
+              physics: BouncingScrollPhysics(),
+              itemCount: listVoucher!.length,
+            )
+          : Center(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: Center(
+                  child: Text(LangText(context: context)
+                      .getLocal()!
+                      .no_data_is_available),
+                ),
+              ),
+            );
+    }
   }
 
   Widget buildSaveButton(String voucherID, String uid, BuildContext context) {

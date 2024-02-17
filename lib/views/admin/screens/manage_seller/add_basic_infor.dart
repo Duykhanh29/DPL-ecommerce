@@ -851,295 +851,296 @@ class _AddBasicInforState extends State<AddBasicInfor> {
           ),
 
           spacer(height: 10.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
-            child: Container(
-              height: 40.h,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(3.r),
-                  color: MyTheme.textfield_grey),
-              child: TypeAheadField<City>(
-                hideKeyboard: true,
-                onSuggestionsBoxToggle: (p0) {
-                  print("P0 is: $p0");
-                },
-                suggestionsCallback: (name) async {
-                  print("Check again");
-                  if (cityFocusNode.hasFocus &&
-                      _cityController.text.isNotEmpty) {
-                    var cityResponse = await AddressRepository()
-                        .getCityList(); // blank response
-                    return cityResponse;
-                  }
-                  if (_selected_city == null) {
-                    var cityResponse = await AddressRepository()
-                        .getCityList(); // blank response
-                    return cityResponse;
-                  }
-                  var cityResponse = await AddressRepository()
-                      .getCityByCode(_selected_city!.id!);
-                  return [cityResponse!];
-                },
-                loadingBuilder: (context) {
-                  return SizedBox(
-                    height: 40.h,
-                    child: Center(
-                        child: Text(
-                            AppLocalizations.of(context)!.loading_cities_ucf,
-                            style: TextStyle(color: MyTheme.medium_grey))),
-                  );
-                },
-                itemBuilder: (context, dynamic city) {
-                  //print(suggestion.toString());
-                  return ListTile(
-                    dense: true,
-                    title: Text(
-                      city.name,
-                      style: const TextStyle(color: MyTheme.font_grey),
-                    ),
-                  );
-                },
-                noItemsFoundBuilder: (context) {
-                  return SizedBox(
-                    height: 40.h,
-                    child: Center(
-                        child: Text(
-                            AppLocalizations.of(context)!.no_city_available,
-                            style: TextStyle(color: MyTheme.medium_grey))),
-                  );
-                },
-                onSuggestionSelected: (City city) {
-                  print("Check again");
-                  onSelectCityDuringAdd(
-                    city,
-                  );
-                },
-                textFieldConfiguration: TextFieldConfiguration(
-                  focusNode: cityFocusNode,
-                  onTap: () {
-                    setState(() {
-                      cityFocusNode.requestFocus();
-                    });
-                  },
-                  onEditingComplete: () {
-                    setState(() {
-                      cityFocusNode.unfocus();
-                    });
-                  },
-                  //autofocus: true,
-                  controller: _cityController,
-                  style: TextStyle(fontSize: 12.sp),
-                  onSubmitted: (txt) {
-                    // keep blank
-                  },
-                  decoration: InputDecoration(
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 20.w, vertical: 3.h),
-                      hintText: LangText(context: context).getLocal()!.city_ucf,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
-                      suffixIcon: const Icon(Icons.arrow_drop_down)),
-                ),
-              ),
-            ),
-          ),
-          spacer(height: 10.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
-            child: Container(
-              height: 40.h,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.r),
-                  color: MyTheme.textfield_grey),
-              child: TypeAheadField<District?>(
-                hideKeyboard: true,
-                suggestionsCallback: (name) async {
-                  if (_selected_city == null) {
-                    return [];
-                  }
-                  if (districtFocusNode.hasFocus &&
-                      _districtController.text.isNotEmpty) {
-                    var districtResponse = await AddressRepository()
-                        .getDistrictListByCityCode(
-                            _selected_city!.id!); // blank response
-                    return districtResponse;
-                  }
-                  if (_selected_district == null) {
-                    var districtResponse = await AddressRepository()
-                        .getDistrictListByCityCode(
-                            _selected_city!.id!); // blank response
-                    return districtResponse;
-                  }
-                  var districtResponse = await AddressRepository()
-                      .getDistrictByCode(_selected_district!.id!);
-                  return [districtResponse];
-                },
-                loadingBuilder: (context) {
-                  return SizedBox(
-                    height: 40.h,
-                    child: Center(
-                        child: Text(
-                            AppLocalizations.of(context)!.loading_districts_ucf,
-                            style: TextStyle(color: MyTheme.medium_grey))),
-                  );
-                },
-                itemBuilder: (context, dynamic city) {
-                  //print(suggestion.toString());
-                  return ListTile(
-                    dense: true,
-                    title: Text(
-                      city.name,
-                      style: TextStyle(color: MyTheme.font_grey),
-                    ),
-                  );
-                },
-                noItemsFoundBuilder: (context) {
-                  return SizedBox(
-                    height: 40.h,
-                    child: Center(
-                        child: Text(
-                            AppLocalizations.of(context)!.no_district_available,
-                            style: TextStyle(color: MyTheme.medium_grey))),
-                  );
-                },
-                onSuggestionSelected: (District? district) {
-                  onSelectDistrictDuringAdd(
-                    district,
-                  );
-                },
-                textFieldConfiguration: TextFieldConfiguration(
-                  focusNode: districtFocusNode,
-                  onTap: () {
-                    setState(() {
-                      districtFocusNode.requestFocus();
-                    });
-                  },
-                  onEditingComplete: () {
-                    setState(() {
-                      districtFocusNode.unfocus();
-                    });
-                  },
-                  //autofocus: true,
-                  controller: _districtController,
-                  style: TextStyle(fontSize: 12.sp),
-                  onSubmitted: (txt) {
-                    // keep blank
-                  },
-                  decoration: InputDecoration(
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 20.w, vertical: 3.h),
-                      hintText:
-                          LangText(context: context).getLocal()!.district_ucf,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
-                      suffixIcon: const Icon(Icons.arrow_drop_down)),
-                ),
-              ),
-            ),
-          ),
-          spacer(height: 10.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
-            child: Container(
-              alignment: Alignment.centerLeft,
-              height: 40.h,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.r),
-                  color: MyTheme.textfield_grey),
-              child: Center(
-                child: TypeAheadField<Ward?>(
-                  hideKeyboard: true,
-                  suggestionsCallback: (name) async {
-                    if (_selected_district == null) {
-                      return [];
-                    }
-                    if (wardFocusNode.hasFocus &&
-                        _wardController.text.isNotEmpty) {
-                      var wardResponse = await AddressRepository()
-                          .getWardListByDistrictCode(
-                              _selected_district!.id!); // blank response
-                      return wardResponse;
-                    }
-                    if (_selected_ward == null) {
-                      var wardResponse = await AddressRepository()
-                          .getWardListByDistrictCode(
-                              _selected_district!.id!); // blank response
-                      return wardResponse;
-                    }
-                    var wardResponse = await AddressRepository()
-                        .getWardByCode(_selected_ward!.id!);
-                    return [wardResponse!];
-                  },
-                  loadingBuilder: (context) {
-                    return Container(
-                      height: 40.h,
-                      child: Center(
-                          child: Text(
-                              AppLocalizations.of(context)!.loading_wards_ucf,
-                              style: TextStyle(color: MyTheme.medium_grey))),
-                    );
-                  },
-                  itemBuilder: (context, dynamic city) {
-                    //print(suggestion.toString());
-                    return ListTile(
-                      dense: true,
-                      title: Text(
-                        city.name,
-                        style: const TextStyle(color: MyTheme.font_grey),
-                      ),
-                    );
-                  },
-                  noItemsFoundBuilder: (context) {
-                    return Container(
-                      alignment: Alignment.centerLeft,
-                      height: 40.h,
-                      child: Center(
-                          child: Text(
-                              AppLocalizations.of(context)!.no_ward_available,
-                              style: TextStyle(color: MyTheme.medium_grey))),
-                    );
-                  },
-                  onSuggestionSelected: (Ward? ward) {
-                    onSelectWardDuringAdd(
-                      ward,
-                    );
-                  },
-                  textFieldConfiguration: TextFieldConfiguration(
-                    focusNode: wardFocusNode,
-                    onTap: () {
-                      setState(() {
-                        wardFocusNode.requestFocus();
-                      });
-                    },
-                    onEditingComplete: () {
-                      setState(() {
-                        wardFocusNode.unfocus();
-                      });
-                    },
+          // Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
+          //   child: Container(
+          //     height: 40.h,
+          //     decoration: BoxDecoration(
+          //         borderRadius: BorderRadius.circular(3.r),
+          //         color: MyTheme.textfield_grey),
+          //     child: TypeAheadField<City>(
+          //       hideKeyboard: true,
+          //       onSuggestionsBoxToggle: (p0) {
+          //         print("P0 is: $p0");
+          //       },
+          //       suggestionsCallback: (name) async {
+          //         print("Check again");
+          //         if (cityFocusNode.hasFocus &&
+          //             _cityController.text.isNotEmpty) {
+          //           var cityResponse = await AddressRepository()
+          //               .getCityList(); // blank response
+          //           return cityResponse;
+          //         }
+          //         if (_selected_city == null) {
+          //           var cityResponse = await AddressRepository()
+          //               .getCityList(); // blank response
+          //           return cityResponse;
+          //         }
+          //         var cityResponse = await AddressRepository()
+          //             .getCityByCode(_selected_city!.id!);
+          //         return [cityResponse!];
+          //       },
+          //       loadingBuilder: (context) {
+          //         return SizedBox(
+          //           height: 40.h,
+          //           child: Center(
+          //               child: Text(
+          //                   AppLocalizations.of(context)!.loading_cities_ucf,
+          //                   style: TextStyle(color: MyTheme.medium_grey))),
+          //         );
+          //       },
+          //       itemBuilder: (context, dynamic city) {
+          //         //print(suggestion.toString());
+          //         return ListTile(
+          //           dense: true,
+          //           title: Text(
+          //             city.name,
+          //             style: const TextStyle(color: MyTheme.font_grey),
+          //           ),
+          //         );
+          //       },
+          //       noItemsFoundBuilder: (context) {
+          //         return SizedBox(
+          //           height: 40.h,
+          //           child: Center(
+          //               child: Text(
+          //                   AppLocalizations.of(context)!.no_city_available,
+          //                   style: TextStyle(color: MyTheme.medium_grey))),
+          //         );
+          //       },
+          //       onSuggestionSelected: (City city) {
+          //         print("Check again");
+          //         onSelectCityDuringAdd(
+          //           city,
+          //         );
+          //       },
+          //       textFieldConfiguration: TextFieldConfiguration(
+          //         focusNode: cityFocusNode,
+          //         onTap: () {
+          //           setState(() {
+          //             cityFocusNode.requestFocus();
+          //           });
+          //         },
+          //         onEditingComplete: () {
+          //           setState(() {
+          //             cityFocusNode.unfocus();
+          //           });
+          //         },
+          //         //autofocus: true,
+          //         controller: _cityController,
+          //         style: TextStyle(fontSize: 12.sp),
+          //         onSubmitted: (txt) {
+          //           // keep blank
+          //         },
+          //         decoration: InputDecoration(
+          //             contentPadding:
+          //                 EdgeInsets.symmetric(horizontal: 20.w, vertical: 3.h),
+          //             hintText: LangText(context: context).getLocal()!.city_ucf,
+          //             border: OutlineInputBorder(
+          //               borderRadius: BorderRadius.circular(10.r),
+          //             ),
+          //             suffixIcon: const Icon(Icons.arrow_drop_down)),
+          //       ),
+          //     ),
+          //   ),
+          // ),
 
-                    //autofocus: true,
-                    controller: _wardController,
-                    style: TextStyle(fontSize: 12.sp),
-                    onSubmitted: (txt) {
-                      // keep blank
-                    },
-                    decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: 20.w, vertical: 3.h),
-                        hintText:
-                            LangText(context: context).getLocal()!.ward_ucf,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r),
-                        ),
-                        suffixIcon: const Icon(Icons.arrow_drop_down)),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          spacer(height: 10.h),
+          // spacer(height: 10.h),
+          // Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
+          //   child: Container(
+          //     height: 40.h,
+          //     decoration: BoxDecoration(
+          //         borderRadius: BorderRadius.circular(10.r),
+          //         color: MyTheme.textfield_grey),
+          //     child: TypeAheadField<District?>(
+          //       hideKeyboard: true,
+          //       suggestionsCallback: (name) async {
+          //         if (_selected_city == null) {
+          //           return [];
+          //         }
+          //         if (districtFocusNode.hasFocus &&
+          //             _districtController.text.isNotEmpty) {
+          //           var districtResponse = await AddressRepository()
+          //               .getDistrictListByCityCode(
+          //                   _selected_city!.id!); // blank response
+          //           return districtResponse;
+          //         }
+          //         if (_selected_district == null) {
+          //           var districtResponse = await AddressRepository()
+          //               .getDistrictListByCityCode(
+          //                   _selected_city!.id!); // blank response
+          //           return districtResponse;
+          //         }
+          //         var districtResponse = await AddressRepository()
+          //             .getDistrictByCode(_selected_district!.id!);
+          //         return [districtResponse];
+          //       },
+          //       loadingBuilder: (context) {
+          //         return SizedBox(
+          //           height: 40.h,
+          //           child: Center(
+          //               child: Text(
+          //                   AppLocalizations.of(context)!.loading_districts_ucf,
+          //                   style: TextStyle(color: MyTheme.medium_grey))),
+          //         );
+          //       },
+          //       itemBuilder: (context, dynamic city) {
+          //         //print(suggestion.toString());
+          //         return ListTile(
+          //           dense: true,
+          //           title: Text(
+          //             city.name,
+          //             style: TextStyle(color: MyTheme.font_grey),
+          //           ),
+          //         );
+          //       },
+          //       noItemsFoundBuilder: (context) {
+          //         return SizedBox(
+          //           height: 40.h,
+          //           child: Center(
+          //               child: Text(
+          //                   AppLocalizations.of(context)!.no_district_available,
+          //                   style: TextStyle(color: MyTheme.medium_grey))),
+          //         );
+          //       },
+          //       onSuggestionSelected: (District? district) {
+          //         onSelectDistrictDuringAdd(
+          //           district,
+          //         );
+          //       },
+          //       textFieldConfiguration: TextFieldConfiguration(
+          //         focusNode: districtFocusNode,
+          //         onTap: () {
+          //           setState(() {
+          //             districtFocusNode.requestFocus();
+          //           });
+          //         },
+          //         onEditingComplete: () {
+          //           setState(() {
+          //             districtFocusNode.unfocus();
+          //           });
+          //         },
+          //         //autofocus: true,
+          //         controller: _districtController,
+          //         style: TextStyle(fontSize: 12.sp),
+          //         onSubmitted: (txt) {
+          //           // keep blank
+          //         },
+          //         decoration: InputDecoration(
+          //             contentPadding:
+          //                 EdgeInsets.symmetric(horizontal: 20.w, vertical: 3.h),
+          //             hintText:
+          //                 LangText(context: context).getLocal()!.district_ucf,
+          //             border: OutlineInputBorder(
+          //               borderRadius: BorderRadius.circular(10.r),
+          //             ),
+          //             suffixIcon: const Icon(Icons.arrow_drop_down)),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // spacer(height: 10.h),
+          // Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
+          //   child: Container(
+          //     alignment: Alignment.centerLeft,
+          //     height: 40.h,
+          //     decoration: BoxDecoration(
+          //         borderRadius: BorderRadius.circular(10.r),
+          //         color: MyTheme.textfield_grey),
+          //     child: Center(
+          //       child: TypeAheadField<Ward?>(
+          //         hideKeyboard: true,
+          //         suggestionsCallback: (name) async {
+          //           if (_selected_district == null) {
+          //             return [];
+          //           }
+          //           if (wardFocusNode.hasFocus &&
+          //               _wardController.text.isNotEmpty) {
+          //             var wardResponse = await AddressRepository()
+          //                 .getWardListByDistrictCode(
+          //                     _selected_district!.id!); // blank response
+          //             return wardResponse;
+          //           }
+          //           if (_selected_ward == null) {
+          //             var wardResponse = await AddressRepository()
+          //                 .getWardListByDistrictCode(
+          //                     _selected_district!.id!); // blank response
+          //             return wardResponse;
+          //           }
+          //           var wardResponse = await AddressRepository()
+          //               .getWardByCode(_selected_ward!.id!);
+          //           return [wardResponse!];
+          //         },
+          //         loadingBuilder: (context) {
+          //           return Container(
+          //             height: 40.h,
+          //             child: Center(
+          //                 child: Text(
+          //                     AppLocalizations.of(context)!.loading_wards_ucf,
+          //                     style: TextStyle(color: MyTheme.medium_grey))),
+          //           );
+          //         },
+          //         itemBuilder: (context, dynamic city) {
+          //           //print(suggestion.toString());
+          //           return ListTile(
+          //             dense: true,
+          //             title: Text(
+          //               city.name,
+          //               style: const TextStyle(color: MyTheme.font_grey),
+          //             ),
+          //           );
+          //         },
+          //         noItemsFoundBuilder: (context) {
+          //           return Container(
+          //             alignment: Alignment.centerLeft,
+          //             height: 40.h,
+          //             child: Center(
+          //                 child: Text(
+          //                     AppLocalizations.of(context)!.no_ward_available,
+          //                     style: TextStyle(color: MyTheme.medium_grey))),
+          //           );
+          //         },
+          //         onSuggestionSelected: (Ward? ward) {
+          //           onSelectWardDuringAdd(
+          //             ward,
+          //           );
+          //         },
+          //         textFieldConfiguration: TextFieldConfiguration(
+          //           focusNode: wardFocusNode,
+          //           onTap: () {
+          //             setState(() {
+          //               wardFocusNode.requestFocus();
+          //             });
+          //           },
+          //           onEditingComplete: () {
+          //             setState(() {
+          //               wardFocusNode.unfocus();
+          //             });
+          //           },
+
+          //           //autofocus: true,
+          //           controller: _wardController,
+          //           style: TextStyle(fontSize: 12.sp),
+          //           onSubmitted: (txt) {
+          //             // keep blank
+          //           },
+          //           decoration: InputDecoration(
+          //               contentPadding: EdgeInsets.symmetric(
+          //                   horizontal: 20.w, vertical: 3.h),
+          //               hintText:
+          //                   LangText(context: context).getLocal()!.ward_ucf,
+          //               border: OutlineInputBorder(
+          //                 borderRadius: BorderRadius.circular(10.r),
+          //               ),
+          //               suffixIcon: const Icon(Icons.arrow_drop_down)),
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // spacer(height: 10.h),
 
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),

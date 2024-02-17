@@ -53,7 +53,7 @@ class _ListOrderState extends State<ListOrder> {
           ? ListView.separated(
               itemBuilder: (context, index) => ShimmerHelper()
                   .buildBasicShimmer(
-                      height: MediaQuery.of(context).size.height * 0.12,
+                      height: MediaQuery.of(context).size.height * 0.15,
                       width: MediaQuery.of(context).size.width * 0.9),
               separatorBuilder: (context, index) => SizedBox(
                     height: 10.h,

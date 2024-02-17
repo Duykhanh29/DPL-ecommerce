@@ -1,4 +1,5 @@
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
+import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
@@ -67,9 +68,7 @@ class _AllProductScreenState extends State<AllProductScreen> {
 
   Widget buildListProduct(BuildContext context) {
     if (isLoading) {
-      return const Center(
-        child: LinearProgressIndicator(),
-      );
+      return SizedBox(child: ShimmerHelper().buildProductGridShimmer());
     } else if (allProduct != null && allProduct!.isNotEmpty) {
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 5.h),

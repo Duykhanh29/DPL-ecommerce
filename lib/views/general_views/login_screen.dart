@@ -276,7 +276,7 @@ class LoginScreen extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10.h),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
             padding: EdgeInsets.only(
@@ -284,15 +284,21 @@ class LoginScreen extends StatelessWidget {
               bottom: 9.h,
             ),
             child: SizedBox(
-              width: 160.h,
+              width: 100.w,
               child: Divider(
                 color: MyTheme.accent_color,
                 height: 0.4,
               ),
             ),
           ),
+          SizedBox(
+            width: 20.w,
+          ),
           Text(
             LangText(context: context).getLocal()!.or,
+          ),
+          SizedBox(
+            width: 20.w,
           ),
           Padding(
             padding: EdgeInsets.only(
@@ -300,7 +306,7 @@ class LoginScreen extends StatelessWidget {
               bottom: 9.h,
             ),
             child: SizedBox(
-              width: 160.h,
+              width: 100.w,
               child: Divider(
                 color: MyTheme.accent_color,
                 height: 0.4,

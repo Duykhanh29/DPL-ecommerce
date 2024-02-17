@@ -5,12 +5,10 @@ import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/search_result_page.dart';
 import 'package:flutter/material.dart';
 
-import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/models/category.dart';
 import 'package:dpl_ecommerce/repositories/category_repo.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CategoryInterface extends StatefulWidget {
   String name;

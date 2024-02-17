@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
+import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/repositories/order_repo.dart';
@@ -52,7 +53,7 @@ class _RatingState extends State<RatingScreen> {
           textAlign: TextAlign.center,
         ),
         centerTitle: true,
-
+        leading: CustomArrayBackWidget(),
         //leading: Icon(Icons.menu),
       ),
       body: SingleChildScrollView(

@@ -70,11 +70,13 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
   );
   TextEditingController searchController = TextEditingController();
   SearchHistoryRepo searchHistoryRepo = SearchHistoryRepo();
+  FocusNode focusNode = FocusNode();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     searchController.text = widget.searchKey ?? "";
+    focusNode.unfocus();
   }
 
   void reset() {
@@ -102,7 +104,12 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
             //SizedBox(width: 8.0),
             Expanded(
               child: CustomSearchView(
-                onChanged: (p0) {},
+                focusNode: focusNode,
+                onChanged: (p0) {
+                  setState(() {
+                    focusNode.requestFocus();
+                  });
+                },
                 autofocus: false,
                 controller: searchController,
                 textInputAction: TextInputAction.search,
@@ -125,17 +132,20 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                 },
                 suffix:
                     searchController.text != "" && searchController.text != null
-                        ? InkWell(
-                            onTap: () {
-                              setState(() {
-                                searchController.text = "";
-                                // reset();
-                                // Navigator.of(context).pop();
-                              });
-                            },
-                            child: Icon(
-                              Icons.close,
-                              color: MyTheme.green_light,
+                        ? Padding(
+                            padding: EdgeInsets.only(right: 4.w),
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  searchController.text = "";
+                                  // reset();
+                                  // Navigator.of(context).pop();
+                                });
+                              },
+                              child: Icon(
+                                Icons.close,
+                                color: MyTheme.green_light,
+                              ),
                             ),
                           )
                         : null,
@@ -188,40 +198,49 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
       ),
       body: Padding(
         padding: EdgeInsets.fromLTRB(5.w, 5.h, 0, 5.h),
-        child: widget.list != null
-            ? Container(
-                width: double.maxFinite,
-                child: Column(
-                  children: [
-                    Expanded(
-                        child: SingleChildScrollView(
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 5.h, left: 10.w),
-                        child: Column(
-                          children: [
-                            //SizedBox(height: 5.h),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 10.h),
-                              child: _buildDealOfTheDay(
-                                context,
-                                dealOfTheDayText: LangText(context: context)
-                                    .getLocal()!
-                                    .results_ucf,
-                                viewAllText: "",
+        child: GestureDetector(
+          onTap: () {
+            if (focusNode.hasFocus) {
+              setState(() {
+                focusNode.unfocus();
+              });
+            }
+          },
+          child: widget.list != null
+              ? Container(
+                  width: double.maxFinite,
+                  child: Column(
+                    children: [
+                      Expanded(
+                          child: SingleChildScrollView(
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: 5.h, left: 10.w),
+                          child: Column(
+                            children: [
+                              //SizedBox(height: 5.h),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10.h),
+                                child: _buildDealOfTheDay(
+                                  context,
+                                  dealOfTheDayText: LangText(context: context)
+                                      .getLocal()!
+                                      .results_ucf,
+                                  viewAllText: "",
+                                ),
                               ),
-                            ),
-                            //SizedBox(height: 16.h),
-                            _buildProductSmallList1(context, widget.list!),
-                          ],
+                              //SizedBox(height: 16.h),
+                              _buildProductSmallList1(context, widget.list!),
+                            ],
+                          ),
                         ),
-                      ),
-                    ))
-                  ],
+                      ))
+                    ],
+                  ),
+                )
+              : Center(
+                  child: Image.asset(ImageData.imageNotFound),
                 ),
-              )
-            : Center(
-                child: Image.asset(ImageData.imageNotFound),
-              ),
+        ),
       ),
     );
   }

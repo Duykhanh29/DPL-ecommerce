@@ -187,13 +187,13 @@ class OrderRepo {
           ],
           paymentTypeID: "paymentTypeID01",
           receivedAddress: AddressInfor(
-              city: City(id: 8, name: "Tuyen Quang"),
+              city: City(id: "8", name: "Tuyen Quang"),
               country: "Viet Nam",
               latitude: 120.12,
               longitude: 120.12,
               isDefaultAddress: true,
               name: "Home",
-              district: District(id: 123, name: "Hoang Mai"))));
+              district: District(id: "123", name: "Hoang Mai"))));
   final Order order = Order(
       deliverServiceID: "deliverID01",
       // deliverStatus: DeliverStatus.delivering,
@@ -307,11 +307,11 @@ class OrderRepo {
       ],
       paymentTypeID: "paymentTypeID01",
       receivedAddress: AddressInfor(
-          city: City(id: 8, name: "Tuyen Quang"),
+          city: City(id: "8", name: "Tuyen Quang"),
           country: "Viet Nam",
           latitude: 120.12,
           longitude: 120.12,
           isDefaultAddress: true,
           name: "Home",
-          district: District(id: 123, name: "Hoang Mai")));
+          district: District(id: "123", name: "Hoang Mai")));
 }

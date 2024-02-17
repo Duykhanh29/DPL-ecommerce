@@ -235,7 +235,7 @@ class FirstPage extends StatefulWidget {
 
 class _FirstPageState extends State<FirstPage> {
   auth.User? user;
-
+  bool isLoading = true;
   @override
   void initState() {
     // TODO: implement initState
@@ -246,8 +246,12 @@ class _FirstPageState extends State<FirstPage> {
     auth.FirebaseAuth.instance.authStateChanges().listen((event) {
       setState(() {
         user = event;
+        isLoading = false;
       });
     });
+    // setState(() {
+
+    // });
   }
 
   @override
@@ -275,22 +279,24 @@ class _FirstPageState extends State<FirstPage> {
     //     }
     //   },
     // );
-    return user != null
-        ? const AuthorizatedPage()
-        : Consumer<LocaleProvider>(
-            builder: (context, value, child) => MaterialApp(
-              debugShowCheckedModeBanner: false,
-              home: LoginScreen(),
-              localizationsDelegates: const [
-                AppLocalizations.delegate, // Add this line
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: AppLocalizations.supportedLocales,
-              locale: value.locale,
-            ),
-          );
+    return isLoading
+        ? const Scaffold()
+        : user != null
+            ? const AuthorizatedPage()
+            : Consumer<LocaleProvider>(
+                builder: (context, value, child) => MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  home: LoginScreen(),
+                  localizationsDelegates: const [
+                    AppLocalizations.delegate, // Add this line
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  supportedLocales: AppLocalizations.supportedLocales,
+                  locale: value.locale,
+                ),
+              );
   }
 }
 

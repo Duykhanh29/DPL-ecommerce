@@ -1,11 +1,7 @@
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
-import 'package:dpl_ecommerce/models/city.dart';
-import 'package:dpl_ecommerce/models/district.dart';
-import 'package:dpl_ecommerce/models/ward.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/address_view_model.dart';
-import 'package:dpl_ecommerce/views/consumer/screens/address_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +28,7 @@ class __ChangeAddressState extends State<ChangeAddress> {
           .show(),
       //body: ChangeAddress(),
       body: ListView.builder(
-        itemCount: listAddress!.length,
+        itemCount: listAddress.length,
         itemBuilder: (context, index) {
           final op = listAddress[index];
           return Padding(
@@ -81,10 +77,7 @@ class __ChangeAddressState extends State<ChangeAddress> {
                                 height: 10.h,
                               ),
                               Text(
-                                  listAddress![index].name! +
-                                          " | " +
-                                          listAddress![index].number! ??
-                                      "",
+                                  "${listAddress[index].name!} | ${listAddress[index].number!}",
                                   maxLines: 3,
                                   style: TextStyle(
                                     fontSize: 16.sp,
@@ -94,7 +87,7 @@ class __ChangeAddressState extends State<ChangeAddress> {
                               SizedBox(
                                 height: 8.h,
                               ),
-                              Text(listAddress![index].city!.name!,
+                              Text(listAddress[index].city!.name!,
                                   maxLines: 3,
                                   style: TextStyle(
                                     fontSize: 16.sp,
@@ -104,7 +97,7 @@ class __ChangeAddressState extends State<ChangeAddress> {
                               SizedBox(
                                 height: 8.h,
                               ),
-                              Text(listAddress![index].district!.name!,
+                              Text(listAddress[index].district!.name!,
                                   maxLines: 3,
                                   style: TextStyle(
                                     fontSize: 16.sp,
@@ -114,7 +107,7 @@ class __ChangeAddressState extends State<ChangeAddress> {
                               SizedBox(
                                 height: 8.h,
                               ),
-                              Text(listAddress![index].ward!.name!,
+                              Text(listAddress[index].ward!.name!,
                                   maxLines: 3,
                                   style: TextStyle(
                                     fontSize: 16.sp,

@@ -178,11 +178,11 @@ class _SearchScreenState extends State<SearchScreen> {
 
   PreferredSize buildAppBar(BuildContext context, UserModel user) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(110.h),
+      preferredSize: Size.fromHeight(130.h),
       child: AppBar(
           backgroundColor: MyTheme.accent_color_3,
           leading: Container(
-            padding: EdgeInsets.only(bottom: 25.h),
+            padding: EdgeInsets.only(top: 15.h),
             width: 40,
             height: 40,
             child: InkWell(
@@ -209,13 +209,16 @@ class _SearchScreenState extends State<SearchScreen> {
       padding: EdgeInsets.only(left: 45.w, right: 25.w, top: 50.h),
       child: CustomSearchView(
         suffix: searchController.text != "" && searchController.text != null
-            ? InkWell(
-                onTap: () {
-                  setState(() {
-                    searchController.text = "";
-                  });
-                },
-                child: const Icon(Icons.close),
+            ? Padding(
+                padding: EdgeInsets.only(right: 2.w),
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      searchController.text = "";
+                    });
+                  },
+                  child: const Icon(Icons.close),
+                ),
               )
             : null,
         textInputAction: TextInputAction.search,

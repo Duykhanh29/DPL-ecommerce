@@ -204,6 +204,7 @@ class UserFirestoreDatabase {
               userData['userInfor']['consumerInfor']['addressInfors'] != null) {
             final addressInforsData = userData['userInfor']['consumerInfor']
                 ['addressInfors'] as List<dynamic>;
+            print("How many leng: ${addressInforsData.length}");
             addressInfors = addressInforsData
                 .map((addressData) => AddressInfor.fromJson(addressData))
                 .toList();
@@ -213,6 +214,7 @@ class UserFirestoreDatabase {
               result.add(element);
             }
           }
+
           streamController.sink.add(result);
         } else {
           print("Not exists ");

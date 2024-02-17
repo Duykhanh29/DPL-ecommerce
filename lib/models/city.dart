@@ -7,11 +7,11 @@ class City {
   @override
   toString() => '$name';
 
-  int? id;
+  String? id;
   String? name;
 
   factory City.fromJson(Map<String, dynamic> json) => City(
-        id: json["code"],
+        id: json["code"].toString(),
         name: json["name"],
       );
 

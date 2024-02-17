@@ -17,21 +17,21 @@ class AuthRepo {
     userInfor: UserInfor(
       consumerInfor: ConsumerInfor(addressInfors: [
         AddressInfor(
-            city: City(id: 8, name: "Tuyen Quang"),
+            city: City(id: "8", name: "Tuyen Quang"),
             country: "Viet Nam",
             isDefaultAddress: true,
             latitude: 123,
             longitude: 150,
             name: "My home",
-            district: District(id: 123, name: "Hoang Mai")),
+            district: District(id: "123", name: "Hoang Mai")),
         AddressInfor(
-            city: City(id: 8, name: "Tuyen Quang"),
+            city: City(id: "8", name: "Tuyen Quang"),
             country: "Viet Nam",
             isDefaultAddress: false,
             latitude: 140,
             longitude: 180,
             name: "My school",
-            district: District(id: 123, name: "Hoang Mai")),
+            district: District(id: "123", name: "Hoang Mai")),
       ], raking: Raking.gold, rewardPoints: 100),
     ),
   );

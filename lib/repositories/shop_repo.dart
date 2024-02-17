@@ -110,13 +110,13 @@ class ShopRepo {
       totalProduct: 32,
       name: "DK",
       addressInfor: AddressInfor(
-          city: City(id: 8, name: "Tuyen Quang"),
+          city: City(id: "8", name: "Tuyen Quang"),
           country: "Viet nam",
           isDefaultAddress: false,
           latitude: 123.12,
           longitude: 123,
           name: "My address",
-          district: District(id: 123, name: "Hoang Mai")),
+          district: District(id: "123", name: "Hoang Mai")),
       contactPhone: "0987654321",
       id: "shopID01",
       shopDescription:
@@ -133,13 +133,13 @@ class ShopRepo {
       totalProduct: 54,
       name: "DK",
       addressInfor: AddressInfor(
-          city: City(id: 8, name: "Tuyen Quang"),
+          city: City(id: "8", name: "Tuyen Quang"),
           country: "Viet Nam",
           isDefaultAddress: false,
           latitude: 123.12,
           longitude: 123,
           name: "My Address 1",
-          district: District(id: 123, name: "Hoang Mai")),
+          district: District(id: "123", name: "Hoang Mai")),
       contactPhone: "0987654321",
       id: "shopID02",
       shopDescription:
@@ -156,13 +156,13 @@ class ShopRepo {
       ratingCount: 123,
       totalProduct: 14,
       addressInfor: AddressInfor(
-          city: City(id: 8, name: "Tuyen Quang"),
+          city: City(id: "8", name: "Tuyen Quang"),
           country: "Viet Nam",
           isDefaultAddress: true,
           latitude: 10.776889,
           longitude: 106.700897,
           name: "My Address 2",
-          district: District(id: 123, name: "Hoang Mai")),
+          district: District(id: "123", name: "Hoang Mai")),
       contactPhone: "0901234567",
       id: "shopID03",
       shopDescription:
@@ -179,13 +179,13 @@ class ShopRepo {
       totalProduct: 23,
       name: "XYZ Shop",
       addressInfor: AddressInfor(
-          city: City(id: 8, name: "Tuyen Quang"),
+          city: City(id: "8", name: "Tuyen Quang"),
           country: "Viet Nam",
           isDefaultAddress: false,
           latitude: 16.047079,
           longitude: 108.206230,
           name: "My Address 3",
-          district: District(id: 123, name: "Hoang Mai")),
+          district: District(id: "123", name: "Hoang Mai")),
       contactPhone: "0977123456",
       shopDescription: "THis is incredible store for you to try on clothes",
       id: "shopID04",
@@ -200,13 +200,13 @@ class ShopRepo {
       totalProduct: 21,
       name: "Fashion Haven",
       addressInfor: AddressInfor(
-          city: City(id: 8, name: "Tuyen Quang"),
+          city: City(id: "8", name: "Tuyen Quang"),
           country: "Viet Nam",
           isDefaultAddress: false,
           latitude: 16.466370,
           longitude: 107.590868,
           name: "My Address 4",
-          district: District(id: 123, name: "Hoang Mai")),
+          district: District(id: "123", name: "Hoang Mai")),
       contactPhone: "0938888888",
       id: "shopID05",
       shopDescription:
@@ -223,13 +223,13 @@ class ShopRepo {
       totalProduct: 2,
       name: "Tech Junction",
       addressInfor: AddressInfor(
-          city: City(id: 8, name: "Tuyen Quang"),
+          city: City(id: "8", name: "Tuyen Quang"),
           country: "Viet Nam",
           isDefaultAddress: true,
           latitude: 12.238791,
           longitude: 109.196290,
           name: "My Address 5",
-          district: District(id: 123, name: "Hoang Mai")),
+          district: District(id: "123", name: "Hoang Mai")),
       contactPhone: "0912345678",
       id: "shopID06",
       shopDescription:
@@ -245,13 +245,13 @@ class ShopRepo {
       totalProduct: 14,
       name: "Gourmet Delights",
       addressInfor: AddressInfor(
-          city: City(id: 8, name: "Tuyen Quang"),
+          city: City(id: "8", name: "Tuyen Quang"),
           country: "Viet Nam",
           isDefaultAddress: false,
           latitude: 10.040911,
           longitude: 105.779464,
           name: "My Address 6",
-          district: District(id: 123, name: "Hoang Mai")),
+          district: District(id: "123", name: "Hoang Mai")),
       contactPhone: "0965432109",
       id: "shopID07",
       logo:
@@ -264,13 +264,13 @@ class ShopRepo {
     Shop(
       name: "Books Galore",
       addressInfor: AddressInfor(
-          city: City(id: 8, name: "Tuyen Quang"),
+          city: City(id: "8", name: "Tuyen Quang"),
           country: "Viet Nam",
           isDefaultAddress: false,
           latitude: 10.347652,
           longitude: 107.084789,
           name: "My Address 7",
-          district: District(id: 123, name: "Hoang Mai")),
+          district: District(id: "123", name: "Hoang Mai")),
       contactPhone: "0987654320",
       id: "shopID08",
       shopDescription:
@@ -287,13 +287,13 @@ class ShopRepo {
         totalProduct: 54,
         name: "Home Essentials",
         addressInfor: AddressInfor(
-            city: City(id: 8, name: "Tuyen Quang"),
+            city: City(id: "8", name: "Tuyen Quang"),
             country: "Viet Nam",
             isDefaultAddress: true,
             latitude: 11.936457,
             longitude: 108.441129,
             name: "My Address 8",
-            district: District(id: 123, name: "Hoang Mai")),
+            district: District(id: "123", name: "Hoang Mai")),
         contactPhone: "0905123456",
         id: "shopID09",
         logo:
@@ -310,13 +310,13 @@ class ShopRepo {
       shopDescription:
           "Discover the latest trends and styles at Fashion Haven Boutique. From casual wear to elegant evening dresses, we have everything to keep you in vogue",
       addressInfor: AddressInfor(
-          city: City(id: 8, name: "Tuyen Quang"),
+          city: City(id: "8", name: "Tuyen Quang"),
           country: "Viet Nam",
           isDefaultAddress: false,
           latitude: 10.931838,
           longitude: 108.103235,
           name: "My Address 9",
-          district: District(id: 123, name: "Hoang Mai")),
+          district: District(id: "123", name: "Hoang Mai")),
       contactPhone: "0917123456",
       id: "shopID10",
       logo:
@@ -330,13 +330,13 @@ class ShopRepo {
         totalProduct: 14,
         name: "Pet Paradise",
         addressInfor: AddressInfor(
-            city: City(id: 8, name: "Tuyen Quang"),
+            city: City(id: "8", name: "Tuyen Quang"),
             country: "Viet Nam",
             isDefaultAddress: false,
             latitude: 20.862732,
             longitude: 106.683732,
             name: "My Address 10",
-            district: District(id: 123, name: "Hoang Mai")),
+            district: District(id: "123", name: "Hoang Mai")),
         contactPhone: "0909654321",
         id: "shopID11",
         shopDescription:
@@ -348,13 +348,13 @@ class ShopRepo {
     Shop(
       name: "Fashionista",
       addressInfor: AddressInfor(
-          city: City(id: 8, name: "Tuyen Quang"),
+          city: City(id: "8", name: "Tuyen Quang"),
           country: "Viet Nam",
           isDefaultAddress: false,
           latitude: 21.028511,
           longitude: 105.854164,
           name: "My Address 11",
-          district: District(id: 123, name: "Hoang Mai")),
+          district: District(id: "123", name: "Hoang Mai")),
       contactPhone: "0987654322",
       id: "shopID12",
       shopDescription:
@@ -368,13 +368,13 @@ class ShopRepo {
     Shop(
         name: "Tech Trend",
         addressInfor: AddressInfor(
-            city: City(id: 8, name: "Tuyen Quang"),
+            city: City(id: "8", name: "Tuyen Quang"),
             country: "Viet Nam",
             isDefaultAddress: false,
             latitude: 10.776889,
             longitude: 106.700897,
             name: "My Address 12",
-            district: District(id: 123, name: "Hoang Mai")),
+            district: District(id: "123", name: "Hoang Mai")),
         contactPhone: "0901234568",
         id: "shopID13",
         shopDescription:

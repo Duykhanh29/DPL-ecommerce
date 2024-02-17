@@ -129,13 +129,13 @@ class OrderViewModel extends ChangeNotifier {
       ],
       paymentTypeID: "paymentTypeID01",
       receivedAddress: AddressInfor(
-          city: City(id: 8, name: "Tuyen Quang"),
+          city: City(id: "8", name: "Tuyen Quang"),
           country: "Viet Nam",
           latitude: 120.12,
           longitude: 120.12,
           isDefaultAddress: true,
           name: "Home",
-          district: District(id: 123, name: "Hoang Mai")));
+          district: District(id: "123", name: "Hoang Mai")));
   void orderProduct(OrderingProduct product) {
     order.orderingProductsID!.add(product);
     notifyListeners();

@@ -1,18 +1,13 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dpl_ecommerce/const/app_decoration.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/const/my_text_style.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
-import 'package:dpl_ecommerce/customs/custom_button_style.dart';
-import 'package:dpl_ecommerce/customs/custom_elevate_button.dart';
-import 'package:dpl_ecommerce/customs/custom_text_form_field.dart';
+
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
 import 'package:dpl_ecommerce/helpers/shimmer_helper.dart';
 import 'package:dpl_ecommerce/helpers/toast_helper.dart';
 import 'package:dpl_ecommerce/models/address_infor.dart';
-import 'package:dpl_ecommerce/models/cart.dart';
 import 'package:dpl_ecommerce/models/order_model.dart' as orderModel;
 import 'package:dpl_ecommerce/models/ordering_product.dart';
 import 'package:dpl_ecommerce/models/product.dart';
@@ -21,7 +16,6 @@ import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/models/voucher.dart';
 import 'package:dpl_ecommerce/models/voucher_for_user.dart';
 import 'package:dpl_ecommerce/repositories/cart_repo.dart';
-import 'package:dpl_ecommerce/repositories/product_in_cart_repo.dart';
 import 'package:dpl_ecommerce/repositories/product_repo.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/repositories/voucher_for_user_repo.dart';
@@ -35,7 +29,6 @@ import 'package:dpl_ecommerce/view_model/consumer/voucher_for_user_view_model.da
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/screens/checkout.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/cart_widgets/product_cart_item.dart';
-import 'package:dpl_ecommerce/views/consumer/screens/product_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';

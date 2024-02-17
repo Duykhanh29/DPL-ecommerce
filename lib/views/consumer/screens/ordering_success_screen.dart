@@ -49,6 +49,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
               children: [
                 Text(
                   AppLocalizations.of(context)!.order_success,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24.sp,
                     fontWeight: FontWeight.w700,
@@ -61,6 +62,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 ),
                 Text(
                   AppLocalizations.of(context)!.placed_successfully,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
@@ -109,7 +111,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width - 50,
-                    height: MediaQuery.of(context).size.height! * 0.07,
+                    height: MediaQuery.of(context).size.height * 0.07,
                     decoration: BoxDecoration(
                         border:
                             Border.all(color: MyTheme.accent_color, width: 1),
@@ -118,7 +120,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       child: Text(
                         AppLocalizations.of(context)!.back_the_home,
                         style: TextStyle(
-                          fontSize: 22.sp,
+                          fontSize: 20.sp,
                           fontWeight: FontWeight.w600,
                           color: MyTheme.accent_color,
                           decoration: TextDecoration.none,

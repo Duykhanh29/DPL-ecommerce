@@ -106,17 +106,24 @@ class _UserListVoucherState extends State<UserListVoucher> {
                 final voucherForUser = snapshot.data;
                 final listVoucherForUser = CommondMethods.getListVoucherForUser(
                     voucherForUser!, listVoucher!);
-                return ListView.builder(
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: EdgeInsets.only(
-                          bottom: 10.h, right: 20.w, left: 20.w, top: 10.h),
-                      child:
-                          UserVoucherItem(voucher: listVoucherForUser[index]),
-                    );
-                  },
-                  itemCount: listVoucherForUser!.length,
-                );
+                if (listVoucherForUser != null &&
+                    listVoucherForUser.isNotEmpty) {
+                  return ListView.builder(
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: EdgeInsets.only(
+                            bottom: 10.h, right: 20.w, left: 20.w, top: 10.h),
+                        child:
+                            UserVoucherItem(voucher: listVoucherForUser[index]),
+                      );
+                    },
+                    itemCount: listVoucherForUser!.length,
+                  );
+                } else {
+                  return Center(
+                    child: Image.asset(ImageData.imageNotFound),
+                  );
+                }
               } else {
                 return Center(
                   child: Image.asset(ImageData.imageNotFound),

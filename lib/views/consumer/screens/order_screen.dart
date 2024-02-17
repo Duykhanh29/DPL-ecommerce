@@ -28,6 +28,7 @@ class OrderScreen extends StatelessWidget {
     final user = userProvider.currentUser;
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         centerTitle: true,
         title: Text(
           LangText(context: context).getLocal()!.my_orders_ucf,
@@ -35,10 +36,7 @@ class OrderScreen extends StatelessWidget {
         ),
         backgroundColor: MyTheme.accent_color,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(10.h),
-        child: ListOrder(uid: user!.id!),
-      ),
+      body: ListOrder(uid: user!.id!),
     );
   }
 }

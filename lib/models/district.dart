@@ -7,11 +7,11 @@ class District {
   @override
   toString() => '$name';
 
-  int? id;
+  String? id;
   String? name;
 
   factory District.fromJson(Map<String, dynamic> json) => District(
-        id: json["code"],
+        id: json["code"].toString(),
         name: json["name"],
       );
 
