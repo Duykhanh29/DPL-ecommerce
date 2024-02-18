@@ -111,8 +111,7 @@ class _ReviewViewWidgetState extends State<ReviewViewWidget> {
               const Spacer(),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 5.w),
-                child: Text(
-                    DateHelper.convertCommonDateTime(widget.review!.time!)),
+                child: Text(DateHelper.convertCommonDate(widget.review!.time!)),
               )
             ],
             // ),

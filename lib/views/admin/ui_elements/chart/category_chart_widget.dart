@@ -51,6 +51,7 @@ class _CategoryChartWidgetState extends State<CategoryChartWidget> {
                       .getLocal()!
                       .number_of_products_by_category),
               legend: const Legend(
+                height: "50%",
                 isVisible: true,
                 overflowMode: LegendItemOverflowMode.wrap,
                 // textStyle: TextStyle(

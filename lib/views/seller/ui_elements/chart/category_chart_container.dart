@@ -50,7 +50,9 @@ class _CategoryChartContainerState extends State<CategoryChartContainer> {
                       .getLocal()!
                       .number_of_products_by_category),
               legend: const Legend(
-                  isVisible: true, overflowMode: LegendItemOverflowMode.wrap),
+                  height: "50%",
+                  isVisible: true,
+                  overflowMode: LegendItemOverflowMode.wrap),
               tooltipBehavior: _tooltipBehavior,
               series: <CircularSeries>[
                 PieSeries<CategoryChart, String>(

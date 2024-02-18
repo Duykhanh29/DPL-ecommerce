@@ -2,9 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dpl_ecommerce/helpers/date_helper.dart';
 import 'package:dpl_ecommerce/models/chat.dart';
 import 'package:dpl_ecommerce/models/message.dart';
+import 'package:dpl_ecommerce/models/shop.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/repositories/auth_repo.dart';
 import 'package:dpl_ecommerce/repositories/chat_repo.dart';
+import 'package:dpl_ecommerce/repositories/shop_repo.dart';
 import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
@@ -14,37 +16,83 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 
-class ChatItem extends StatelessWidget {
+class ChatItem extends StatefulWidget {
   ChatItem({super.key, required this.chat});
   // UserModel userModel = AuthRepo().user;
   Chat? chat;
+
+  @override
+  State<ChatItem> createState() => _ChatItemState();
+}
+
+class _ChatItemState extends State<ChatItem> {
   ChatRepo chatRepo = ChatRepo();
-  Text showName(UserModel currentUser, Chat chatData) {
-    if (currentUser.id == chat!.userID) {
-      return Text(chatData.shopName!);
+  UserRepo userRepo = UserRepo();
+  ShopRepo shopRepo = ShopRepo();
+  String? avatar;
+  String? name;
+  UserModel? user;
+  Shop? shop;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    // if (widget.chat!.userID == widget.uid) {
+    //   user = await userRepo.getUserByID(widget.chat!.sellerID!);
+    //   if (user != null) {
+    //     name = user!.firstName;
+    //     avatar = user!.avatar;
+    //   }
+    // } else {
+    // user = await userRepo.getUserByID(widget.chat!.userID!);
+    shop = await shopRepo.getShopByID(widget.chat!.shopID!);
+    if (shop != null) {
+      name = shop!.name;
+      avatar = shop!.logo;
     }
-    return Text(chatData.userName!);
+    // }
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Text showName(Chat chatData) {
+    if (name != null) {
+      return Text(name!);
+    }
+    return const Text("...");
+    // if (widget.currentUser.id == widget.chat!.userID) {
+    //   return Text(chatData.shopName!);
+    // }
+    // return Text(chatData.userName!);
   }
 
   Text showLastMsg() {
-    if (chat!.listMsg!.last.productID != null) {
+    if (widget.chat!.listMsg!.last.productID != null) {
       return const Text("Product detail");
     }
-    if (chat!.lastChatType == ChatType.image) {
+    if (widget.chat!.lastChatType == ChatType.image) {
       return const Text("An image is sent");
-    } else if (chat!.lastChatType == ChatType.video) {
+    } else if (widget.chat!.lastChatType == ChatType.video) {
       return const Text("A video is sent");
-    } else if (chat!.lastChatType == ChatType.link) {
+    } else if (widget.chat!.lastChatType == ChatType.link) {
       return const Text("A link is sent");
     }
-    return Text(chat!.lastMessage!);
+    return Text(widget.chat!.lastMessage!);
   }
 
-  String? getAvatar(UserModel currentUser, Chat chatData) {
-    if (currentUser.id == chatData.userID) {
-      return chatData.shopLogo!;
+  String? getAvatar(Chat chatData) {
+    // if (widget.currentUser.id == chatData.userID) {
+    //   return chatData.shopLogo!;
+    // }
+    // return chatData.userAvatar!;
+    if (avatar != null) {
+      return avatar;
     }
-    return chatData.userAvatar!;
   }
 
   @override
@@ -62,7 +110,7 @@ class ChatItem extends StatelessWidget {
             color: const Color.fromARGB(255, 135, 177, 254)),
         // margin: const EdgeInsets.only(top: 5),
         child: StreamBuilder(
-          stream: chatRepo.getChatDataByID(chat!.id!),
+          stream: chatRepo.getChatDataByID(widget.chat!.id!),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return ListTile();
@@ -87,16 +135,15 @@ class ChatItem extends StatelessWidget {
                           },
                         ));
                       },
-                      leading: url != null
+                      leading: avatar != null
                           ? CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(getAvatar(user!, chat!)!),
+                              backgroundImage: NetworkImage(getAvatar(chat)!),
                             )
                           : CircleAvatar(
                               backgroundImage:
                                   AssetImage(ImageData.circelAvatar),
                             ),
-                      title: showName(user, chat),
+                      title: showName(chat),
                       subtitle: buildSubtitle(chat, context),
                       trailing: Text(DateHelper.chatTime(
                           chat.listMsg!.last.time!.toDate())));
@@ -113,7 +160,7 @@ class ChatItem extends StatelessWidget {
 
   Widget buildTimeItem() {
     return StreamBuilder(
-      stream: chatRepo.getChatDataByID(chat!.id!),
+      stream: chatRepo.getChatDataByID(widget.chat!.id!),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(

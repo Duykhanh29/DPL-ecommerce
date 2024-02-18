@@ -14,35 +14,66 @@ import 'package:dpl_ecommerce/views/consumer/screens/chatting_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ChatSellerItem extends StatelessWidget {
+class ChatSellerItem extends StatefulWidget {
   ChatSellerItem({super.key, required this.chat});
-  UserModel userModel = AuthRepo().user;
   Chat? chat;
+
+  @override
+  State<ChatSellerItem> createState() => _ChatSellerItemState();
+}
+
+class _ChatSellerItemState extends State<ChatSellerItem> {
+  UserRepo userRepo = UserRepo();
+  UserModel? user;
+
   ChatRepo chatRepo = ChatRepo();
-  Text showName(UserModel currentUser, Chat chatData) {
-    if (currentUser.id == chat!.userID) {
-      return Text(chatData.shopName!);
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    user = await userRepo.getUserByID(widget.chat!.userID!);
+    print("User here: $user");
+    if (mounted) {
+      setState(() {});
     }
-    return Text(chatData.userName!);
+  }
+
+  Text showName() {
+    if (user != null) {
+      if (user!.firstName != null) {
+        return Text(user!.firstName!);
+      } else {
+        return const Text("Username");
+      }
+    }
+    return const Text("...");
+    // if (currentUser.id == widget.chat!.userID) {
+    //   return Text(chatData.shopName!);
+    // }
+    // return Text(chatData.userName!);
   }
 
   Text showLastMsg() {
-    if (chat!.listMsg!.last.productID != null) {
+    if (widget.chat!.listMsg!.last.productID != null) {
       return const Text("Product detail");
     }
-    if (chat!.lastChatType == ChatType.image) {
+    if (widget.chat!.lastChatType == ChatType.image) {
       return const Text("An image is sent");
-    } else if (chat!.lastChatType == ChatType.video) {
+    } else if (widget.chat!.lastChatType == ChatType.video) {
       return const Text("A video is sent");
-    } else if (chat!.lastChatType == ChatType.link) {
+    } else if (widget.chat!.lastChatType == ChatType.link) {
       return const Text("A link is sent");
     }
-    return Text(chat!.lastMessage!);
+    return Text(widget.chat!.lastMessage!);
   }
 
   Widget buildTimeItem() {
     return StreamBuilder(
-      stream: chatRepo.getChatDataByID(chat!.id!),
+      stream: chatRepo.getChatDataByID(widget.chat!.id!),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -65,26 +96,31 @@ class ChatSellerItem extends StatelessWidget {
   }
 
   Widget buildSubtitle(Chat chat, BuildContext context) {
-    if (chat!.listMsg!.isNotEmpty) {
-      if (chat!.listMsg!.last.productID != null) {
+    if (chat.listMsg!.isNotEmpty) {
+      if (chat.listMsg!.last.productID != null) {
         return Text(LangText(context: context).getLocal()!.product_detail_ucf);
       }
       if (chat.lastChatType == ChatType.image) {
         return Text(LangText(context: context).getLocal()!.a_image_is_send);
       } else if (chat.lastChatType == ChatType.video) {
         return Text(LangText(context: context).getLocal()!.a_video_is_send);
-      } else {
+      } else if (chat.lastChatType == ChatType.link) {
         return Text(LangText(context: context).getLocal()!.a_link_is_send);
+      } else {
+        return Text(chat.listMsg!.last.content!);
       }
     }
     return const Text("");
   }
 
-  String? getAvatar(UserModel currentUser, Chat chatData) {
-    if (currentUser.id == chatData.userID) {
-      return chatData.shopLogo!;
+  String? getAvatar() {
+    if (user != null) {
+      return user!.avatar;
     }
-    return chatData.userAvatar!;
+    // if (currentUser.id == chatData.userID) {
+    //   return chatData.shopLogo!;
+    // }
+    // return chatData.userAvatar!;
   }
 
   @override
@@ -92,7 +128,7 @@ class ChatSellerItem extends StatelessWidget {
     final chatProvider = Provider.of<ChatViewModel>(context, listen: true);
     final size = MediaQuery.of(context).size;
     final userProvider = Provider.of<UserViewModel>(context);
-    final user = userProvider.currentUser;
+    final currentUser = userProvider.currentUser;
     return Container(
         constraints: BoxConstraints(maxHeight: size.height * 0.1),
         width: size.width,
@@ -101,7 +137,7 @@ class ChatSellerItem extends StatelessWidget {
             color: const Color.fromARGB(255, 135, 177, 254)),
         // margin: const EdgeInsets.only(top: 5),
         child: StreamBuilder(
-          stream: chatRepo.getChatDataByID(chat!.id!),
+          stream: chatRepo.getChatDataByID(widget.chat!.id!),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return ListTile();
@@ -128,16 +164,15 @@ class ChatSellerItem extends StatelessWidget {
                           },
                         ));
                       },
-                      leading: url != null
+                      leading: user != null && user!.avatar != null
                           ? CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(getAvatar(user!, chat!)!),
+                              backgroundImage: NetworkImage(getAvatar()!),
                             )
                           : CircleAvatar(
                               backgroundImage:
                                   AssetImage(ImageData.circelAvatar),
                             ),
-                      title: showName(user!, chat),
+                      title: showName(),
                       subtitle: buildSubtitle(chat, context),
                       trailing: chat.listMsg!.isNotEmpty
                           ? Text(DateHelper.chatTime(

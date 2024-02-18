@@ -146,6 +146,12 @@ class DateHelper {
     }
   }
 
+  static String convertCommonDate(Timestamp time) {
+    DateTime dateTime = time.toDate();
+    String formattedDate = DateFormat('dd-MM-yyyy').format(dateTime);
+    return formattedDate;
+  }
+
   static String convertCommonDateTime(Timestamp time) {
     DateTime dateTime = time.toDate();
     String formattedDate = DateFormat('dd-MM-yyyy HH:mm').format(dateTime);
