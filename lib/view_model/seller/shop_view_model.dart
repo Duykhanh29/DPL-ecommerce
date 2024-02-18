@@ -12,6 +12,16 @@ class ShopViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> onRefresh() async {
+    reset();
+    await fetchData(currentUser!.userInfor!.sellerInfor!.shopIDs![0]);
+  }
+
+  void reset() {
+    shop = null;
+    notifyListeners();
+  }
+
   void updateTotalProduct(TypeOfTotalProduct type) {
     if (shop != null) {
       if (type == TypeOfTotalProduct.increase) {

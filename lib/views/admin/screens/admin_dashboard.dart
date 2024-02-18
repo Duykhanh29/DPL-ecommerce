@@ -57,6 +57,7 @@ class _DashAdminState extends State<DashAdmin> {
     totalShop = null;
     totalProduct = null;
     totalCategory = null;
+    totalOrder = null;
     totalDeliveryService = null;
     if (mounted) {
       setState(() {});

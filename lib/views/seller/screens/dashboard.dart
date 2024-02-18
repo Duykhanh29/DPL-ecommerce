@@ -53,375 +53,384 @@ class _DashboardState extends State<Dashboard> {
         leadingWidth: 0,
         automaticallyImplyLeading: false,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 40.h,
-            ),
-            Consumer<ShopViewModel>(
-              builder: (context, value, child) => Padding(
-                padding: const EdgeInsetsDirectional.all(8),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await shopProvider.onRefresh();
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                height: 40.h,
+              ),
+              Consumer<ShopViewModel>(
+                builder: (context, value, child) => Padding(
+                  padding: const EdgeInsetsDirectional.all(8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          _buiditeam(
+                              context: context,
+                              lable: LangText(context: context)
+                                  .getLocal()!
+                                  .products_ucf,
+                              value: value.shop != null
+                                  ? value.shop!.totalProduct.toString()
+                                  : "...",
+                              icon1: CupertinoIcons.cube_box),
+                          SizedBox(
+                            height: 12.h,
+                          ),
+                          _buiditeam(
+                              context: context,
+                              lable: LangText(context: context)
+                                  .getLocal()!
+                                  .total_orders_ucf,
+                              value: value.shop != null
+                                  ? value.shop!.totalOrder.toString()
+                                  : "...",
+                              icon1: CupertinoIcons.square_list),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 12.h,
+                      ),
+                      Column(
+                        children: [
+                          _buiditeam(
+                              context: context,
+                              lable: LangText(context: context)
+                                  .getLocal()!
+                                  .rating_ucf,
+                              value: value.shop != null
+                                  ? value.shop!.rating.toString()
+                                  : "...",
+                              icon1: CupertinoIcons.star),
+                          SizedBox(
+                            height: 12.h,
+                          ),
+                          _buiditeam(
+                            context: context,
+                            lable: LangText(context: context)
+                                .getLocal()!
+                                .total_revenue_ucf,
+                            value: value.shop != null
+                                ? value.shop!.totalRevenue.toString()
+                                : '...',
+                            icon1: Icons.money,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              buildViewWidget(context),
+              SizedBox(
+                height: 10.h,
+              ),
+              Container(
+                height: 80.h,
+                decoration: BoxDecoration(color: MyTheme.accent_color),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  //crossAxisAlignment: CrossAxisAlignment.center,
+                  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      children: [
-                        _buiditeam(
-                            context: context,
-                            lable: LangText(context: context)
-                                .getLocal()!
-                                .products_ucf,
-                            value: value.shop != null
-                                ? value.shop!.totalProduct.toString()
-                                : "...",
-                            icon1: CupertinoIcons.cube_box),
-                        SizedBox(
-                          height: 12.h,
-                        ),
-                        _buiditeam(
-                            context: context,
-                            lable: LangText(context: context)
-                                .getLocal()!
-                                .total_orders_ucf,
-                            value: value.shop != null
-                                ? value.shop!.totalOrder.toString()
-                                : "...",
-                            icon1: CupertinoIcons.square_list),
-                      ],
-                    ),
                     SizedBox(
-                      width: 12.h,
+                      width: 20.w,
                     ),
-                    Column(
-                      children: [
-                        _buiditeam(
-                            context: context,
-                            lable: LangText(context: context)
-                                .getLocal()!
-                                .rating_ucf,
-                            value: value.shop != null
-                                ? value.shop!.rating.toString()
-                                : "...",
-                            icon1: CupertinoIcons.star),
-                        SizedBox(
-                          height: 12.h,
+                    GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ChatList(),
                         ),
-                        _buiditeam(
-                          context: context,
-                          lable: LangText(context: context)
+                      ),
+                      child: _buildicon(
+                          name: LangText(context: context)
                               .getLocal()!
-                              .total_revenue_ucf,
-                          value: value.shop != null
-                              ? value.shop!.totalRevenue.toString()
-                              : '...',
-                          icon1: Icons.money,
-                        ),
-                      ],
+                              .messages_ucf,
+                          icon: CupertinoIcons.chat_bubble_2_fill),
+                    ),
+                    const Spacer(),
+                    GestureDetector(
+                        onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => VoucherApp(),
+                              ),
+                            ),
+                        child: _buildicon(
+                            name: LangText(context: context)
+                                .getLocal()!
+                                .vouchers_ucf,
+                            icon: CupertinoIcons.ticket_fill)),
+                    // const Spacer(),
+                    // GestureDetector(
+                    //     onTap: () => Navigator.push(
+                    //           context,
+                    //           MaterialPageRoute(
+                    //             builder: (context) => const PayHistory(),
+                    //           ),
+                    //         ),
+                    //     child: _buildicon(
+                    //         name: LangText(context: context)
+                    //             .getLocal()!
+                    //             .payment_history_ucf,
+                    //         icon: Icons.history)),
+                    const Spacer(),
+                    GestureDetector(
+                        onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SettingSeller(),
+                              ),
+                            ),
+                        child: Container(
+                            child: _buildicon(
+                                name: LangText(context: context)
+                                    .getLocal()!
+                                    .settings_ucf,
+                                icon: Icons.settings))),
+                    SizedBox(
+                      width: 20.w,
                     ),
                   ],
                 ),
               ),
-            ),
-            SizedBox(
-              height: 10.h,
-            ),
-            buildViewWidget(context),
-            SizedBox(
-              height: 10.h,
-            ),
-            Container(
-              height: 80.h,
-              decoration: BoxDecoration(color: MyTheme.accent_color),
-              child: Row(
-                //crossAxisAlignment: CrossAxisAlignment.center,
-                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: 20.w,
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ChatList(),
-                      ),
-                    ),
-                    child: _buildicon(
-                        name:
-                            LangText(context: context).getLocal()!.messages_ucf,
-                        icon: CupertinoIcons.chat_bubble_2_fill),
-                  ),
-                  const Spacer(),
-                  GestureDetector(
-                      onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => VoucherApp(),
-                            ),
-                          ),
-                      child: _buildicon(
-                          name: LangText(context: context)
-                              .getLocal()!
-                              .vouchers_ucf,
-                          icon: CupertinoIcons.ticket_fill)),
-                  // const Spacer(),
-                  // GestureDetector(
-                  //     onTap: () => Navigator.push(
-                  //           context,
-                  //           MaterialPageRoute(
-                  //             builder: (context) => const PayHistory(),
-                  //           ),
-                  //         ),
-                  //     child: _buildicon(
-                  //         name: LangText(context: context)
-                  //             .getLocal()!
-                  //             .payment_history_ucf,
-                  //         icon: Icons.history)),
-                  const Spacer(),
-                  GestureDetector(
-                      onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SettingSeller(),
-                            ),
-                          ),
-                      child: Container(
-                          child: _buildicon(
-                              name: LangText(context: context)
-                                  .getLocal()!
-                                  .settings_ucf,
-                              icon: Icons.settings))),
-                  SizedBox(
-                    width: 20.w,
-                  ),
-                ],
+              SizedBox(
+                height: 20.h,
               ),
-            ),
-            SizedBox(
-              height: 20.h,
-            ),
-            !user!.userInfor!.sellerInfor!.isVerified! ||
-                    user.userInfor!.sellerInfor!.isVerified == null
-                ? Container(
-                    height: 80.h,
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(8)),
-                    child: Center(
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            width: 20.w,
-                          ),
-                          Text(
-                            LangText(context: context)
-                                .getLocal()!
-                                .your_account_is_unverified,
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              color: Colors.white,
+              !user!.userInfor!.sellerInfor!.isVerified! ||
+                      user.userInfor!.sellerInfor!.isVerified == null
+                  ? Container(
+                      height: 80.h,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10.w, vertical: 10.h),
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: 20.w,
                             ),
-                          ),
-                          const Spacer(),
-                          Consumer<ShopViewModel>(
-                              builder: (context, value, child) {
-                            if (value.shop != null) {
-                              return GestureDetector(
-                                onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        Verification(shopID: value.shop!.id!),
+                            Text(
+                              LangText(context: context)
+                                  .getLocal()!
+                                  .your_account_is_unverified,
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const Spacer(),
+                            Consumer<ShopViewModel>(
+                                builder: (context, value, child) {
+                              if (value.shop != null) {
+                                return GestureDetector(
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          Verification(shopID: value.shop!.id!),
+                                    ),
                                   ),
-                                ),
-                                child: Container(
-                                  height: 30.h,
-                                  width: 100.w,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(8)),
-                                  child: Center(
-                                    child: Text(
-                                      LangText(context: context)
-                                          .getLocal()!
-                                          .verify_now,
-                                      style: TextStyle(
-                                        color: Colors.blue,
-                                        fontSize: 12.sp,
+                                  child: Container(
+                                    height: 30.h,
+                                    width: 100.w,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: Center(
+                                      child: Text(
+                                        LangText(context: context)
+                                            .getLocal()!
+                                            .verify_now,
+                                        style: TextStyle(
+                                          color: Colors.blue,
+                                          fontSize: 12.sp,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              );
-                            } else {
-                              return const SizedBox();
-                            }
-                          }),
-                          SizedBox(
-                            width: 20.w,
-                          ),
-                        ],
+                                );
+                              } else {
+                                return const SizedBox();
+                              }
+                            }),
+                            SizedBox(
+                              width: 20.w,
+                            ),
+                          ],
+                        ),
                       ),
+                    )
+                  : Container(),
+              Padding(
+                padding: EdgeInsets.all(20.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Text(LangText(context: context).getLocal()!.sales_stat_ucf),
+                    // SizedBox(
+                    //   height: 10.h,
+                    // ),
+                    // TextFormField(
+                    //   maxLines: 4,
+                    //   decoration: InputDecoration(
+                    //     contentPadding: const EdgeInsets.symmetric(
+                    //         vertical: 10.0, horizontal: 10.0),
+                    //     filled: true,
+                    //     hoverColor: const Color(0XFFDADADA),
+                    //     border: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(10),
+                    //         borderSide: BorderSide.none),
+                    //   ),
+                    // ),
+                    // Consumer<ShopViewModel>(
+                    //   builder: (context, value, child) {
+                    //     if (value.shop != null) {
+                    //       return ChartContainer();
+                    //     }
+                    //     return Container();
+                    //   },
+                    // ),
+                    // SizedBox(
+                    //   height: 10.h,
+                    // ),
+
+                    // Text(LangText(context: context)
+                    //     .getLocal()!
+                    //     .your_categories_ucf),
+                    // SizedBox(
+                    //   height: 10.h,
+                    // ),
+                    // products != null && products!.isNotEmpty
+                    // ? SingleChildScrollView(
+                    //     child: Container(
+                    //       height: 120.h,
+                    //       // width: double.infinity,
+                    //       child: ListView.separated(
+                    //           separatorBuilder: (context, index) => SizedBox(
+                    //                 width: 10.w,
+                    //               ),
+                    //           scrollDirection: Axis.horizontal,
+                    //           // shrinkWrap: true,
+                    //           //scrollDirection: Axis.horizontal,
+                    //           physics: const BouncingScrollPhysics(),
+                    //           itemCount: products!.length,
+                    //           itemBuilder: (BuildContext context, int index) {
+                    //             return Container(
+                    //               height: 80.h,
+                    //               width: 80.h,
+                    //               child: Stack(
+                    //                 children: [
+                    //                   ClipRRect(
+                    //                     borderRadius:
+                    //                         BorderRadius.circular(10.r),
+                    //                     child: Image.network(
+                    //                         products![0]!.images![0]),
+                    //                   ),
+                    //                   Positioned.fill(
+                    //                     child: Align(
+                    //                       alignment: Alignment.center,
+                    //                       child: Column(
+                    //                         crossAxisAlignment:
+                    //                             CrossAxisAlignment.center,
+                    //                         //mainAxisAlignment: MainAxisAlignment.center,
+                    //                         children: [
+                    //                           SizedBox(
+                    //                             height: 20.h,
+                    //                           ),
+                    //                           Text(
+                    //                             products![index].name!,
+                    //                             style: TextStyle(
+                    //                               color: Colors.white,
+                    //                               fontSize: 18.sp,
+                    //                             ),
+                    //                           ),
+                    //                           Text(
+                    //                             products![index]
+                    //                                 .availableQuantity
+                    //                                 .toString(),
+                    //                             style: TextStyle(
+                    //                               color: Colors.white,
+                    //                               fontSize: 18.sp,
+                    //                             ),
+                    //                           ),
+                    //                         ],
+                    //                       ),
+                    //                     ),
+                    //                   ),
+                    //                 ],
+
+                    //                 // title: Text(list![index].name!),
+                    //                 //subtitle:Text(list![index].availableQuantity.toString()),
+                    //               ),
+                    //             );
+                    //           }),
+                    //     ),
+                    //   )
+                    // : Container(),
+                    SizedBox(
+                      height: 20.h,
                     ),
-                  )
-                : Container(),
-            Padding(
-              padding: EdgeInsets.all(20.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Text(LangText(context: context).getLocal()!.sales_stat_ucf),
-                  // SizedBox(
-                  //   height: 10.h,
-                  // ),
-                  // TextFormField(
-                  //   maxLines: 4,
-                  //   decoration: InputDecoration(
-                  //     contentPadding: const EdgeInsets.symmetric(
-                  //         vertical: 10.0, horizontal: 10.0),
-                  //     filled: true,
-                  //     hoverColor: const Color(0XFFDADADA),
-                  //     border: OutlineInputBorder(
-                  //         borderRadius: BorderRadius.circular(10),
-                  //         borderSide: BorderSide.none),
-                  //   ),
-                  // ),
-                  // Consumer<ShopViewModel>(
-                  //   builder: (context, value, child) {
-                  //     if (value.shop != null) {
-                  //       return ChartContainer();
-                  //     }
-                  //     return Container();
-                  //   },
-                  // ),
-                  // SizedBox(
-                  //   height: 10.h,
-                  // ),
+                    Consumer<ShopViewModel>(
+                      builder: (context, value, child) {
+                        if (value.shop != null) {
+                          return CategoryChartContainer(
+                              shopID: value.shop!.id!);
+                        } else {
+                          return const SizedBox();
+                        }
+                      },
+                    ),
 
-                  // Text(LangText(context: context)
-                  //     .getLocal()!
-                  //     .your_categories_ucf),
-                  // SizedBox(
-                  //   height: 10.h,
-                  // ),
-                  // products != null && products!.isNotEmpty
-                  // ? SingleChildScrollView(
-                  //     child: Container(
-                  //       height: 120.h,
-                  //       // width: double.infinity,
-                  //       child: ListView.separated(
-                  //           separatorBuilder: (context, index) => SizedBox(
-                  //                 width: 10.w,
-                  //               ),
-                  //           scrollDirection: Axis.horizontal,
-                  //           // shrinkWrap: true,
-                  //           //scrollDirection: Axis.horizontal,
-                  //           physics: const BouncingScrollPhysics(),
-                  //           itemCount: products!.length,
-                  //           itemBuilder: (BuildContext context, int index) {
-                  //             return Container(
-                  //               height: 80.h,
-                  //               width: 80.h,
-                  //               child: Stack(
-                  //                 children: [
-                  //                   ClipRRect(
-                  //                     borderRadius:
-                  //                         BorderRadius.circular(10.r),
-                  //                     child: Image.network(
-                  //                         products![0]!.images![0]),
-                  //                   ),
-                  //                   Positioned.fill(
-                  //                     child: Align(
-                  //                       alignment: Alignment.center,
-                  //                       child: Column(
-                  //                         crossAxisAlignment:
-                  //                             CrossAxisAlignment.center,
-                  //                         //mainAxisAlignment: MainAxisAlignment.center,
-                  //                         children: [
-                  //                           SizedBox(
-                  //                             height: 20.h,
-                  //                           ),
-                  //                           Text(
-                  //                             products![index].name!,
-                  //                             style: TextStyle(
-                  //                               color: Colors.white,
-                  //                               fontSize: 18.sp,
-                  //                             ),
-                  //                           ),
-                  //                           Text(
-                  //                             products![index]
-                  //                                 .availableQuantity
-                  //                                 .toString(),
-                  //                             style: TextStyle(
-                  //                               color: Colors.white,
-                  //                               fontSize: 18.sp,
-                  //                             ),
-                  //                           ),
-                  //                         ],
-                  //                       ),
-                  //                     ),
-                  //                   ),
-                  //                 ],
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                    Text(LangText(context: context)
+                        .getLocal()!
+                        .top_products_ucf),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Consumer<ShopViewModel>(
+                      builder: (context, value, child) {
+                        if (value.shop != null) {
+                          return ListTopProductOfShop(shopID: value.shop!.id!);
+                        }
+                        return Container();
+                      },
+                    ),
 
-                  //                 // title: Text(list![index].name!),
-                  //                 //subtitle:Text(list![index].availableQuantity.toString()),
-                  //               ),
-                  //             );
-                  //           }),
-                  //     ),
-                  //   )
-                  // : Container(),
-                  SizedBox(
-                    height: 20.h,
-                  ),
-                  Consumer<ShopViewModel>(
-                    builder: (context, value, child) {
-                      if (value.shop != null) {
-                        return CategoryChartContainer(shopID: value.shop!.id!);
-                      } else {
-                        return const SizedBox();
-                      }
-                    },
-                  ),
+                    // // Expanded(
+                    //   child: ListView.builder(
+                    //     itemCount: 4,
+                    //     itemBuilder: (context, index){
+                    //       return Container(
+                    //         color: Colors.blue,
+                    //         child: ListTile(
+                    //           title: Text("helo"),
+                    //         ),
+                    //       );
+                    //     },
 
-                  SizedBox(
-                    height: 20.h,
-                  ),
-                  Text(LangText(context: context).getLocal()!.top_products_ucf),
-                  SizedBox(
-                    height: 5.h,
-                  ),
-                  Consumer<ShopViewModel>(
-                    builder: (context, value, child) {
-                      if (value.shop != null) {
-                        return ListTopProductOfShop(shopID: value.shop!.id!);
-                      }
-                      return Container();
-                    },
-                  ),
-
-                  // // Expanded(
-                  //   child: ListView.builder(
-                  //     itemCount: 4,
-                  //     itemBuilder: (context, index){
-                  //       return Container(
-                  //         color: Colors.blue,
-                  //         child: ListTile(
-                  //           title: Text("helo"),
-                  //         ),
-                  //       );
-                  //     },
-
-                  //     ),
-                  // ),
-                ],
+                    //     ),
+                    // ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -454,7 +463,14 @@ class _DashboardState extends State<Dashboard> {
                       color: MyTheme.white),
                 );
               } else {
-                return Container();
+                return Text(
+                  "...",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18.sp,
+                  ),
+                );
               }
             },
           )
