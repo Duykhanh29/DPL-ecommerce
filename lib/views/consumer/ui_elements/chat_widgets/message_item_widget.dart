@@ -7,7 +7,10 @@ import 'package:dpl_ecommerce/models/chat.dart';
 import 'package:dpl_ecommerce/models/message.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/repositories/auth_repo.dart';
+import 'package:dpl_ecommerce/repositories/shop_repo.dart';
+import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
+import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/chat_widgets/link_msg.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/chat_widgets/msg_with_product_card.dart';
@@ -78,26 +81,96 @@ class MessageItemWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 if ((message!.senderID != userModel.id)) ...{
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 20,
-                        width: MediaQuery.of(context).size.height / 20,
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage(!isShop
-                              ? (chat!.shopLogo ??
-                                  "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png")
-                              : (chat!.userAvatar ??
-                                  "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png")),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Column(
+                  //   mainAxisAlignment: MainAxisAlignment.end,
+                  //   children: [
+                  //     SizedBox(
+                  //       height: MediaQuery.of(context).size.height / 20,
+                  //       width: MediaQuery.of(context).size.height / 20,
+                  //       child: CircleAvatar(
+                  //         backgroundImage: NetworkImage(!isShop
+                  //             ? (chat!.shopLogo ??
+                  //                 "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png")
+                  //             : (chat!.userAvatar ??
+                  //                 "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png")),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  UserAvatarWidget(
+                      isShop: isShop,
+                      shopID: chat!.shopID!,
+                      userID: chat!.userID!)
                 },
                 _buildMsg()
               ],
             ),
+    );
+  }
+}
+
+class UserAvatarWidget extends StatefulWidget {
+  UserAvatarWidget(
+      {super.key,
+      required this.isShop,
+      required this.shopID,
+      required this.userID});
+  String shopID;
+  String userID;
+  bool isShop;
+  @override
+  State<UserAvatarWidget> createState() => _UserAvatarWidgetState();
+}
+
+class _UserAvatarWidgetState extends State<UserAvatarWidget> {
+  UserRepo userRepo = UserRepo();
+  ShopRepo shopRepo = ShopRepo();
+  String? avatar;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    if (!widget.isShop) {
+      final shop = await shopRepo.getShopByID(widget.shopID);
+      if (shop != null) {
+        if (shop.logo != null) {
+          avatar = shop.logo;
+        }
+      }
+    } else {
+      final user = await userRepo.getUserByID(widget.userID);
+      if (user != null) {
+        if (user.avatar != null) {
+          avatar = user.avatar;
+        }
+      }
+    }
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 20,
+          width: MediaQuery.of(context).size.height / 20,
+          child: avatar != null
+              ? CircleAvatar(
+                  backgroundImage: NetworkImage(avatar!),
+                )
+              : CircleAvatar(
+                  backgroundImage: AssetImage(ImageData.circelAvatar),
+                ),
+        ),
+      ],
     );
   }
 }

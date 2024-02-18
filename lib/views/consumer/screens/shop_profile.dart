@@ -457,7 +457,10 @@ class _ShopProfileState extends State<ShopProfile>
                                   onPressed: () async {
                                     if (shop != null) {
                                       await buildShowAddFormDialog(
-                                          context, shop!.id!);
+                                              context, shop!.id!)
+                                          .whenComplete(() async {
+                                        await onRefresh();
+                                      });
                                     }
                                   },
                                   child: Row(

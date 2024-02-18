@@ -124,9 +124,9 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
     final shop = shopProvider.shop;
     return ListView.builder(
       itemCount: list!.length,
-      padding: EdgeInsets.all(20.h),
+      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
       itemBuilder: (context, index) {
-        final product = list![index];
+        final product = list[index];
         return Column(
           children: [
             SizedBox(
@@ -134,7 +134,7 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
             ),
             Container(
               padding: EdgeInsets.symmetric(
-                horizontal: 23.h,
+                horizontal: 5.w,
                 vertical: 21.h,
               ),
               decoration: BoxDecoration(
@@ -145,7 +145,7 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                     color: Colors.black26,
                     spreadRadius: 2.h,
                     blurRadius: 2.h,
-                    offset: Offset(
+                    offset: const Offset(
                       0,
                       4,
                     ),
@@ -167,21 +167,40 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                                   height: 70.h,
                                   width: 70.h,
                                   decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: imageProvider)),
+                                      image:
+                                          DecorationImage(image: imageProvider),
+                                      border: Border.all(
+                                          color: MyTheme.accent_color_2,
+                                          width: 0.2)),
                                 );
                               },
-                              placeholder: (context, url) => Center(
-                                  child: SizedBox(
-                                      width: 30.h,
-                                      height: 30.h,
-                                      child:
-                                          const CircularProgressIndicator())),
-                              errorWidget: (context, url, error) => Center(
-                                  child: Icon(
-                                Icons.error,
-                                size: 30.h,
-                              )),
+                              placeholder: (context, url) => Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: MyTheme.accent_color_2,
+                                        width: 0.2)),
+                                height: 70.h,
+                                width: 70.h,
+                                child: Center(
+                                    child: SizedBox(
+                                        width: 30.h,
+                                        height: 30.h,
+                                        child:
+                                            const CircularProgressIndicator())),
+                              ),
+                              errorWidget: (context, url, error) => Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: MyTheme.accent_color_2,
+                                        width: 0.2)),
+                                width: 70.h,
+                                height: 70.h,
+                                child: Center(
+                                    child: Icon(
+                                  Icons.error,
+                                  size: 30.h,
+                                )),
+                              ),
                             ))
                           : Container(
                               height: 70.h,
@@ -196,26 +215,33 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                       SizedBox(
                         width: 5.w,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${product.name}',
-                            //style: theme.textTheme.titleSmall,
-                          ),
-                          SizedBox(
-                            height: 20.h,
-                          ),
-                          Text(
-                            '${LangText(context: context).getLocal()!.price_ucf}: ${product.price}',
-                            //style: theme.textTheme.bodySmall,
-                            maxLines: 2,
-                          ),
-                          Text(
-                            '${LangText(context: context).getLocal()!.quantity_ucf} ${product.availableQuantity}',
-                            //style: theme.textTheme.bodySmall,
-                          ),
-                        ],
+                      Container(
+                        // decoration: BoxDecoration(color: MyTheme.green_light),
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.4),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${product.name}',
+                              //style: theme.textTheme.titleSmall,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
+                            SizedBox(
+                              height: 20.h,
+                            ),
+                            Text(
+                              '${LangText(context: context).getLocal()!.price_ucf}: ${product.price}',
+                              //style: theme.textTheme.bodySmall,
+                              maxLines: 2,
+                            ),
+                            Text(
+                              '${LangText(context: context).getLocal()!.quantity_ucf} ${product.availableQuantity}',
+                              //style: theme.textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -238,6 +264,8 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                         //     borderRadius: BorderRadius.circular(5.r)),
                         child: ElevatedButton(
                           style: ButtonStyle(
+                              // padding: MaterialStateProperty.all(
+                              //     EdgeInsets.symmetric(horizontal: 5.w)),
                               backgroundColor:
                                   MaterialStateProperty.all(MyTheme.white)),
                           onPressed: () {
@@ -261,6 +289,8 @@ class _DisplayProductsScreenState extends State<DisplayProductsScreen> {
                             horizontal: 5.w, vertical: 2.h),
                         child: ElevatedButton(
                           style: ButtonStyle(
+                              // padding: MaterialStateProperty.all(
+                              //     EdgeInsets.symmetric(horizontal: 5.w)),
                               backgroundColor: MaterialStateProperty.all(
                                   MyTheme.accent_color)),
                           child: Text(

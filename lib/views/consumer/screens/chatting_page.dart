@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/models/chat.dart';
@@ -6,6 +7,8 @@ import 'package:dpl_ecommerce/models/message.dart';
 import 'package:dpl_ecommerce/models/user.dart';
 import 'package:dpl_ecommerce/repositories/auth_repo.dart';
 import 'package:dpl_ecommerce/repositories/chat_repo.dart';
+import 'package:dpl_ecommerce/repositories/shop_repo.dart';
+import 'package:dpl_ecommerce/repositories/user_repo.dart';
 import 'package:dpl_ecommerce/services/storage_services/storage_service.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/consumer/chat_view_model.dart';
@@ -32,11 +35,20 @@ class ChattingPage extends StatelessWidget {
     final chatProvider = Provider.of<ChatViewModel>(context);
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: CustomAppBar(
-              centerTitle: true,
-              context: context,
-              title: LangText(context: context).getLocal()!.chat_ucf)
-          .show(),
+      appBar: AppBar(
+          // leadingWidth: 0.0,
+          centerTitle: true,
+          elevation: 5,
+          title: TittleChatName(
+              isShop: isShop, shopID: chat!.shopID!, userID: chat!.userID!),
+          backgroundColor: MyTheme.accent_color,
+          leading: CustomArrayBackWidget()),
+
+      //  CustomAppBar(
+      //         centerTitle: true,
+      //         context: context,
+      //         title: LangText(context: context).getLocal()!.chat_ucf)
+      //     .show(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -242,6 +254,63 @@ class _InputterState extends State<Inputter> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class TittleChatName extends StatefulWidget {
+  TittleChatName(
+      {super.key,
+      required this.isShop,
+      required this.shopID,
+      required this.userID});
+  bool isShop;
+  String shopID;
+  String userID;
+
+  @override
+  State<TittleChatName> createState() => _TittleChatNameState();
+}
+
+class _TittleChatNameState extends State<TittleChatName> {
+  UserRepo userRepo = UserRepo();
+  ShopRepo shopRepo = ShopRepo();
+  String? name;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    if (!widget.isShop) {
+      final shop = await shopRepo.getShopByID(widget.shopID);
+      if (shop != null) {
+        if (shop.logo != null) {
+          name = shop.name;
+        }
+      }
+    } else {
+      final user = await userRepo.getUserByID(widget.userID);
+      if (user != null) {
+        if (user.avatar != null) {
+          name = user.firstName;
+        }
+      }
+    }
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      name != null ? name! : "...",
+      textAlign: TextAlign.center,
+      style: TextStyle(
+          fontSize: 18.sp, fontWeight: FontWeight.bold, color: MyTheme.white),
     );
   }
 }
