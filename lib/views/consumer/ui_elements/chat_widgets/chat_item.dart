@@ -96,7 +96,7 @@ class ChatItem extends StatelessWidget {
                               backgroundImage:
                                   AssetImage(ImageData.circelAvatar),
                             ),
-                      title: showName(user!, chat),
+                      title: showName(user, chat),
                       subtitle: buildSubtitle(chat, context),
                       trailing: Text(DateHelper.chatTime(
                           chat.listMsg!.last.time!.toDate())));
@@ -136,15 +136,17 @@ class ChatItem extends StatelessWidget {
   }
 
   Widget buildSubtitle(Chat chat, BuildContext context) {
-    if (chat!.listMsg!.last.productID != null) {
+    if (chat.listMsg!.last.productID != null) {
       return Text(LangText(context: context).getLocal()!.product_detail_ucf);
     }
     if (chat.lastChatType == ChatType.image) {
       return Text(LangText(context: context).getLocal()!.a_image_is_send);
     } else if (chat.lastChatType == ChatType.video) {
       return Text(LangText(context: context).getLocal()!.a_video_is_send);
-    } else {
+    } else if (chat.lastChatType == ChatType.link) {
       return Text(LangText(context: context).getLocal()!.a_link_is_send);
+    } else {
+      return Text(chat.listMsg!.last.content!);
     }
   }
 }

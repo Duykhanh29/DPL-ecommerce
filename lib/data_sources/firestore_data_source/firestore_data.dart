@@ -1575,6 +1575,9 @@ class FirestoreDatabase {
           print("Empty");
           streamController.close();
         }
+        list.sort(
+          (a, b) => b.listMsg!.last.time!.compareTo(a.listMsg!.last.time!),
+        );
         streamController.sink.add(list);
       });
       streamController.onCancel = () {
@@ -1891,7 +1894,9 @@ class FirestoreDatabase {
           print("Empty");
           // streamController.close();
         }
-
+        list.sort(
+          (a, b) => b.listMsg!.last.time!.compareTo(a.listMsg!.last.time!),
+        );
         streamController.sink.add(list);
       });
       streamController.onCancel = () {

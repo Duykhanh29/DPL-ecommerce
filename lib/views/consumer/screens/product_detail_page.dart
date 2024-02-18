@@ -1359,7 +1359,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               //     child: Text("See shop"))
               CustomOutlinedButton(
                 text: LangText(context: context).getLocal()!.see_shop,
-                width: 120.w,
+                width: 130.w,
+
                 // margin: EdgeInsets.symmetric(horizontal: 5.w),
                 height: 40.h,
                 onPressed: () async {
