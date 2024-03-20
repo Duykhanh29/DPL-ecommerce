@@ -98,7 +98,7 @@ class _OrderingProductItemState extends State<OrderingProductItem> {
       child: Container(
         padding: EdgeInsets.all(2.h),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5.h),
+            borderRadius: BorderRadius.circular(15.h),
             border: Border.all(color: MyTheme.borderColor, width: 1)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,

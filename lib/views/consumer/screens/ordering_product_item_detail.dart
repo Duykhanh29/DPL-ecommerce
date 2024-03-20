@@ -21,6 +21,7 @@ import 'package:dpl_ecommerce/views/consumer/screens/track_order.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/order_widgets/list_order_item.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/order_widgets/ordering_product_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:timeline_list/timeline_model.dart';
@@ -140,10 +141,13 @@ class _OrderingProductDetailScreenState
                               ),
                             SizedBox(height: 10.h),
                           ])),
-                  OrderingProductItem(
-                    orderingProductID: widget.order.id!,
-                    orderID: widget.orderID,
-                    isDetail: true,
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5.w),
+                    child: OrderingProductItem(
+                      orderingProductID: widget.order.id!,
+                      orderID: widget.orderID,
+                      isDetail: true,
+                    ),
                   ),
                   SizedBox(
                     height: 15.h,

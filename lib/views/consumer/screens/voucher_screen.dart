@@ -73,16 +73,18 @@ class __VoucherScreenState extends State<VoucherScreen> {
       body: RefreshIndicator(
         onRefresh: onRefresh,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 5.w),
           child: Container(
             width: double.maxFinite,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                     child: SingleChildScrollView(
                   // child: Padding(
-                  padding: EdgeInsets.only(bottom: 0.h, left: 0.w),
+                  padding: EdgeInsets.only(bottom: 5.h, left: 0.w),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       _buildProductSmallList1(context),
                     ],

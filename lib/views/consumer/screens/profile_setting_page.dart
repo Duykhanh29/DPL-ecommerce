@@ -82,12 +82,12 @@ class ProfileSettingScreen extends StatelessWidget {
                         },
                         child: value.userModel!.avatar != null
                             ? CircleAvatar(
-                                radius: 60.r,
+                                radius: 100.r,
                                 backgroundImage:
                                     NetworkImage(value.userModel!.avatar!),
                               )
                             : CircleAvatar(
-                                radius: 60.r,
+                                radius: 100.r,
                                 backgroundImage:
                                     AssetImage(ImageData.circelAvatar),
                               ),

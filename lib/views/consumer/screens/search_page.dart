@@ -5,6 +5,7 @@ import 'package:dpl_ecommerce/customs/custom_app_bar.dart';
 import 'package:dpl_ecommerce/customs/custom_image_view.dart';
 import 'package:dpl_ecommerce/customs/custom_search_view.dart';
 import 'package:dpl_ecommerce/customs/custom_text_style.dart';
+import 'package:dpl_ecommerce/helpers/toast_helper.dart';
 import 'package:dpl_ecommerce/helpers/which_filter_helper.dart';
 import 'package:dpl_ecommerce/models/product.dart';
 import 'package:dpl_ecommerce/models/recommeded_product.dart';
@@ -22,6 +23,7 @@ import 'package:dpl_ecommerce/views/consumer/screens/search_shop_result_page.dar
 import 'package:flutter/material.dart';
 import 'package:dpl_ecommerce/views/consumer/ui_elements/product_small_list_item1_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:dpl_ecommerce/models/search_history.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
@@ -226,6 +228,12 @@ class _SearchScreenState extends State<SearchScreen> {
           // await productRepo.searchProductByName(p0);
         },
         onFieldSubmitted: (p0) async {
+          if (p0.isEmpty) {
+            ToastHelper.showDialog(
+                LangText(context: context).getLocal()!.please_enter_keywords,
+                gravity: ToastGravity.CENTER);
+            return;
+          }
           if (whichFilter == WhichFilter.product) {
             final list = await productRepo.searchProductByName(p0);
             await searchHistoryRepo.insertSearchKey(

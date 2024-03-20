@@ -11,6 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 class AdminLogin extends StatefulWidget {
   @override
@@ -129,10 +130,20 @@ class _AdminLoginScreen extends State<AdminLogin> {
                     return LangText(context: context).getLocal()!.invalid_email;
                   }
                 },
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(
+                      255), // Giới hạn độ dài tối đa
+                  // FilteringTextInputFormatter.deny(
+                  //     RegExp(r'\d+')), // Ẩn hiển thị số
+                ],
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(8.h),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16.w),
                   labelText: "Email",
-                  fillColor: Colors.white,
+                  fillColor: Color(0x33C4C4C4),
+                  hintStyle: TextStyle(
+                    fontSize: 12.sp,
+                    color: Color(0x80000000),
+                  ),
                   focusedBorder: OutlineInputBorder(
                     borderSide:
                         const BorderSide(color: Colors.blueAccent, width: 2.0),
@@ -160,6 +171,12 @@ class _AdminLoginScreen extends State<AdminLogin> {
                 controller: passwordController,
                 focusNode: passwordFocusNode,
                 keyboardType: TextInputType.text,
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(
+                      255), // Giới hạn độ dài tối đa
+                  // FilteringTextInputFormatter.deny(
+                  //     RegExp(r'\d+')), // Ẩn hiển thị số
+                ],
                 decoration: InputDecoration(
                   suffixIcon: IconButton(
                       onPressed: () {
@@ -170,10 +187,14 @@ class _AdminLoginScreen extends State<AdminLogin> {
                       icon: Icon(isVissible
                           ? Icons.visibility_sharp
                           : Icons.visibility_off_sharp)),
-                  contentPadding: EdgeInsets.all(8.h),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16.w),
                   labelText:
                       LangText(context: context).getLocal()!.password_ucf,
-                  fillColor: Colors.white,
+                  fillColor: Color(0x33C4C4C4),
+                  hintStyle: TextStyle(
+                    fontSize: 12.sp,
+                    color: Color(0x80000000),
+                  ),
                   focusedBorder: OutlineInputBorder(
                     borderSide:
                         const BorderSide(color: Colors.blueAccent, width: 2.0),

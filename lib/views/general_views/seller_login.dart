@@ -5,7 +5,9 @@ import 'dart:math';
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/customs/custom_array_back_widget.dart';
 import 'package:dpl_ecommerce/helpers/toast_helper.dart';
+import 'package:dpl_ecommerce/helpers/validators.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
+import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/auth_view_model.dart';
 import 'package:dpl_ecommerce/views/general_views/forgot_password.dart';
 import 'package:dpl_ecommerce/views/general_views/register_seller.dart';
@@ -56,24 +58,37 @@ class _SellerLoginState extends State<SellerLogin> {
   onPressedLogin(AuthViewModel authViewModel, BuildContext context) async {
     var email = _emailController.text.toString();
     var password = _passwordController.text.toString();
-
-    if (email.length > 0 && email.length < 6) {
-      ToastHelper.showDialog(AppLocalizations.of(context)!.enter_email,
-          gravity: ToastGravity.BOTTOM, duration: Toast.LENGTH_SHORT);
-
-      return;
-    } else if (password.length < 6 && password.length > 0) {
-      ToastHelper.showDialog(AppLocalizations.of(context)!.enter_password,
-          gravity: ToastGravity.BOTTOM, duration: Toast.LENGTH_SHORT);
-
-      return;
-    } else if (email == "" && password == "") {
+    if (email == "" && password == "") {
       ToastHelper.showDialog(
           "${AppLocalizations.of(context)!.enter_email}, ${AppLocalizations.of(context)!.enter_password}",
           gravity: ToastGravity.BOTTOM,
           duration: Toast.LENGTH_SHORT);
       return;
     }
+    if (email.isEmpty) {
+      ToastHelper.showDialog(
+          AppLocalizations.of(context)!.email_cannot_be_empty,
+          gravity: ToastGravity.BOTTOM,
+          duration: Toast.LENGTH_SHORT);
+
+      return;
+    }
+    if (!Validators.isValidEmail1(email)) {
+      ToastHelper.showDialog(
+          AppLocalizations.of(context)!.invalid_email_please_enter_again,
+          gravity: ToastGravity.BOTTOM,
+          duration: Toast.LENGTH_SHORT);
+      return;
+    }
+    if (password.isEmpty) {
+      ToastHelper.showDialog(
+          AppLocalizations.of(context)!.password_cannot_be_empty,
+          gravity: ToastGravity.BOTTOM,
+          duration: Toast.LENGTH_SHORT);
+
+      return;
+    }
+
     await authViewModel.signInWithEmailAndPass(
         email: email, password: password, context: context);
   }
@@ -166,7 +181,25 @@ class _SellerLoginState extends State<SellerLogin> {
                       children: [
                         SizedBox(
                           height: 50.h,
-                          child: TextField(
+                          child: TextFormField(
+                            keyboardType: TextInputType.emailAddress,
+                            autovalidateMode: AutovalidateMode.always,
+                            // validator: (input) {
+                            //   if (input!.isEmpty ||
+                            //       Validators.isValidEmail1(input)) {
+                            //     return null;
+                            //   } else {
+                            //     return LangText(context: context)
+                            //         .getLocal()!
+                            //         .invalid_email;
+                            //   }
+                            // },
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(
+                                  255), // Giới hạn độ dài tối đa
+                              // FilteringTextInputFormatter.deny(
+                              //     RegExp(r'\d+')), // Ẩn hiển thị số
+                            ],
                             controller: _emailController,
                             autofocus: false,
                             decoration: InputDecoration(
@@ -192,6 +225,16 @@ class _SellerLoginState extends State<SellerLogin> {
                                       color: MyTheme.accent_color, width: 0.5),
                                   borderRadius: BorderRadius.circular(15.r),
                                 ),
+                                // errorBorder: OutlineInputBorder(
+                                //   borderSide: const BorderSide(
+                                //       color: Colors.redAccent, width: 0.5),
+                                //   borderRadius: BorderRadius.circular(15.r),
+                                // ),
+                                // focusedErrorBorder: OutlineInputBorder(
+                                //   borderSide: const BorderSide(
+                                //       color: Colors.redAccent, width: 0.5),
+                                //   borderRadius: BorderRadius.circular(15.r),
+                                // ),
                                 contentPadding:
                                     EdgeInsets.symmetric(horizontal: 16.w)),
                           ),
@@ -211,6 +254,12 @@ class _SellerLoginState extends State<SellerLogin> {
                         SizedBox(
                           height: 50.h,
                           child: TextField(
+                              inputFormatters: [
+                                LengthLimitingTextInputFormatter(
+                                    255), // Giới hạn độ dài tối đa
+                                // FilteringTextInputFormatter.deny(
+                                //     RegExp(r'\d+')), // Ẩn hiển thị số
+                              ],
                               controller: _passwordController,
                               autofocus: false,
                               obscureText: isNotVissiblePass,

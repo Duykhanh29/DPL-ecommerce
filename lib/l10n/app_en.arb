@@ -756,5 +756,20 @@
     "you_cannot_update_the_payment_status_yet":"You cannot update the payment status yet",
     "number_of_products_by_category":"Number of products by category",
     "data_no_longer_exists":"Data no longer exists",
-     "current_inventory_is_insufficient_for":"Hàng tồn kho hiện tại không đủ cho "
+     "current_inventory_is_insufficient_for":"Current inventory is insufficient for ",
+     "incorrect_pass":"Incorrect password",
+     "account_is_not_registered":"Account is not registered",
+     "password_cannot_be_empty":"Password cannot be empty",
+     "email_cannot_be_empty":"Email cannot be empty",
+     "invalid_email_please_enter_again":"Invalid email. Please enter again",
+     "please_enter_keywords":"Enter keywords",
+     "name_cannot_be_empty":"Name cannot be empty",
+      "shop_name_cannot_be_empty": "Shop name cannot be empty",
+       "shop_name_cannot_contain_special_characters":"Shop name cannot contain special characters",
+     "name_cannot_contain_special_characters":"Name cannot contain special characters",
+       "country_cannot_be_empty":"Country cannot be empty",
+       "select_city":"Select a city",
+        "select_district":"Select a district",
+        "select_ward":"Select a ward",
+        "order_ucf":"Order"
 }

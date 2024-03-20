@@ -5,6 +5,8 @@ import 'package:dpl_ecommerce/customs/custom_search_view.dart';
 import 'package:dpl_ecommerce/utils/constants/image_data.dart';
 import 'package:dpl_ecommerce/utils/lang/lang_text.dart';
 import 'package:dpl_ecommerce/view_model/user_view_model.dart';
+import 'package:dpl_ecommerce/views/consumer/routes/routes.dart';
+import 'package:dpl_ecommerce/views/consumer/screens/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

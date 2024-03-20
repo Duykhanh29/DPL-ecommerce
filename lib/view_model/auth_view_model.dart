@@ -185,15 +185,28 @@ class AuthViewModel extends ChangeNotifier {
           email: email, password: password);
 
       if (result == null) {
+        // ToastHelper.showDialog(
+        //     "${LangText(context: context).getLocal()!.account_is_not_registered}",
+        //     gravity: ToastGravity.BOTTOM);
       } else {
         userModel = await userFirestoreDatabase.getUserModel1(result.user!.uid);
       }
       notifyListeners();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        ToastHelper.showDialog(
+            "${LangText(context: context).getLocal()!.account_is_not_registered}",
+            gravity: ToastGravity.BOTTOM);
+      } else if (e.code == 'wrong-password') {
+        ToastHelper.showDialog(
+            "${LangText(context: context).getLocal()!.incorrect_pass}",
+            gravity: ToastGravity.BOTTOM);
+      }
     } catch (e) {
       ToastHelper.showDialog(
           "${LangText(context: context).getLocal()!.an_error_has_occurred}: $e",
           gravity: ToastGravity.BOTTOM);
-      print("The error is here: $e");
+      print("The error is here OKE OKE OKE: $e");
     }
   }
   // Future<void> registerForCustomerByEMailAndPass({required String email, required String pass,

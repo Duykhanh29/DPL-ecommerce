@@ -105,7 +105,7 @@ class _ListOrderShopState extends State<ListOrderShop> {
       child: Container(
         // height: 90.h,S
         width: MediaQuery.of(context).size.width * 0.9,
-        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 10.h),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
         alignment: Alignment.center,
         decoration: BoxDecoration(
             color: MyTheme.app_accent_color_extra_light,

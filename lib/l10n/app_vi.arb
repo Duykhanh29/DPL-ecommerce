@@ -756,5 +756,20 @@
       "you_cannot_update_the_payment_status_yet":"Bạn chưa thể cập nhật trạng thái thanh toán được",
       "number_of_products_by_category":"Số lượng hàng theo danh mục",
       "data_no_longer_exists":"Dữ liệu này không còn tồn tại",
-      "current_inventory_is_insufficient_for":"Current inventory is insufficient for "
+      "current_inventory_is_insufficient_for":"Hàng tồn kho hiện tại không đủ cho ",
+      "incorrect_pass":"Mật khẩu không đúng",
+      "account_is_not_registered":"Tài khoản chưa được đăng ký",
+      "password_cannot_be_empty":"Mật khẩu không được trống",
+      "email_cannot_be_empty":"Email không được để trống",
+       "invalid_email_please_enter_again":"Email không hợp lệ. Vui lòng nhập lại",
+       "please_enter_keywords":"Nhập từ khóa",
+       "name_cannot_be_empty":"Tên không được để trống",
+       "shop_name_cannot_be_empty":"Tên cửa hàng không được để trống",
+       "shop_name_cannot_contain_special_characters":"Tên cửa hàng không được chứa ký tự đặc biệt",
+        "name_cannot_contain_special_characters":"Tên không được chứa ký tự đặc biệt",
+        "country_cannot_be_empty":"Quốc gia không được để trống",
+        "select_city":"Chọn thành phố",
+        "select_district":"Chọn huyện",
+        "select_ward":"Chọn xã",
+        "order_ucf":"Đặt hàng"
 }

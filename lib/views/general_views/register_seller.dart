@@ -2,6 +2,7 @@ import 'package:dpl_ecommerce/const/app_decoration.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/data_sources/third_party_source/address_repository.dart';
 import 'package:dpl_ecommerce/helpers/toast_helper.dart';
+import 'package:dpl_ecommerce/helpers/validators.dart';
 import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/district.dart';
 import 'package:dpl_ecommerce/models/ward.dart';
@@ -86,25 +87,13 @@ class _RegistrationState extends State<Registration> {
     // String address = addressController.text.trim();
     String? homeNumber = _homeNumberController.text;
     String? country = _countryController.text;
-    if (shopName == "") {
-      ToastHelper.showDialog(
-          LangText(context: context).getLocal()!.add_full_infor,
-          gravity: ToastGravity.BOTTOM);
-      return;
-    }
-    if (confirmPassword == "") {
-      ToastHelper.showDialog(
-          LangText(context: context).getLocal()!.add_full_infor,
-          gravity: ToastGravity.BOTTOM);
-      return;
-    }
-    if (password == "") {
-      ToastHelper.showDialog(
-          LangText(context: context).getLocal()!.add_full_infor,
-          gravity: ToastGravity.BOTTOM);
-      return;
-    }
-    if (country == "") {
+    if (shopName == "" &&
+        password == "" &&
+        confirmPassword == "" &&
+        homeNumber == "" &&
+        country == "" &&
+        name == "" &&
+        email == "") {
       ToastHelper.showDialog(
           LangText(context: context).getLocal()!.add_full_infor,
           gravity: ToastGravity.BOTTOM);
@@ -112,34 +101,92 @@ class _RegistrationState extends State<Registration> {
     }
     if (name == "") {
       ToastHelper.showDialog(
-          LangText(context: context).getLocal()!.add_full_infor,
+          LangText(context: context).getLocal()!.name_cannot_be_empty,
+          gravity: ToastGravity.BOTTOM);
+      return;
+    }
+    if (Validators.containsSpecialCharacters(name)) {
+      ToastHelper.showDialog(
+          LangText(context: context)
+              .getLocal()!
+              .name_cannot_contain_special_characters,
           gravity: ToastGravity.BOTTOM);
       return;
     }
     if (email == "") {
       ToastHelper.showDialog(
-          LangText(context: context).getLocal()!.add_full_infor,
+          LangText(context: context)
+              .getLocal()!
+              .invalid_email_please_enter_again,
           gravity: ToastGravity.BOTTOM);
       return;
     }
+    if (Validators.isValidEmail1(email)) {
+      ToastHelper.showDialog(
+          LangText(context: context).getLocal()!.name_cannot_be_empty,
+          gravity: ToastGravity.BOTTOM);
+      return;
+    }
+    if (shopName == "") {
+      ToastHelper.showDialog(
+          LangText(context: context).getLocal()!.shop_name_cannot_be_empty,
+          gravity: ToastGravity.BOTTOM);
+      return;
+    }
+    if (Validators.containsSpecialCharacters(shopName)) {
+      ToastHelper.showDialog(
+          LangText(context: context)
+              .getLocal()!
+              .shop_name_cannot_contain_special_characters,
+          gravity: ToastGravity.BOTTOM);
+      return;
+    }
+    // if (confirmPassword == "") {
+    //   ToastHelper.showDialog(
+    //       LangText(context: context).getLocal()!.add_full_infor,
+    //       gravity: ToastGravity.BOTTOM);
+    //   return;
+    // }
+
+    if (country == "") {
+      ToastHelper.showDialog(
+          LangText(context: context).getLocal()!.country_cannot_be_empty,
+          gravity: ToastGravity.BOTTOM);
+      return;
+    }
+
     if (homeNumber == "") {
       ToastHelper.showDialog(
-          LangText(context: context).getLocal()!.add_full_infor,
+          LangText(context: context).getLocal()!.enter_address_ucf,
           gravity: ToastGravity.BOTTOM);
       return;
     }
     if (selectedCity == null) {
-      ToastHelper.showDialog(
-          LangText(context: context).getLocal()!.add_full_infor,
+      ToastHelper.showDialog(LangText(context: context).getLocal()!.select_city,
           gravity: ToastGravity.BOTTOM);
       return;
     }
     if (selectedDistrict == null) {
       ToastHelper.showDialog(
-          LangText(context: context).getLocal()!.add_full_infor,
+          LangText(context: context).getLocal()!.select_district,
           gravity: ToastGravity.BOTTOM);
       return;
     }
+    if (password == "") {
+      ToastHelper.showDialog(
+          LangText(context: context).getLocal()!.password_cannot_be_empty,
+          gravity: ToastGravity.BOTTOM);
+      return;
+    }
+    if (passwordController.text.length < 6) {
+      ToastHelper.showDialog(
+          LangText(context: context)
+              .getLocal()!
+              .password_must_contain_at_least_6_characters,
+          gravity: ToastGravity.BOTTOM);
+      return;
+    }
+
     // if (selectedWard == null) {
     //   ToastHelper.showDialog(
     //       LangText(context: context).getLocal()!.add_full_infor,
@@ -152,14 +199,7 @@ class _RegistrationState extends State<Registration> {
           gravity: ToastGravity.BOTTOM);
       return;
     }
-    if (passwordController.text.length < 6) {
-      ToastHelper.showDialog(
-          LangText(context: context)
-              .getLocal()!
-              .password_must_contain_at_least_6_characters,
-          gravity: ToastGravity.BOTTOM);
-      return;
-    }
+
     City city = City(id: selectedCity!.id, name: selectedCity!.name);
     District district =
         District(id: selectedDistrict!.id, name: selectedDistrict!.name);

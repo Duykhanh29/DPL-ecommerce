@@ -2,6 +2,7 @@ import 'package:dpl_ecommerce/const/app_decoration.dart';
 import 'package:dpl_ecommerce/const/app_theme.dart';
 import 'package:dpl_ecommerce/data_sources/third_party_source/address_repository.dart';
 import 'package:dpl_ecommerce/helpers/toast_helper.dart';
+import 'package:dpl_ecommerce/helpers/validators.dart';
 import 'package:dpl_ecommerce/models/city.dart';
 import 'package:dpl_ecommerce/models/district.dart';
 import 'package:dpl_ecommerce/models/ward.dart';
@@ -53,43 +54,64 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
     String password = passwordController.text.trim();
     String confirmPassword = confirmPassController.text.trim();
 
-    if (confirmPassword == "") {
+    // if (confirmPassword == "") {
+    //   ToastHelper.showDialog(
+    //       LangText(context: context).getLocal()!.add_full_infor,
+    //       gravity: ToastGravity.BOTTOM);
+    //   return;
+    // }
+    if (password == "" && email == "" && name == "" && confirmPassword == "") {
       ToastHelper.showDialog(
           LangText(context: context).getLocal()!.add_full_infor,
           gravity: ToastGravity.BOTTOM);
       return;
     }
-    if (password == "") {
-      ToastHelper.showDialog(
-          LangText(context: context).getLocal()!.add_full_infor,
-          gravity: ToastGravity.BOTTOM);
-      return;
-    }
-
     if (name == "") {
       ToastHelper.showDialog(
-          LangText(context: context).getLocal()!.add_full_infor,
+          LangText(context: context).getLocal()!.name_cannot_be_empty,
+          gravity: ToastGravity.BOTTOM);
+      return;
+    }
+    if (Validators.containsSpecialCharacters(name)) {
+      ToastHelper.showDialog(
+          LangText(context: context)
+              .getLocal()!
+              .name_cannot_contain_special_characters,
           gravity: ToastGravity.BOTTOM);
       return;
     }
     if (email == "") {
       ToastHelper.showDialog(
-          LangText(context: context).getLocal()!.add_full_infor,
+          LangText(context: context).getLocal()!.email_cannot_be_empty,
+          gravity: ToastGravity.BOTTOM);
+      return;
+    }
+    if (Validators.isValidEmail1(email)) {
+      ToastHelper.showDialog(
+          LangText(context: context)
+              .getLocal()!
+              .invalid_email_please_enter_again,
+          gravity: ToastGravity.BOTTOM);
+      return;
+    }
+    if (password == "") {
+      ToastHelper.showDialog(
+          LangText(context: context).getLocal()!.password_cannot_be_empty,
           gravity: ToastGravity.BOTTOM);
       return;
     }
 
-    if (passwordController.text != confirmPassController.text) {
-      ToastHelper.showDialog(
-          LangText(context: context).getLocal()!.passwords_do_not_match,
-          gravity: ToastGravity.BOTTOM);
-      return;
-    }
     if (passwordController.text.length < 6) {
       ToastHelper.showDialog(
           LangText(context: context)
               .getLocal()!
               .password_must_contain_at_least_6_characters,
+          gravity: ToastGravity.BOTTOM);
+      return;
+    }
+    if (passwordController.text != confirmPassController.text) {
+      ToastHelper.showDialog(
+          LangText(context: context).getLocal()!.passwords_do_not_match,
           gravity: ToastGravity.BOTTOM);
       return;
     }
@@ -243,7 +265,7 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
             buildBasicInfo(context),
             spacer(height: 10.h),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

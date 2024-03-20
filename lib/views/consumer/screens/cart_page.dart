@@ -452,13 +452,22 @@ class CartBody extends StatelessWidget {
             if (snapshot.data != null) {
               final cart = snapshot.data;
               if (cart!.productInCarts != null) {
-                return ProductInCartDetails(list: cart.productInCarts);
+                if (cart!.productInCarts.isNotEmpty) {
+                  return ProductInCartDetails(list: cart.productInCarts);
+                }
+                return Container(
+                  height: size.height * 0.5,
+                  child: Center(
+                    child: Text(
+                        LangText(context: context).getLocal()!.cart_is_empty),
+                  ),
+                );
               } else {
                 return Container(
                   height: size.height * 0.5,
                   child: Center(
-                    child:
-                        Text(LangText(context: context).getLocal()!.no_product),
+                    child: Text(
+                        LangText(context: context).getLocal()!.cart_is_empty),
                   ),
                 );
               }
@@ -466,8 +475,8 @@ class CartBody extends StatelessWidget {
               return Container(
                 height: size.height * 0.5,
                 child: Center(
-                  child:
-                      Text(LangText(context: context).getLocal()!.no_product),
+                  child: Text(
+                      LangText(context: context).getLocal()!.cart_is_empty),
                 ),
               );
             }

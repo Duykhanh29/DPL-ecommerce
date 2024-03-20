@@ -338,12 +338,15 @@ class LoginScreen extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 5.w),
           width: ScreenUtil().screenWidth * 0.9,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
                 ImageData.googleLogo,
                 height: 20.h,
                 width: 20.h,
+              ),
+              SizedBox(
+                width: 10.w,
               ),
               Text(
                 LangText(context: context).getLocal()!.login_with_google,

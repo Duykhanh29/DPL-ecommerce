@@ -153,13 +153,7 @@ class _ProductCartItemState extends State<ProductCartItem> {
                         ),
                         Consumer<CartViewModel>(
                           builder: (context, value, child) {
-                            return CustomIconButton(
-                              height: 20.h,
-                              width: 20.h,
-                              child: const Icon(
-                                Icons.delete,
-                                color: Colors.red,
-                              ),
+                            return InkWell(
                               onTap: () async {
                                 //delete item from cart
                                 print("delete");
@@ -191,7 +185,23 @@ class _ProductCartItemState extends State<ProductCartItem> {
                                       widget.productInCartModel!);
                                 }
                               },
+                              child: Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                                size: 20.h,
+                              ),
                             );
+                            // CustomIconButton(
+                            //   height: 20.h,
+                            //   width: 20.h,
+                            //   child: const Icon(
+                            //     Icons.delete,
+                            //     color: Colors.red,
+                            //   ),
+                            //   onTap: () async {
+
+                            //   },
+                            // );
                           },
                         ),
                       ],

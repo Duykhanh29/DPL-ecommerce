@@ -111,4 +111,13 @@ class Validators {
         : (time2.difference(DateTime(time2.year, 1, 1)).inDays ~/ 7) + 1;
     return week2 == week1 && year2 == year1;
   }
+
+  static bool containsSpecialCharacters(String name) {
+    // Biểu thức chính quy để tìm ký tự đặc biệt
+    // \W is equivalent to any character other than a letter or number
+    // + is equivalent to one or more characters
+    final RegExp specialCharacters = RegExp(r'\W+');
+
+    return specialCharacters.hasMatch(name);
+  }
 }

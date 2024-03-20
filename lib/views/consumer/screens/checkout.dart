@@ -366,7 +366,7 @@ class __CheckOutState extends State<CheckOut> {
                               backgroundColor: MaterialStateProperty.all(
                                   MyTheme.accent_color)),
                           child: Text(
-                            LangText(context: context).getLocal()!.orders_ucf,
+                            LangText(context: context).getLocal()!.order_ucf,
                             style:
                                 TextStyle(fontSize: 18.sp, color: Colors.white),
                           ),
